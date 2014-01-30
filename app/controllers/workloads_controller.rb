@@ -910,7 +910,20 @@ class WorkloadsController < ApplicationController
 
   def backup
     @people   = Person.find(:all, :conditions=>["has_left=0 and is_supervisor=0 and id != ?", session['workload_person_id']], :order=>"name").map {|p| ["#{p.name} (#{p.wl_lines.size} lines)", p.id]}
-
+    
+    @backups_to_delete = WlBackup.find(:all, :conditions=>["week < #{wlweek(Date.today)} and person_id=?", session['workload_person_id']]);
+    @self_backups_to_delete = WlBackup.find(:all, :conditions=>["week < #{wlweek(Date.today)} and backup_person_id=?", session['workload_person_id']]);
+    @backups_to_delete.each do |c|
+      backup_id_del = c.id
+      backup_del = WlBackup.first(:conditions=>["id = ?", backup_id_del]);
+      backup_del.destroy
+    end
+    
+    @self_backups_to_delete.each do |d|
+      self_backup_id_del = d.id
+      self_backup_del = WlBackup.first(:conditions=>["id = ?", self_backup_id_del]);
+      self_backup_del.destroy
+    end
     @backups      = WlBackup.find(:all, :conditions=>["person_id=?", session['workload_person_id']]);
     @self_backups = WlBackup.find(:all, :conditions=>["backup_person_id=?", session['workload_person_id']]);
 
