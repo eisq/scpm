@@ -183,6 +183,14 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.integer  "wl_holidays_calendar_id"
   end
 
+  create_table "cost_profiles", :force => true do |t|
+    t.string   "name"
+    t.integer  "cost"
+    t.integer  "company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "counter_base_values", :force => true do |t|
     t.string   "complexity"
     t.string   "sdp_iteration"
@@ -324,6 +332,13 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "updated_at"
   end
 
+  create_table "line_tags", :force => true do |t|
+    t.integer  "line_id"
+    t.integer  "tag_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "logs", :force => true do |t|
     t.string   "controller"
     t.string   "action"
@@ -398,17 +413,18 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "rmt_user"
-    t.integer  "is_supervisor", :default => 0
+    t.integer  "is_supervisor",   :default => 0
     t.string   "login"
     t.string   "pwd"
     t.datetime "last_view"
-    t.integer  "has_left",      :default => 0
-    t.integer  "sdp_id",        :default => -1
+    t.integer  "has_left",        :default => 0
+    t.integer  "sdp_id",          :default => -1
     t.string   "trigram"
-    t.integer  "is_transverse", :default => 0
-    t.integer  "is_cpdp",       :default => 0
-    t.integer  "is_virtual",    :default => 0
+    t.integer  "is_transverse",   :default => 0
+    t.integer  "is_cpdp",         :default => 0
+    t.integer  "is_virtual",      :default => 0
     t.text     "settings"
+    t.integer  "cost_profile_id"
   end
 
   create_table "person_roles", :force => true do |t|
@@ -481,6 +497,7 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.boolean  "is_qr_qwr",     :default => false
     t.integer  "suite_tag_id"
     t.string   "project_code"
+    t.integer  "sales_revenue", :default => 0
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
@@ -879,6 +896,12 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_active",  :default => true
+  end
+
+  create_table "tags", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tasks", :force => true do |t|
