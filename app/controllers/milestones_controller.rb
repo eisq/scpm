@@ -17,7 +17,7 @@ class MilestonesController < ApplicationController
       render :action => 'new', :project_id=>params[:milestone][:project_id]
       return
     end
-    redirect_to("/projects/show/#{@params[:id]}")
+    redirect_to("/projects/show/#{@milestone.project_id}")
   end
 
   def edit
@@ -30,11 +30,58 @@ class MilestonesController < ApplicationController
     get_infos
   end
 
+
+
+  def isDateSuperior(currentDateStr, nextDate)
+    if currentDateStr and currentDateStr != ""
+      begin
+        if Date.parse(currentDateStr) > nextDate
+          return true
+        end
+      rescue ArgumentError
+        return false
+      end
+    end
+    return false
+  end
+
+  def isDateInferior(currentDateStr, previousDate)
+    if currentDateStr and currentDateStr != ""
+      begin
+        if Date.parse(currentDateStr) < previousDate
+          return true
+        end
+      rescue ArgumentError
+        return false
+      end
+    end
+    return false
+  end
+
   def update
     m   = Milestone.find(params[:id])
     old = m.done
+    error = 0;
 
-    error = false;
+    # Check previous and next milestones
+    if (m.project != nil)
+      sorted_milestones = m.project.sorted_milestones
+      current_milestone_position = sorted_milestones.index(m)
+
+      i = 0
+      sorted_milestones.each do |m_other|
+        if (current_milestone_position > i)
+          error = 1 if isDateInferior(params[:milestone][:milestone_date], m_other.milestone_date)
+          error = 1 if isDateInferior(params[:milestone][:actual_milestone_date], m_other.actual_milestone_date)
+        elsif (current_milestone_position < i)
+          error = 1 if isDateSuperior(params[:milestone][:milestone_date], m_other.milestone_date)
+          error = 1 if isDateSuperior(params[:milestone][:actual_milestone_date], m_other.actual_milestone_date)
+        end
+
+        i = i + 1
+      end
+    end
+
 
     # Try to update the date, if wrong format = remote
     if params[:milestone][:milestone_date] and params[:milestone][:milestone_date].length > 0
@@ -46,7 +93,7 @@ class MilestonesController < ApplicationController
           raise 'Date format error'
         end
       rescue ArgumentError
-        error = true
+        error = 2
       end
     else
       m.milestone_date = nil
@@ -60,15 +107,15 @@ class MilestonesController < ApplicationController
         else
           raise 'Date format error'
         end
-      rescue ArgumentError 
-        error = true
+      rescue ArgumentError
+        error = 2
       end
     else
       m.actual_milestone_date = nil
     end
 
     # If no date error
-    if !error
+    if error == 0
       # Update parameters
       if params[:milestone][:project_id]
         m.project = Project.find(params[:milestone][:project_id])
@@ -105,7 +152,7 @@ class MilestonesController < ApplicationController
       end
     else
       # Date error
-      redirect_to("/milestones/edit?id=#{params[:id]}&date_error=1")
+      redirect_to("/milestones/edit?id=#{params[:id]}&date_error="+error.to_s)
     end
   end
 
