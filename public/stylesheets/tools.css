@@ -89,5 +89,65 @@ h2 {
   border-bottom: 1px solid #DDD;
   table-layout: fixed; 
   word-break: break-all;
+}
 
+/* Presale */
+#presale_menu {
+  position:absolute;
+  float:left;
+  width:200px;
+  padding:2px;
+  border-right: 2px solid grey;
+  height:100%;
+}
+
+#presale_content {
+  margin-left:220px;
+  height:100%;
+}
+
+#presale_content_left{
+  height:100%;
+  width:75%;
+  float:left;
+  display: inline-block;
+}
+
+#presale_content_right {
+  border-left: 2px solid grey;
+  width:24%;
+  height:100%;
+  float:right;
+  text-align : right;
+  display: inline-block;
+}
+
+.presale_btnlnk {
+  padding: 2px;
+  margin: 3px;
+  background: #CDF;
+  border-radius: 3px;
+  -moz-border-radius: 5px;
+}
+
+.presale_btnlnk:hover {
+  background: #BCF;
+  box-shadow: inset 2px 2px 2px #678;
+  -moz-box-shadow: inset 2px 2px 2px #678;
+  -webkit-box-shadow: inset 2px 2px 2px #678;
+  }
+
+.presale_btnlnk_content {
+  width:100%;
+  display: block;
+}
+
+.presale_btnlnk_right {
+  padding: 2px;
+  margin: 3px;
+  background: #CDF;
+  border-radius: 3px;
+  -moz-border-radius: 5px;
+  float:right;
+  display:inline;
 }
