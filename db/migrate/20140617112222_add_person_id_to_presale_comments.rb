@@ -4,6 +4,6 @@ class AddPersonIdToPresaleComments < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :presale_comments, :person_id
+    remove_column :presale_comments, :person_id
   end
 end

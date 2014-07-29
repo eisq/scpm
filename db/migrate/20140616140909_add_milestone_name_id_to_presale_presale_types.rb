@@ -4,6 +4,6 @@ class AddMilestoneNameIdToPresalePresaleTypes < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :presale_presale_types, :milestone_name_id
+    remove_column :presale_presale_types, :milestone_name_id
   end
 end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140715171620) do
+ActiveRecord::Schema.define(:version => 20140729162948) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -315,6 +315,7 @@ ActiveRecord::Schema.define(:version => 20140715171620) do
     t.integer  "milestone_name_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "order"
   end
 
   create_table "lifecycle_questions", :force => true do |t|
@@ -330,6 +331,7 @@ ActiveRecord::Schema.define(:version => 20140715171620) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_active",  :default => true
   end
 
   create_table "line_tags", :force => true do |t|
@@ -368,6 +370,8 @@ ActiveRecord::Schema.define(:version => 20140715171620) do
     t.datetime "updated_at"
     t.integer  "done",                     :default => 0
     t.integer  "checklist_not_applicable", :default => 0
+    t.integer  "order"
+    t.boolean  "is_virtual",               :default => true
   end
 
   add_index "milestones", ["project_id"], :name => "IDX_MILESTONES"
