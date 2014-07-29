@@ -25,7 +25,10 @@
 		<th>Project Name</th>
 		<th>Project Workstream</th>
 		<th>Project PM</th>
-		<th>Project Suite Name</th><th></th>
+		<th>Project Suite Name</th>
+		<th>Next Milestone</th>
+		<th>Next Milestone date</th>
+		<th></th>
 	</tr>
 </thead>
 <tbody>
@@ -45,6 +48,8 @@
 		<td><%= o.presale.project.workstream %></td>
 		<td><%= o.presale.project.pm %></td>
 		<td><%= o.presale.project.suite_tag.name if o.presale.project.suite_tag %></td>
+		<td><%= o.presale.next_milestone %></td>
+		<td><%= o.presale.next_milestone_date %></td>
 		<td><%= button_to "Presale",  {:action=>'show_presale_by_type', :presale_presale_type=>o.id} %></td>
 	</tr>
 	<% i = i + 1 %>

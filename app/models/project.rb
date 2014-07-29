@@ -712,6 +712,15 @@ class Project < ActiveRecord::Base
     return ["", "", {}]
   end
 
+  def get_next_milestone
+    # Current milestone
+    i = get_current_milestone_index
+    # Not managed
+    return nil if not i or i >= milestones.size-1
+    # Next milestone
+    return sorted_milestones[i]
+  end
+
   def sorted_milestones
     #NaturalSort::naturalsort milestones
     milestones.sort_by { |m| [milestone_order(m.name), (m.date ? m.date : Date.today())]}
@@ -980,6 +989,7 @@ class Project < ActiveRecord::Base
     return suite_requests
   end
 
+  # PRESALE 
   def get_priority
     p_priority = nil
     self.milestones.select{|m| (APP_CONFIG['presale_milestones_priority_setting_up'] + APP_CONFIG['presale_milestones_priority']) .include? m.name}.each do |m|
@@ -990,6 +1000,7 @@ class Project < ActiveRecord::Base
     return p_priority
   end
 
+  # PRESALE 
   def get_setting_up_priority
     p_priority_setting_up = nil
     self.milestones.select{|m| (APP_CONFIG['presale_milestones_priority_setting_up'] + APP_CONFIG['presale_milestones_priority']) .include? m.name}.each do |m|

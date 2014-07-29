@@ -10,6 +10,21 @@ class Presale < ActiveRecord::Base
     PRIORITY_URGENT = 4
     PRIORITY_VERY_URGENT = 5
 
+    def next_milestone_date
+        next_milestone = self.project.get_next_milestone    
+        if next_milestone != nil and next_milestone.actual_milestone_date != nil and next_milestone.actual_milestone_date != ""
+            return next_milestone.actual_milestone_date
+        elsif next_milestone != nil and next_milestone.milestone_date != nil and next_milestone.milestone_date != ""
+            return next_milestone.milestone_date
+        else
+            return nil
+        end
+    end
+
+    def next_milestone
+        return self.project.get_next_milestone
+    end
+
     def Presale.init_with_project(project_id)
     	presale = Presale.new
     	presale.project_id = project_id
@@ -35,4 +50,21 @@ class Presale < ActiveRecord::Base
     	return "Unknow"
     end
 
+    def Presale.get_color(priority_raw)
+        case priority_raw
+        when PRIORITY_NONE
+            return "#FFFFFF"
+        when PRIORITY_TO_BE_FOLLOWED
+            return "#CCF5FF"
+        when PRIORTY_IN_TIME
+            return "#BEFFD1"
+        when PRIORITY_URGENT
+            return "#FAC39E"
+        when PRIORITY_VERY_URGENT
+            return "#FD9191"
+        when PRIORITY_TOO_LATE
+            return "#A39C9C"
+        end
+        return "#FFFFFF"
+    end
 end
