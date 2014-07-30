@@ -1,0 +1,58 @@
+<!-- Javascript -->
+<script src="/javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  var $j = jQuery.noConflict();
+</script>
+<script src="/javascripts/jquery-ui-1.10.4.min.js"></script>
+<link rel="stylesheet" href="/stylesheets/jquery-ui-1.10.4.css" />
+
+<style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+ </style>
+
+
+<script type="text/javascript">
+  $j( document ).ready(function() {
+    $j( "#sortable" ).sortable(({
+  		update: function( event, ui ) {
+  			console.log(ui);
+  			// Check each milestone element and change order
+  		}
+	}));
+    $j( "#sortable" ).disableSelection();
+  });
+
+
+</script>
+
+<!-- Lifecycle choice -->
+<% if @current_milestone_index == nil or @min_index_order == -1 or @current_milestone_index < @min_index_order %>
+	<div id="lifecycle_choice">
+	Lifecycle : 
+	<% form_tag(:action=>'lifecycle_change') do %>
+	  <%= select_tag ("lifecycle_id",options_for_select(@lifecycles,@project.lifecycle))  %>
+	  <%= hidden_field_tag('project_id', @project.id) %>
+	  <%= submit_tag('Select') %>
+	<% end %>
+	</div>
+<% end %>
+
+<!-- Buttons -->
+	<!-- New milestone (add with last order + 1) -->
+
+<!-- Milestones -->
+<ul id="sortable">
+<% @project.sorted_milestones.each do |m| %>
+	<li class="milestone-element ui-state-default" style="background-color:green;margin-bottom:5px;padding:5px;height:50px;">
+		<!-- Milestone Name -->
+		<% form_tag(:action=>'milestone_order_change') do %>
+			<%= select_tag ("milestone_id",options_for_select(@milestones_name,@milestones_name_hash[m.name]))  %>
+		<% end %>
+		<!-- Milestone textfield -->
+
+		<!-- Milestone is virtual -->
+	</li>
+<% end %>
+</ul>

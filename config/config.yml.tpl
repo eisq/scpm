@@ -21,6 +21,9 @@ report_milestones_eligible_for_note:
     - QG TD
     - M13
     - CCB
+report_limit_milestone_edit: # Project with a current milestone before of the index order of the following milestone can be edited (milestone structure)
+    - M3
+    - G2
     
 # menu and access configuration
 workloads_add_by_request_number: true

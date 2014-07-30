@@ -707,6 +707,58 @@ class ProjectsController < ApplicationController
         @project = Project.find(params[:id])
   end
 
+  def milestones_edit
+    project_id    = params[:id]
+    @project      = Project.find(:first, :conditions => ["id = ?", project_id])
+
+    @lifecycles   = Lifecycle.find(:all).map{|l| [l.name, l.id]}
+    @milestones_name = MilestoneName.find(:all).map{|m| [m.title, m.id]}
+
+    # Milestones name hash to link milestone <=> milestones name
+    @milestones_name_hash = Hash.new
+    @milestones_name.each do |m_name|
+      @milestones_name_hash[m_name[0]] = m_name[1]
+    end
+
+    # ** Index Order ** #
+    @min_index_order = -1
+    # 1) Get the current milestone index order
+    @current_milestone_index = @project.get_current_milestone_index
+    # 2) Get the index order of the following milestones APP_CONFIG['report_milestones_eligible_for_note']
+    # 3) Get the min of the 2)
+    @project.sorted_milestones.each do |m|
+      APP_CONFIG['report_limit_milestone_edit'].each do |m_name|
+        if m.name == m_name
+          if @min_index_order == -1 or @min_index_order > m.index_order
+            @min_index_order = m.index_order
+          end
+        end
+      end
+    end
+
+
+  end
+
+  def lifecycle_change
+    project_id    = params[:project_id]
+    lifecycle_id  = params[:lifecycle_id]
+    project       = Project.find(:first, :conditions => ["id = ?", project_id])
+    lifecycle     = Lifecycle.find(:first, :conditions => ["id = ?", lifecycle_id])
+
+    if lifecycle_id and project
+      # Change lifecycle
+      project.lifecycle = lifecycle_id
+      project.lifecycle_object = lifecycle
+      project.save
+      # Delete previous milestone
+      project.milestones.each(&:destroy)
+      # Generate new milestones
+      project.check
+    end
+
+    redirect_to :action=>:milestones_edit, :id=>project_id
+  end
+
 private
 
   def get_status_progress
