@@ -1,11 +1,11 @@
-class AddOrderToMilestones < ActiveRecord::Migration
+class AddIndexOrderToMilestones < ActiveRecord::Migration
   def self.up
-    add_column :milestones, :order, :integer
+    add_column :milestones, :index_order, :integer
     
     Project.find(:all).each do |p|
     	i = 1
-    	AddOrderToMilestones.helper_sorted_milestones(p).each do |m|
-    		m.order = i
+    	AddIndexOrderToMilestones.helper_sorted_milestones(p).each do |m|
+    		m.index_order = i
     		m.save
     		i += 1
     	end
@@ -13,13 +13,13 @@ class AddOrderToMilestones < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :milestones, :order
+    remove_column :milestones, :index_order
   end
 
 
   # Copy of the old system
   def self.helper_sorted_milestones(project)
-    project.milestones.sort_by { |m| [AddOrderToMilestones.helper_milestone_order(m.name), (m.date ? m.date : Date.today())]}
+    project.milestones.sort_by { |m| [AddIndexOrderToMilestones.helper_milestone_order(m.name), (m.date ? m.date : Date.today())]}
   end
 
   def self.helper_milestone_order(name)

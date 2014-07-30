@@ -394,23 +394,24 @@ class Project < ActiveRecord::Base
   end
 
   def create_milestones
-    #LifecycleMilestone.find(:all, :conditions => ["lifecycle_id = ?",self.lifecycle_object.id]).each {|m| create_milestone(m.milestone_name.title)}
-    case self.lifecycle_object.name
-        when "Full GPP"
-          ['M1', 'M3', 'QG BRD', 'QG ARD', 'M5', 'M7', 'M9', 'M10', 'QG TD', 'M10a', 'QG MIP', 'M11', 'M12', 'M13', 'M14'].each {|m| create_milestone(m)}
-        when "Light GPP"
-          ['M1', 'M3', 'QG BRD', 'QG ARD', 'M5/M7', 'M9/M10', 'QG TD', 'QG MIP', 'M11', 'M12/M13', 'M14'].each {|m| create_milestone(m)}
-        when "Maintenance"
-          ['CCB', 'QG TD M', 'MIPM'].each {|m| create_milestone(m)}
-        when "LBIP Gx"
-          ['G0', 'G2', 'G3', 'G4', 'QG BRD', 'G5', 'G6', 'G7', 'G8', 'G9'].each {|m| create_milestone(m)}
-        when "LBIP gx"
-          ['g0', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9'].each {|m| create_milestone(m)}
-        when "LBIP pgx"
-          ['pg0', 'pg2', 'pg3', 'pg4', 'pg5', 'pg6', 'pg7', 'pg8', 'pg9'].each {|m| create_milestone(m)}
-        when "Suite"
-          ['sM1', 'sM3', 'sM5', 'sM13', 'sM14'].each {|m| create_milestone(m)}
-        end
+    LifecycleMilestone.find(:all, :conditions => ["lifecycle_id = ?",self.lifecycle_object.id], :order => "index_order").each {|m| create_milestone(m)}
+
+    # case self.lifecycle_object.name
+    #     when "Full GPP"
+    #       ['M1', 'M3', 'QG BRD', 'QG ARD', 'M5', 'M7', 'M9', 'M10', 'QG TD', 'M10a', 'QG MIP', 'M11', 'M12', 'M13', 'M14'].each {|m| create_milestone(m)}
+    #     when "Light GPP"
+    #       ['M1', 'M3', 'QG BRD', 'QG ARD', 'M5/M7', 'M9/M10', 'QG TD', 'QG MIP', 'M11', 'M12/M13', 'M14'].each {|m| create_milestone(m)}
+    #     when "Maintenance"
+    #       ['CCB', 'QG TD M', 'MIPM'].each {|m| create_milestone(m)}
+    #     when "LBIP Gx"
+    #       ['G0', 'G2', 'G3', 'G4', 'QG BRD', 'G5', 'G6', 'G7', 'G8', 'G9'].each {|m| create_milestone(m)}
+    #     when "LBIP gx"
+    #       ['g0', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9'].each {|m| create_milestone(m)}
+    #     when "LBIP pgx"
+    #       ['pg0', 'pg2', 'pg3', 'pg4', 'pg5', 'pg6', 'pg7', 'pg8', 'pg9'].each {|m| create_milestone(m)}
+    #     when "Suite"
+    #       ['sM1', 'sM3', 'sM5', 'sM13', 'sM14'].each {|m| create_milestone(m)}
+    #     end
   end
 
   def set_lifecycle_old_param
@@ -465,9 +466,9 @@ class Project < ActiveRecord::Base
     not rv and not find_milestone_by_name(m)
   end
 
-  def create_milestone(m)
-    rv = self.requests_string(m)
-    milestones.create(:project_id=>self.id, :name=>m, :comments=>rv[0], :status=>(rv[1] == 0 ? -1 : 0)) if can_create(m)
+  def create_milestone(lifecycle_milestone)
+    rv = self.requests_string(lifecycle_milestone.milestone_name.title)
+    milestones.create(:project_id=>self.id, :name=>lifecycle_milestone.milestone_name.title, :index_order=>lifecycle_milestone.index_order, :comments=>rv[0], :status=>(rv[1] == 0 ? -1 : 0)) if can_create(lifecycle_milestone.milestone_name.title)
   end
 
   def requests_string(m)
@@ -740,7 +741,7 @@ class Project < ActiveRecord::Base
   def sorted_milestones
     #NaturalSort::naturalsort milestones
     # milestones.sort_by { |m| [milestone_order(m.name), (m.date ? m.date : Date.today())]}
-    milestones.sort_by { |m| m.order}
+    milestones.sort_by { |m| m.index_order}
   end
  
 

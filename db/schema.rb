@@ -315,7 +315,7 @@ ActiveRecord::Schema.define(:version => 20140729162948) do
     t.integer  "milestone_name_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "order"
+    t.integer  "index_order"
   end
 
   create_table "lifecycle_questions", :force => true do |t|
@@ -370,7 +370,7 @@ ActiveRecord::Schema.define(:version => 20140729162948) do
     t.datetime "updated_at"
     t.integer  "done",                     :default => 0
     t.integer  "checklist_not_applicable", :default => 0
-    t.integer  "order"
+    t.integer  "index_order"
     t.boolean  "is_virtual",               :default => true
   end
 

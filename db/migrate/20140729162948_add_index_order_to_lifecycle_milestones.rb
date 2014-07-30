@@ -1,14 +1,14 @@
-class AddOrderToLifecycleMilestones < ActiveRecord::Migration
+class AddIndexOrderToLifecycleMilestones < ActiveRecord::Migration
   def self.up
-    add_column :lifecycle_milestones, :order, :integer
+    add_column :lifecycle_milestones, :index_order, :integer
     
     Lifecycle.find(:all).each do |l|
-        milestones_order = AddOrderToLifecycleMilestones.helper_create_milestones(l)
+        milestones_order = AddIndexOrderToLifecycleMilestones.helper_create_milestones(l)
         if milestones_order
           l.lifecycle_milestones.each do |lm|
-            order = milestones_order.index(lm.milestone_name.title)
-            if order
-              lm.order = order + 1
+            index_order = milestones_order.index(lm.milestone_name.title)
+            if index_order
+              lm.index_order = index_order + 1
               lm.save
             end
           end
@@ -17,7 +17,7 @@ class AddOrderToLifecycleMilestones < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :lifecycle_milestones, :order
+    remove_column :lifecycle_milestones, :index_order
   end
 
 
