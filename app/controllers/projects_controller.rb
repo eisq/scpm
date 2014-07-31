@@ -794,8 +794,8 @@ class ProjectsController < ApplicationController
   end
 
   def milestone_virtual_name_change
-      milestone_id        = params[:milestone_id]
-      milestone_name   = params[:milestone_name]
+      milestone_id    = params[:milestone_id]
+      milestone_name  = params[:milestone_name]
       milestone       = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
 
       if milestone and milestone_name
@@ -805,6 +805,20 @@ class ProjectsController < ApplicationController
 
       render(:nothing=>true)
   end
+
+  def milestone_is_virtual_change
+    milestone_id          = params[:milestone_id]
+    milestone_is_virtual  = params[:is_virtual]
+    milestone             = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+
+    if milestone and milestone_is_virtual
+      milestone.is_virtual = milestone_is_virtual
+      milestone.save
+    end
+
+    render(:nothing=>true)
+  end
+
   # - 
 
 private

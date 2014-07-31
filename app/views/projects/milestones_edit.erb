@@ -15,6 +15,9 @@
 
 <script type="text/javascript">
   $j( document ).ready(function() {
+
+  	check_after_launch();
+
   	// Sortable
     $j( "#sortable" ).sortable(({
   		update: function( event, ui ) {
@@ -40,6 +43,7 @@
     });
   });
 
+// Functions
 function check_milestones_order() {
 	var order_array = new Array();
 	$j(".milestone-element").each(function(i, obj) {
@@ -51,9 +55,7 @@ function check_milestones_order() {
 		url: "/projects/milestones_order_change",
  		data: {milestones : order_array}
 	})
-	.done(function( msg ) {
-		alert( "Milestones order change saved");
-	})
+	.done(function( msg ) {	})
 }
 
 function change_milestone_name(param_milestone_name_id, param_milestone_id) {
@@ -76,22 +78,33 @@ function change_milestone_virtual_name(param_milestone_name, param_milestone_id)
 function change_milestone_is_virtual(param_milestone_is_virtual, param_milestone_id) {
 	console.log(param_milestone_is_virtual);
 	if (param_milestone_is_virtual) {
-		$j("#select_"+param_milestone_id).hide();
-		$j("#textfield_"+param_milestone_id).show();
-		$j("#button_"+param_milestone_id).show();
+		$j("#is_virtual_false_"+param_milestone_id).hide();
+		$j("#is_virtual_true_"+param_milestone_id).show();
 	} else {
-		$j("#select_"+param_milestone_id).show();
-		$j("#textfield_"+param_milestone_id).hide();
-		$j("#button_"+param_milestone_id).hide();
+		$j("#is_virtual_false_"+param_milestone_id).show();
+		$j("#is_virtual_true_"+param_milestone_id).hide();
 	}
 
-	// $j.ajax({
-	// 	type: "POST",
-	// 	url: "/projects/milestone_virtual_name_change",
- // 		data: {milestone_name : param_milestone_name, milestone_id : param_milestone_id}
-	// })
+	$j.ajax({
+		type: "POST",
+		url: "/projects/milestone_is_virtual_change",
+ 		data: {is_virtual : param_milestone_is_virtual, milestone_id : param_milestone_id}
+	})
 }
 
+function check_after_launch() {
+	$j(".milestone-element").each(function(i, obj) {
+    	var id = $j(this).attr("id").split("_")[1];
+    	var checkbox_status = $j("#checkbox_"+id).prop('checked');
+    	if (checkbox_status == true) {
+			$j("#is_virtual_false_"+id).hide();
+			$j("#is_virtual_true_"+id).show();
+    	} else {
+			$j("#is_virtual_false_"+id).show();
+			$j("#is_virtual_true_"+id).hide();
+    	}
+	});
+}
 </script>
 
 <!-- Lifecycle choice -->
@@ -114,11 +127,17 @@ function change_milestone_is_virtual(param_milestone_is_virtual, param_milestone
 <% @project.sorted_milestones.each do |m| %>
 	<li id="li_<%= m.id.to_s %>" class="milestone-element ui-state-default" style="background-color:green;margin-bottom:5px;padding:5px;height:50px;">
 		<%= m.id.to_s %>
+
 		<!-- Milestone Name -->
-		<%= select_tag ("milestone_id",options_for_select(@milestones_name,@milestones_name_hash[m.name]), :class => 'select_milestone_name', :id => "select_"+m.id.to_s )  %>
-		<!-- Milestone textfield -->
-		<%= text_field_tag('milestone_name', m.name, :id=>"textfield_"+m.id.to_s, :class=>'textfield_milestone_name') %>
-		<%= submit_tag "Save", :id => "button_"+m.id.to_s, :class=>'button_milestone_name' %>
+		<div id="is_virtual_false_<%= m.id.to_s %>" style="display:inline;">
+			<%= select_tag ("milestone_id",options_for_select(@milestones_name,@milestones_name_hash[m.name]), :class => 'select_milestone_name', :id => "select_"+m.id.to_s )  %>
+		</div>
+		<div id="is_virtual_true_<%= m.id.to_s %>" style="display:inline;">
+			<!-- Milestone textfield -->
+			<%= text_field_tag('milestone_name', m.name, :id=>"textfield_"+m.id.to_s, :class=>'textfield_milestone_name') %>
+			<%= submit_tag "Save", :id => "button_"+m.id.to_s, :class=>'button_milestone_name' %>
+		</div>
+		
 		<!-- Milestone is virtual -->
 		Is virtual : <%= check_box_tag 'Virtual', 'Virtual', m.is_virtual, :id => "checkbox_"+m.id.to_s, :class=>'checkbox_milestone_name' %>
 	</li>
