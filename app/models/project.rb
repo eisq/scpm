@@ -414,25 +414,6 @@ class Project < ActiveRecord::Base
     #     end
   end
 
-  def set_lifecycle_old_param
-    case self.lifecycle_object.name
-         when "Full GPP"
-           self.lifecycle = FullGPP
-         when "Light GPP"
-           self.lifecycle = LightGPP
-         when "Maintenance"
-           self.lifecycle = Maintenance
-         when "LBIP Gx"
-           self.lifecycle = LBIPGx
-         when "LBIP gx"
-           self.lifecycle = LBIPgx
-         when "LBIP pgx"
-           self.lifecycle = LBIPpgx
-         when "Suite"
-           self.lifecycle = Suite
-    end
-  end
-
   def check
     self.check_milestones
   end

@@ -41,6 +41,7 @@
     $j(".checkbox_milestone_name").click(function() {
     	change_milestone_is_virtual($j(this).prop('checked'), $j(this).attr("id").split("_")[1]);
     });
+
   });
 
 // Functions
@@ -105,7 +106,14 @@ function check_after_launch() {
     	}
 	});
 }
+
 </script>
+
+<!-- Buttons -->
+	<% form_tag(:action=>'add_new_milestone') do %>
+		<%= hidden_field_tag('project_id', @project.id) %>
+		<%= submit_tag "New milestone", :id => "new_milestone_button" %>
+	<% end %>
 
 <!-- Lifecycle choice -->
 <% if @current_milestone_index == nil or @min_index_order == -1 or @current_milestone_index < @min_index_order %>
@@ -119,8 +127,6 @@ function check_after_launch() {
 	</div>
 <% end %>
 
-<!-- Buttons -->
-	<!-- New milestone (add with last order + 1) -->
 
 <!-- Milestones -->
 <ul id="sortable">
@@ -137,9 +143,15 @@ function check_after_launch() {
 			<%= text_field_tag('milestone_name', m.name, :id=>"textfield_"+m.id.to_s, :class=>'textfield_milestone_name') %>
 			<%= submit_tag "Save", :id => "button_"+m.id.to_s, :class=>'button_milestone_name' %>
 		</div>
-		
+
 		<!-- Milestone is virtual -->
 		Is virtual : <%= check_box_tag 'Virtual', 'Virtual', m.is_virtual, :id => "checkbox_"+m.id.to_s, :class=>'checkbox_milestone_name' %>
+
+		<!-- delete_milestone -->
+		<% form_tag(:action=>'delete_milestone') do %>
+			<%= hidden_field_tag('milestone_id', m.id) %>
+			<%= submit_tag "Delete" %>
+		<% end %>
 	</li>
 <% end %>
 </ul>

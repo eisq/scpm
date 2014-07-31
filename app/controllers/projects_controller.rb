@@ -198,7 +198,6 @@ class ProjectsController < ApplicationController
     project.update_attributes(params[:project])
 
     project.propagate_attributes
-    project.set_lifecycle_old_param()
 
     # QR QWR
     if (!project.is_qr_qwr)
@@ -715,7 +714,7 @@ class ProjectsController < ApplicationController
     project_id    = params[:id]
     @project      = Project.find(:first, :conditions => ["id = ?", project_id])
 
-    @lifecycles   = Lifecycle.find(:all).map{|l| [l.name, l.id]}
+    @lifecycles   = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map{|l| [l.name, l.id]}
     @milestones_name = MilestoneName.find(:all).map{|m| [m.title, m.id]}
 
     # Milestones name hash to link milestone <=> milestones name
@@ -819,6 +818,38 @@ class ProjectsController < ApplicationController
     render(:nothing=>true)
   end
 
+  def add_new_milestone
+    project_id    = params[:project_id]
+    project       = Project.find(:first, :conditions => ["id = ?", project_id])
+    if project
+      max_index_order = 0
+      project.sorted_milestones.each do |m|
+        if m.index_order > max_index_order
+          max_index_order = m.index_order
+        end
+      end
+
+      new_milestone = Milestone.new
+      new_milestone.project = project
+      new_milestone.index_order = max_index_order + 1
+      new_milestone.status = -1
+      new_milestone.is_virtual = false
+      new_milestone.save
+    end
+    redirect_to :action=>:milestones_edit, :id=>project_id
+  end
+
+  def delete_milestone
+    milestone_id  = params[:milestone_id]
+    milestone     = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+    project_id    = milestone.project_id
+
+    if milestone
+      milestone.destroy
+    end
+
+    redirect_to :action=>:milestones_edit, :id=>project_id
+  end
   # - 
 
 private
