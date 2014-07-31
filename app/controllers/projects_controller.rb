@@ -707,6 +707,10 @@ class ProjectsController < ApplicationController
         @project = Project.find(params[:id])
   end
 
+
+  # -
+  # Milestones structure management
+  # -
   def milestones_edit
     project_id    = params[:id]
     @project      = Project.find(:first, :conditions => ["id = ?", project_id])
@@ -735,8 +739,6 @@ class ProjectsController < ApplicationController
         end
       end
     end
-
-
   end
 
   def lifecycle_change
@@ -758,6 +760,52 @@ class ProjectsController < ApplicationController
 
     redirect_to :action=>:milestones_edit, :id=>project_id
   end
+
+  # @param milestones = Sorted array (on index order) of milestones id
+  def milestones_order_change
+    milestones_order = params[:milestones]
+    if milestones_order
+      index_order = 1
+      milestones_order.each do |m|
+        milestone_object = Milestone.find(:first, :conditions => ["id = ?", m.to_s])
+        if milestone_object
+          milestone_object.index_order = index_order
+          milestone_object.save
+        end
+        index_order += 1
+      end
+    end
+    render(:nothing=>true)
+  end
+
+  def milestones_name_change
+      milestone_id        = params[:milestone_id]
+      milestone_name_id   = params[:milestone_name_id]
+
+      milestone       = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+      milestone_name  = MilestoneName.find(:first, :conditions => ["id = ?", milestone_name_id])
+
+      if milestone and milestone_name
+        milestone.name = milestone_name.title
+        milestone.save
+      end
+
+      render(:nothing=>true)
+  end
+
+  def milestone_virtual_name_change
+      milestone_id        = params[:milestone_id]
+      milestone_name   = params[:milestone_name]
+      milestone       = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+
+      if milestone and milestone_name
+        milestone.name = milestone_name
+        milestone.save
+      end
+
+      render(:nothing=>true)
+  end
+  # - 
 
 private
 

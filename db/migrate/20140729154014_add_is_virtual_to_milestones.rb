@@ -1,6 +1,6 @@
 class AddIsVirtualToMilestones < ActiveRecord::Migration
   def self.up
-    add_column :milestones, :is_virtual, :boolean, :default => true
+    add_column :milestones, :is_virtual, :boolean, :default => false
   end
 
   def self.down
