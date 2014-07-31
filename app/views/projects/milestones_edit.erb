@@ -108,6 +108,10 @@ function check_after_launch() {
 }
 
 </script>
+<!-- Warning -->
+<% if @warning != nil and @warning != "" %>
+	<%= @warning %>
+<% end %>
 
 <!-- Buttons -->
 	<% form_tag(:action=>'add_new_milestone') do %>
@@ -150,7 +154,7 @@ function check_after_launch() {
 		<!-- delete_milestone -->
 		<% form_tag(:action=>'delete_milestone') do %>
 			<%= hidden_field_tag('milestone_id', m.id) %>
-			<%= submit_tag "Delete" %>
+			<%= submit_tag "Delete", :confirm =>"Are you sure ?" %>
 		<% end %>
 	</li>
 <% end %>

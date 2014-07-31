@@ -2,7 +2,6 @@
   <div class="milestone_name <%=milestone.timealert%>">
     <%= milestone.name %>
     <%= link_to(image_tag('edit.gif'), {:controller=>'milestones', :action=>'edit', :id=>milestone.id}) %>
-    <%= link_to_remote(image_tag('delete.gif'), :url=>{:controller=>'milestones', :action=>'destroy', :id=>milestone.id}, :confirm=>"Sure ?", :success=>"$('m_#{milestone.id}').hide();") %>
 	<% milestone_name_id = MilestoneName.first(:conditions => ["title= ?", milestone.name]) %>
 
 	<% if ((milestone_name_id!= nil) and (milestone.is_eligible_for_spider?) and (milestone.name[0..1]!='QG')) %>

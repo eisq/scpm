@@ -42,7 +42,6 @@ function add(id, nb_months, has_requests, has_rights) {
       <div id="tabContent1" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="1"? "block" : "none"%>;">
           <div>
             <div style="float:left;">
-              <%= link_to('Add milestone', {:controller=>'milestones', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %>
               <%= link_to('Export All Spiders', {:controller=>'spiders', :action=>'project_spider_export', :project_id=>@project.id}, {:class=>'btnlnk'}) %>
             </div>
             <% if @project.is_qr_qwr %>

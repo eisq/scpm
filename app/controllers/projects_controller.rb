@@ -713,6 +713,7 @@ class ProjectsController < ApplicationController
   def milestones_edit
     project_id    = params[:id]
     @project      = Project.find(:first, :conditions => ["id = ?", project_id])
+    @warning      = params[:warning]
 
     @lifecycles   = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map{|l| [l.name, l.id]}
     @milestones_name = MilestoneName.find(:all).map{|m| [m.title, m.id]}
@@ -756,7 +757,7 @@ class ProjectsController < ApplicationController
       # Generate new milestones
       project.check
     end
-
+    
     redirect_to :action=>:milestones_edit, :id=>project_id
   end
 
@@ -843,12 +844,36 @@ class ProjectsController < ApplicationController
     milestone_id  = params[:milestone_id]
     milestone     = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
     project_id    = milestone.project_id
+    has_data      = false
 
     if milestone
-      milestone.destroy
-    end
 
-    redirect_to :action=>:milestones_edit, :id=>project_id
+      if milestone.comments != nil and milestone.comments != ""
+        has_data = true
+      end
+      if milestone.milestone_date != nil and milestone.milestone_date != ""
+        has_data = true
+      end
+      if milestone.actual_milestone_date != nil and milestone.actual_milestone_date != ""
+        has_data = true
+      end
+      if milestone.spiders.size > 0
+        has_data = true
+      end
+      if milestone.checklist_items.size > 0
+        has_data = true
+      end
+
+      if has_data == false
+        milestone.destroy
+      end
+    end
+    
+    if has_data == false
+      redirect_to :action=>:milestones_edit, :id=>project_id
+    else
+      redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Milestone can't be deleted while it has data. Delete all milestone data to be able to delete the milestone."
+    end
   end
   # - 
 
