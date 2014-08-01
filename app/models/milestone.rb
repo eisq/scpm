@@ -65,7 +65,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def checklist_to_delete?
-    self.checklist_not_applicable==1
+    self.checklist_not_applicable==1 or self.is_virtual == true
   end
 
   # Deploy checklist items from checklist templates

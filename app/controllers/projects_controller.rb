@@ -724,7 +724,7 @@ class ProjectsController < ApplicationController
       @milestones_name_hash[m_name[0]] = m_name[1]
     end
 
-    # ** Index Order ** #
+    # Used to check if the lifecycle can be modified
     @min_index_order = -1
     # 1) Get the current milestone index order
     @current_milestone_index = @project.get_current_milestone_index
@@ -794,12 +794,16 @@ class ProjectsController < ApplicationController
   end
 
   def milestone_virtual_name_change
-      milestone_id    = params[:milestone_id]
-      milestone_name  = params[:milestone_name]
-      milestone       = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+      milestone_id        = params[:milestone_id]
+      milestone_name      = params[:milestone_name]
+      milestone_to_export = params[:to_export]
+      milestone           = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
 
       if milestone and milestone_name
         milestone.name = milestone_name
+        if milestone_to_export
+          milestone.to_export = milestone_to_export
+        end
         milestone.save
       end
 
@@ -835,6 +839,7 @@ class ProjectsController < ApplicationController
       new_milestone.index_order = max_index_order + 1
       new_milestone.status = -1
       new_milestone.is_virtual = false
+      new_milestone.comments = ""
       new_milestone.save
     end
     redirect_to :action=>:milestones_edit, :id=>project_id
@@ -858,9 +863,6 @@ class ProjectsController < ApplicationController
         has_data = true
       end
       if milestone.spiders.size > 0
-        has_data = true
-      end
-      if milestone.checklist_items.size > 0
         has_data = true
       end
 

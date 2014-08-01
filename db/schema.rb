@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140729162948) do
+ActiveRecord::Schema.define(:version => 20140801100033) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -372,6 +372,7 @@ ActiveRecord::Schema.define(:version => 20140729162948) do
     t.integer  "checklist_not_applicable", :default => 0
     t.integer  "index_order"
     t.boolean  "is_virtual",               :default => true
+    t.boolean  "to_export",                :default => false
   end
 
   add_index "milestones", ["project_id"], :name => "IDX_MILESTONES"

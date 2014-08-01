@@ -10,6 +10,11 @@
   #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
   #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
   #sortable li span { position: absolute; margin-left: -1.3em; }
+  form { 
+   display:inline;
+   margin:0;
+   padding:0;
+	}
  </style>
 
 
@@ -34,7 +39,8 @@
     $j(".button_milestone_name").click(function() {
     	var id = $j(this).attr("id").split("_")[1];
     	var textfield_value = $j("#textfield_" + id).val();
-    	change_milestone_virtual_name(textfield_value, $j(this).attr("id").split("_")[1])
+    	var export_value = $j("#export_" + id).prop('checked');
+    	change_milestone_virtual_name(textfield_value, export_value, $j(this).attr("id").split("_")[1])
     });
 
     // Milestone is virtual
@@ -68,12 +74,13 @@ function change_milestone_name(param_milestone_name_id, param_milestone_id) {
 	.done(function( msg ) {})
 }
 
-function change_milestone_virtual_name(param_milestone_name, param_milestone_id) {
+function change_milestone_virtual_name(param_milestone_name, param_milestone_to_export, param_milestone_id) {
 	$j.ajax({
 		type: "POST",
 		url: "/projects/milestone_virtual_name_change",
- 		data: {milestone_name : param_milestone_name, milestone_id : param_milestone_id}
+ 		data: {milestone_name : param_milestone_name, to_export : param_milestone_to_export, milestone_id : param_milestone_id}
 	})
+	.done(function( msg ) { alert("Saved");})
 }
 
 function change_milestone_is_virtual(param_milestone_is_virtual, param_milestone_id) {
@@ -112,12 +119,13 @@ function check_after_launch() {
 <% if @warning != nil and @warning != "" %>
 	<%= @warning %>
 <% end %>
+<br />
 
 <!-- Buttons -->
-	<% form_tag(:action=>'add_new_milestone') do %>
-		<%= hidden_field_tag('project_id', @project.id) %>
-		<%= submit_tag "New milestone", :id => "new_milestone_button" %>
-	<% end %>
+<% form_tag(:action=>'add_new_milestone') do %>
+	<%= hidden_field_tag('project_id', @project.id) %>
+	<%= submit_tag "New milestone", :id => "new_milestone_button" %>
+<% end %>
 
 <!-- Lifecycle choice -->
 <% if @current_milestone_index == nil or @min_index_order == -1 or @current_milestone_index < @min_index_order %>
@@ -135,27 +143,33 @@ function check_after_launch() {
 <!-- Milestones -->
 <ul id="sortable">
 <% @project.sorted_milestones.each do |m| %>
-	<li id="li_<%= m.id.to_s %>" class="milestone-element ui-state-default" style="background-color:green;margin-bottom:5px;padding:5px;height:50px;">
-		<%= m.id.to_s %>
+	<li id="li_<%= m.id.to_s %>" class="milestone-element ui-state-default" style="background-color:green;margin-bottom:5px;padding:5px;height:50px;width:1000px;">
+
+		<!-- delete_milestone -->
+		<div id="delete_<%= m.id.to_s %>" style="display:inline;">
+			<%= m.id.to_s %>
+			<% form_tag(:action=>'delete_milestone') do %>
+				<%= hidden_field_tag('milestone_id', m.id) %>
+				<%= submit_tag "Delete", :confirm =>"Are you sure ?" %>
+			<% end %>
+		</div>
+
+		<!-- Milestone is virtual -->
+		<div id="is_virtual_<%= m.id.to_s %>" style="display:inline;">
+			Is virtual : <%= check_box_tag 'Virtual', 'Virtual', m.is_virtual, :id => "checkbox_"+m.id.to_s, :class=>'checkbox_milestone_name' %>
+		</div>
 
 		<!-- Milestone Name -->
 		<div id="is_virtual_false_<%= m.id.to_s %>" style="display:inline;">
 			<%= select_tag ("milestone_id",options_for_select(@milestones_name,@milestones_name_hash[m.name]), :class => 'select_milestone_name', :id => "select_"+m.id.to_s )  %>
 		</div>
+
+		<!-- Milestone Name Is virtual -->
 		<div id="is_virtual_true_<%= m.id.to_s %>" style="display:inline;">
-			<!-- Milestone textfield -->
 			<%= text_field_tag('milestone_name', m.name, :id=>"textfield_"+m.id.to_s, :class=>'textfield_milestone_name') %>
+			Export: <%= check_box_tag 'Export', 'Export', m.to_export, :id => "export_"+m.id.to_s, :class=>'export_virtual_milestone' %>
 			<%= submit_tag "Save", :id => "button_"+m.id.to_s, :class=>'button_milestone_name' %>
 		</div>
-
-		<!-- Milestone is virtual -->
-		Is virtual : <%= check_box_tag 'Virtual', 'Virtual', m.is_virtual, :id => "checkbox_"+m.id.to_s, :class=>'checkbox_milestone_name' %>
-
-		<!-- delete_milestone -->
-		<% form_tag(:action=>'delete_milestone') do %>
-			<%= hidden_field_tag('milestone_id', m.id) %>
-			<%= submit_tag "Delete", :confirm =>"Are you sure ?" %>
-		<% end %>
 	</li>
 <% end %>
 </ul>
