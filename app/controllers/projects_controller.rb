@@ -771,7 +771,7 @@ class ProjectsController < ApplicationController
       project.lifecycle_object = lifecycle
       project.save
       # Delete previous milestone
-      project.milestones.each(&:destroy)
+      Milestone.destroy_all("project_id = #{project_id}")
       # Generate new milestones
       project.check
     end
