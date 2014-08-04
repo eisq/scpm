@@ -370,7 +370,16 @@ class ProjectsController < ApplicationController
     if not project
       project = Project.create(:name=>project_name)
       project.workstream = request.workstream
-      project.lifecycle_object = Lifecycle.first
+      lifecycle_name = request.lifecycle_name_for_request_type()
+      lifecycle = nil
+      if lifecycle_name
+        lifecycle = Lifecycle.find(:first, :conditions => ["name LIKE ?", "%#{lifecycle_name}%"])
+      end
+      if lifecycle
+        project.lifecycle_object = lifecycle
+      else
+        project.lifecycle_object = Lifecycle.first
+      end
       project.save
     end
 
@@ -380,7 +389,16 @@ class ProjectsController < ApplicationController
       wp.workstream = request.workstream
       wp.brn        = brn
       wp.project_id = project.id
-      wp.lifecycle_object = Lifecycle.first
+      lifecycle_name = request.lifecycle_name_for_request_type()
+      lifecycle = nil
+      if lifecycle_name
+        lifecycle = Lifecycle.find(:first, :conditions => ["name LIKE ?", "%#{lifecycle_name}%"])
+      end
+      if lifecycle
+        wp.lifecycle_object = lifecycle
+      else
+        wp.lifecycle_object = Lifecycle.first
+      end      
       wp.save
     end
 

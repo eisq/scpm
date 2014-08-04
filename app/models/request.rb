@@ -771,6 +771,16 @@ class Request < ActiveRecord::Base
     'WP7.2.6 - Expertise Activities for Project: Configuration Management' => ['M3', 'G2', 'pg2', 'g2']
     }
 
+  # Used to the project creation from requests 
+  REQUEST_TYPE_TO_LIFECYCLES = {
+    'Yes' => 'LBIP+',
+    'Suite' => 'Suite'
+  }
+
+  def lifecycle_name_for_request_type
+    return REQUEST_TYPE_TO_LIFECYCLES[self.request_type.to_s]
+  end
+
   def wp_index(wp, cv)
     rv = Wp_index[wp+(cv=="Yes" ? "CV":"")]
     raise "no workpackage #{wp}" if not rv
