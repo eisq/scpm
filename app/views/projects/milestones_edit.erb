@@ -6,25 +6,13 @@
 <script src="/javascripts/jquery-ui-1.10.4.min.js"></script>
 <link rel="stylesheet" href="/stylesheets/jquery-ui-1.10.4.css" />
 
-<style>
-  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
-  #sortable li span { position: absolute; margin-left: -1.3em; }
-  form { 
-   display:inline;
-   margin:0;
-   padding:0;
-	}
- </style>
-
-
 <script type="text/javascript">
   $j( document ).ready(function() {
 
   	check_after_launch();
 
   	// Sortable
-    $j( "#sortable" ).sortable(({
+    $j( "#milestones_edit_sortable" ).sortable(({
   		update: function( event, ui ) {
   			check_milestones_order();
   		}
@@ -52,8 +40,10 @@
 
 // Functions
 function check_milestones_order() {
+	$j(".milestone_edit_loading").show();
+
 	var order_array = new Array();
-	$j(".milestone-element").each(function(i, obj) {
+	$j(".milestone_edit_list_element").each(function(i, obj) {
     	order_array.push($j(this).attr("id").split("_")[1]);
 	});
 
@@ -62,46 +52,96 @@ function check_milestones_order() {
 		url: "/projects/milestones_order_change",
  		data: {milestones : order_array}
 	})
-	.done(function( msg ) {	})
+	.done(function( msg ) {
+		$j(".milestone_edit_loading").hide();
+	})
+	.fail(function() 
+	{ 
+		$j(".milestone_edit_loading").hide();
+	})
 }
 
 function change_milestone_name(param_milestone_name_id, param_milestone_id) {
+	$j("#milestone_edit_loading_"+param_milestone_id).show();
 	$j.ajax({
 		type: "POST",
 		url: "/projects/milestones_name_change",
  		data: {milestone_name_id : param_milestone_name_id, milestone_id : param_milestone_id}
 	})
-	.done(function( msg ) {})
+	.done(function( msg ) {
+		$j("#milestone_edit_loading_"+param_milestone_id).hide();
+	})
+	.fail(function() 
+	{ 
+		$j("#milestone_edit_loading_"+param_milestone_id).hide();
+	})
 }
 
 function change_milestone_virtual_name(param_milestone_name, param_milestone_to_export, param_milestone_id) {
+	$j("#milestone_edit_loading_"+param_milestone_id).show();
 	$j.ajax({
 		type: "POST",
 		url: "/projects/milestone_virtual_name_change",
  		data: {milestone_name : param_milestone_name, to_export : param_milestone_to_export, milestone_id : param_milestone_id}
 	})
-	.done(function( msg ) { alert("Saved");})
-}
-
-function change_milestone_is_virtual(param_milestone_is_virtual, param_milestone_id) {
-	console.log(param_milestone_is_virtual);
-	if (param_milestone_is_virtual) {
-		$j("#is_virtual_false_"+param_milestone_id).hide();
-		$j("#is_virtual_true_"+param_milestone_id).show();
-	} else {
-		$j("#is_virtual_false_"+param_milestone_id).show();
-		$j("#is_virtual_true_"+param_milestone_id).hide();
-	}
-
-	$j.ajax({
-		type: "POST",
-		url: "/projects/milestone_is_virtual_change",
- 		data: {is_virtual : param_milestone_is_virtual, milestone_id : param_milestone_id}
+	.done(function( msg ) { 
+		$j("#milestone_edit_loading_"+param_milestone_id).hide();
+	})
+	.fail(function() 
+	{ 
+		$j("#milestone_edit_loading_"+param_milestone_id).hide();
 	})
 }
 
+function change_milestone_is_virtual(param_milestone_is_virtual, param_milestone_id) {
+	$j("#milestone_edit_loading_"+param_milestone_id).show();
+	// Check number of spiders
+	$j.ajax({
+		type: "POST",
+		url: "/projects/get_spiders_count_for_milestone",
+ 		data: {milestone_id : param_milestone_id}
+	})
+	.done(function( msg ) { 
+		// If no spiders
+		if(parseInt(msg) == 0) {
+			// Show the correct div
+			if (param_milestone_is_virtual) {
+				$j("#is_virtual_false_"+param_milestone_id).hide();
+				$j("#is_virtual_true_"+param_milestone_id).show();
+			} else {
+				$j("#is_virtual_false_"+param_milestone_id).show();
+				$j("#is_virtual_true_"+param_milestone_id).hide();
+			}
+
+			// Update the data
+			$j.ajax({
+				type: "POST",
+				url: "/projects/milestone_is_virtual_change",
+		 		data: {is_virtual : param_milestone_is_virtual, milestone_id : param_milestone_id}
+			})
+			.done(function( msg ) { 
+				$j("#milestone_edit_loading_"+param_milestone_id).hide();
+			})
+			.fail(function() 
+			{ 
+				$j("#milestone_edit_loading_"+param_milestone_id).hide();
+			})
+		// If spiders
+		} else {		
+			$j("#milestone_edit_loading_"+param_milestone_id).hide();	
+			$j("#checkbox_"+param_milestone_id).prop("checked", false);
+			alert("You can't set this milestone to virtual because it has Spiders.");
+		}
+	})
+	.fail(function() 
+	{ 
+		$j("#milestone_edit_loading_"+param_milestone_id).hide();
+		alert("Error");
+	});
+}
+
 function check_after_launch() {
-	$j(".milestone-element").each(function(i, obj) {
+	$j(".milestone_edit_list_element").each(function(i, obj) {
     	var id = $j(this).attr("id").split("_")[1];
     	var checkbox_status = $j("#checkbox_"+id).prop('checked');
     	if (checkbox_status == true) {
@@ -113,61 +153,70 @@ function check_after_launch() {
     	}
 	});
 }
-
 </script>
+
+
+
+<h1>Edit milestones structure of the project</h1>
 <!-- Warning -->
 <% if @warning != nil and @warning != "" %>
 	<%= @warning %>
 <% end %>
 <br />
 
-<!-- Buttons -->
-<% form_tag(:action=>'add_new_milestone') do %>
-	<%= hidden_field_tag('project_id', @project.id) %>
-	<%= submit_tag "New milestone", :id => "new_milestone_button" %>
-<% end %>
-
 <!-- Lifecycle choice -->
-<% if @current_milestone_index == nil or @min_index_order == -1 or @current_milestone_index < @min_index_order %>
-	<div id="lifecycle_choice">
-	Lifecycle : 
-	<% form_tag(:action=>'lifecycle_change') do %>
-	  <%= select_tag ("lifecycle_id",options_for_select(@lifecycles,@project.lifecycle))  %>
-	  <%= hidden_field_tag('project_id', @project.id) %>
-	  <%= submit_tag('Select') %>
+<div id="milestones_edit_menu_bar">
+	<% if @current_milestone_index == nil or @min_index_order == -1 or @current_milestone_index < @min_index_order %>
+		<div id="milestones_edit_lifecycle_choice" class="display_inline" >
+			Lifecycle : 
+			<% form_tag({:action=>'lifecycle_change'}, {:class => "milestone_edit_form"}) do %>
+			  <%= select_tag ("lifecycle_id",options_for_select(@lifecycles,@project.lifecycle))  %>
+			  <%= hidden_field_tag('project_id', @project.id) %>
+			  <%= submit_tag('Select') %>
+			<% end %>
+		</div>
 	<% end %>
-	</div>
-<% end %>
 
+	<!-- Buttons -->
+	<div id="milestones_edit_new_" class="display_inline float_right" >
+		<% form_tag({:action=>'add_new_milestone'}, {:class => "milestone_edit_form"}) do %>
+			<%= hidden_field_tag('project_id', @project.id) %>
+			<%= submit_tag "New milestone", :id => "new_milestone_button" %>
+		<% end %>
+	</div>
+</div>
+<br />
 
 <!-- Milestones -->
-<ul id="sortable">
+<ul id="milestones_edit_sortable">
 <% @project.sorted_milestones.each do |m| %>
-	<li id="li_<%= m.id.to_s %>" class="milestone-element ui-state-default" style="background-color:green;margin-bottom:5px;padding:5px;height:50px;width:1000px;">
+	<li id="li_<%= m.id.to_s %>" class="milestone_edit_list_element ui-state-default">
 
 		<!-- delete_milestone -->
-		<div id="delete_<%= m.id.to_s %>" style="display:inline;">
-			<%= m.id.to_s %>
-			<% form_tag(:action=>'delete_milestone') do %>
+		<div id="delete_<%= m.id.to_s %>" class="display_inline">
+			<% form_tag({:action=>'delete_milestone'}, {:class => "milestone_edit_form"}) do %>
 				<%= hidden_field_tag('milestone_id', m.id) %>
 				<%= submit_tag "Delete", :confirm =>"Are you sure ?" %>
 			<% end %>
 		</div>
 
 		<!-- Milestone is virtual -->
-		<div id="is_virtual_<%= m.id.to_s %>" style="display:inline;">
+		<div id="is_virtual_<%= m.id.to_s %>" class="display_inline milestone_edit_element_is_virtual">
 			Is virtual : <%= check_box_tag 'Virtual', 'Virtual', m.is_virtual, :id => "checkbox_"+m.id.to_s, :class=>'checkbox_milestone_name' %>
 		</div>
 
+		<!-- Milestone Loading image -->
+		<%= image_tag "ajax-loader.gif", :alt => "Loading", :class => "milestone_edit_loading", :id => "milestone_edit_loading_"+m.id.to_s %>
+
 		<!-- Milestone Name -->
-		<div id="is_virtual_false_<%= m.id.to_s %>" style="display:inline;">
-			<%= select_tag ("milestone_id",options_for_select(@milestones_name,@milestones_name_hash[m.name]), :class => 'select_milestone_name', :id => "select_"+m.id.to_s )  %>
+		<div id="is_virtual_false_<%= m.id.to_s %>" class="display_inline float_right">
+			Milestone Name: <%= select_tag ("milestone_id",options_for_select(@milestones_name,@milestones_name_hash[m.name]), :class => 'select_milestone_name', :id => "select_"+m.id.to_s )  %>
 		</div>
 
 		<!-- Milestone Name Is virtual -->
-		<div id="is_virtual_true_<%= m.id.to_s %>" style="display:inline;">
-			<%= text_field_tag('milestone_name', m.name, :id=>"textfield_"+m.id.to_s, :class=>'textfield_milestone_name') %>
-			Export: <%= check_box_tag 'Export', 'Export', m.to_export, :id => "export_"+m.id.to_s, :class=>'export_virtual_milestone' %>
+		<div id="is_virtual_true_<%= m.id.to_s %>" class="display_inline float_right">
+			Name: <%= text_field_tag('milestone_name', m.name, :id=>"textfield_"+m.id.to_s, :class=>'textfield_milestone_name') %>
+			In summary: <%= check_box_tag 'Export', 'Export', m.to_export, :id => "export_"+m.id.to_s, :class=>'export_virtual_milestone' %>
 			<%= submit_tag "Save", :id => "button_"+m.id.to_s, :class=>'button_milestone_name' %>
 		</div>
 	</li>

@@ -895,6 +895,17 @@ class ProjectsController < ApplicationController
       redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Milestone can't be deleted while it has data. Delete all milestone data to be able to delete the milestone."
     end
   end
+
+  def get_spiders_count_for_milestone
+    milestone_id  = params[:milestone_id]
+    milestone     = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+
+    if milestone
+      render(:text=>milestone.spiders.size.to_s)
+    else
+      render(:text=>"1")
+    end
+  end
   # - 
 
 private
