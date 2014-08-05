@@ -124,7 +124,7 @@ h3.presale_title {
   float:right;
   width:69%;
   height:100%;
-  padding-left: 5px;
+  padding-left: 10px;
   border-left: 1px solid grey;
 }
 
@@ -205,3 +205,17 @@ h3.presale_title {
   width : 85%;
 }
 
+.presale_list_title {
+  font-size: 16px;
+  color: grey;
+  font-weight: bold;
+}
+
+.presale_list_value {
+  font-size: 16px;
+  color: black;
+}
+
+#presale_project_info {
+  padding: 0 0 0 10px;
+}
