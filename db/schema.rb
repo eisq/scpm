@@ -356,6 +356,7 @@ ActiveRecord::Schema.define(:version => 20140805152100) do
     t.integer  "milestone_name_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "index_order"
   end
 
   create_table "lifecycle_questions", :force => true do |t|
@@ -371,6 +372,7 @@ ActiveRecord::Schema.define(:version => 20140805152100) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_active",  :default => true
   end
 
   create_table "line_tags", :force => true do |t|
@@ -409,6 +411,9 @@ ActiveRecord::Schema.define(:version => 20140805152100) do
     t.datetime "updated_at"
     t.integer  "done",                     :default => 0
     t.integer  "checklist_not_applicable", :default => 0
+    t.integer  "index_order"
+    t.boolean  "is_virtual",               :default => true
+    t.boolean  "to_export",                :default => false
   end
 
   add_index "milestones", ["project_id"], :name => "IDX_MILESTONES"

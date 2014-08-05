@@ -1,0 +1,12 @@
+<div>
+	<%= link_to('Back to projects', {:action=>'index'},{:class=>"btnlnk"}) %>
+	<% class_link_1 = "btnlnk" %>
+	<% class_link_1 += " special" if @mode.to_i==1 %>
+	<% class_link_2 = "btnlnk" %>
+	<% class_link_2 += " special" if @mode.to_i==2 %>
+	<%= link_to('Checklists on milestones done',       {:action=>'show_checklists', :projects=>@projects, :mode=>1},{:class=>class_link_1}) %>
+	<%= link_to('Checklists on milestones not done yet',       {:action=>'show_checklists', :projects=>@projects, :mode=>2},{:class=>class_link_2}) %>
+</div>
+<br />
+
+<%= render(:partial=>"checklists/milestone", :collection=>@checklist_milestone, :as=> :m) %>
