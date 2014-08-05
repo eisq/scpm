@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140715171620) do
+ActiveRecord::Schema.define(:version => 20140805152100) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -174,6 +174,47 @@ ActiveRecord::Schema.define(:version => 20140715171620) do
     t.string   "ci_objectives_2013"
     t.string   "sqli_validation_responsible"
     t.text     "issue_history"
+    t.text     "type"
+    t.text     "reproducibility"
+    t.text     "detection_version"
+    t.text     "version_taken_into_account"
+    t.text     "status_precision"
+    t.text     "id_duplicate"
+    t.text     "steps_to_reproduce"
+    t.date     "reopening_date"
+    t.text     "detection_phase"
+    t.text     "injection_phase"
+    t.text     "impact"
+    t.text     "impact_time"
+    t.text     "typology_of_change"
+    t.text     "deliverables_updated"
+    t.text     "iteration"
+    t.text     "lot"
+    t.text     "entity"
+    t.text     "team"
+    t.text     "domain"
+    t.integer  "backlog_request_id"
+    t.text     "ci_objectives_2010_2011"
+    t.text     "ci_objectives_2012"
+    t.date     "specification_date"
+    t.date     "specification_date_objective"
+    t.text     "ci_objectives_2014"
+    t.integer  "linked_req"
+    t.text     "quick_fix"
+    t.text     "level_of_impact"
+    t.text     "impacted_mnt_process"
+    t.text     "path_backlog"
+    t.text     "path_sfs_airbus"
+    t.text     "item_type"
+    t.date     "verification_date_objective"
+    t.date     "verification_date"
+    t.text     "request_origin"
+    t.text     "report"
+    t.text     "previous_report"
+    t.text     "svn_delivery_folder"
+    t.integer  "sqli_validation_done",             :default => 0
+    t.integer  "airbus_validation_done",           :default => 0
+    t.integer  "deployment_done",                  :default => 0
   end
 
   create_table "companies", :force => true do |t|

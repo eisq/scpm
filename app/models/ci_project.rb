@@ -49,14 +49,36 @@ class CiProject < ActiveRecord::Base
 		return self.sqli_validation_date_review - self.sqli_validation_date_objective
 	end
 
+	def sqli_delay_new
+		return nil if !self.sqli_validation_date_objective
+		return self.sqli_validation_date - self.sqli_validation_date_objective
+	end
+
 	def airbus_delay
 		return nil if !self.airbus_validation_date_objective
 		return self.airbus_validation_date_review - self.airbus_validation_date_objective
 	end
 
+	def airbus_delay_new
+		return nil if !self.airbus_validation_date_objective
+		return self.airbus_validation_date - self.airbus_validation_date_objective
+	end
+
 	def deployment_delay
 		return nil if !self.deployment_date_objective
 		return self.deployment_date_review - self.deployment_date_objective
+	end
+
+	def deployment_delay_new
+		return nil if !self.deployment_date_objective
+		return self.deployment_date - self.deployment_date_objective
+	end
+
+	def interprate_delay(delay)
+		return delay.to_s if delay < 30
+		return "1 month+ delay" if (delay >= 30 and delay < 60)
+		return "2 month+ delay" if (delay >= 60 and delay < 90)
+		return "3 month+ delay" if delay >= 90
 	end
 
 	def short_stage
