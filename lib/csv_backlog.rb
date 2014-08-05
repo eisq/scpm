@@ -1,6 +1,6 @@
 require 'csv'
 
-class CsvCi
+class CsvBacklog
 
   attr_accessor  :internal_id, #Interne
     :external_id, #ID
@@ -85,7 +85,7 @@ class CsvCi
   end
 
   def method_missing(m, *args, &block)
-    #raise "CsvCi does not have a '#{m}' attribute/method"
+    #raise "CsvBacklog does not have a '#{m}' attribute/method"
   end
 
   def to_hash
@@ -97,7 +97,7 @@ class CsvCi
   end
 end
 
-class CsvCiReport
+class CsvBacklogReport
 
   attr_reader :projects
 
@@ -139,7 +139,7 @@ private
   end
 
   def parse_row(row)
-    r = CsvCi.new
+    r = CsvBacklog.new
     @columns.each { |attr_name, index|
       #puts "#{attr_name} = '#{row[index]}'"
       begin

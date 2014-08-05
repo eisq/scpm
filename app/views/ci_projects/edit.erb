@@ -1,6 +1,5 @@
-<h2>Edit</h2>
+<h2>Edit CI</h2>
 
-<%= error_messages_for :project %>
 <% form_for @project, :url=>{:action=>'update', :id=>@project.id} do |f| -%>
   <%= render(:partial => f) %>
   <p><label>&nbsp;</label>

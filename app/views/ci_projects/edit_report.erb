@@ -1,0 +1,7 @@
+<h2>Edit CI Reporting</h2>
+
+<% form_for @project, :url=>{:action=>'update_report', :id=>@project.id} do |f| -%>
+  <%= render(:partial => "edit_report") %>
+  <p><label>&nbsp;</label>
+  <%= submit_tag 'OK' %></p>
+<% end -%>

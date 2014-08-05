@@ -9,6 +9,14 @@
 	    <%= submit_tag "Upload" %>
 	  </p>
 	</form>
+	<h2>Backlog import</h2>
+	<%= form_tag({:action => 'do_upload_backlog'}, :multipart => true) %>
+	  <p>
+	    <label for="upload_file">Backlog CSV</label>
+	    <%= file_field 'upload', 'datafile' %>
+	    <%= submit_tag "Upload" %>
+	  </p>
+	</form>
 </div>
 
 <h2>Projects list</h2>
