@@ -1,15 +1,35 @@
 <%= render(:file=>"presales/menu", :locals=>{:dashboard => 1}) %>
 <div id="presale_content">
 <div id="presale_content_left">
+	<h3 class="presale_title">
+		Project informations
+	</h3>
+	<div>
+		<ul>
+			<li>Workstream : <%= @presale.project.workstream %></li>
+			<li>Next Milestone :
+				<% if @presale.next_milestone %>
+					<%= @presale.next_milestone %>
+				<% else %>
+					N/A
+				<% end %>
+				
+				<% if @presale.next_milestone_date %>
+					(<%= @presale.next_milestone_date %>)
+				<% end %>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div id="presale_content_right">
 	<% for presalePresaleType in @presale.presale_presale_types %>
-		<h3 class="presale_title"><%= presalePresaleType.getName %></h3>
+		<h3 class="presale_title"><%= presalePresaleType.getName %> last comment</h3>
 		<% lastComment = presalePresaleType.getLastComment %>
 		<% if lastComment != nil %>
 			<p><span class="bold">Last update time:</span> <%= time_ago_in_words(lastComment.updated_at.strftime("%Y-%m-%d %H:%M")) %></p>
 				<%= render(:partial=>'presale_comment', :object=>lastComment, :locals=>{:edit_mode => false}) %>
 		<% end %>
 	<% end %>
-</div>
-<div id="presale_content_right">
 </div>
 </div>
