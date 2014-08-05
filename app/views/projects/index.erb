@@ -8,6 +8,15 @@
 <%= link_to('Summary',      {:action=>'summary'},{:class=>"btnlnk"}) %>
 <%= link_to('WS Reporting', {:action=>'ws_reporting'},{:class=>"btnlnk"}) %>
 <%= link_to('Request changes', {:action=>'week_changes'}, {:class=>'btnlnk'}) %>
+<% 
+  checklists_size_str = ""
+  if(@checklist_milestone_size.to_i > 0)
+    checklists_size_str = "[<strong>#{@checklist_milestone_size.to_s}</strong>]"
+  else
+    checklists_size_str = "[#{@checklist_milestone_size.to_s}]"
+  end
+%>
+<%= link_to('Checklists '+checklists_size_str, {:action=>'show_checklists', :projects=>@wps, :mode=>1}, {:class=>'btnlnk'}) %>
 
 <div class="stats">
   Last RMT update: <%= @last_update %><br/>
@@ -81,7 +90,6 @@
 			amendments_size_str = ""
 			risks_size_str = ""
 			inconsistencies_size_str = ""
-			checklists_size_str = ""
 			if(@wps.size > 0)
 				wps_size_str = "[<strong>#{@wps.size}</strong>]"
 			else
@@ -112,11 +120,6 @@
 			else
 				inconsistencies_size_str = "[#{@inconsistencies.size}]"
 			end
-			if(@checklist_milestones.size > 0)
-				checklists_size_str = "[<strong>#{@checklist_milestones.size}</strong>]"
-			else
-				checklists_size_str = "[#{@checklist_milestones.size}]"
-			end
 	
 		  %>
 	      <%= tab_menu("project_index", [
@@ -126,8 +129,7 @@
 	        "Actions #{actions_size_str}",
 	        "Amendments #{amendments_size_str}",
 	        "Risks #{risks_size_str}",
-	        "Inconsistencies #{inconsistencies_size_str}",
-	        "Checklists #{checklists_size_str}"
+	        "Inconsistencies #{inconsistencies_size_str}"
 	        ]) %>  
   </ol>
 
@@ -200,21 +202,9 @@
           </table>
         </div>
     </div>
-
-    <div id="tabContent8" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="8"? "block" : "none"%>;">
-        <br />
-        <div>
-          <% if @checklist_milestones.size == 0 %>
-            All is OK !
-          <% else %>
-            These milestones are done, but the checklist is not filled:<br/><br/>
-          <% end %>
-          <ul>
-            <%= render(:partial=>"checklists/milestone", :collection=>@checklist_milestones, :as=> :m) %>
-          </ul>
-        </div>
-    </div>
+       
+    <% # render(:partial=>"checklists/milestone", :collection=>@checklist_milestones, :as=> :m) %>
   </div><!--End of tabscontent-->
 </div><!--End of tabs-->
 
-render time: <%= Time.now - @time %>
+<div>render time: <%= Time.now - @time %></div>
