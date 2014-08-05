@@ -64,7 +64,38 @@ class CiProjectsController < ApplicationController
     end
   end
 
+  def do_upload_backlog
+    post = params[:upload]
+    redirect_to '/ci_projects/index' and return if post.nil? or post['datafile'].nil?    
+    name =  post['datafile'].original_filename
+    directory = "public/data"
+    path = File.join(directory, name)
+    File.open(path, "wb") { |f| f.write(post['datafile'].read) }
+    report = CsvBacklogReport.new(path)
+    begin
+      report.parse
+      # transform the Report into a CiProject
+      report.projects.each { |p|
+        # get the id if it exist, else create it
+        if (p.stage != "BAM" and p.stage != "" and p.external_id != "")
+          ci = CiProject.find_by_external_id(p.external_id)
+          ci.update_attributes(p.to_hash) # and it updates only the attributes that have changed !
+          ci.save
+        end
+      }
+      redirect_to '/ci_projects/index'
+    rescue Exception => e
+      render(:text=>e)
+    end
+  end
+
   def edit
+    id = params[:id]
+    @project = CiProject.find(id)
+    @qr_list = Person.find(:all, :conditions=>["is_supervisor = 0 and has_left = 0"], :order=>"name")
+  end
+
+  def edit_report
     id = params[:id]
     @project = CiProject.find(id)
   end
@@ -72,6 +103,19 @@ class CiProjectsController < ApplicationController
   def update
     p = CiProject.find(params[:id])
     p.update_attributes(params[:project])
-    redirect_to "/ci_projects/index"
+    redirect_to "/ci_projects/show/"+p.id.to_s
+  end
+
+  def update_report
+    p = CiProject.find(params[:id])
+    #p.previous_report = p.report
+    #p.report = params[:report_new]
+    p.update_attributes(params[:project])
+    redirect_to "/ci_projects/show/"+p.id.to_s
+  end
+
+  def show
+    id = params['id']
+    @project = CiProject.find(id)
   end
 end

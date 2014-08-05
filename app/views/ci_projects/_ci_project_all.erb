@@ -1,0 +1,16 @@
+<h3>
+  <%= link_to('Open', {:action=>'show', :id=>p.id}, {:class=>'menu grey'}) %>
+  <% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%>
+  <%=link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
+  | <%= p.summary %>
+</h3>
+  <% if p.backlog_request_id != nil %>
+  	<p>Backlog request ID: <b><%= p.backlog_request_id.to_s %></b></p>
+  <% end %>
+  <% if p.sqli_validation_date != nil %>
+  	<p>SQLI validation date: <span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><b><%= p.sqli_validation_date.to_s %></b></span></p>
+  <% end %> 
+  <% if p.airbus_validation_date != nil %>
+  	<p>Airbus validation date: <span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><b><%= p.airbus_validation_date.to_s %></b></span></p>
+  <% end %>
+  <p>Deployment date: <span class="<%=CiProject.late_css(p.deployment_date)%>"><b><%= p.deployment_date %></b></span></p>

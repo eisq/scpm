@@ -1,0 +1,47 @@
+<% p = @project %>
+
+<h2>
+  <% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%>
+  <%=link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
+  | <%= p.summary %>
+</h2>
+
+<table>
+<tr>
+  <td>
+    <%= link_to('Edit CI', {:action=>'edit', :id=>p.id}, {:class=>'btnlnk'}) %>
+    <%= link_to('Add reporting', {:action=>'edit_report', :id=>p.id}, {:class=>'btnlnk'}) %>
+  </td>
+</tr>
+<tr>
+  <td>
+    <h3>
+      <u>Dates</u>
+    </h3>
+    <p><b>SQLI validation date objective:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date_objective)%>"><%= p.sqli_validation_date_objective.to_s %></span></p>
+    <p><b>SQLI validation date:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><%= p.sqli_validation_date.to_s %></span></p>
+    <p><b>Airbus validation date objective:</b> <span class="<%=CiProject.late_css(p.airbus_validation_date_objective)%>"><%= p.airbus_validation_date_objective.to_s %></span></p>
+    <p><b>Airbus validation date:</b> <span class="<%=CiProject.late_css(p.airbus_validation_date)%>"><%= p.airbus_validation_date.to_s %></span></p>
+    <p><b>Deployment date objective:</b> <span class="<%=CiProject.late_css(p.deployment_date_objective)%>"><%= p.deployment_date_objective.to_s %></span></p>
+    <p><b>Deployment date:</b> <span class="<%=CiProject.late_css(p.deployment_date)%>"><%= p.deployment_date.to_s %></span></p>
+  </td><td width=50>
+  </td><td valign=top>
+    <h3>
+      <u>Information</u>
+    </h3>
+    <p><b>Backlog request ID:</b> <%= p.backlog_request_id.to_s %></p>
+    <p><b>Assigned to:</b> <%= p.assigned_to %></p>
+  </td>
+</tr>
+</table>
+<table><tr>
+  <td valign=top>
+    <h3>
+      <u>CI Follow-up</u>
+    </h3>
+    <p><b>Reporting:</b></p>
+    <p><%= p.report %></p>
+    <p><b>Previous reporting:</b></p>
+    <p><%= p.previous_report %></p>
+  </td>
+</tr></table>
