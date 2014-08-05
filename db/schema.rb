@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140701160800) do
+ActiveRecord::Schema.define(:version => 20140715171620) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -482,7 +482,7 @@ ActiveRecord::Schema.define(:version => 20140701160800) do
     t.integer  "presale_id"
     t.integer  "presale_type_id"
     t.integer  "opportunity_number"
-    t.integer  "milestone_date"
+    t.date     "first_meeting_date"
     t.string   "status"
     t.string   "complexity"
     t.date     "buyside_launch_date"

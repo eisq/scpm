@@ -14,9 +14,6 @@ class PresalePresaleType < ActiveRecord::Base
 
     def getName()
       name = self.presale_type.title
-      if self.milestone_name
-        name = name +" - "+ self.milestone_name.title
-      end
       return name
     end
 end

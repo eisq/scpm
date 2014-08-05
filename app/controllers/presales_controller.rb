@@ -104,12 +104,12 @@ class PresalesController < ApplicationController
 		presale_presale_type_id = params[:presale_presale_type]
 		@presale_presale_type = PresalePresaleType.find(:first, :conditions => ["id = ?", presale_presale_type_id])
 		@presale = Presale.find(:first, :conditions => ["id = ?", @presale_presale_type.presale_id])
-		@milestone_names = MilestoneName.find(:all)
 		@lastComment = @presale_presale_type.getLastComment
-		@status = Array.new
-		for i in 0..10
-			@status << ["#{i*10} %"]
-		end
+		# @status = Array.new
+		# for i in 0..10
+		# 	@status << ["#{i*10} %"]
+		# end
+		@status = ["Identified", "Project team contacted", "Presentation scheduled", "Team to recontact", "Waiting feedback from team", "Buyside creation in progress", "Buyside launched", "Buyside on hold", "Buyside Accepted", "Cancelled"]
 		@complexity = ["Easy", "Medium", "Complex"]
 
 	end
