@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140801100033) do
+ActiveRecord::Schema.define(:version => 20140805152100) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -211,6 +211,10 @@ ActiveRecord::Schema.define(:version => 20140801100033) do
     t.text     "request_origin"
     t.text     "report"
     t.text     "previous_report"
+    t.text     "svn_delivery_folder"
+    t.integer  "sqli_validation_done",             :default => 0
+    t.integer  "airbus_validation_done",           :default => 0
+    t.integer  "deployment_done",                  :default => 0
   end
 
   create_table "companies", :force => true do |t|
