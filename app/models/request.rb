@@ -771,6 +771,9 @@ class Request < ActiveRecord::Base
     'WP7.2.6 - Expertise Activities for Project: Configuration Management' => ['M3', 'G2', 'pg2', 'g2']
     }
 
+  PHASE_MILESTONES_SPECIFIC = {
+    'WP1.6.6 - QWR QG HLR'      => ['QG HLR']
+  }
   # Used to the project creation from requests 
   REQUEST_TYPE_TO_LIFECYCLES = {
     'Yes' => 'LBIP+',
@@ -1009,6 +1012,8 @@ class Request < ActiveRecord::Base
   def milestone_names
     if self.milestone != 'N/A'
       PHASE_MILESTONES[self.milestone]
+    elsif self.specific != 'No'
+      PHASE_MILESTONES_SPECIFIC[self.specific]
     else
       PHASE_MILESTONES[self.work_package]
     end
