@@ -1,12 +1,24 @@
 <div>
 	<%= link_to('Back to projects', {:action=>'index'},{:class=>"btnlnk"}) %>
+	
 	<% class_link_1 = "btnlnk" %>
 	<% class_link_1 += " special" if @mode.to_i==1 %>
+	<% title_1 		= "" %>
+	<% title_1 		= " [<strong>"+@checklist_milestone.size.to_s+"</strong>]" if @mode.to_i==1 %>
+	
 	<% class_link_2 = "btnlnk" %>
 	<% class_link_2 += " special" if @mode.to_i==2 %>
-	<%= link_to('Checklists on milestones done',       {:action=>'show_checklists', :projects=>@projects, :mode=>1},{:class=>class_link_1}) %>
-	<%= link_to('Checklists on milestones not done yet',       {:action=>'show_checklists', :projects=>@projects, :mode=>2},{:class=>class_link_2}) %>
+	<% title_2 		= "" %>
+	<% title_2 		= " [<strong>"+@checklist_milestone.size.to_s+"</strong>]" if @mode.to_i==2 %>
+	
+	<%= link_to('Checklists on milestones done'+title_1,       {:action=>'show_checklists', :projects=>@projects, :mode=>1},{:class=>class_link_1}) %>
+	<%= link_to('Checklists on milestones not done yet'+title_2,       {:action=>'show_checklists', :projects=>@projects, :mode=>2},{:class=>class_link_2}) %>
 </div>
 <br />
 
+<% if @mode.to_i == 1 %>
+	<h1>These milestones are done, but the checklist is not filled:</h1>
+<% elsif @mode.to_i == 2 %>
+	<h1>These milestones are not done and the checklist is started:</h1>
+<% end %>
 <%= render(:partial=>"checklists/milestone", :collection=>@checklist_milestone, :as=> :m) %>
