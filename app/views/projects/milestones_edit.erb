@@ -157,6 +157,7 @@ function check_after_launch() {
 
 
 
+<%= link_to('Back to project', {:action=>'show', :id=>@project.id},{:class=>"btnlnk"}) %>
 <h1>Edit milestones structure of the project</h1>
 <!-- Warning -->
 <% if @warning != nil and @warning != "" %>
@@ -191,7 +192,8 @@ function check_after_launch() {
 <ul id="milestones_edit_sortable">
 <% @project.sorted_milestones.each do |m| %>
 	<li id="li_<%= m.id.to_s %>" class="milestone_edit_list_element ui-state-default">
-
+		<span style="margin-top:5px;margin-left:-20px;" class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+		
 		<!-- delete_milestone -->
 		<div id="delete_<%= m.id.to_s %>" class="display_inline">
 			<% form_tag({:action=>'delete_milestone'}, {:class => "milestone_edit_form"}) do %>

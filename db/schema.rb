@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140806100922) do
+ActiveRecord::Schema.define(:version => 20140807101026) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -394,6 +394,7 @@ ActiveRecord::Schema.define(:version => 20140806100922) do
   create_table "milestone_names", :force => true do |t|
     t.string  "title"
     t.boolean "count_in_spider_prev", :default => true
+    t.boolean "is_active",            :default => true
   end
 
   create_table "milestones", :force => true do |t|

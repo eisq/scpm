@@ -734,7 +734,7 @@ class ProjectsController < ApplicationController
     @warning      = params[:warning]
 
     @lifecycles   = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map{|l| [l.name, l.id]}
-    @milestones_name = MilestoneName.find(:all).map{|m| [m.title, m.id]}
+    @milestones_name = MilestoneName.get_active_sorted.map{|m| [m.title, m.id]}
 
     # Milestones name hash to link milestone <=> milestones name
     @milestones_name_hash = Hash.new
@@ -854,6 +854,7 @@ class ProjectsController < ApplicationController
 
       new_milestone = Milestone.new
       new_milestone.project = project
+      new_milestone.name = MilestoneName.find(:first).title
       new_milestone.index_order = max_index_order + 1
       new_milestone.status = -1
       new_milestone.is_virtual = false
