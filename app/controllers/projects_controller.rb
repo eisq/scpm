@@ -737,7 +737,8 @@ class ProjectsController < ApplicationController
     @milestones_name = MilestoneName.get_active_sorted.map{|m| [m.title, m.id]}
 
     # Milestones name hash to link milestone <=> milestones name
-    @milestones_name_hash = Hash.new
+    @milestones_limit_names = ""
+    @milestones_name_hash   = Hash.new
     @milestones_name.each do |m_name|
       @milestones_name_hash[m_name[0]] = m_name[1]
     end
@@ -753,6 +754,7 @@ class ProjectsController < ApplicationController
         if m.name == m_name
           if @min_index_order == -1 or @min_index_order > m.index_order
             @min_index_order = m.index_order
+            @milestones_limit_names << m_name
           end
         end
       end

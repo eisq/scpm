@@ -167,15 +167,18 @@ function check_after_launch() {
 
 <!-- Lifecycle choice -->
 <div id="milestones_edit_menu_bar">
+	<p>Current lifecycle : <%= @project.lifecycle_object.name %></p>
 	<% if @current_milestone_index == nil or @min_index_order == -1 or @current_milestone_index < @min_index_order %>
 		<div id="milestones_edit_lifecycle_choice" class="display_inline" >
-			Lifecycle : 
+			Switch to lifecycle : 
 			<% form_tag({:action=>'lifecycle_change'}, {:class => "milestone_edit_form"}) do %>
 			  <%= select_tag ("lifecycle_id",options_for_select(@lifecycles,@project.lifecycle))  %>
 			  <%= hidden_field_tag('project_id', @project.id) %>
-			  <%= submit_tag('Select') %>
+			  <%= submit_tag('Save',:confirm=>"Are you sure ?") %>
 			<% end %>
 		</div>
+	<% else %>
+		<div class="display_inline">The lifecycle can't be modified because the following milestones are already past : <%= @milestones_limit_names %></div>
 	<% end %>
 
 	<!-- Buttons -->
@@ -187,6 +190,8 @@ function check_after_launch() {
 	</div>
 </div>
 <br />
+<br />
+
 
 <!-- Milestones -->
 <ul id="milestones_edit_sortable">
@@ -216,7 +221,7 @@ function check_after_launch() {
 		</div>
 
 		<!-- Milestone Name Is virtual -->
-		<div id="is_virtual_true_<%= m.id.to_s %>" class="display_inline float_right">
+		<div id="is_virtual_true_<%= m.id.to_s %>" style="border: 2px solid grey; padding: 1px 10px 1px 10px;" class="display_inline float_right">
 			Name: <%= text_field_tag('milestone_name', m.name, :id=>"textfield_"+m.id.to_s, :class=>'textfield_milestone_name') %>
 			In summary: <%= check_box_tag 'Export', 'Export', m.to_export, :id => "export_"+m.id.to_s, :class=>'export_virtual_milestone' %>
 			<%= submit_tag "Save", :id => "button_"+m.id.to_s, :class=>'button_milestone_name' %>
