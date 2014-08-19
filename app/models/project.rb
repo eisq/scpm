@@ -434,7 +434,7 @@ class Project < ActiveRecord::Base
 
   def create_milestone(lifecycle_milestone)
     rv = self.requests_string(lifecycle_milestone.milestone_name.title)
-    milestones.create(:project_id=>self.id, :name=>lifecycle_milestone.milestone_name.title, :index_order=>lifecycle_milestone.index_order, :comments=>"", :status=>(rv[1] == 0 ? -1 : 0))
+    milestones.create(:project_id=>self.id, :name=>lifecycle_milestone.milestone_name.title, :index_order=>lifecycle_milestone.index_order, :comments=>"", :status=>(rv[1] == 0 ? -1 : 0), :is_virtual=>0)
   end
 
   def requests_string(m)

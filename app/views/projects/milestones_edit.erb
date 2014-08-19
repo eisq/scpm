@@ -168,7 +168,7 @@ function check_after_launch() {
 <!-- Lifecycle choice -->
 <div id="milestones_edit_menu_bar">
 	<p>Current lifecycle : <%= @project.lifecycle_object.name %></p>
-	<% if @current_milestone_index == nil or @min_index_order == -1 or @current_milestone_index < @min_index_order %>
+	<% if @lifecycle_is_editable %>
 		<div id="milestones_edit_lifecycle_choice" class="display_inline" >
 			Switch to lifecycle : 
 			<% form_tag({:action=>'lifecycle_change'}, {:class => "milestone_edit_form"}) do %>

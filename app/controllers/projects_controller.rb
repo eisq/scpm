@@ -743,22 +743,44 @@ class ProjectsController < ApplicationController
       @milestones_name_hash[m_name[0]] = m_name[1]
     end
 
-    # Used to check if the lifecycle can be modified
-    @min_index_order = -1
-    # 1) Get the current milestone index order
-    @current_milestone_index = @project.get_current_milestone_index
-    # 2) Get the index order of the following milestones APP_CONFIG['report_milestones_eligible_for_note']
-    # 3) Get the min of the 2)
-    @project.sorted_milestones.each do |m|
+    # Check if the lifecycle can be modified
+    # 1) Check with milestoneNames linked to lifecycle
+    lifecycle_milestone_milestone_max = 9999
+    @project.lifecycle_object.lifecycle_milestones.each do |lm|
       APP_CONFIG['report_limit_milestone_edit'].each do |m_name|
-        if m.name == m_name
-          if @min_index_order == -1 or @min_index_order > m.index_order
-            @min_index_order = m.index_order
+        if lm.milestone_name.title == m_name
+          if lifecycle_milestone_milestone_max == 9999 or lifecycle_milestone_milestone_max > lm.index_order
+            lifecycle_milestone_milestone_max = lm.index_order
             @milestones_limit_names << m_name
           end
         end
       end
     end
+
+    # 2) Check with milestones linked to project
+    project_milestone_milestone_max = 9999
+    @project.sorted_milestones.each do |m|
+      APP_CONFIG['report_limit_milestone_edit'].each do |m_name|
+        if m.name == m_name
+          if project_milestone_milestone_max == 9999 or project_milestone_milestone_max > m.index_order
+            project_milestone_milestone_max = m.index_order
+          end
+        end
+      end
+    end
+
+    # 3) Chech the different results
+    current_milestone_index = nil
+    if @project.get_current_milestone_index
+      current_milestone_index = @project.get_current_milestone_index + 1
+    end
+    @lifecycle_is_editable  = true
+    if current_milestone_index != nil 
+      if current_milestone_index > lifecycle_milestone_milestone_max or current_milestone_index > project_milestone_milestone_max
+        @lifecycle_is_editable = false
+      end
+    end
+
   end
 
   def lifecycle_change
@@ -856,7 +878,7 @@ class ProjectsController < ApplicationController
 
       new_milestone = Milestone.new
       new_milestone.project = project
-      new_milestone.name = MilestoneName.find(:first).title
+      new_milestone.name = project.lifecycle_object.lifecycle_milestones.find(:first).milestone_name.title
       new_milestone.index_order = max_index_order + 1
       new_milestone.status = -1
       new_milestone.is_virtual = false
