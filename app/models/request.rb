@@ -2,6 +2,7 @@ class Request < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :stream
+  belongs_to :lesson_collect_file
   has_one    :wl_line, :primary_key=>"request_id"
   has_one    :counter_log, :dependent=>:nullify
   has_many   :history_counters, :dependent=>:nullify
