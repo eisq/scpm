@@ -776,6 +776,7 @@ class Request < ActiveRecord::Base
   }
   # Used to the project creation from requests 
   REQUEST_TYPE_TO_LIFECYCLES = {
+    'No'  => 'Waterfall',
     'Yes' => 'LBIP+',
     'Suite' => 'Suite'
   }

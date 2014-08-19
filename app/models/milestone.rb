@@ -240,4 +240,21 @@ class Milestone < ActiveRecord::Base
     return result;
   end
 
+  def has_data?
+      has_data = false
+      if self.comments != nil and self.comments != ""
+        has_data = true
+      end
+      if self.milestone_date != nil and self.milestone_date != ""
+        has_data = true
+      end
+      if self.actual_milestone_date != nil and self.actual_milestone_date != ""
+        has_data = true
+      end
+      if self.spiders.size > 0
+        has_data = true
+      end
+      return has_data
+  end
+
 end

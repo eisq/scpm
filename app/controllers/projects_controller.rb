@@ -124,6 +124,11 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new(params[:project])
+    lifecycle_default = Lifecycle.get_default
+    if lifecycle_default
+      @project.lifecycle = lifecycle_default.id
+      @project.lifecycle_object = lifecycle_default
+    end
     # can not set project_id to 0 as we use that to filter projets later... but why...
     #@project.project_id = 0 if !@project.project_id
     check_qr_qwr_pdc(@project)
@@ -827,12 +832,22 @@ class ProjectsController < ApplicationController
       milestone       = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
       milestone_name  = MilestoneName.find(:first, :conditions => ["id = ?", milestone_name_id])
 
+      warning = nil
       if milestone and milestone_name
-        milestone.name = milestone_name.title
-        milestone.save
+        has_data = milestone.has_data?
+        if has_data == false
+          milestone.name = milestone_name.title
+          milestone.save
+        else
+          warning = "Milestone can't be modified while it has data."
+        end
       end
 
-      render(:nothing=>true)
+      if warning != nil
+        render(:text=>warning)
+      else
+        render(:nothing=>true)
+      end
   end
 
   def milestone_virtual_name_change
@@ -842,11 +857,14 @@ class ProjectsController < ApplicationController
       milestone           = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
 
       if milestone and milestone_name
-        milestone.name = milestone_name
-        if milestone_to_export
-          milestone.to_export = milestone_to_export
+        has_data = milestone.has_data?
+        if has_data == false
+          milestone.name = milestone_name
+          if milestone_to_export
+            milestone.to_export = milestone_to_export
+          end
+          milestone.save
         end
-        milestone.save
       end
 
       render(:nothing=>true)
@@ -858,8 +876,11 @@ class ProjectsController < ApplicationController
     milestone             = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
 
     if milestone and milestone_is_virtual
-      milestone.is_virtual = milestone_is_virtual
-      milestone.save
+      has_data = milestone.has_data?
+      if has_data == false
+          milestone.is_virtual = milestone_is_virtual
+        milestone.save
+      end
     end
 
     render(:nothing=>true)
@@ -895,20 +916,7 @@ class ProjectsController < ApplicationController
     has_data      = false
 
     if milestone
-
-      if milestone.comments != nil and milestone.comments != ""
-        has_data = true
-      end
-      if milestone.milestone_date != nil and milestone.milestone_date != ""
-        has_data = true
-      end
-      if milestone.actual_milestone_date != nil and milestone.actual_milestone_date != ""
-        has_data = true
-      end
-      if milestone.spiders.size > 0
-        has_data = true
-      end
-
+      has_data = milestone.has_data?
       if has_data == false
         milestone.destroy
       end
