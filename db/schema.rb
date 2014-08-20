@@ -348,6 +348,7 @@ ActiveRecord::Schema.define(:version => 2014081911172923) do
     t.integer  "lesson_collect_template_type_id"
     t.integer  "request_id"
     t.string   "filename"
+    t.string   "mt_qr"
   end
 
   create_table "lesson_collect_sub_axes", :force => true do |t|
@@ -371,6 +372,16 @@ ActiveRecord::Schema.define(:version => 2014081911172923) do
     t.string   "sub_axes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lesson_collect_axe_id"
+    t.string   "lesson_collect_sub_axe_id"
+    t.string   "escalate_next_level"
+    t.string   "project_name"
+    t.boolean  "action_plan"
+    t.boolean  "already_exist"
+    t.string   "redundancy"
+    t.boolean  "selected"
+    t.string   "status"
+    t.string   "raised_in_dws_plm"
   end
 
   create_table "lifecycle_milestones", :force => true do |t|
