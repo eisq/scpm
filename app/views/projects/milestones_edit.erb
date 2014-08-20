@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/stylesheets/jquery-ui-1.10.4.css" />
 
 <script type="text/javascript">
+  // General
   $j( document ).ready(function() {
 
   	check_after_launch();
@@ -97,15 +98,22 @@ function change_milestone_virtual_name(param_milestone_name, param_milestone_to_
 
 function change_milestone_is_virtual(param_milestone_is_virtual, param_milestone_id) {
 	$j("#milestone_edit_loading_"+param_milestone_id).show();
-	// Check number of spiders
+	// Update the data
 	$j.ajax({
 		type: "POST",
-		url: "/projects/get_spiders_count_for_milestone",
- 		data: {milestone_id : param_milestone_id}
+		url: "/projects/milestone_is_virtual_change",
+ 		data: {is_virtual : param_milestone_is_virtual, milestone_id : param_milestone_id}
 	})
 	.done(function( msg ) { 
-		// If no spiders
-		if(parseInt(msg) == 0) {
+		$j("#milestone_edit_loading_"+param_milestone_id).hide();
+		var error = alert_msg(msg);
+		if (error) {
+			if (param_milestone_is_virtual) {
+				$j("#checkbox_"+param_milestone_id).prop("checked", false);
+			} else {
+				$j("#checkbox_"+param_milestone_id).prop("checked", true);
+			}
+		} else {
 			// Show the correct div
 			if (param_milestone_is_virtual) {
 				$j("#is_virtual_false_"+param_milestone_id).hide();
@@ -114,32 +122,13 @@ function change_milestone_is_virtual(param_milestone_is_virtual, param_milestone
 				$j("#is_virtual_false_"+param_milestone_id).show();
 				$j("#is_virtual_true_"+param_milestone_id).hide();
 			}
-
-			// Update the data
-			$j.ajax({
-				type: "POST",
-				url: "/projects/milestone_is_virtual_change",
-		 		data: {is_virtual : param_milestone_is_virtual, milestone_id : param_milestone_id}
-			})
-			.done(function( msg ) { 
-				$j("#milestone_edit_loading_"+param_milestone_id).hide();
-			})
-			.fail(function() 
-			{ 
-				$j("#milestone_edit_loading_"+param_milestone_id).hide();
-			})
-		// If spiders
-		} else {		
-			$j("#milestone_edit_loading_"+param_milestone_id).hide();	
-			$j("#checkbox_"+param_milestone_id).prop("checked", false);
-			alert("You can't set this milestone to virtual because it has Spiders.");
 		}
 	})
 	.fail(function() 
 	{ 
 		$j("#milestone_edit_loading_"+param_milestone_id).hide();
-		alert("Error");
-	});
+	})
+
 }
 
 function check_after_launch() {
@@ -159,8 +148,10 @@ function check_after_launch() {
 function alert_msg(msg) {
 	if (msg != null && msg.length > 1)
 	{
-		alert(msg.length);
+		alert(msg);
+		return true;
 	}
+	return false;
 }
 </script>
 

@@ -856,18 +856,31 @@ class ProjectsController < ApplicationController
       milestone_to_export = params[:to_export]
       milestone           = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
 
+      warning = nil
       if milestone and milestone_name
-        has_data = milestone.has_data?
-        if has_data == false
-          milestone.name = milestone_name
-          if milestone_to_export
-            milestone.to_export = milestone_to_export
+        # Milestone name
+        if milestone.name != milestone_name
+          has_data = milestone.has_data?
+          if has_data == false
+            milestone.name = milestone_name
+            milestone.save
+          else
+            warning = "Milestone can't be modified while it has data."
           end
+        end
+
+        # Milestone To export
+        if milestone_to_export and milestone.to_export != milestone_to_export
+          milestone.to_export = milestone_to_export
           milestone.save
         end
       end
 
-      render(:nothing=>true)
+      if warning != nil
+        render(:text=>warning)
+      else
+        render(:nothing=>true)
+      end
   end
 
   def milestone_is_virtual_change
@@ -875,15 +888,22 @@ class ProjectsController < ApplicationController
     milestone_is_virtual  = params[:is_virtual]
     milestone             = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
 
+    warning = nil
     if milestone and milestone_is_virtual
       has_data = milestone.has_data?
       if has_data == false
-          milestone.is_virtual = milestone_is_virtual
+        milestone.is_virtual = milestone_is_virtual
         milestone.save
+      else
+        warning = "Milestone can't be modified while it has data."
       end
     end
 
-    render(:nothing=>true)
+    if warning != nil
+      render(:text=>warning)
+    else
+      render(:nothing=>true)
+    end
   end
 
   def add_new_milestone
@@ -926,17 +946,6 @@ class ProjectsController < ApplicationController
       redirect_to :action=>:milestones_edit, :id=>project_id
     else
       redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Milestone can't be deleted while it has data. Delete all milestone data to be able to delete the milestone."
-    end
-  end
-
-  def get_spiders_count_for_milestone
-    milestone_id  = params[:milestone_id]
-    milestone     = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
-
-    if milestone
-      render(:text=>milestone.spiders.size.to_s)
-    else
-      render(:text=>"1")
     end
   end
   # - 
