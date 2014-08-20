@@ -95,6 +95,7 @@ module LessonsLearnt
     lessons     = doc.worksheet 'Lessons learnt Collect'
     actions     = doc.worksheet 'Actions'
     assessments = doc.worksheet 'Assessment of quality service'
+    file_name   = LessonsLearnt.get_file_name(file)
 
     # Parse excel file
     lessons_header_hash       = LessonsLearnt.parse_lessons_excel_header(lessons)
@@ -103,7 +104,10 @@ module LessonsLearnt
     assessments_content_array = LessonsLearnt.parse_assessments_content(assessments)
 
     # Create lesson file
-    lesson_file               = LessonCollectFile.new
+    lesson_file               = LessonCollectFile.find(:first, :conditions => ["filename like ?"], file_name)
+    if (lesson_file == nil) {
+      lesson_file               = LessonCollectFile.new
+    }
     lesson_file.pm            = lessons_header_hash["pm"]
     lesson_file.qwr_sqr       = lessons_header_hash["qwr"]
     lesson_file.workstream    = lessons_header_hash["coc"]
@@ -218,6 +222,10 @@ module LessonsLearnt
     redirect_to '/lesson_collects/index' and return if post.nil? or post['datafile'].nil?
     Spreadsheet.client_encoding = 'UTF-8'
     return Spreadsheet.open post['datafile']
+  end
+
+  def self.get_file_name(post)
+    return post['datafile'].original_filename
   end
 
   # Lessons header

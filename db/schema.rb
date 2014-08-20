@@ -347,6 +347,7 @@ ActiveRecord::Schema.define(:version => 2014081911172923) do
     t.datetime "updated_at"
     t.integer  "lesson_collect_template_type_id"
     t.integer  "request_id"
+    t.string   "filename"
   end
 
   create_table "lesson_collect_sub_axes", :force => true do |t|
