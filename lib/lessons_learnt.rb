@@ -15,9 +15,9 @@ module LessonsLearnt
   def self.import(file)
     # Import excel file
     doc         = LessonsLearnt.load_lessons_excel_file(file)
-    lessons     = doc.worksheet 'Lessons learnt Collect'
-    actions     = doc.worksheet 'Actions'
-    assessments = doc.worksheet 'Assessment of quality service'
+    lessons     = doc.worksheet LessonsLearntProject.WORKSHEET_LABEL_1
+    actions     = doc.worksheet LessonsLearntProject.WORKSHEET_LABEL_2
+    assessments = doc.worksheet LessonsLearntProject.WORKSHEET_LABEL_3
     file_name   = LessonsLearnt.get_file_name(file)
     template_type = LessonsLearnt.get_template_type(lessons)
 

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 2014081911172923) do
+ActiveRecord::Schema.define(:version => 20140821170411) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -373,7 +373,7 @@ ActiveRecord::Schema.define(:version => 2014081911172923) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "lesson_collect_axe_id"
-    t.string   "lesson_collect_sub_axe_id"
+    t.integer  "lesson_collect_sub_axe_id"
     t.string   "escalate_next_level"
     t.string   "project_name"
     t.boolean  "action_plan"

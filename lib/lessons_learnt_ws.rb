@@ -4,6 +4,10 @@ module LessonsLearntProject
 
   include ApplicationHelper
 
+  WORKSHEET_LABEL_1                 = "Best Practices Pre Analysis"
+  WORKSHEET_LABEL_2                 = "Actions"
+  WORKSHEET_LABEL_3                 = "Assessment of quality service"
+
   # LESSON SHEET ROWS INDEX
   LESSON_BEGIN_HEADER               = 1
   LESSON_END_HEADER                 = 6
@@ -22,7 +26,14 @@ module LessonsLearntProject
   LESSON_CELL_IMPROVEMENT           = 6
   LESSON_CELL_AXES                  = 7
   LESSON_CELL_SUB_AXES              = 8
-  
+  LESSON_CELL_PROJECT               = 9
+  LESSON_CELL_ACTION_PLAN           = 10
+  LESSON_CELL_ALREADY_EXIST         = 11
+  LESSON_CELL_REDUNDANCY            = 12
+  LESSON_CELL_SELECTED              = 13
+  LESSON_CELL_ESCALATE              = 14
+  LESSON_CELL_STATUS                = 15
+
   # LESSON SHEET CELLS LABEL
   LESSON_CELL_ID_LABEL              = "id"           
   LESSON_CELL_MILESTONE_LABEL       = "milestone"  
@@ -32,6 +43,13 @@ module LessonsLearntProject
   LESSON_CELL_IMPROVEMENT_LABEL     = "improvement" 
   LESSON_CELL_AXES_LABEL            = "axes"      
   LESSON_CELL_SUB_AXES_LABEL        = "sub_axes"
+  LESSON_CELL_PROJECT_LABEL         = "project"
+  LESSON_CELL_ACTION_PLAN_LABEL     = "action_plan"
+  LESSON_CELL_ALREADY_EXIST_LABEL   = "already_exist"
+  LESSON_CELL_REDUNDANCY_LABEL      = "redundancy"
+  LESSON_CELL_SELECTED_LABEL        = "selected"
+  LESSON_CELL_ESCALATE_LABEL        = "escalate"
+  LESSON_CELL_STATUS_LABEL          = "status"
 
   # ACTION SHEET ROWS INDEX 
   ACTION_BEGIN_CONTENT              = 3
@@ -98,17 +116,17 @@ module LessonsLearntProject
     if (lesson_file == nil)
       lesson_file               = LessonCollectFile.new
     end
-    lesson_file.pm            = lessons_header_hash["pm"]
     lesson_file.qwr_sqr       = lessons_header_hash["qwr"]
     lesson_file.workstream    = lessons_header_hash["coc"]
-    lesson_file.suite_name    = lessons_header_hash["suite"]
-    lesson_file.project_name  = lessons_header_hash["project"]
     lesson_file.save
+
+    # Delete all existent data
+    lesson_file.lesson_collects.each(&:destroy)
+    lesson_file.lesson_collect_actions.each(&:destroy)
+    lesson_file.lesson_collect_assessments.each(&:destroy)
 
     # Save lessons
     lessons_content_array.each do |l|
-      lesson_objs = LessonCollect.find(:all,:conditions=>["lesson_id = ?", l["id"]])
-      if lesson_objs == nil or lesson_objs.count == 0
         lesson_collect = LessonCollect.new
         lesson_collect.lesson_collect_file_id = lesson_file.id
         lesson_collect.lesson_id              = l[LESSON_CELL_ID_LABEL]           
@@ -116,29 +134,34 @@ module LessonsLearntProject
         lesson_collect.type_lesson            = l[LESSON_CELL_LESSON_LEARNT_LABEL]
         lesson_collect.topics                 = l[LESSON_CELL_TOPICS_LABEL]       
         lesson_collect.cause                  = l[LESSON_CELL_PB_CAUSE_LABEL]    
-        lesson_collect.improvement            = l[LESSON_CELL_IMPROVEMENT_LABEL]  
-        lesson_collect.axes                   = l[LESSON_CELL_AXES_LABEL]         
-        lesson_collect.sub_axes               = l[LESSON_CELL_SUB_AXES_LABEL]   
-        lesson_collect.save
-      elsif lesson_objs != nil
-        lesson_objs.each do |lo|
-          lo.lesson_collect_file_id = lesson_file.id
-          lo.lesson_id              = l[LESSON_CELL_ID_LABEL]           
-          lo.milestone              = l[LESSON_CELL_MILESTONE_LABEL]    
-          lo.type_lesson            = l[LESSON_CELL_LESSON_LEARNT_LABEL]
-          lo.topics                 = l[LESSON_CELL_TOPICS_LABEL]       
-          lo.cause                  = l[LESSON_CELL_PB_CAUSE_LABEL]    
-          lo.improvement            = l[LESSON_CELL_IMPROVEMENT_LABEL]  
-          lo.axes                   = l[LESSON_CELL_AXES_LABEL]         
-          lo.sub_axes               = l[LESSON_CELL_SUB_AXES_LABEL] 
-          lo.save
+        lesson_collect.improvement            = l[LESSON_CELL_IMPROVEMENT_LABEL]
+        lesson_collect.escalate_next_level    = l[LESSON_CELL_ESCALATE_LABEL]
+        lesson_collect.project_name           = l[LESSON_CELL_PROJECT_LABEL]
+        lesson_collect.action_plan            = l[LESSON_CELL_ACTION_PLAN_LABEL]
+        lesson_collect.already_exist          = l[LESSON_CELL_ALREADY_EXIST_LABEL]
+        lesson_collect.redundancy             = l[LESSON_CELL_REDUNDANCY_LABEL]
+        lesson_collect.selected               = l[LESSON_CELL_SELECTED_LABEL]
+        lesson_collect.status                 = l[LESSON_CELL_STATUS_LABEL]
+
+        if  l[LESSON_CELL_AXES_LABEL]
+          lesson_collect_axe = LessonCollectAxes.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_AXES_LABEL]])
+          if lesson_collect_axe
+            lesson_collect.lesson_collect_axe = lesson_collect_axe
+          end
         end
-      end 
+
+        if  l[LESSON_CELL_SUB_AXES_LABEL]
+          lesson_collect_sub_axe = LessonCollectAxes.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_SUB_AXES_LABEL]])
+          if lesson_collect_sub_axe
+            lesson_collect.lesson_collect_sub_axe = lesson_collect_sub_axe
+          end
+        end
+        
+        lesson_collect.save
     end
+
     # Save Actions
     actions_content_array.each do |a|
-      action_objs = LessonCollectAction.find(:all,:conditions=>["ref = ?", a["ref"]])
-      if action_objs == nil or action_objs.count == 0
         lesson_collect_action = LessonCollectAction.new
         lesson_collect_action.lesson_collect_file_id  = lesson_file.id
         lesson_collect_action.ref                     = a[ACTION_CELL_REF_LABEL]          
@@ -151,26 +174,10 @@ module LessonsLearntProject
         lesson_collect_action.benefit                 = a[ACTION_CELL_BENEFIT_LABEL]      
         lesson_collect_action.level_of_investment     = a[ACTION_CELL_LEVEL_INVEST_LABEL]      
         lesson_collect_action.save
-      elsif action_objs != nil
-        action_objs.each do |ao|
-          ao.lesson_collect_file_id  = lesson_file.id
-          ao.ref                     = a[ACTION_CELL_REF_LABEL]          
-          ao.creation_date           = a[ACTION_CELL_CREATION_DATE_LABEL]
-          ao.source                  = a[ACTION_CELL_SOURCE_LABEL]       
-          ao.title                   = a[ACTION_CELL_TITLE_LABEL]        
-          ao.status                  = a[ACTION_CELL_STATUS_LABEL]       
-          ao.actionne                = a[ACTION_CELL_ACTIONNEE_LABEL]       
-          ao.due_date                = a[ACTION_CELL_DUE_DATE_LABEL]     
-          ao.benefit                 = a[ACTION_CELL_BENEFIT_LABEL]      
-          ao.level_of_investment     = a[ACTION_CELL_LEVEL_INVEST_LABEL]    
-          ao.save
-        end
-      end 
     end
+
     # Save Assessemnets
     assessments_content_array.each do |a|
-      assessment_objs = LessonCollectAssessment.find(:all,:conditions=>["lesson_id = ?", a["rmt_id"]])
-      if assessment_objs == nil or assessment_objs.count == 0
         lesson_collect_assessment = LessonCollectAssessment.new
         lesson_collect_assessment.lesson_collect_file_id  = lesson_file.id
         lesson_collect_assessment.lesson_id               = a[ASSESSMENT_CELL_RMT_ID_LABEL]               
@@ -184,23 +191,8 @@ module LessonsLearntProject
         lesson_collect_assessment.mt_improvements         = a[ASSESSMENT_CELL_IMP_LABEL]           
         lesson_collect_assessment.comments                = a[ASSESSMENT_CELL_COMMENTS_LABEL]           
         lesson_collect_assessment.save  
-      elsif assessment_objs != nil
-        assessment_objs.each do |ao|
-          ao.lesson_collect_file_id = lesson_file.id
-          ao.lesson_id               = a[ASSESSMENT_CELL_RMT_ID_LABEL]               
-          ao.milestone               = a[ASSESSMENT_CELL_MILESTONE_LABEL]            
-          ao.mt_detailed_desc        = a[ASSESSMENT_CELL_DET_PRES_LABEL]
-          ao.quality_gates           = a[ASSESSMENT_CELL_QUAL_GATES_LABEL]        
-          ao.milestones_preparation  = a[ASSESSMENT_CELL_MILESTONE_LABEL]      
-          ao.project_setting_up      = a[ASSESSMENT_CELL_PROJ_SET_UP_LABEL]   
-          ao.lessons_learnt          = a[ASSESSMENT_CELL_LESSONS_LABEL]       
-          ao.support_level           = a[ASSESSMENT_CELL_SUPP_LABEL]        
-          ao.mt_improvements         = a[ASSESSMENT_CELL_IMP_LABEL]           
-          ao.comments                = a[ASSESSMENT_CELL_COMMENTS_LABEL]  
-          ao.save
-        end
-      end 
     end
+
   end
 
   # ------------------------------------------------------------------------------------
@@ -255,7 +247,15 @@ module LessonsLearntProject
   # row_hash["pb_causes"]    
   # row_hash["improvement"]  
   # row_hash["axes"]         
-  # row_hash["sub_axes"]     
+  # row_hash["sub_axes"]      
+  # row_hash["project"]     
+  # row_hash["action_plan"]     
+  # row_hash["already_exist"]     
+  # row_hash["redundancy"]     
+  # row_hash["selected"]     
+  # row_hash["escalate"]     
+  # row_hash["status"]    
+
   def self.parse_lessons_excel_content(consoSheet)
     # Var
     lessons_content_array = Array.new
@@ -273,6 +273,14 @@ module LessonsLearntProject
         row_hash[LESSON_CELL_IMPROVEMENT_LABEL]     = conso_row[LESSON_CELL_IMPROVEMENT].to_s
         row_hash[LESSON_CELL_AXES_LABEL]            = conso_row[LESSON_CELL_AXES].to_s
         row_hash[LESSON_CELL_SUB_AXES_LABEL]        = conso_row[LESSON_CELL_SUB_AXES].to_s
+        row_hash[LESSON_CELL_PROJECT_LABEL]         = conso_row[LESSON_CELL_PROJECT].to_s
+        row_hash[LESSON_CELL_ACTION_PLAN_LABEL]     = conso_row[LESSON_CELL_ACTION_PLAN].to_s
+        row_hash[LESSON_CELL_ALREADY_EXIST_LABEL]   = conso_row[LESSON_CELL_ALREADY_EXIST].to_s
+        row_hash[LESSON_CELL_REDUNDANCY_LABEL]      = conso_row[LESSON_CELL_REDUNDANCY].to_s
+        row_hash[LESSON_CELL_ESCALATE_LABEL]        = conso_row[LESSON_CELL_ESCALATE].to_s
+        row_hash[LESSON_CELL_SELECTED_LABEL]        = conso_row[LESSON_CELL_SELECTED].to_s
+        row_hash[LESSON_CELL_STATUS_LABEL]          = conso_row[LESSON_CELL_STATUS].to_s
+
         lessons_content_array << row_hash
       end
       i += 1

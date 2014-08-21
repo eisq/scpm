@@ -1,7 +1,7 @@
 class AddColumnsToLessonCollects < ActiveRecord::Migration
   def self.up
-  	add_column :lesson_collects, :lesson_collect_axe_id, :integer
-  	add_column :lesson_collects, :lesson_collect_sub_axe_id, :string
+    add_column :lesson_collects, :lesson_collect_axe_id, :integer
+    add_column :lesson_collects, :lesson_collect_sub_axe_id, :integer
   	add_column :lesson_collects, :escalate_next_level, :string
   	add_column :lesson_collects, :project_name, :string
   	add_column :lesson_collects, :action_plan, :boolean
@@ -13,8 +13,8 @@ class AddColumnsToLessonCollects < ActiveRecord::Migration
   end
 
   def self.down
-  	remove_column :lesson_collects, :lesson_collect_axe_id
-  	remove_column :lesson_collects, :lesson_collect_sub_axe_id
+    remove_column :lesson_collects, :lesson_collect_axe_id
+    remove_column :lesson_collects, :lesson_collect_sub_axe_id
   	remove_column :lesson_collects, :escalate_next_level
   	remove_column :lesson_collects, :project_name
   	remove_column :lesson_collects, :action_plan
