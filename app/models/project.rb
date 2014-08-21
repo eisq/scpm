@@ -395,6 +395,7 @@ class Project < ActiveRecord::Base
 
   def create_milestones
     Rails.logger.info "Debug CDB 1"
+    Rails.logger.info "----- "+self.milestones.size.to_s
     if self.milestones.size == 0
       Rails.logger.info "Debug CDB 2"
       LifecycleMilestone.find(:all, :conditions => ["lifecycle_id = ?",self.lifecycle_object.id], :order => "index_order").each {|m| create_milestone(m)}
