@@ -317,8 +317,11 @@ class StreamsController < ApplicationController
       
       # Check if creation of project is in the case 1 condition or case 2 condition
       lifecycle_selected = nil
+      suite = nil
       if project_name == resultRegex[1].to_s # Case 2
         lifecycle_selected = Lifecycle.get_case_two
+        suite = SuiteTag.find(:first, :conditions=>["name LIKE ?", resultRegex[0].to_s])
+        Rails.logger.info "CASE 2 "+suite.to_s
       else # Case 1 or not found
         lifecycle_selected = Lifecycle.get_case_one
       end
@@ -335,6 +338,9 @@ class StreamsController < ApplicationController
         project = Project.create(:name=>project_name)
         project.workstream        = workstream.name
         project.lifecycle_object  = lifecycle_selected
+        if suite != nil
+          project.suite_tag = suite
+        end
         project.save
       end
 
@@ -345,6 +351,9 @@ class StreamsController < ApplicationController
         wp.brn              = brn
         wp.lifecycle_object = lifecycle_selected
         wp.project_id       = project.id
+        if suite != nil
+          project.suite_tag = suite
+        end
         wp.save
       end
 
