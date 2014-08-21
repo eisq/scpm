@@ -771,7 +771,7 @@ class ProjectsController < ApplicationController
         project.save
         # Delete previous milestone
         Milestone.destroy_all("project_id = #{project_id}")
-        sleep(1)
+        sleep(15)
         # Generate new milestones
         project.check
       end
