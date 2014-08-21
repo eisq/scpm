@@ -770,13 +770,9 @@ class ProjectsController < ApplicationController
         project.lifecycle_object = lifecycle
         project.save
         # Delete previous milestone
-
-    Rails.logger.info "Debug CDB B1"
-    Rails.logger.info "----- "+project.milestones.size.to_s
-
         Milestone.destroy_all("project_id = #{project_id}")
         # Generate new milestones
-        project.check
+        project.check(true)
       end
     end
 

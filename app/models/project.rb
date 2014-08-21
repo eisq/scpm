@@ -393,21 +393,18 @@ class Project < ActiveRecord::Base
     return true
   end
 
-  def create_milestones
-    Rails.logger.info "Debug CDB 1"
-    Rails.logger.info "----- "+self.milestones.size.to_s
-    if self.milestones.size == 0
-      Rails.logger.info "Debug CDB 2"
+  def create_milestones(force=false)
+    if self.milestones.size == 0 or force == true
       LifecycleMilestone.find(:all, :conditions => ["lifecycle_id = ?",self.lifecycle_object.id], :order => "index_order").each {|m| create_milestone(m)}
     end
   end
 
-  def check
-    self.check_milestones
+  def check(force=false)
+    self.check_milestones(force)
   end
 
-  def check_milestones
-    self.create_milestones
+  def check_milestones(force=false)
+    self.create_milestones(force)
     self.milestones.each(&:check)
   end
 
