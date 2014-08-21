@@ -168,18 +168,14 @@ function alert_msg(msg) {
 <!-- Lifecycle choice -->
 <div id="milestones_edit_menu_bar">
 	<p>Current lifecycle : <%= @project.lifecycle_object.name %></p>
-	<% if @lifecycle_is_editable %>
-		<div id="milestones_edit_lifecycle_choice" class="display_inline" >
-			Switch to lifecycle : 
-			<% form_tag({:action=>'lifecycle_change'}, {:class => "milestone_edit_form"}) do %>
-			  <%= select_tag ("lifecycle_id",options_for_select(@lifecycles,@project.lifecycle))  %>
-			  <%= hidden_field_tag('project_id', @project.id) %>
-			  <%= submit_tag('Save',:confirm=>"Are you sure ?") %>
-			<% end %>
-		</div>
-	<% else %>
-		<div class="display_inline">The lifecycle can't be modified because the following milestone is already performed : <%= @milestones_limit_names %></div>
-	<% end %>
+	<div id="milestones_edit_lifecycle_choice" class="display_inline" >
+		Switch to lifecycle : 
+		<% form_tag({:action=>'lifecycle_change'}, {:class => "milestone_edit_form"}) do %>
+		  <%= select_tag ("lifecycle_id",options_for_select(@lifecycles,@project.lifecycle))  %>
+		  <%= hidden_field_tag('project_id', @project.id) %>
+		  <%= submit_tag('Save',:confirm=>"Are you sure ?") %>
+		<% end %>
+	</div>
 
 	<!-- Buttons -->
 	<div id="milestones_edit_new_" class="display_inline float_right" >

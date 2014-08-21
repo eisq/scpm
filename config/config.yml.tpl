@@ -21,9 +21,6 @@ report_milestones_eligible_for_note:
     - QG TD
     - M13
     - CCB
-report_limit_milestone_edit: # Project with a current milestone before of the index order of the following milestone can be edited (milestone structure)
-    - M3
-    - G2
 report_project_creation_lifecycle: "Waterfall" # Default lifecycle for new project
 stream_project_creation_lifecycle_1: "Waterfall" # The type of lifecycle selected for a project created from stream management with the case 1
 stream_project_creation_lifecycle_2: "LBIP+" # The type of lifecycle selected for a project created from stream management with the case 2

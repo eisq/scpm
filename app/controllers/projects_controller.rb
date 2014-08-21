@@ -747,45 +747,6 @@ class ProjectsController < ApplicationController
     @milestones_name.each do |m_name|
       @milestones_name_hash[m_name[0]] = m_name[1]
     end
-
-    # Check if the lifecycle can be modified
-    # 1) Check with milestoneNames linked to lifecycle
-    lifecycle_milestone_milestone_max = 9999
-    @project.lifecycle_object.lifecycle_milestones.each do |lm|
-      APP_CONFIG['report_limit_milestone_edit'].each do |m_name|
-        if lm.milestone_name.title == m_name
-          if lifecycle_milestone_milestone_max == 9999 or lifecycle_milestone_milestone_max > lm.index_order
-            lifecycle_milestone_milestone_max = lm.index_order
-            @milestones_limit_names << m_name
-          end
-        end
-      end
-    end
-
-    # 2) Check with milestones linked to project
-    project_milestone_milestone_max = 9999
-    @project.sorted_milestones.each do |m|
-      APP_CONFIG['report_limit_milestone_edit'].each do |m_name|
-        if m.name == m_name
-          if project_milestone_milestone_max == 9999 or project_milestone_milestone_max > m.index_order
-            project_milestone_milestone_max = m.index_order
-          end
-        end
-      end
-    end
-
-    # 3) Chech the different results
-    current_milestone_index = nil
-    if @project.get_current_milestone_index
-      current_milestone_index = @project.get_current_milestone_index + 1
-    end
-    @lifecycle_is_editable  = true
-    if current_milestone_index != nil 
-      if current_milestone_index > lifecycle_milestone_milestone_max or current_milestone_index > project_milestone_milestone_max
-        @lifecycle_is_editable = false
-      end
-    end
-
   end
 
   def lifecycle_change
@@ -793,19 +754,33 @@ class ProjectsController < ApplicationController
     lifecycle_id  = params[:lifecycle_id]
     project       = Project.find(:first, :conditions => ["id = ?", project_id])
     lifecycle     = Lifecycle.find(:first, :conditions => ["id = ?", lifecycle_id])
+    has_data      = false
 
     if lifecycle_id and project
-      # Change lifecycle
-      project.lifecycle = lifecycle_id
-      project.lifecycle_object = lifecycle
-      project.save
-      # Delete previous milestone
-      Milestone.destroy_all("project_id = #{project_id}")
-      # Generate new milestones
-      project.check
+      
+      project.sorted_milestones.each do |m|
+        if m.has_data?
+          has_data = true
+        end
+      end
+
+      if has_data == false
+        # Change lifecycle
+        project.lifecycle = lifecycle_id
+        project.lifecycle_object = lifecycle
+        project.save
+        # Delete previous milestone
+        Milestone.destroy_all("project_id = #{project_id}")
+        # Generate new milestones
+        project.check
+      end
     end
-    
-    redirect_to :action=>:milestones_edit, :id=>project_id
+
+    if has_data
+      redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Lifecycle can't be modified because some milestones have data. Delete all milestone data."
+    else
+      redirect_to :action=>:milestones_edit, :id=>project_id
+    end
   end
 
   # @param milestones = Sorted array (on index order) of milestones id
