@@ -4,10 +4,6 @@ module LessonsLearntMt
 
   include ApplicationHelper
 
-  WORKSHEET_LABEL_1                 = "Best Pratices Analysis"
-  WORKSHEET_LABEL_2                 = "Actions"
-  WORKSHEET_LABEL_3                 = "Assessment of quality service"
-
   # LESSON SHEET ROWS INDEX
   LESSON_BEGIN_HEADER               = 1
   LESSON_END_HEADER                 = 7
@@ -224,15 +220,15 @@ module LessonsLearntMt
     consoSheet.each do |conso_row|
       if ((i >= LESSON_BEGIN_CONTENT) and (conso_row[LESSON_CELL_ID]) and (conso_row[LESSON_CELL_ID].value) and (conso_row[LESSON_CELL_ID].value.length > 0))
         row_hash = Hash.new
-        row_hash[LESSON_CELL_ID_LABEL]              = conso_row[LESSON_CELL_ID].value.to_s
-        row_hash[LESSON_CELL_MILESTONE_LABEL]       = conso_row[LESSON_CELL_MILESTONE].to_s
-        row_hash[LESSON_CELL_LESSON_LEARNT_LABEL]   = conso_row[LESSON_CELL_LESSON_LEARNT].to_s
-        row_hash[LESSON_CELL_TOPICS_LABEL]          = conso_row[LESSON_CELL_TOPICS].to_s
-        row_hash[LESSON_CELL_PB_CAUSE_LABEL]        = conso_row[LESSON_CELL_PB_CAUSE].to_s
-        row_hash[LESSON_CELL_IMPROVEMENT_LABEL]     = conso_row[LESSON_CELL_IMPROVEMENT].to_s
-        row_hash[LESSON_CELL_AXES_LABEL]            = conso_row[LESSON_CELL_AXES].to_s
-        row_hash[LESSON_CELL_SUB_AXES_LABEL]        = conso_row[LESSON_CELL_SUB_AXES].to_s
-        row_hash[LESSON_CELL_RAISED_IN_DWS_PLM_LABEL]     = conso_row[LESSON_CELL_RAISED_IN_DWS_PLM].to_s
+        row_hash[LESSON_CELL_ID_LABEL]                  = conso_row[LESSON_CELL_ID].value.to_s
+        row_hash[LESSON_CELL_MILESTONE_LABEL]           = conso_row[LESSON_CELL_MILESTONE].to_s
+        row_hash[LESSON_CELL_LESSON_LEARNT_LABEL]       = conso_row[LESSON_CELL_LESSON_LEARNT].to_s
+        row_hash[LESSON_CELL_TOPICS_LABEL]              = conso_row[LESSON_CELL_TOPICS].to_s
+        row_hash[LESSON_CELL_PB_CAUSE_LABEL]            = conso_row[LESSON_CELL_PB_CAUSE].to_s
+        row_hash[LESSON_CELL_IMPROVEMENT_LABEL]         = conso_row[LESSON_CELL_IMPROVEMENT].to_s
+        row_hash[LESSON_CELL_AXES_LABEL]                = conso_row[LESSON_CELL_AXES].to_s
+        row_hash[LESSON_CELL_SUB_AXES_LABEL]            = conso_row[LESSON_CELL_SUB_AXES].to_s
+        row_hash[LESSON_CELL_RAISED_IN_DWS_PLM_LABEL]   = conso_row[LESSON_CELL_RAISED_IN_DWS_PLM].to_s
         lessons_content_array << row_hash
       end
       i += 1

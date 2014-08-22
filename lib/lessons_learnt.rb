@@ -14,20 +14,26 @@ module LessonsLearnt
 
   def self.import(file)
     # Import excel file
-    doc         = LessonsLearnt.load_lessons_excel_file(file)
-    lessons     = doc.worksheet LessonsLearntProject.WORKSHEET_LABEL_1
-    actions     = doc.worksheet LessonsLearntProject.WORKSHEET_LABEL_2
-    assessments = doc.worksheet LessonsLearntProject.WORKSHEET_LABEL_3
-    file_name   = LessonsLearnt.get_file_name(file)
+    doc           = LessonsLearnt.load_lessons_excel_file(file)
+    file_name     = LessonsLearnt.get_file_name(file)
+    lessons       = doc.worksheet "Lessons learnt"
+    actions       = doc.worksheet "Actions"
+    assessments   = doc.worksheet "Assessment of quality service"
     template_type = LessonsLearnt.get_template_type(lessons)
 
+    Rails.logger.info "CDB DEBUG"
+    Rails.logger.info "---"+template_type.to_s
     if template_type == TEMPLATE_TYPE_PROJECT
+      Rails.logger.info "Case 1"
       LessonsLearntProject.import(lessons, actions, assessments, file_name)
     elsif template_type == TEMPLATE_TYPE_WS
+      Rails.logger.info "Case 2"
       LessonsLearntWs.import(lessons, actions, assessments, file_name)
-    elsif template_type == TEMPLATE_TYPE_PML
+    elsif template_type == TEMPLATE_TYPE_PLM
+      Rails.logger.info "Case 3"
       LessonsLearntPmt.import(lessons, actions, assessments, file_name)
     elsif template_type == TEMPLATE_TYPE_MT
+      Rails.logger.info "Case 4"
       LessonsLearntMt.import(lessons, actions, assessments, file_name)
     end
       

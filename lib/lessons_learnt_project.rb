@@ -4,10 +4,6 @@ module LessonsLearntProject
 
   include ApplicationHelper
 
-  WORKSHEET_LABEL_1                 = "Lessons learnt Collect"
-  WORKSHEET_LABEL_2                 = "Actions"
-  WORKSHEET_LABEL_3                 = "Assessment of quality service"
-
   # LESSON SHEET ROWS INDEX
   LESSON_BEGIN_HEADER               = 1
   LESSON_END_HEADER                 = 9
@@ -113,6 +109,9 @@ module LessonsLearntProject
     lesson_file.suite_name    = lessons_header_hash["suite"]
     lesson_file.project_name  = lessons_header_hash["project"]
     lesson_file.save
+
+    Rails.logger.info("DEBUG CDB")
+    Rails.logger.info(lesson_file.to_s)
 
     # Delete all existent data
     lesson_file.lesson_collects.each(&:destroy)

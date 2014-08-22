@@ -4,10 +4,6 @@ module LessonsLearntProject
 
   include ApplicationHelper
 
-  WORKSHEET_LABEL_1                 = "Best Practices Pre Analysis"
-  WORKSHEET_LABEL_2                 = "Actions"
-  WORKSHEET_LABEL_3                 = "Assessment of quality service"
-
   # LESSON SHEET ROWS INDEX
   LESSON_BEGIN_HEADER               = 1
   LESSON_END_HEADER                 = 6
