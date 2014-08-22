@@ -185,7 +185,7 @@ class Milestone < ActiveRecord::Base
     elsif self.status == 0
       self.update_attribute('status',-1) if rs.size == 0
     end
-    self.update_attribute('comments', self.comments.gsub("No request",shortnames(rs))) if rs.size > 0 and self.comments
+    # self.update_attribute('comments', self.comments.gsub("No request",shortnames(rs))) if rs.size > 0 and self.comments
 
     # check done
     self.update_attribute('done',1) if self.status == 1 and self.done == 0
@@ -252,6 +252,12 @@ class Milestone < ActiveRecord::Base
         has_data = true
       end
       if self.spiders.size > 0
+        has_data = true
+      end
+      if self.done != 0
+        has_data = true
+      end
+      if self.status != -1
         has_data = true
       end
       return has_data
