@@ -723,3 +723,6 @@ table.sortable td    {
 .milestone_edit_loading {
   display: none;
 }
+.new_milestone_count_class{
+  display: none;
+}

@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/stylesheets/jquery-ui-1.10.4.css" />
 
 <script type="text/javascript">
+  var milestones_creation_multiple = Array();
   // General
   $j( document ).ready(function() {
 
@@ -35,6 +36,11 @@
     // Milestone is virtual
     $j(".checkbox_milestone_name").click(function() {
     	change_milestone_is_virtual($j(this).prop('checked'), $j(this).attr("id").split("_")[1]);
+    });
+
+    // New milestone select list
+    $j("#new_milestone_select_id").change(function() {
+    	change_new_milestone($j(this).val());
     });
 
   });
@@ -143,6 +149,19 @@ function check_after_launch() {
 			$j("#is_virtual_true_"+id).hide();
     	}
 	});
+
+	<% @milestones_name_multiple.each do |m_id| %>
+		milestones_creation_multiple.push(parseInt(<%= m_id %>));
+	<% end %>
+}
+
+function change_new_milestone(value) {
+
+	if ($j.inArray(parseInt(value), milestones_creation_multiple) != -1) {
+		$j("#new_milestone_count_id").show();
+	} else {
+		$j("#new_milestone_count_id").hide();
+	}
 }
 
 function alert_msg(msg) {
@@ -180,8 +199,10 @@ function alert_msg(msg) {
 	<!-- Buttons -->
 	<div id="milestones_edit_new_" class="display_inline float_right" >
 		<% form_tag({:action=>'add_new_milestone'}, {:class => "milestone_edit_form"}) do %>
+			Milestone Name: <%= select_tag ("new_milestone",options_for_select(@milestones_name), :class => 'new_milestone_select_class', :id => "new_milestone_select_id")  %>
+			<%= select_tag ("new_milestone_count", options_for_select([1,2,3,4,5,6,7,8,9,10]), :class => 'new_milestone_count_class', :id => "new_milestone_count_id")  %>
 			<%= hidden_field_tag('project_id', @project.id) %>
-			<%= submit_tag "New milestone", :id => "new_milestone_button" %>
+			<%= submit_tag "Add", :id => "new_milestone_button" %>
 		<% end %>
 	</div>
 </div>

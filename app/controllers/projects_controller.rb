@@ -740,6 +740,7 @@ class ProjectsController < ApplicationController
 
     @lifecycles   = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map{|l| [l.name, l.id]}
     @milestones_name = MilestoneName.get_active_sorted.map{|m| [m.title, m.id]}
+    @milestones_name_multiple = MilestoneName.get_active_sorted.select { |m| m.multiple_creation == true }.map{|m| m.id}
 
     # Milestones name hash to link milestone <=> milestones name
     @milestones_limit_names = ""
@@ -882,9 +883,15 @@ class ProjectsController < ApplicationController
   end
 
   def add_new_milestone
-    project_id    = params[:project_id]
-    project       = Project.find(:first, :conditions => ["id = ?", project_id])
+    project_id        = params[:project_id]
+    milestone_name_id = params[:new_milestone]
+    milestone_count   = params[:new_milestone_count]
+
+    project         = Project.find(:first, :conditions => ["id = ?", project_id])
+    milestone_name  = MilestoneName.find(:first, :conditions => ["id = ?", milestone_name_id])
+
     if project
+      # Max order index
       max_index_order = 0
       project.sorted_milestones.each do |m|
         if m.index_order > max_index_order
@@ -892,14 +899,26 @@ class ProjectsController < ApplicationController
         end
       end
 
-      new_milestone = Milestone.new
-      new_milestone.project = project
-      new_milestone.name = project.lifecycle_object.lifecycle_milestones.find(:first).milestone_name.title
-      new_milestone.index_order = max_index_order + 1
-      new_milestone.status = -1
-      new_milestone.is_virtual = false
-      new_milestone.comments = ""
-      new_milestone.save
+      i = 0
+      while i < milestone_count.to_i
+        # Create
+        new_milestone = Milestone.new
+        new_milestone.project = project
+        if milestone_name
+          new_milestone.name = milestone_name.title
+        else
+          new_milestone.name = project.lifecycle_object.lifecycle_milestones.find(:first).milestone_name.title
+        end
+        new_milestone.index_order = max_index_order + 1
+        new_milestone.status = -1
+        new_milestone.is_virtual = false
+        new_milestone.comments = ""
+        new_milestone.save
+
+        # Update index
+        max_index_order = max_index_order + 1
+        i = i + 1
+      end
     end
     redirect_to :action=>:milestones_edit, :id=>project_id
   end
