@@ -1,12 +1,12 @@
 require 'spreadsheet'
 
-module LessonsLearntProject
+module LessonsLearntWs
 
   include ApplicationHelper
 
   # LESSON SHEET ROWS INDEX
   LESSON_BEGIN_HEADER               = 1
-  LESSON_END_HEADER                 = 6
+  LESSON_END_HEADER                 = 7
   LESSON_BEGIN_CONTENT              = 8
   
   # LESSON SHEET HEADER INDEX
@@ -102,10 +102,10 @@ module LessonsLearntProject
 
   def self.import(lessons, actions, assessments, file_name)
     # Parse excel file
-    lessons_header_hash       = LessonsLearntProject.parse_lessons_excel_header(lessons)
-    lessons_content_array     = LessonsLearntProject.parse_lessons_excel_content(lessons)
-    actions_content_array     = LessonsLearntProject.parse_actions_excel_content(actions)
-    assessments_content_array = LessonsLearntProject.parse_assessments_content(assessments)
+    lessons_header_hash       = LessonsLearntWs.parse_lessons_excel_header(lessons)
+    lessons_content_array     = LessonsLearntWs.parse_lessons_excel_content(lessons)
+    actions_content_array     = LessonsLearntWs.parse_actions_excel_content(actions)
+    assessments_content_array = LessonsLearntWs.parse_assessments_content(assessments)
 
     # Create lesson file
     lesson_file               = LessonCollectFile.find(:first, :conditions => ["filename like ?", file_name])
@@ -114,6 +114,7 @@ module LessonsLearntProject
     end
     lesson_file.qwr_sqr       = lessons_header_hash["qwr"]
     lesson_file.workstream    = lessons_header_hash["coc"]
+    lesson_file.filename      = file_name
     lesson_file.save
 
     # Delete all existent data
@@ -140,14 +141,14 @@ module LessonsLearntProject
         lesson_collect.status                 = l[LESSON_CELL_STATUS_LABEL]
 
         if  l[LESSON_CELL_AXES_LABEL]
-          lesson_collect_axe = LessonCollectAxes.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_AXES_LABEL]])
+          lesson_collect_axe = LessonCollectAxe.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_AXES_LABEL]])
           if lesson_collect_axe
             lesson_collect.lesson_collect_axe = lesson_collect_axe
           end
         end
 
         if  l[LESSON_CELL_SUB_AXES_LABEL]
-          lesson_collect_sub_axe = LessonCollectAxes.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_SUB_AXES_LABEL]])
+          lesson_collect_sub_axe = LessonCollectSubAxe.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_SUB_AXES_LABEL]])
           if lesson_collect_sub_axe
             lesson_collect.lesson_collect_sub_axe = lesson_collect_sub_axe
           end

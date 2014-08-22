@@ -1,6 +1,6 @@
 require 'spreadsheet'
 
-module LessonsLearntPml
+module LessonsLearntPlm
 
   include ApplicationHelper
 
@@ -102,10 +102,10 @@ module LessonsLearntPml
 
   def self.import(lessons, actions, assessments, file_name)
   	# Parse excel file
-    lessons_header_hash       = LessonsLearntProject.parse_lessons_excel_header(lessons)
-    lessons_content_array     = LessonsLearntProject.parse_lessons_excel_content(lessons)
-    actions_content_array     = LessonsLearntProject.parse_actions_excel_content(actions)
-    assessments_content_array = LessonsLearntProject.parse_assessments_content(assessments)
+    lessons_header_hash       = LessonsLearntMt.parse_lessons_excel_header(lessons)
+    lessons_content_array     = LessonsLearntMt.parse_lessons_excel_content(lessons)
+    actions_content_array     = LessonsLearntMt.parse_actions_excel_content(actions)
+    assessments_content_array = LessonsLearntMt.parse_assessments_content(assessments)
 
     # Create lesson file
     lesson_file               = LessonCollectFile.find(:first, :conditions => ["filename like ?", file_name])
@@ -141,14 +141,14 @@ module LessonsLearntPml
         lesson_collect.status                 = l[LESSON_CELL_STATUS_LABEL]
 
         if  l[LESSON_CELL_AXES_LABEL]
-          lesson_collect_axe = LessonCollectAxes.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_AXES_LABEL]])
+          lesson_collect_axe = LessonCollectAxe.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_AXES_LABEL]])
           if lesson_collect_axe
             lesson_collect.lesson_collect_axe = lesson_collect_axe
           end
         end
 
         if  l[LESSON_CELL_SUB_AXES_LABEL]
-          lesson_collect_sub_axe = LessonCollectAxes.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_SUB_AXES_LABEL]])
+          lesson_collect_sub_axe = LessonCollectSubAxe.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_SUB_AXES_LABEL]])
           if lesson_collect_sub_axe
             lesson_collect.lesson_collect_sub_axe = lesson_collect_sub_axe
           end

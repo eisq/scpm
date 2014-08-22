@@ -7,13 +7,13 @@ module LessonsLearntProject
   # LESSON SHEET ROWS INDEX
   LESSON_BEGIN_HEADER               = 1
   LESSON_END_HEADER                 = 9
-  LESSON_BEGIN_CONTENT              = 11
+  LESSON_BEGIN_CONTENT              = 12
   
   # LESSON SHEET HEADER INDEX
   PM_HEADER                         = "PM :"
   QWR_HEADER                        = "QWR/SQR :"
   COC_HEADER                        = "DWS :"
-  SUITE_HEADER                      = "PLM Name"
+  SUITE_HEADER                      = "PLM Name :"
   PROJECT_HEADER                    = "Project Name :"
   
   # LESSON SHEET CELLS INDEX
@@ -36,7 +36,7 @@ module LessonsLearntProject
   LESSON_CELL_IMPROVEMENT_LABEL     = "improvement" 
   LESSON_CELL_AXES_LABEL            = "axes"      
   LESSON_CELL_SUB_AXES_LABEL        = "sub_axes"
-  LESSON_CELL_ESCALATE              = "escalate"
+  LESSON_CELL_ESCALATE_LABEL        = "escalate"
 
   # ACTION SHEET ROWS INDEX 
   ACTION_BEGIN_CONTENT              = 3
@@ -108,10 +108,9 @@ module LessonsLearntProject
     lesson_file.workstream    = lessons_header_hash["coc"]
     lesson_file.suite_name    = lessons_header_hash["suite"]
     lesson_file.project_name  = lessons_header_hash["project"]
+    lesson_file.filename      = file_name
     lesson_file.save
 
-    Rails.logger.info("DEBUG CDB")
-    Rails.logger.info(lesson_file.to_s)
 
     # Delete all existent data
     lesson_file.lesson_collects.each(&:destroy)
@@ -131,14 +130,14 @@ module LessonsLearntProject
         lesson_collect.escalate_next_level    = l[LESSON_CELL_ESCALATE_LABEL]
 
         if  l[LESSON_CELL_AXES_LABEL]
-          lesson_collect_axe = LessonCollectAxes.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_AXES_LABEL]])
+          lesson_collect_axe = LessonCollectAxe.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_AXES_LABEL]])
           if lesson_collect_axe
             lesson_collect.lesson_collect_axe = lesson_collect_axe
           end
         end
 
         if  l[LESSON_CELL_SUB_AXES_LABEL]
-          lesson_collect_sub_axe = LessonCollectAxes.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_SUB_AXES_LABEL]])
+          lesson_collect_sub_axe = LessonCollectSubAxe.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_SUB_AXES_LABEL]])
           if lesson_collect_sub_axe
             lesson_collect.lesson_collect_sub_axe = lesson_collect_sub_axe
           end
@@ -281,7 +280,7 @@ module LessonsLearntProject
         row_hash[LESSON_CELL_IMPROVEMENT_LABEL]     = conso_row[LESSON_CELL_IMPROVEMENT].to_s
         row_hash[LESSON_CELL_AXES_LABEL]            = conso_row[LESSON_CELL_AXES].to_s
         row_hash[LESSON_CELL_SUB_AXES_LABEL]        = conso_row[LESSON_CELL_SUB_AXES].to_s
-        row_hash[LESSON_CELL_ESCALATE]              = conso_row[LESSON_CELL_ESCALATE].to_s
+        row_hash[LESSON_CELL_ESCALATE_LABEL]        = conso_row[LESSON_CELL_ESCALATE].to_s
         lessons_content_array << row_hash
       end
       i += 1
