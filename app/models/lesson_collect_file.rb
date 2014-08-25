@@ -4,6 +4,7 @@ class LessonCollectFile < ActiveRecord::Base
  has_many    :lesson_collect_assessments,   	:dependent=>:destroy
  has_many    :lesson_collect_file_downloads,   	:dependent=>:destroy
  belongs_to	 :lesson_collect_template_type
+ has_many 	 :lesson_collect_file_analyzes
  belongs_to	 :request
 
 

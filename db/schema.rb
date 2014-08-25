@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140825141414) do
+ActiveRecord::Schema.define(:version => 20140825164423) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -329,6 +329,14 @@ ActiveRecord::Schema.define(:version => 20140825141414) do
 
   create_table "lesson_collect_axes", :force => true do |t|
     t.string "name"
+  end
+
+  create_table "lesson_collect_file_analyzes", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "lesson_collect_file_id"
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "lesson_collect_file_downloads", :force => true do |t|
