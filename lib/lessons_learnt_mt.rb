@@ -21,7 +21,10 @@ module LessonsLearntMt
   LESSON_CELL_IMPROVEMENT           = 6
   LESSON_CELL_AXES                  = 7
   LESSON_CELL_SUB_AXES              = 8
-  LESSON_CELL_RAISED_IN_DWS_PLM     = 9
+  LESSON_CELL_ACTION_PLAN           = 9
+  LESSON_CELL_ALREADY_EXIST         = 10
+  LESSON_CELL_RAISED_IN_DWS_PLM     = 11
+  LESSON_CELL_STATUS                = 12
   
   # LESSON SHEET CELLS LABEL
   LESSON_CELL_ID_LABEL                = "id"           
@@ -32,7 +35,10 @@ module LessonsLearntMt
   LESSON_CELL_IMPROVEMENT_LABEL       = "improvement" 
   LESSON_CELL_AXES_LABEL              = "axes"      
   LESSON_CELL_SUB_AXES_LABEL          = "sub_axes"
+  LESSON_CELL_ACTION_PLAN_LABEL       = "action_plan"
+  LESSON_CELL_ALREADY_EXIST_LABEL     = "already_exist"
   LESSON_CELL_RAISED_IN_DWS_PLM_LABEL = "raised_dws_plm"
+  LESSON_CELL_STATUS_LABEL            = "status"
 
   # ACTION SHEET ROWS INDEX 
   ACTION_BEGIN_CONTENT              = 3
@@ -112,8 +118,10 @@ module LessonsLearntMt
       lesson_collect.topics                 = l[LESSON_CELL_TOPICS_LABEL]       
       lesson_collect.cause                  = l[LESSON_CELL_PB_CAUSE_LABEL]    
       lesson_collect.improvement            = l[LESSON_CELL_IMPROVEMENT_LABEL]  
-      lesson_collect.raised_in_dws_plm      = l[LESSON_CELL_RAISED_IN_DWS_PLM]
-
+      lesson_collect.raised_in_dws_plm      = l[LESSON_CELL_RAISED_IN_DWS_PLM_LABEL]
+      lesson_collect.action_plan            = l[LESSON_CELL_ACTION_PLAN_LABEL]
+      lesson_collect.already_exist          = l[LESSON_CELL_ALREADY_EXIST_LABEL]
+      lesson_collect.status                 = l[LESSON_CELL_STATUS_LABEL]
 
       if  l[LESSON_CELL_AXES_LABEL]
         lesson_collect_axe = LessonCollectAxe.find(:first, :conditions => ["name LIKE ?", l[LESSON_CELL_AXES_LABEL]])
@@ -210,7 +218,11 @@ module LessonsLearntMt
   # row_hash["pb_causes"]    
   # row_hash["improvement"]  
   # row_hash["axes"]         
-  # row_hash["sub_axes"]     
+  # row_hash["sub_axes"]    
+  # row_hash["action_plan"]     
+  # row_hash["already_exist"]   
+  # row_hash["raised_dws_plm"]   
+  # row_hash["status"]         
   def self.parse_lessons_excel_content(consoSheet)
     # Var
     lessons_content_array = Array.new
@@ -228,6 +240,9 @@ module LessonsLearntMt
         row_hash[LESSON_CELL_IMPROVEMENT_LABEL]         = conso_row[LESSON_CELL_IMPROVEMENT].to_s
         row_hash[LESSON_CELL_AXES_LABEL]                = conso_row[LESSON_CELL_AXES].to_s
         row_hash[LESSON_CELL_SUB_AXES_LABEL]            = conso_row[LESSON_CELL_SUB_AXES].to_s
+        row_hash[LESSON_CELL_ACTION_PLAN_LABEL]         = conso_row[LESSON_CELL_ACTION_PLAN].to_s
+        row_hash[LESSON_CELL_ALREADY_EXIST_LABEL]       = conso_row[LESSON_CELL_ALREADY_EXIST].to_s
+        row_hash[LESSON_CELL_STATUS_LABEL]              = conso_row[LESSON_CELL_STATUS].to_s
         row_hash[LESSON_CELL_RAISED_IN_DWS_PLM_LABEL]   = conso_row[LESSON_CELL_RAISED_IN_DWS_PLM].to_s
         lessons_content_array << row_hash
       end

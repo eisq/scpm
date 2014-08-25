@@ -31,7 +31,7 @@ module LessonsLearnt
       LessonsLearntWs.import(lessons, actions, assessments, file_name)
     elsif template_type == TEMPLATE_TYPE_PLM
       Rails.logger.info "Case 3"
-      LessonsLearntPmt.import(lessons, actions, assessments, file_name)
+      LessonsLearntPlm.import(lessons, actions, assessments, file_name)
     elsif template_type == TEMPLATE_TYPE_MT
       Rails.logger.info "Case 4"
       LessonsLearntMt.import(lessons, actions, assessments, file_name)

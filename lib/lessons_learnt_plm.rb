@@ -102,10 +102,10 @@ module LessonsLearntPlm
 
   def self.import(lessons, actions, assessments, file_name)
   	# Parse excel file
-    lessons_header_hash       = LessonsLearntMt.parse_lessons_excel_header(lessons)
-    lessons_content_array     = LessonsLearntMt.parse_lessons_excel_content(lessons)
-    actions_content_array     = LessonsLearntMt.parse_actions_excel_content(actions)
-    assessments_content_array = LessonsLearntMt.parse_assessments_content(assessments)
+    lessons_header_hash       = LessonsLearntPlm.parse_lessons_excel_header(lessons)
+    lessons_content_array     = LessonsLearntPlm.parse_lessons_excel_content(lessons)
+    actions_content_array     = LessonsLearntPlm.parse_actions_excel_content(actions)
+    assessments_content_array = LessonsLearntPlm.parse_assessments_content(assessments)
 
     # Create lesson file
     lesson_file               = LessonCollectFile.find(:first, :conditions => ["filename like ?", file_name])
