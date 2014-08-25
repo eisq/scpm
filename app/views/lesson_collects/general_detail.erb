@@ -1,0 +1,36 @@
+<%= render(:file=>"lesson_collects/menu", :locals=>{:dashboard => 1}) %>
+
+<h2>General</h2>
+	<%= link_to("Delete", {:controller=>'lesson_collects', :action=>'delete', :id=>@lesson_collect_file.id.to_s}, :confirm=>"Are you sure ?") %> 
+	<p>Ticket: <%= @lesson_collect_file.request.summary if @lesson_collect_file.request %></p>
+	<p>Commentaire:</p>
+
+	<% form_for :@lesson_collect_file, :url=>{:action=>'lesson_collect_file_comment_update'} do |f| -%>
+		Archivé:  <%= check_box :lesson_collect_file, :is_archived %><br />
+		<%= hidden_field(:lesson_collect_file, :id) %>
+		<%= text_area :lesson_collect_file, :comment, {:rows=>3} %><br />
+	  	<%= submit_tag 'Save' %></p>
+	<% end -%>
+
+<h2>Axes</h2>
+<ul>
+<% @lesson_collect_file.get_axes.each do |a| %>
+	<li><%= a %></li>
+<% end %>
+</ul>
+
+<h2>Sub-Axes</h2>
+<ul>
+<% @lesson_collect_file.get_sub_axes.each do |sa| %>
+	<li><%= sa %></li>
+<% end %>
+</ul>
+
+<h2>Jalons</h2>
+<ul>
+<% @lesson_collect_file.get_milestones.each do |m| %>
+	<li><%= m %></li>
+<% end %>
+</ul>
+
+<h2>RISE</h2>

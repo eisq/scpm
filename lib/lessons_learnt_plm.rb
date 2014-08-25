@@ -114,6 +114,12 @@ module LessonsLearntPlm
     end
     lesson_file.qwr_sqr       = lessons_header_hash["qwr"]
     lesson_file.suite_name    = lessons_header_hash["suite"]
+    lesson_file.filename      = file_name
+    lesson_file.updated_at    = DateTime.now.to_date
+    template_type = LessonCollectTemplateType.find(:first, :conditions=>["name LIKE ?",  APP_CONFIG['lesson_template_plm']])
+    if template_type
+      lesson_file.lesson_collect_template_type = template_type
+    end
     lesson_file.save
 
  

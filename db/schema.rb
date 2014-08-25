@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140821170411) do
+ActiveRecord::Schema.define(:version => 20140825141414) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -349,6 +349,8 @@ ActiveRecord::Schema.define(:version => 20140821170411) do
     t.integer  "request_id"
     t.string   "filename"
     t.string   "mt_qr"
+    t.text     "comment"
+    t.boolean  "is_archived",                     :default => false
   end
 
   create_table "lesson_collect_sub_axes", :force => true do |t|
@@ -432,6 +434,7 @@ ActiveRecord::Schema.define(:version => 20140821170411) do
     t.string  "title"
     t.boolean "count_in_spider_prev", :default => true
     t.boolean "is_active",            :default => true
+    t.boolean "multiple_creation",    :default => false
   end
 
   create_table "milestones", :force => true do |t|

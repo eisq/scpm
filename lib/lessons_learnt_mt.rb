@@ -106,6 +106,12 @@ module LessonsLearntMt
       lesson_file             = LessonCollectFile.new
     end
     lesson_file.mt_qr         = lessons_header_hash["MT_QR_HEADER"]
+    lesson_file.filename      = file_name
+    lesson_file.updated_at    = DateTime.now.to_date
+    template_type = LessonCollectTemplateType.find(:first, :conditions=>["name LIKE ?",  APP_CONFIG['lesson_template_mt']])
+    if template_type
+      lesson_file.lesson_collect_template_type = template_type
+    end
     lesson_file.save
 
     # Save lessons

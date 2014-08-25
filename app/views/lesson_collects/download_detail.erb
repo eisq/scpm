@@ -1,0 +1,8 @@
+<%= render(:file=>"lesson_collects/menu", :locals=>{:dashboard => 1}) %>
+
+<table>
+<tr><th>User</th><th>Date</th><tr>
+<% @lesson_collect_file.lesson_collect_file_downloads.each do |d| %>
+	<tr><td><%= d.person.name %></td><td><%= d.download_date.to_s %></td><tr>
+<% end %>
+</table>

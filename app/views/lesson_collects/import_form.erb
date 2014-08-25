@@ -1,0 +1,7 @@
+<!-- IMPORT -->
+<h2> Lessons Learnt Import </h2>
+
+<%= form_tag({:action => 'import'}, :multipart => true) %>
+<%= file_field 'upload', 'datafile' %>
+<%= submit_tag "Import" %></p>
+</form>

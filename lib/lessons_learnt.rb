@@ -21,20 +21,16 @@ module LessonsLearnt
     assessments   = doc.worksheet "Assessment of quality service"
     template_type = LessonsLearnt.get_template_type(lessons)
 
-    Rails.logger.info "CDB DEBUG"
-    Rails.logger.info "---"+template_type.to_s
     if template_type == TEMPLATE_TYPE_PROJECT
-      Rails.logger.info "Case 1"
       LessonsLearntProject.import(lessons, actions, assessments, file_name)
     elsif template_type == TEMPLATE_TYPE_WS
-      Rails.logger.info "Case 2"
       LessonsLearntWs.import(lessons, actions, assessments, file_name)
     elsif template_type == TEMPLATE_TYPE_PLM
-      Rails.logger.info "Case 3"
       LessonsLearntPlm.import(lessons, actions, assessments, file_name)
     elsif template_type == TEMPLATE_TYPE_MT
-      Rails.logger.info "Case 4"
       LessonsLearntMt.import(lessons, actions, assessments, file_name)
+    else
+      Raise "Unknow Template type"
     end
       
   end

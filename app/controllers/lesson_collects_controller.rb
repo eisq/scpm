@@ -2,14 +2,13 @@ require 'spreadsheet'
 class LessonCollectsController < ApplicationController
   layout 'tools'         
 
-  # ------------------------------------------------------------------------------------
-  # ACTIONS
-  # ------------------------------------------------------------------------------------
-
-  # Index
+  
+  # --------
+  # INDEX
+  # --------
   def index
     # Params init
-  	@lessonFiles   = nil
+  	@lessonFiles    = nil
     @ws_array       = Array.new
     @suites_array   = Array.new
     @ws_selected    = -1
@@ -66,6 +65,7 @@ class LessonCollectsController < ApplicationController
     end
   end
 
+
   def delete
     lesson_file_id = params[:id]
     if lesson_file_id != nil
@@ -75,11 +75,63 @@ class LessonCollectsController < ApplicationController
     redirect_to "/lesson_collects/index"
   end
 
+
+  # --------
+  # DETAIL
+  # --------
+  def general_detail
+    lesson_file_id = params[:id]
+    if lesson_file_id != nil
+      @lesson_collect_file = LessonCollectFile.find(:first, :conditions=>["id = ?", lesson_file_id])
+
+    else
+      redirect_to "/lesson_collects/index"
+    end
+  end
+
+  def download_detail
+    lesson_file_id = params[:id]
+    if lesson_file_id != nil
+      @lesson_collect_file = LessonCollectFile.find(:first, :conditions=>["id = ?", lesson_file_id])
+
+    else
+      redirect_to "/lesson_collects/index"
+    end
+  end
+
+  def analysis_detail
+    lesson_file_id = params[:id]
+    if lesson_file_id != nil
+      @lesson_collect_file = LessonCollectFile.find(:first, :conditions=>["id = ?", lesson_file_id])
+
+    else
+      redirect_to "/lesson_collects/index"
+    end
+  end
+
+  def lesson_collect_file_comment_update
+    lesson_file = LessonCollectFile.find(:first, :conditions=>["id = ?", params[:lesson_collect_file][:id]])
+    if lesson_file.update_attributes(params[:lesson_collect_file])
+      redirect_to(:action=>'general_detail', :id=>lesson_file.id.to_s)
+    else
+      redirect_to "/lesson_collects/index"
+    end
+  end
+
+  # --------
+  # IMPORT
+  # -------- 
+  def import_form
+  end
+
   def import
     LessonsLearnt.import(params[:upload])
     redirect_to(:action=>'index', :imported=>1)
   end
 
+  # --------
+  # EXPORT
+  # --------
   def export
     begin
       # Variables

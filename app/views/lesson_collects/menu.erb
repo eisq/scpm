@@ -1,0 +1,13 @@
+<script src="/javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="/javascripts/jquery-ui-1.10.4.min.js"></script>
+<script type="text/javascript">
+	var $j = jQuery.noConflict();
+</script>
+
+<div id="ll_menu">
+	<h3 class="ll_title"><%= @lesson_collect_file.filename if @lesson_collect_file.filename %></h3>
+	<%= link_to "Back", {:controller => "lesson_collects", :action => "index"} %>
+	<%= link_to "General", {:controller => "lesson_collects", :action => "general_detail", :id => @lesson_collect_file.id} %>
+	<%= link_to "Downloads", {:controller => "lesson_collects", :action => "download_detail", :id => @lesson_collect_file.id} %>
+	<%= link_to "Analyzes", {:controller => "lesson_collects", :action => "analysis_detail", :id => @lesson_collect_file.id} %>
+</div>

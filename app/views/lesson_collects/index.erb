@@ -4,13 +4,6 @@
 	</div>
 <% end %>
 
-<!-- IMPORT -->
-<h2> Lessons Learnt Import </h2>
-
-<%= form_tag({:action => 'import'}, :multipart => true) %>
-<%= file_field 'upload', 'datafile' %>
-<%= submit_tag "Import" %></p>
-</form>
 
 <!-- LIST -->
 <h2> Lessons Learnt Imported files </h2>
@@ -30,31 +23,36 @@
 
 <table>
 	<tr>
-		<th>Id</th>
+		<th>Type</th>
+		<th>Filename</th>
 		<th>PM</th>
 		<th>QWR SQR</th>
 		<th>Workstream</th>
 		<th>Suite name</th>
 		<th>Project Name</th>
 		<th>Import date</th>
+		<th></th>
 		<th style="text-align:center;">[collects]</th>
 		<th style="text-align:center;">[actions]</th>
 		<th style="text-align:center;">[assessments]</th>
 		<th></th>
+		<th></th>
 	</tr>
 <% @lessonFiles.each do |lf| %>
 	<tr>
-		<td><%= lf.id.to_s %></td>
+		<td><%= lf.lesson_collect_template_type.name if lf.lesson_collect_template_type %></td>
+		<td><%= lf.filename %></td>
 		<td><%= lf.pm %></td>
 		<td><%= lf.qwr_sqr %></td>
 		<td><%= lf.workstream %></td>
 		<td><%= lf.suite_name %></td>
 		<td><%= lf.project_name %></td>
-		<td><%= lf.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+		<td><%= lf.updated_at.strftime("%Y-%m-%d %H:%M") %></td>
+		<td>BUTTON DL</td>
 		<td style="text-align:center;">[<%= lf.lesson_collects.count.to_s %>]</td>
 		<td style="text-align:center;">[<%= lf.lesson_collect_actions.count.to_s %>]</td>
 		<td style="text-align:center;">[<%= lf.lesson_collect_assessments.count.to_s %>]</td>
-		<td><%= link_to("Delete", {:controller=>'lesson_collects', :action=>'delete', :id=>lf.id.to_s}, :confirm=>"Are you sure ?") %></td>
+		<td><%= link_to("Detail", {:controller=>'lesson_collects', :action=>'general_detail', :id=>lf.id.to_s}) %></td>
 	</tr>
 <% end %>
 </table>

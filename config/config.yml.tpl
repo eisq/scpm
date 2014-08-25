@@ -21,6 +21,9 @@ report_milestones_eligible_for_note:
     - QG TD
     - M13
     - CCB
+report_project_creation_lifecycle: "Waterfall" # Default lifecycle for new project
+stream_project_creation_lifecycle_1: "Waterfall" # The type of lifecycle selected for a project created from stream management with the case 1
+stream_project_creation_lifecycle_2: "LBIP+" # The type of lifecycle selected for a project created from stream management with the case 2
     
 # menu and access configuration
 workloads_add_by_request_number: true
@@ -102,6 +105,12 @@ workload_alerts_email_destination: "addressMail1@sqli.com,addressMail2@sqli.com,
 qs_load: 0.375
 spider_load: 0.375
 
+# Lesson
+lesson_template_project: "PROJECT"
+lesson_template_ws: "WS"
+lesson_template_plm: "PLM"
+lesson_template_mt: "M&T
+"  
 # Presale
 presale_milestones_priority_setting_up:
     - M1
