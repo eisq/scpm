@@ -40,6 +40,15 @@ class LessonCollectFile < ActiveRecord::Base
  end
 
  def get_rise
+ 	result = Array.new
+ 	self.lesson_collects.each do |l|
+ 		if l.status and l.status == "Published"
+ 			result << l
+ 		end
+ 	end
+ 	return result
  end
+
+
 
 end

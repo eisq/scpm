@@ -7,55 +7,126 @@ class LessonCollectsController < ApplicationController
   # INDEX
   # --------
   def index
-    # Params init
+
+    # -------
+    # PARAMETERS
+    # --------
+    @imported       = params[:imported]
   	@lessonFiles    = nil
     @ws_array       = Array.new
     @suites_array   = Array.new
-    @ws_selected    = -1
-    @suite_selected = -1
-    @imported       = params[:imported]
+    @types_array    = Array.new
+    @projects_array = Array.new
+    @axes_array     = Array.new
+    @sub_axes_array = Array.new
 
-    # Params set
-    if params[:ws_id] and params[:ws_id] != "-1"
-      @ws_selected = params[:ws_id]
+    # Filters
+    @filter_ws_selected         = Array.new
+    @filter_suite_selected      = Array.new
+    @filter_already_downloaded  = -1
+    @filter_type_selected       = -1
+    @filter_project_selected    = -1
+    @filter_axe_selected        = -1
+    @filter_sub_axe_selected    = -1
+
+
+    # -------
+    # FILTERS 
+    # --------
+    if params[:filter_ws]
+      params[:filter_ws].each do |ws|
+        @filter_ws_selected << ws.to_i
+      end
     end
-    if params[:suite_id] and params[:suite_id] != "-1"
-      @suite_selected = params[:suite_id]
+    if params[:filter_suite]
+      params[:filter_suite].each do |suite|
+        @filter_suite_selected << suite.to_i
+      end
     end
+    if params[:filter_type_id] and params[:filter_type_id] != "-1"
+      @filter_type_selected = params[:filter_type_id]
+    end
+    if params[:filter_project_id] and params[:filter_project_id] != "-1"
+      @filter_project_selected = params[:filter_project_id]
+    end
+    if params[:filter_axe_id] and params[:filter_axe_id] != "-1"
+      @filter_axe_selected = params[:filter_axe_id]
+    end
+    if params[:filter_sub_axe_id] and params[:filter_sub_axe_id] != "-1"
+      @filter_suite_selected = params[:filter_sub_axe_id]
+    end
+
+    if params[:filter_already_downloaded] and params[:filter_already_downloaded]!= "-1"
+      @filter_already_downloaded = params[:filter_already_downloaded]
+    else
+      @filter_already_downloaded = false
+    end
+
+
+    # -------
+    # LISTS
+    # --------
 
     # Workstream list 
   	ws_list   = Workstream.find(:all)
-    @ws_array << ["ALL", -1]
     ws_list.each{ |ws| 
       @ws_array << [ws.name, ws.id]
     }
 
     # Suite tag list
     suite_list = SuiteTag.find(:all)
-    @suites_array << ["ALL", -1]
     suite_list.each{ |suite|
       @suites_array << [suite.name, suite.id]
     }
 
+    # Types list
+    type_list = LessonCollectTemplateType.find(:all)
+    type_list.each{ |type|
+      @types_array << [type.name, type.id]
+    }
+
+    # Projects list
+    project_list = Project.find(:all, :conditions=>["is_running=1 and project_id IS NOT NULL"])
+    project_list.each{ |project|
+      @projects_array << [project.name, project.id]
+    }
+
+    # Axes list
+    axe_list = LessonCollectAxe.find(:all)
+    axe_list.each{ |axe|
+      @axes_array << [axe.name, axe.id]
+    }
+
+    # Sub Axes list
+    sub_axe_list = LessonCollectSubAxe.find(:all)
+    sub_axe_list.each{ |sub_axe|
+      @sub_axes_array << [sub_axe.name, sub_axe.id]
+    }
+
+    # -------
+    # QUERIES
+    # --------
+
     # Lesson list query conditions
     conditions = nil
-    if (@ws_selected and @ws_selected != -1)
-      ws_select_obj = Workstream.find(@ws_selected)
-      if (ws_select_obj)
-       conditions = "workstream like '%#{ws_select_obj.name}%'"
-      end
-    end
+    # if (@filter_ws_selected and @filter_ws_selected != -1)
+    #   filter_ws_select_obj = Workstream.find(@filter_filter_ws_selected)
+    #   if (filter_ws_select_obj)
+    #    conditions = "workstream like '%#{filter_ws_select_obj.name}%'"
+    #   end
+    # end
 
-    if (@suite_selected and @suite_selected != -1)
-      suite_select_obj = SuiteTag.find(@suite_selected)
-      if (suite_select_obj)
-        if (conditions)
-          conditions << " AND suite_name like '%#{suite_select_obj.name}%'"
-        else
-          conditions = "suite_name like '%#{suite_select_obj.name}%'"
-        end
-      end
-    end
+    # # Suite list query
+    # if (@filter_suite_selected and @filter_suite_selected != -1)
+    #   filter_suite_select_obj = SuiteTag.find(@filter_suite_selected)
+    #   if (filter_suite_select_obj)
+    #     if (conditions)
+    #       conditions << " AND suite_name like '%#{filter_suite_select_obj.name}%'"
+    #     else
+    #       conditions = "suite_name like '%#{filter_suite_select_obj.name}%'"
+    #     end
+    #   end
+    # end
 
     # Lesson list query
     if (conditions)

@@ -3,14 +3,22 @@
 <h2>General</h2>
 	<%= link_to("Delete", {:controller=>'lesson_collects', :action=>'delete', :id=>@lesson_collect_file.id.to_s}, :confirm=>"Are you sure ?") %> 
 	<p>Ticket: <%= @lesson_collect_file.request.summary if @lesson_collect_file.request %></p>
-	<p>Commentaire:</p>
-
-	<% form_for :@lesson_collect_file, :url=>{:action=>'lesson_collect_file_comment_update'} do |f| -%>
-		Archivé:  <%= check_box :lesson_collect_file, :is_archived %><br />
-		<%= hidden_field(:lesson_collect_file, :id) %>
-		<%= text_area :lesson_collect_file, :comment, {:rows=>3} %><br />
-	  	<%= submit_tag 'Save' %></p>
-	<% end -%>
+	
+	<p>Lines:</p>
+	<ul>
+		<li>Collects: <%= @lesson_collect_file.lesson_collects.count.to_s %></li>
+		<li>Actions: <%= @lesson_collect_file.lesson_collect_actions.count.to_s %></li>
+		<li>Assessments: <%= @lesson_collect_file.lesson_collect_assessments.count.to_s %></li>
+	</ul>
+	<div style="padding:5px;border: 1px solid black;">
+		<% form_for :@lesson_collect_file, :url=>{:action=>'lesson_collect_file_comment_update'} do |f| -%>
+			Archivé:  <%= check_box :lesson_collect_file, :is_archived %><br />
+			Commentaire:<br />
+			<%= hidden_field(:lesson_collect_file, :id) %>
+			<%= text_area :lesson_collect_file, :comment, {:rows=>3} %><br />
+		  	<%= submit_tag 'Save' %></p>
+		<% end -%>
+	</div>
 
 <h2>Axes</h2>
 <ul>
@@ -34,3 +42,4 @@
 </ul>
 
 <h2>RISE</h2>
+Number of lines : <%= @lesson_collect_file.get_rise.count.to_s %>
