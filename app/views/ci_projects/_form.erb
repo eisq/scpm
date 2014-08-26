@@ -3,10 +3,42 @@
   	<tr><td><h4>Dates</h4></td></tr>
   	<tr><td>Kick-off date (yyyy-mm-dd)</td><td>	<%= text_field :project, :kick_off_date %></td></tr>
   	<tr><td>Launching date (dd-mm-yyyy)</td><td>	<%= text_field :project, :launching_date_ddmmyyyy %></td></tr>
+
+  	<tr><td>SQLI validation date status</td>
+  	<td><% if @project.sqli_validation_done == 0 %>
+	<%= radio_button :project, :sqli_validation_done, 1 %> Done
+	<%= radio_button :project, :sqli_validation_done, 0, :checked => true %> Not done
+	<% else %>
+	<%= radio_button :project, :sqli_validation_done, 1, :checked => true %> Done
+	<%= radio_button :project, :sqli_validation_done, 0 %> Not done
+	<% end %>
+  	</td></tr>
 	<tr><td>SQLI validation date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :sqli_validation_date_objective %></td></tr>
 	<tr><td>SQLI validation date (yyyy-mm-dd)</td><td>				<%= text_field :project, :sqli_validation_date %></td></tr>
+	<tr><td>&nbsp;</td><td></td><tr>
+
+	<tr><td>Airbus validation date status</td>
+  	<td><% if @project.airbus_validation_done == 0 %>
+	<%= radio_button :project, :airbus_validation_done, 1 %> Done
+	<%= radio_button :project, :airbus_validation_done, 0, :checked => true %> Not done
+	<% else %>
+	<%= radio_button :project, :airbus_validation_done, 1, :checked => true %> Done
+	<%= radio_button :project, :airbus_validation_done, 0 %> Not done
+	<% end %>
+  	</td></tr>
 	<tr><td>Airbus validation date objective (yyyy-mm-dd)</td><td><%= text_field :project, :airbus_validation_date_objective %></td></tr>
 	<tr><td>Airbus validation date (yyyy-mm-dd)</td><td>					<%= text_field :project, :airbus_validation_date %></td></tr>
+	<tr><td>&nbsp;</td><td></td><tr>
+
+	<tr><td>Deployment status</td>
+  	<td><% if @project.deployment_done == 0 %>
+	<%= radio_button :project, :deployment_done, 1 %> Done
+	<%= radio_button :project, :deployment_done, 0, :checked => true %> Not done
+	<% else %>
+	<%= radio_button :project, :deployment_done, 1, :checked => true %> Done
+	<%= radio_button :project, :deployment_done, 0 %> Not done
+	<% end %>
+  	</td></tr>
 	<tr><td>Deployment date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :deployment_date_objective %></td></tr>
 	<tr><td>Deployment date (yyyy-mm-dd)</td><td>				<%= text_field :project, :deployment_date %></td></tr>
 	</table>
@@ -15,13 +47,14 @@
 	<tr><td><h4>Information</h4></td></tr>
 	<tr><td>Backlog request ID</td><td>				<%= text_field :project, :backlog_request_id %></td></tr>
 	<tr><td>Assigned to</td><td>				<%= select(:project, :assigned_to, @qr_list.map {|p| [p.rmt_user]}, :include_blank=>true) %></td></tr>
+	<tr><td>SVN delivery folder</td><td>				<%= text_field :project, :svn_delivery_folder %></td></tr>
 	<tr><td>
 	Strategic</td><td>
 	<% if @project.strategic == 0 %>
-	<%= radio_button :project, :strategic, 0 %> No
 	<%= radio_button :project, :strategic, 1 %> Yes
+	<%= radio_button :project, :strategic, 0, :checked => true %> No
 	<% else %>
-	<%= radio_button :project, :strategic, 1 %> Yes
+	<%= radio_button :project, :strategic, 1, :checked => true %> Yes
 	<%= radio_button :project, :strategic, 0 %> No
 	<% end %>
 	</td></tr>

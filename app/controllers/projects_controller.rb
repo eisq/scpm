@@ -43,12 +43,26 @@ class ProjectsController < ApplicationController
       @risks                = Risk.find(:all, :conditions=>"probability>0 and project_id in (#{@wps.collect{|p| p.id}.join(',')})", :order=>"updated_at")
       @risks_with_severity  = @risks.select { |risk| risk.severity > 0}
       @inconsistencies      = @wps.select{|wp| !wp.is_consistent_with_risks}
-      @checklist_milestones = @wps.map{|p| p.milestones}.flatten.select{ |m|
-        m.done == 1 and
+
+      # Checklist size
+      # Mode 1
+      @checklist_milestone_size = Milestone.find(:all,
+                             :joins=>["JOIN checklist_items ON checklist_items.milestone_id = milestones.id", "JOIN checklist_item_templates ON checklist_items.template_id = checklist_item_templates.id"],
+                             :conditions => ["milestones.project_id IN (?) and done = 1 AND checklist_item_templates.ctype <> 'folder' and checklist_items.status = 0", @wps.select{|p| p.id}], 
+                             :group=>'milestones.id').count
+      # Mode 2
+      checklist_milestone_not_done = Milestone.find(:all,
+                             :joins=>["JOIN checklist_items ON checklist_items.milestone_id = milestones.id", "JOIN checklist_item_templates ON checklist_items.template_id = checklist_item_templates.id"],
+                             :conditions => ["milestones.project_id IN (?) and done = 0 AND checklist_item_templates.ctype <> 'folder' and checklist_items.status = 1", @wps.select{|p| p.id}], 
+                             :group=>'milestones.id')
+      checklist_milestone_not_done_size = checklist_milestone_not_done.select { |m| 
         m.checklist_items.select{ |i|
           i.ctemplate.ctype!='folder' and i.status==0
           }.size > 0
-        }.sort_by { |m| [m.project.full_name, m.name] }
+      }.count
+      # Mode 1 + 2
+      @checklist_milestone_size += checklist_milestone_not_done_size
+      # End checklist size
 
       i_wps = 0 
       @projects_id = ""
@@ -64,7 +78,7 @@ class ProjectsController < ApplicationController
       @risks                = []
       @risks_with_severity  = []
       @inconsistencies      = []
-      @checklist_milestones = []
+      # @checklist_milestones = []
       @projects_id          = ""
     end
     f = session[:project_filter_qr]
@@ -79,6 +93,41 @@ class ProjectsController < ApplicationController
   def show_project_list
     get_projects_without_wps
     sort_projects_without_wps
+  end
+
+  def show_checklists
+    @mode = params[:mode]
+    if @mode == nil
+      @mode = 1
+    end
+    @projects = params[:projects]
+
+    @checklist_milestone = []
+    if @mode.to_i == 1
+      # Milestone done with checklist item not done
+      @checklist_milestone = Milestone.find(:all,
+                             :joins=>["JOIN checklist_items ON checklist_items.milestone_id = milestones.id", 
+                              "JOIN checklist_item_templates ON checklist_items.template_id = checklist_item_templates.id",
+                              "JOIN projects ON milestones.project_id = projects.id"],
+                             :conditions => ["milestones.project_id IN (?) and done = 1 AND checklist_item_templates.ctype <> 'folder' and checklist_items.status = 0", @projects.select{|p| p.id}], 
+                             :group=>'milestones.id',
+                             :order=>("projects.name, milestones.name"))
+    else
+      # Milestone not done yet, with checklist items done
+      @checklist_milestone = Milestone.find(:all,
+                             :joins=>["JOIN checklist_items ON checklist_items.milestone_id = milestones.id", "JOIN checklist_item_templates ON checklist_items.template_id = checklist_item_templates.id",
+                              "JOIN projects ON milestones.project_id = projects.id"],
+                             :conditions => ["milestones.project_id IN (?) and done = 0 AND checklist_item_templates.ctype <> 'folder' and checklist_items.status = 1", @projects.select{|p| p.id}], 
+                             :group=>'milestones.id',
+                             :order=>("projects.name, milestones.name"))
+
+      # Conserve only the milestone with one or more checklist item not done
+      @checklist_milestone = @checklist_milestone.select { |m| 
+        m.checklist_items.select{ |i|
+          i.ctemplate.ctype!='folder' and i.status==0
+          }.size > 0
+      }
+    end
   end
 
   def sort_projects

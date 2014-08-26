@@ -26,6 +26,32 @@
     <p><b>Airbus validation date:</b> <span class="<%=CiProject.late_css(p.airbus_validation_date)%>"><%= p.airbus_validation_date.to_s %></span></p>
     <p><b>Deployment date objective:</b> <span class="<%=CiProject.late_css(p.deployment_date_objective)%>"><%= p.deployment_date_objective.to_s %></span></p>
     <p><b>Deployment date:</b> <span class="<%=CiProject.late_css(p.deployment_date)%>"><%= p.deployment_date.to_s %></span></p>
+    <p><b>SQLI validation status:</b> 
+      <% if p.sqli_validation_done == 1 %>
+      Done
+      <% else %>
+      Not done yet
+      <% end %>
+    <p><b>SQLI validation date objective:</b> <% if p.sqli_validation_done != 1 %> <span class="<%=CiProject.late_css(p.sqli_validation_date_objective)%>"> <% end %> <%= p.sqli_validation_date_objective.to_s %> <% if p.sqli_validation_done != 1 %></span><% end %></p>
+    <p><b>SQLI validation date:</b> <% if p.sqli_validation_done != 1 %><span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><% end %><%= p.sqli_validation_date.to_s %><% if p.sqli_validation_done != 1 %></span><% end %></p>
+    <p>&nbsp;</p>
+    <p><b>Airbus validation status:</b> 
+      <% if p.airbus_validation_done == 1 %>
+      Done
+      <% else %>
+      Not done yet
+      <% end %>
+    <p><b>Airbus validation date objective:</b> <% if p.airbus_validation_done != 1 %><span class="<%=CiProject.late_css(p.airbus_validation_date_objective)%>"><% end %><%= p.airbus_validation_date_objective.to_s %><% if p.airbus_validation_done != 1 %></span><% end %></p>
+    <p><b>Airbus validation date:</b> <% if p.airbus_validation_done != 1 %><span class="<%=CiProject.late_css(p.airbus_validation_date)%>"><% end %><%= p.airbus_validation_date.to_s %><% if p.airbus_validation_done != 1 %></span><% end %></p>
+    <p>&nbsp;</p>
+    <p><b>Deployment status:</b> 
+      <% if p.deployment_done == 1 %>
+      Done
+      <% else %>
+      Not done yet
+      <% end %>
+    <p><b>Deployment date objective:</b> <% if p.deployment_done != 1 %><span class="<%=CiProject.late_css(p.deployment_date_objective)%>"><% end %><%= p.deployment_date_objective.to_s %><% if p.deployment_done != 1 %></span><% end %></p>
+    <p><b>Deployment date:</b> <% if p.deployment_done != 1 %><span class="<%=CiProject.late_css(p.deployment_date)%>"><% end %><%= p.deployment_date.to_s %><% if p.deployment_done != 1 %></span><% end %></p>
   </td><td width=50>
   </td><td valign=top>
     <h3>
@@ -36,6 +62,7 @@
     <p><b>Priority:</b> <%= p.priority %></p>
     <p><b>CI Objectives 2014:</b></p>
     <p><%= p.ci_objectives_2014 %></p>
+    <p><b>SVN delivery folder: </b> <%= p.svn_delivery_folder %></p>
   </td>
 </tr>
 </table>
