@@ -12,40 +12,65 @@
 
 
 <!-- LIST -->
-<h2> Lessons Learnt Imported files </h2>
+<div id="filters_bar" style="border:1px solid black;">
 <% form_tag(:action=>'index') do %>
-	<div>
-		Template Types :
-		<%= select_tag ("filter_type_id", options_for_select(@types_array,@filter_type_selected.to_i)) %>
-		Already downloaded :
-		<%= check_box_tag(:filter_already_downloaded, true, @filter_already_downloaded) %> 
-		Begin date:
-		<%= text_field_tag('filter_begin_date', @filter_begin_date) %>
-		End date:
-		<%= text_field_tag('filter_end_date', @filter_end_date) %>
-		Project:
-		<%= select_tag ("filter_project_id", options_for_select(@projects_array, @filter_project_selected.to_i)) %>
+	<div id="filter_hide_box">
+		<input type="button" value="Show/Hide" onclick="$j('#filters_bar_content').toggle();">
 	</div>
-	<div>
-		Axe:
-		<%= select_tag ("filter_axe_id", options_for_select(@axes_array, @filter_axe_selected.to_i)) %>
-		Sub Axe:
-		<%= select_tag ("filter_sub_axe_id", options_for_select(@sub_axes_array, @filter_sub_axe_selected.to_i)) %>
-
-	<div>
-	<br />
-	<div>
-		Workstreams       PLM
-	</div>
-	<div>
-	  	<%= select_tag ("filter_ws",options_for_select(@ws_array,@filter_ws_selected),{ :size=>6, :multiple => true})  %>
-	  	<%= select_tag ("filter_suite",options_for_select(@suites_array,@filter_suite_selected),{ :size=>6, :multiple => true})  %>
-	</div>
-  <%= submit_tag('Filter') %>
+	<div id="filters_bar_content">
+		<div>
+			Template Types :
+			<%= select_tag ("filter_type_id", options_for_select(@types_array,@filter_type_selected.to_i)) %>
+		</div>
+		<br />
+		<div>
+			Already downloaded :
+			<%= check_box_tag(:filter_already_downloaded, true, @filter_already_downloaded) %> 
+			Archived :
+			<%= check_box_tag(:filter_is_archived, true, @filter_is_archived) %>
+			RISE :
+			<%= check_box_tag(:filter_rise, true, @filter_rise) %>
+		</div>
+		<br />
+		<div>
+			Begin date:
+			<%= text_field_tag('filter_begin_date', @filter_begin_date) %>
+			End date:
+			<%= text_field_tag('filter_end_date', @filter_end_date) %>
+		</div>
+		<br />
+		<div>
+			Axe:
+			<%= select_tag ("filter_axe_id", options_for_select(@axes_array, @filter_axe_selected.to_i)) %>
+			Sub Axe:
+			<%= select_tag ("filter_sub_axe_id", options_for_select(@sub_axes_array, @filter_sub_axe_selected.to_i)) %>
+		</div>
+		<br />
+		<div>
+			Project:
+			<%= select_tag ("filter_project_id", options_for_select(@projects_array, @filter_project_selected.to_i)) %>
+			Milestone:
+			<%= select_tag ("filter_milestone_id", options_for_select(@milestones_array, @filter_milestone_selected.to_i)) %>
+		</div>
+		<br />
+		<div>
+			Workstreams       PLM
+		</div>
+		<div>
+		  	<%= select_tag ("filter_ws",options_for_select(@ws_array,@filter_ws_selected),{:size=>6, :multiple => true})  %>
+		  	<%= select_tag ("filter_suite",options_for_select(@suites_array,@filter_suite_selected),{:size=>6, :multiple => true})  %>
+		</div>
+		<div style="margin-left:auto; margin-right:auto; width:100px;">
+	  		<%= submit_tag('Filter') %>
+	  	</div>
+	 </div>
 <% end %>	
+</div>
 
 
-
+<h2> Lessons Learnt Imported files </h2>
+<br />
+<br />
 <br />
 <% form_tag(:action=>'export') do %>
   <%= hidden_field_tag('filter_ws_id_hidden', @ws_selected.to_i) %>
@@ -84,8 +109,8 @@
 </table>
 
 <script type="text/javascript"> 
-	Event.observe($("filter_ws_id"),'change', function(){
-		$('filter_ws_id_hidden').value = $('filter_ws_id')[$('filter_ws_id').selectedIndex].value;
+	Event.observe($("filter_ws"),'change', function(){
+		$('filter_ws_id_hidden').value = $('filter_ws')[$('filter_ws').selectedIndex].value;
 	});
 
 	$j( document ).ready(function() {

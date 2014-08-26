@@ -11,23 +11,29 @@ class LessonCollectsController < ApplicationController
     # -------
     # PARAMETERS
     # --------
-    @imported       = params[:imported]
-  	@lessonFiles    = nil
-    @ws_array       = Array.new
-    @suites_array   = Array.new
-    @types_array    = Array.new
-    @projects_array = Array.new
-    @axes_array     = Array.new
-    @sub_axes_array = Array.new
+    @imported         = params[:imported]
+  	@lessonFiles      = nil
+    @ws_array         = Array.new
+    @suites_array     = Array.new
+    @types_array      = Array.new
+    @projects_array   = Array.new
+    @axes_array       = Array.new
+    @sub_axes_array   = Array.new
+    @milestones_array = Array.new
 
     # Filters
     @filter_ws_selected         = Array.new
     @filter_suite_selected      = Array.new
     @filter_already_downloaded  = -1
+    @filter_is_archived         = -1
+    @filter_rise                = -1
     @filter_type_selected       = -1
     @filter_project_selected    = -1
     @filter_axe_selected        = -1
     @filter_sub_axe_selected    = -1
+    @filter_milestone_selected  = -1
+    @filter_begin_date          = nil
+    @filter_end_date            = nil
 
 
     # -------
@@ -55,13 +61,35 @@ class LessonCollectsController < ApplicationController
     if params[:filter_sub_axe_id] and params[:filter_sub_axe_id] != "-1"
       @filter_suite_selected = params[:filter_sub_axe_id]
     end
+    if params[:filter_milestone_id] and params[:filter_milestone_id] != "-1"
+      @filter_milestone_selected = params[:filter_milestone_id]
+    end
 
-    if params[:filter_already_downloaded] and params[:filter_already_downloaded]!= "-1"
+    if params[:filter_already_downloaded] and params[:filter_already_downloaded] != "-1"
       @filter_already_downloaded = params[:filter_already_downloaded]
     else
       @filter_already_downloaded = false
     end
 
+    if params[:filter_is_archived] and params[:filter_is_archived] != "-1"
+      @filter_is_archived = params[:filter_is_archived]
+    else
+      @filter_is_archived = false
+    end
+
+    if params[:filter_rise] and params[:filter_rise] != "-1"
+      @filter_rise = params[:filter_rise]
+    else
+      @filter_rise = false
+    end
+
+    if params[:filter_begin_date] and params[:filter_begin_date].length > 0
+      @filter_begin_date = params[:filter_begin_date]
+    end
+
+    if params[:filter_end_date] and params[:filter_end_date].length > 0
+      @filter_end_date = params[:filter_end_date]
+    end
 
     # -------
     # LISTS
@@ -103,39 +131,122 @@ class LessonCollectsController < ApplicationController
       @sub_axes_array << [sub_axe.name, sub_axe.id]
     }
 
+    # Milestones
+    milestone_list = MilestoneName.find(:all, :conditions=>"is_active = 1")
+    milestone_list.each{ |m|
+      @milestones_array << [m.title, m.id]
+    }
+
     # -------
     # QUERIES
     # --------
 
-    # Lesson list query conditions
-    conditions = nil
-    # if (@filter_ws_selected and @filter_ws_selected != -1)
-    #   filter_ws_select_obj = Workstream.find(@filter_filter_ws_selected)
-    #   if (filter_ws_select_obj)
-    #    conditions = "workstream like '%#{filter_ws_select_obj.name}%'"
-    #   end
-    # end
+    joins_array = Array.new
 
-    # # Suite list query
-    # if (@filter_suite_selected and @filter_suite_selected != -1)
-    #   filter_suite_select_obj = SuiteTag.find(@filter_suite_selected)
-    #   if (filter_suite_select_obj)
-    #     if (conditions)
-    #       conditions << " AND suite_name like '%#{filter_suite_select_obj.name}%'"
-    #     else
-    #       conditions = "suite_name like '%#{filter_suite_select_obj.name}%'"
-    #     end
-    #   end
-    # end
+    # Lesson list query conditions
+    conditions = ""
+    if @filter_ws_selected.size > 0
+      conditions_open_parenthesis(conditions)
+      filter_ws_select_objs = Workstream.find(:all, :conditions=>["id in (?)", @filter_ws_selected]).map {|ws| ws.name }
+      filter_ws_select_objs.each do |ws_name|
+        conditions_or(conditions)
+        conditions << "workstream like '%#{ws_name}%'"
+      end
+      conditions_close_parenthesis(conditions)
+    end
+
+    # Suite list query
+    if @filter_suite_selected.size > 0
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      filter_suite_select_objs = SuiteTag.find(:all, :conditions=>["id in (?)", @filter_suite_selected]).map {|s| s.name }
+      filter_suite_select_objs.each do |s_name|
+        conditions_or(conditions)
+        conditions << "suite_name like '%#{s_name}%'"
+      end
+      conditions_close_parenthesis(conditions)
+    end
+
+    # Type
+    if (@filter_type_selected and @filter_type_selected != -1)
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      filter_type_selected_obj = LessonCollectTemplateType.find(:first, :conditions => ["id = ?", @filter_type_selected])
+      conditions << "lesson_collect_template_type_id = #{filter_type_selected_obj.id.to_s}"
+      conditions_close_parenthesis(conditions)
+    end
+
+    # Already Downloaded
+    if @filter_already_downloaded
+      joins_array << "JOIN lesson_collect_file_downloads ON lesson_collect_files.id = lesson_collect_file_downloads.lesson_collect_file_id"
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "lesson_collect_file_downloads.user_id = #{current_user.id.to_s}"
+      conditions_close_parenthesis(conditions)
+    else  
+      downloaded_files_id = LessonCollectFileDownload.find(:all, :conditions => ["user_id = ?", current_user.id.to_s]).map {|d| d.id }
+      if downloaded_files_id.count > 0
+        conditions_and(conditions)
+        conditions_open_parenthesis(conditions)
+        conditions << "lesson_collect_files.id NOT IN (#{downloaded_files_id.join(',')})"
+        conditions_close_parenthesis(conditions)
+      end
+    end
+
+    # Archived
+    if @filter_is_archived
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "is_archived = 1"
+      conditions_close_parenthesis(conditions)
+    else
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "is_archived = 0"
+      conditions_close_parenthesis(conditions)
+    end
+
+    # RISE
+    if @filter_rise
+      joins_array << "JOIN lesson_collects ON lesson_collects.lesson_collect_file_id = lesson_collect_files.id"
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "lesson_collects.status = 'Published'"
+      conditions_close_parenthesis(conditions)
+    else
+      no_rise_files_id = LessonCollect.find(:all,:conditions=>"status = 'Published'", :group=>"lesson_collect_file_id").map {|lc| lc.lesson_collect_file_id }
+      if no_rise_files_id.count > 0
+        conditions_and(conditions)
+        conditions_open_parenthesis(conditions)
+        conditions << "lesson_collect_files.id NOT IN (#{no_rise_files_id.join(',')})"
+        conditions_close_parenthesis(conditions)
+      end
+    end
+
+    # Begin date
+    if @filter_begin_date
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "lesson_collect_files.updated_at > '#{Date.parse(@filter_begin_date).strftime('%Y-%m-%d %H:%M:%S')}'"
+      conditions_close_parenthesis(conditions)
+    end
+
+    # End Date
+    if @filter_end_date
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "lesson_collect_files.updated_at < '#{Date.parse(@filter_end_date).strftime('%Y-%m-%d %H:%M:%S')}'"
+      conditions_close_parenthesis(conditions)
+
+    end
 
     # Lesson list query
-    if (conditions)
-      @lessonFiles = LessonCollectFile.find(:all, :conditions=>conditions)
+    if (conditions.length > 0)
+      @lessonFiles = LessonCollectFile.find(:all, :joins=>joins_array, :conditions=>conditions)
     else
       @lessonFiles = LessonCollectFile.find(:all)
     end
   end
-
 
   def delete
     lesson_file_id = params[:id]
@@ -297,4 +408,30 @@ class LessonCollectsController < ApplicationController
     end
   end
   
+  # ------
+  # HELPER
+  # ------
+  def conditions_and(conditions)
+    if (conditions.length > 0 and conditions[-1,1] != "(")
+      conditions << " and "
+    end
+    return conditions
+  end
+
+  def conditions_or(conditions)
+    if (conditions.length > 0 and conditions[-1,1] != "(")
+      conditions << " or "
+    end
+    return conditions
+  end
+
+  def conditions_open_parenthesis(conditions)
+    conditions << '('
+    return conditions
+  end
+
+  def conditions_close_parenthesis(conditions)
+    conditions << ')'
+    return conditions
+  end
 end
