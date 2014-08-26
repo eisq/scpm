@@ -18,6 +18,8 @@
     <h3>
       <u>Dates</u>
     </h3>
+    <p><b>Kick-off date:</b> <span class="<%=CiProject.late_css(p.kick_off_date)%>"><%= p.kick_off_date.to_s %></span></p>
+    <p><b>Launching date:</b> <span class="<%=CiProject.late_css(p.launching_date_ddmmyyyy)%>"><%= p.launching_date_ddmmyyyy.to_s %></span></p>
     <p><b>SQLI validation date objective:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date_objective)%>"><%= p.sqli_validation_date_objective.to_s %></span></p>
     <p><b>SQLI validation date:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><%= p.sqli_validation_date.to_s %></span></p>
     <p><b>Airbus validation date objective:</b> <span class="<%=CiProject.late_css(p.airbus_validation_date_objective)%>"><%= p.airbus_validation_date_objective.to_s %></span></p>
@@ -31,6 +33,9 @@
     </h3>
     <p><b>Backlog request ID:</b> <%= p.backlog_request_id.to_s %></p>
     <p><b>Assigned to:</b> <%= p.assigned_to %></p>
+    <p><b>Priority:</b> <%= p.priority %></p>
+    <p><b>CI Objectives 2014:</b></p>
+    <p><%= p.ci_objectives_2014 %></p>
   </td>
 </tr>
 </table>

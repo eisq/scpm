@@ -1,6 +1,6 @@
 <table>
 	<tr><td><h3>Reporting</h3></td>
 	<td><h3>Previous reporting</h3></td></tr>
-	<tr><td valign=top><%= text_area :project, :report %></td>
+	<tr><td valign=top><%= text_area :project, :report, {:cols=>60, :rows=>10} %></td>
 	<td valign=top><%= @project.previous_report %></td></tr>
 </table>

@@ -9,7 +9,9 @@ class CiProjectsController < ApplicationController
 
   def mine
     verif
-    @projects = CiProject.find(:all, :conditions=>["assigned_to=?", current_user.rmt_user]).sort_by {|p| [p.order]}
+    #@projects = CiProject.find(:all, :conditions=>["assigned_to=?", current_user.rmt_user]).sort_by {|p| [p.order]}
+    @projectsopened = CiProject.find(:all, :conditions=>["assigned_to=? and status!='closed'", current_user.rmt_user]).sort_by {|p| [p.order]}
+    @projectsclosed = CiProject.find(:all, :conditions=>["assigned_to=? and status='closed'", current_user.rmt_user]).sort_by {|p| [p.order]}
   end
 
   def all
@@ -108,9 +110,9 @@ class CiProjectsController < ApplicationController
 
   def update_report
     p = CiProject.find(params[:id])
-    #p.previous_report = p.report
-    #p.report = params[:report_new]
+    previous_report_attribute = p.report
     p.update_attributes(params[:project])
+    p.update_attribute('previous_report', previous_report_attribute)
     redirect_to "/ci_projects/show/"+p.id.to_s
   end
 
