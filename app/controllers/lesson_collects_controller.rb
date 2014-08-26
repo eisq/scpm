@@ -114,25 +114,29 @@ class LessonCollectsController < ApplicationController
     }
 
     # Projects list
-    project_list = Project.find(:all, :conditions=>["is_running=1 and project_id IS NOT NULL"])
+    project_list    = Project.find(:all, :conditions=>["is_running=1 and project_id IS NOT NULL"])
+    @projects_array << ["None", -1]
     project_list.each{ |project|
       @projects_array << [project.name, project.id]
     }
 
     # Axes list
-    axe_list = LessonCollectAxe.find(:all)
+    axe_list    = LessonCollectAxe.find(:all)
+    @axes_array << ["None", -1]
     axe_list.each{ |axe|
       @axes_array << [axe.name, axe.id]
     }
 
     # Sub Axes list
-    sub_axe_list = LessonCollectSubAxe.find(:all)
+    sub_axe_list    = LessonCollectSubAxe.find(:all)
+    @sub_axes_array << ["None", -1]
     sub_axe_list.each{ |sub_axe|
       @sub_axes_array << [sub_axe.name, sub_axe.id]
     }
 
     # Milestones
-    milestone_list = MilestoneName.find(:all, :conditions=>"is_active = 1")
+    milestone_list    = MilestoneName.find(:all, :conditions=>"is_active = 1")
+    @milestones_array << ["None", -1]
     milestone_list.each{ |m|
       @milestones_array << [m.title, m.id]
     }
@@ -178,7 +182,7 @@ class LessonCollectsController < ApplicationController
 
     # Already Downloaded
     if @filter_already_downloaded
-      joins_array << "JOIN lesson_collect_file_downloads ON lesson_collect_files.id = lesson_collect_file_downloads.lesson_collect_file_id"
+      joins_array = joins_include(joins_array, "JOIN lesson_collect_file_downloads ON lesson_collect_files.id = lesson_collect_file_downloads.lesson_collect_file_id")
       conditions_and(conditions)
       conditions_open_parenthesis(conditions)
       conditions << "lesson_collect_file_downloads.user_id = #{current_user.id.to_s}"
@@ -208,7 +212,7 @@ class LessonCollectsController < ApplicationController
 
     # RISE
     if @filter_rise
-      joins_array << "JOIN lesson_collects ON lesson_collects.lesson_collect_file_id = lesson_collect_files.id"
+      joins_array = joins_include(joins_array, "JOIN lesson_collects ON lesson_collects.lesson_collect_file_id = lesson_collect_files.id")
       conditions_and(conditions)
       conditions_open_parenthesis(conditions)
       conditions << "lesson_collects.status = 'Published'"
@@ -240,9 +244,46 @@ class LessonCollectsController < ApplicationController
 
     end
 
+    # Axe
+    if (@filter_axe_selected and @filter_axe_selected != -1)
+      joins_array = joins_include(joins_array, "JOIN lesson_collects ON lesson_collects.lesson_collect_file_id = lesson_collect_files.id")
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "lesson_collects.lesson_collect_axe_id = #{@filter_axe_selected.to_s}"
+      conditions_close_parenthesis(conditions)
+    end
+
+    # Sub Axe
+    if (@filter_sub_axe_selected and @filter_sub_axe_selected != -1)
+      joins_array = joins_include(joins_array, "JOIN lesson_collects ON lesson_collects.lesson_collect_file_id = lesson_collect_files.id")
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "lesson_collects.lesson_collect_sub_axe_id = #{@filter_sub_axe_selected.to_s}"
+      conditions_close_parenthesis(conditions)
+    end
+
+    # Milestone
+    if (@filter_milestone_selected and @filter_milestone_selected != -1)
+      joins_array = joins_include(joins_array, "JOIN lesson_collects ON lesson_collects.lesson_collect_file_id = lesson_collect_files.id")
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      filter_milestone_selected_obj = MilestoneName.find(:first, :conditions => ["id = ?", @filter_milestone_selected])
+      conditions << "lesson_collects.milestone LIKE '%#{filter_milestone_selected_obj.title.to_s}%'"
+      conditions_close_parenthesis(conditions)
+    end
+
+    # Project name
+    if (@filter_project_selected and @filter_project_selected != -1)
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      filter_project_selected_obj = Project.find(:first, :conditions => ["id = ?", @filter_project_selected])
+      conditions << "lesson_collect_files.project_name LIKE '%#{filter_project_selected_obj.name}%'"
+      conditions_close_parenthesis(conditions)
+    end
+
     # Lesson list query
     if (conditions.length > 0)
-      @lessonFiles = LessonCollectFile.find(:all, :joins=>joins_array, :conditions=>conditions)
+      @lessonFiles = LessonCollectFile.find(:all, :joins=>joins_array, :conditions=>conditions, :group => "lesson_collect_files.id")
     else
       @lessonFiles = LessonCollectFile.find(:all)
     end
@@ -434,4 +475,12 @@ class LessonCollectsController < ApplicationController
     conditions << ')'
     return conditions
   end
+
+  def joins_include(joins_array, join_str)
+    if !joins_array.include? join_str
+      joins_array << join_str
+    end
+    return joins_array
+  end
+
 end
