@@ -27,11 +27,11 @@ module LessonsLearnt
     elsif template_type == APP_CONFIG['lesson_template_mt']
       LessonsLearntMt.import(lessons, actions, assessments, file_name)
     else
-      Raise "Unknow Template type"
+      raise "Unknow Template type"
     end
   end
 
-  def self.generate_file_header(template_type, pm, qwr, coc, suite, project, mt_qr)
+  def self.generate_file_header(template_type, pm="", qwr="", coc="", suite="", project="", mt_qr="")
     if template_type == APP_CONFIG['lesson_template_project']
       LessonsLearntProject.generate_file_header(pm, qwr, coc, suite, project)
     elsif template_type == APP_CONFIG['lesson_template_ws']
@@ -41,7 +41,7 @@ module LessonsLearnt
     elsif template_type == APP_CONFIG['lesson_template_mt']
       LessonsLearntMt.generate_file_header(mt_qr)
     else
-      Raise "Unknow Template type"
+      raise "Unknow Template type"
     end
   end
 
@@ -55,7 +55,7 @@ module LessonsLearnt
     elsif template_type == APP_CONFIG['lesson_template_mt']
       LessonsLearntMt.generate_lesson_columns
     else
-      Raise "Unknow Template type"
+      raise "Unknow Template type"
     end
   end
 
@@ -69,7 +69,7 @@ module LessonsLearnt
     elsif template_type == APP_CONFIG['lesson_template_mt']
       LessonsLearntMt.generate_action_columns
     else
-      Raise "Unknow Template type"
+      raise "Unknow Template type"
     end
   end
 
@@ -83,7 +83,7 @@ module LessonsLearnt
     elsif template_type == APP_CONFIG['lesson_template_mt']
       LessonsLearntMt.generate_assessment_columns
     else
-      Raise "Unknow Template type"
+      raise "Unknow Template type"
     end
   end
 

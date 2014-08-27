@@ -122,7 +122,7 @@ module LessonsLearntProject
             "Proof of realisation",
             "Comments",
             "KPI",
-            "Risk/Issue Ref."
+            "Risk/Issue Ref.",
             "",
             "Benefit",
             "Level of investment"
