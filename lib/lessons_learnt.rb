@@ -87,6 +87,24 @@ module LessonsLearnt
     end
   end
 
+  # Return an array of hash
+  def self.generate_hash_export(files)
+    hash_array = Array.new
+    files.each do |file|
+      hash_array << LessonsLearnt.generate_hash_export(file.lesson_collects, file.lesson_collect_actions, file.lesson_collect_assessments)
+    end
+    return hash_array
+  end
+
+  # Return an hash
+  def self.generate_hash_export(lessons,actions,assessments)
+    exportHash = Hash.new
+    exportHash["lessonCollects"]          = lessons
+    exportHash["lessonActions"]           = actions
+    exportHash["lessonCollectAssessment"] = assessments
+    return exportHash
+  end
+
   # ------------------------------------------------------------------------------------
   # IMPORT HELPERS
   # ------------------------------------------------------------------------------------
