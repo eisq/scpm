@@ -99,6 +99,61 @@ module LessonsLearntPlm
   ASSESSMENT_CELL_IMP_LABEL         = "improve_mt"          
   ASSESSMENT_CELL_COMMENTS_LABEL    = "comments" 
 
+  # Return Array of arrays. One sub array represent one line of header
+  def self.generate_file_header(qwr, suite)
+    return [[QWR_HEADER, qwr],[SUITE_HEADER, suite]]
+  end
+
+  # Return the table name of columns
+  def self.generate_lesson_columns
+    return ["ID",
+            "Milestone Of Collect",
+            "Lesson learnt / Best Practice",
+            "TOPICS (Observations / Fact / Problems)",
+            "Problem Cause",
+            "Improvement / Best Practices",
+            "Analysis Axis",
+            "Sub Axis Analysis",
+            "Project name",
+            "Action Plan at PLM level",
+            "Already exists/New Practice",
+            "Redundancy",
+            "Selected by PLM?",
+            "Will be escalated to M&T?",
+            "Status"]
+  end
+
+  def self.generate_action_columns
+    return ["Ref.",
+            "Creation Date",
+            "Source",
+            "Title",
+            "Status",
+            "Actionee",
+            "Due Date",
+            "Completion Date",
+            "Proof of realisation",
+            "Comments",
+            "KPI",
+            "Risk/Issue Ref."
+            "",
+            "Benefit",
+            "Level of investment"
+          ]
+  end
+
+  def self.generate_assessment_columns
+    return ["ID RMT (LL ticket)",
+            "Milestone session",
+            "Did you have a detailed presentation of the provided M&T quality activities?",
+            "Quality Gates (BRD/TD)",
+            "Milestones preparation",
+            "Project Setting-up",
+            "Lessons Learnt",
+            "Support Level",
+            "What could have been done to improve global M&T quality services?",
+            "Comments"]
+  end  
 
   def self.import(lessons, actions, assessments, file_name)
   	# Parse excel file

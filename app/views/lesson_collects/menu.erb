@@ -5,7 +5,11 @@
 </script>
 
 <div id="ll_menu">
-	<h3 class="ll_title"><%= @lesson_collect_file.filename if @lesson_collect_file.filename %></h3>
+	<h2 class="ll_title">
+		<%= link_to("Delete", {:controller=>'lesson_collects', :action=>'delete', :id=>@lesson_collect_file.id.to_s}, :confirm=>"Are you sure ?") %> 
+
+		<%= @lesson_collect_file.filename if @lesson_collect_file.filename %>
+	</h2>
 	<%= link_to "Back", {:controller => "lesson_collects", :action => "index"} %>
 	<%= link_to "General", {:controller => "lesson_collects", :action => "general_detail", :id => @lesson_collect_file.id} %>
 	<%= link_to "Downloads", {:controller => "lesson_collects", :action => "download_detail", :id => @lesson_collect_file.id} %>

@@ -6,10 +6,7 @@ module LessonsLearnt
  
   TEMPLATE_TYPE_ROW     = 0
   TEMPLATE_TYPE_COL     = 1
-  TEMPLATE_TYPE_PROJECT = "PROJECT"
-  TEMPLATE_TYPE_WS      = "WS"
-  TEMPLATE_TYPE_PLM     = "PLM"
-  TEMPLATE_TYPE_MT      = "MT"
+
 
 
   def self.import(file)
@@ -21,18 +18,73 @@ module LessonsLearnt
     assessments   = doc.worksheet "Assessment of quality service"
     template_type = LessonsLearnt.get_template_type(lessons)
 
-    if template_type == TEMPLATE_TYPE_PROJECT
+    if template_type == APP_CONFIG['lesson_template_project']
       LessonsLearntProject.import(lessons, actions, assessments, file_name)
-    elsif template_type == TEMPLATE_TYPE_WS
+    elsif template_type == APP_CONFIG['lesson_template_ws']
       LessonsLearntWs.import(lessons, actions, assessments, file_name)
-    elsif template_type == TEMPLATE_TYPE_PLM
+    elsif template_type == APP_CONFIG['lesson_template_plm']
       LessonsLearntPlm.import(lessons, actions, assessments, file_name)
-    elsif template_type == TEMPLATE_TYPE_MT
+    elsif template_type == APP_CONFIG['lesson_template_mt']
       LessonsLearntMt.import(lessons, actions, assessments, file_name)
     else
       Raise "Unknow Template type"
     end
-      
+  end
+
+  def self.generate_file_header(template_type, pm, qwr, coc, suite, project, mt_qr)
+    if template_type == APP_CONFIG['lesson_template_project']
+      LessonsLearntProject.generate_file_header(pm, qwr, coc, suite, project)
+    elsif template_type == APP_CONFIG['lesson_template_ws']
+      LessonsLearntWs.generate_file_header(qwr, coc)
+    elsif template_type == APP_CONFIG['lesson_template_plm']
+      LessonsLearntPlm.generate_file_header(qwr, suite)
+    elsif template_type == APP_CONFIG['lesson_template_mt']
+      LessonsLearntMt.generate_file_header(mt_qr)
+    else
+      Raise "Unknow Template type"
+    end
+  end
+
+  def self.generate_lesson_columns(template_type)
+    if template_type == APP_CONFIG['lesson_template_project']
+      LessonsLearntProject.generate_lesson_columns
+    elsif template_type == APP_CONFIG['lesson_template_ws']
+      LessonsLearntWs.generate_lesson_columns
+    elsif template_type == APP_CONFIG['lesson_template_plm']
+      LessonsLearntPlm.generate_lesson_columns
+    elsif template_type == APP_CONFIG['lesson_template_mt']
+      LessonsLearntMt.generate_lesson_columns
+    else
+      Raise "Unknow Template type"
+    end
+  end
+
+  def self.generate_action_columns(template_type)
+    if template_type == APP_CONFIG['lesson_template_project']
+      LessonsLearntProject.generate_action_columns
+    elsif template_type == APP_CONFIG['lesson_template_ws']
+      LessonsLearntWs.generate_action_columns
+    elsif template_type == APP_CONFIG['lesson_template_plm']
+      LessonsLearntPlm.generate_action_columns
+    elsif template_type == APP_CONFIG['lesson_template_mt']
+      LessonsLearntMt.generate_action_columns
+    else
+      Raise "Unknow Template type"
+    end
+  end
+
+  def self.generate_assessment_columns(template_type)
+    if template_type == APP_CONFIG['lesson_template_project']
+      LessonsLearntProject.generate_assessment_columns
+    elsif template_type == APP_CONFIG['lesson_template_ws']
+      LessonsLearntWs.generate_assessment_columns
+    elsif template_type == APP_CONFIG['lesson_template_plm']
+      LessonsLearntPlm.generate_assessment_columns
+    elsif template_type == APP_CONFIG['lesson_template_mt']
+      LessonsLearntMt.generate_assessment_columns
+    else
+      Raise "Unknow Template type"
+    end
   end
 
   # ------------------------------------------------------------------------------------

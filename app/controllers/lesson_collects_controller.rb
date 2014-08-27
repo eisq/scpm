@@ -188,13 +188,13 @@ class LessonCollectsController < ApplicationController
       conditions << "lesson_collect_file_downloads.user_id = #{current_user.id.to_s}"
       conditions_close_parenthesis(conditions)
     else  
-      downloaded_files_id = LessonCollectFileDownload.find(:all, :conditions => ["user_id = ?", current_user.id.to_s]).map {|d| d.id }
-      if downloaded_files_id.count > 0
-        conditions_and(conditions)
-        conditions_open_parenthesis(conditions)
-        conditions << "lesson_collect_files.id NOT IN (#{downloaded_files_id.join(',')})"
-        conditions_close_parenthesis(conditions)
-      end
+      # downloaded_files_id = LessonCollectFileDownload.find(:all, :conditions => ["user_id = ?", current_user.id.to_s]).map {|d| d.id }
+      # if downloaded_files_id.count > 0
+      #   conditions_and(conditions)
+      #   conditions_open_parenthesis(conditions)
+      #   conditions << "lesson_collect_files.id NOT IN (#{downloaded_files_id.join(',')})"
+      #   conditions_close_parenthesis(conditions)
+      # end
     end
 
     # Archived
@@ -204,10 +204,10 @@ class LessonCollectsController < ApplicationController
       conditions << "is_archived = 1"
       conditions_close_parenthesis(conditions)
     else
-      conditions_and(conditions)
-      conditions_open_parenthesis(conditions)
-      conditions << "is_archived = 0"
-      conditions_close_parenthesis(conditions)
+      # conditions_and(conditions)
+      # conditions_open_parenthesis(conditions)
+      # conditions << "is_archived = 0"
+      # conditions_close_parenthesis(conditions)
     end
 
     # RISE
@@ -218,13 +218,13 @@ class LessonCollectsController < ApplicationController
       conditions << "lesson_collects.status = 'Published'"
       conditions_close_parenthesis(conditions)
     else
-      no_rise_files_id = LessonCollect.find(:all,:conditions=>"status = 'Published'", :group=>"lesson_collect_file_id").map {|lc| lc.lesson_collect_file_id }
-      if no_rise_files_id.count > 0
-        conditions_and(conditions)
-        conditions_open_parenthesis(conditions)
-        conditions << "lesson_collect_files.id NOT IN (#{no_rise_files_id.join(',')})"
-        conditions_close_parenthesis(conditions)
-      end
+      # no_rise_files_id = LessonCollect.find(:all,:conditions=>"status = 'Published'", :group=>"lesson_collect_file_id").map {|lc| lc.lesson_collect_file_id }
+      # if no_rise_files_id.count > 0
+      #   conditions_and(conditions)
+      #   conditions_open_parenthesis(conditions)
+      #   conditions << "lesson_collect_files.id NOT IN (#{no_rise_files_id.join(',')})"
+      #   conditions_close_parenthesis(conditions)
+      # end
     end
 
     # Begin date
@@ -241,7 +241,6 @@ class LessonCollectsController < ApplicationController
       conditions_open_parenthesis(conditions)
       conditions << "lesson_collect_files.updated_at < '#{Date.parse(@filter_end_date).strftime('%Y-%m-%d %H:%M:%S')}'"
       conditions_close_parenthesis(conditions)
-
     end
 
     # Axe
@@ -306,7 +305,7 @@ class LessonCollectsController < ApplicationController
     lesson_file_id = params[:id]
     if lesson_file_id != nil
       @lesson_collect_file = LessonCollectFile.find(:first, :conditions=>["id = ?", lesson_file_id])
-
+      @last_download = LessonCollectFileDownload.find(:first, :conditions => ["lesson_collect_file_id = ? and user_id = ?", lesson_file_id, current_user.id], :order => "download_date desc")
     else
       redirect_to "/lesson_collects/index"
     end
