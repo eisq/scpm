@@ -1,5 +1,7 @@
 <h3>
+  <% if p.status != "Closed" %>
   <%= link_to('Open', {:action=>'show', :id=>p.id}, {:class=>'menu grey'}) %>
+  <% end %>
   <% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%>
   <%=link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
   | <%= p.summary %>
