@@ -1,5 +1,98 @@
 class CiProject < ActiveRecord::Base
 
+	def mantis_formula
+
+		  external_id_temp = "null"
+		  if self.external_id.to_s != "" and self.external_id.to_s != nil
+			external_id_temp = self.external_id.to_s
+		  end
+
+	  	  formula = ""
+		  formula += external_id_temp #ID Externe
+	  	  formula += format(self.type) #Type
+	      formula += format(self.stage)  #Etape
+	      formula += format(self.category)  #Catégorie
+	      formula += ";null" #Exigences
+	      formula += format(self.severity)  #Sévérité
+	      formula += format(self.reproducibility)  #Reproductibilité
+	      formula += format(self.summary)  #Intitulé
+	      formula += format(self.description)  #Description
+	      formula += format(self.status)  #Etat
+	      formula += format(self.submission_date)  #Soumis le
+	      formula += format(self.reporter)  #Rapporteur
+	      formula += format(self.visibility)  #Public/Interne
+	      formula += format(self.assigned_to)  #Responsable
+	      formula += format(self.priority)  #Priorité
+	      formula += ";null" #Version de détection
+	      formula += ";null" #Version de prise en compte
+	      formula += ";null" #Charge de résolution (en heures)
+	      formula += ";null" #Etapes pour reproduire
+	      formula += format(self.additional_information)  #Informations complémentaires
+	      formula += ";null" #Cause de la demande
+	      formula += format(self.detection_phase)  #Phase de détection
+	      formula += format(self.injection_phase)  #Phase d'injection
+	      formula += ";null" #Test réel de détection
+	      formula += ";null" #Test théorique de détection
+	      formula += format(self.impact)  #Impact (en j/h)
+	      formula += format(self.impact_time)  #Impact en délai (en j)
+	      formula += format(self.typology_of_change)  #Typologie du changement
+	      formula += format(self.deliverables_updated)  #Livrables mis à jour
+	      formula += format(self.iteration)  #Itération
+	      formula += format(self.lot)  #Lot
+	      formula += format(self.entity)  #Entité
+	      formula += format(self.team)  #Equipe
+	      formula += format(self.domain)  #Domaine
+	      formula += format(self.backlog_request_id)  #Num Req Backlog
+	      formula += format(self.origin)  #Origin
+	      formula += ";null" #Output Type
+	      formula += ";null" #Deliverables list
+	      formula += ";null" #Dev Team
+	      formula += ";null" #Deployment
+	      formula += format(self.airbus_responsible)  #Airbus Responsible
+	      formula += format(self.airbus_validation_date)  #Airbus validation date
+	      formula += format(self.airbus_validation_date_objective)  #Airbus validation date objective
+	      formula += format(self.airbus_validation_date_review)  #Airbus Validation Date Review
+	      formula += format(self.ci_objectives_2010_2011)  #CI Objective 2010/2011
+	      formula += format(self.ci_objectives_2012)  #CI Objective 2012
+	      formula += format(self.ci_objectives_2013)  #CI Objectives 2013
+	      formula += format(self.deliverable_folder)  #Deliverable Folder
+	      formula += format(self.deployment_date)  #Deployment date
+	      formula += format(self.deployment_date_objective)  #Deployment date objective
+	      formula += format(self.specification_date)  #Specification date
+	      formula += format(self.kick_off_date)  #Kick-Off Date
+	      formula += format(self.launching_date_ddmmyyyy)  #Launching date (dd/mm/yyyy)
+	      formula += format(self.sqli_validation_date)  #SQLI Validation date
+	      formula += format(self.sqli_validation_date_objective)  #SQLI Validation date objective
+	      formula += format(self.specification_date_objective)  #Specification date Objective
+	      formula += format(self.sqli_validation_responsible)  #SQLI validation Responsible
+	      formula += format(self.ci_objectives_2014)  #CI Objectives 2014
+	      formula += format(self.kick_off_date)  #Airbus Kick-Off Date
+	      formula += format(self.airbus_responsible)  #Airbus validation responsible
+	      formula += format(self.linked_req)  #Linked Req
+	      formula += format(self.quick_fix)  #Quick Fix
+	      formula += format(self.level_of_impact)  #Level of Impact
+	      formula += format(self.impacted_mnt_process)  #Impacted M&T process
+	      formula += format(self.path_backlog)  #Path backlog
+	      formula += format(self.svn_delivery_folder)  #Path SVN
+	      formula += format(self.path_sfs_airbus)  #Path SFS Airbus
+	      formula += format(self.item_type)  #Item Type
+	      formula += format(self.verification_date_objective)  #Verification Date Objective
+	      formula += format(self.verification_date)  #Verification Date
+	      formula += format(self.request_origin)  #Request Origin
+
+		return formula
+	end
+
+	def format(variable) #formate les variables pour les entrer dans la formule d'export Mantis.
+		#Ici ajouter un contrôle des ";", si il y en dans la variable, le remplacer.
+		var = variable.to_s
+		if var == "" or var == nil or var == " "
+			var = "null"
+		end
+		var = ";" + var
+		return var
+	end
+
 	def css_class
 		if self.status == "New"
 			return "ci_project new"

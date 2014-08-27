@@ -17,6 +17,13 @@ class CiProjectsController < ApplicationController
   def all
     verif
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @export_mantis_formula = ""
+    @projects.each { |p|
+      if p.status != "Closed"
+        @export_mantis_formula += p.mantis_formula
+        @export_mantis_formula += ";finbug"
+      end
+    }
   end
 
   def late
@@ -78,7 +85,8 @@ class CiProjectsController < ApplicationController
       report.parse
       # transform the Report into a CiProject
       report.projects.each { |p|
-        # get the id if it exist, else create it
+        # get the id if it exist
+        # ici il faut vérifier le format de l'external_id pour voir si c'est un CI, une Expertise ou un Coaching.
         if (p.stage != "BAM" and p.stage != "" and p.external_id != "")
           ci = CiProject.find_by_external_id(p.external_id)
           ci.update_attributes(p.to_hash) # and it updates only the attributes that have changed !
