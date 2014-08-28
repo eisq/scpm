@@ -257,7 +257,7 @@ class Milestone < ActiveRecord::Base
       if self.done != 0
         has_data = true
       end
-      if self.status != -1
+      if self.status > 0
         has_data = true
       end
       return has_data
