@@ -1,6 +1,7 @@
 <%= render(:file=>"lesson_collects/menu", :locals=>{:dashboard => 1}) %>
 
 <h3>General</h3>
+	<p>Last import : <%= @lesson_collect_file.updated_at.strftime('%Y-%m-%d %H:%M:%S') %></p>
 	<p>Last time your downloaded this file: <%= @last_download.download_date.strftime('%Y-%m-%d %H:%M:%S')  if @last_download %> </p>
 	<p>Ticket: <%= @lesson_collect_file.request.summary if @lesson_collect_file.request %></p>
 	
@@ -12,7 +13,10 @@
 	</ul>
 <h3>Detail Form</h3>
 <% form_for :@lesson_collect_file, :url=>{:action=>'lesson_collect_file_comment_update'} do |f| -%>
-	Archivé:  <%= check_box :lesson_collect_file, :is_archived %><br />
+	
+	<% if current_user.is_cpdp or !@lesson_collect_file.is_archived %>
+		Archivé:  <%= check_box :lesson_collect_file, :is_archived %><br />
+	<% end %>
 	Commentaire:<br />
 	<%= hidden_field(:lesson_collect_file, :id) %>
 	<%= text_area :lesson_collect_file, :comment, {:rows=>3} %><br />

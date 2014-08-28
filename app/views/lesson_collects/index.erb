@@ -24,12 +24,13 @@
 		</div>
 		<br />
 		<div>
-			Already downloaded :
 			<%= check_box_tag(:filter_already_downloaded, true, @filter_already_downloaded) %> 
-			Archived :
-			<%= check_box_tag(:filter_is_archived, true, @filter_is_archived) %>
-			RISE :
-			<%= check_box_tag(:filter_rise, true, @filter_rise) %>
+			Already downloaded (<span style="color:red;">Unchecked: Files downloaded and not downloaded</span> <span style="color:green">Checked: Only downloaded files</span>)
+		</div>
+		<div>
+			<%= check_box_tag(:filter_is_archived, true, @filter_is_archived) %> Archived  (<span style="color:red;">Unchecked: Only unarchived files</span> <span style="color:green">Checked: Only archived files</span>)
+		<div>
+			<%= check_box_tag(:filter_rise, true, @filter_rise) %> RISE (<span style="color:red;">Unchecked: Files with and without RISE lines</span> <span style="color:green">Checked: Files which are, at least, on RISE line</span>)
 		</div>
 		<br />
 		<div>
@@ -60,10 +61,9 @@
 		  	<%= select_tag ("filter_ws",options_for_select(@ws_array,@filter_ws_selected),{:size=>6, :multiple => true})  %>
 		  	<%= select_tag ("filter_suite",options_for_select(@suites_array,@filter_suite_selected),{:size=>6, :multiple => true})  %>
 		</div>
-		<div style="margin-left:auto; margin-right:auto; width:100px;">
+		<div style="margin-left:auto; margin-right:auto; width:200px;">
 			<input type="button" id="filter_button_id" value="Filter" />
 			<input type="button" id="export_button_id" value="Export" />
-
 	  	</div>
 	 </div>
 <% end %>	
@@ -97,7 +97,7 @@
 		<td><%= lf.suite_name %></td>
 		<td><%= lf.project_name %></td>
 		<td><%= lf.updated_at.strftime("%Y-%m-%d %H:%M") %></td>
-		<td>BUTTON DL</td>
+		<td><%= link_to("Download", {:controller=>'lesson_collects', :action=>'export_file', :id=>lf.id.to_s}) %></td>
 		<td><%= link_to("Detail", {:controller=>'lesson_collects', :action=>'general_detail', :id=>lf.id.to_s}) %></td>
 	</tr>
 <% end %>

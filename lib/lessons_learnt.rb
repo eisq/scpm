@@ -88,12 +88,8 @@ module LessonsLearnt
   end
 
   # Return an array of hash
-  def self.generate_hash_export(files)
-    hash_array = Array.new
-    files.each do |file|
-      hash_array << LessonsLearnt.generate_hash_export(file.lesson_collects, file.lesson_collect_actions, file.lesson_collect_assessments)
-    end
-    return hash_array
+  def self.generate_hash_export_from_file(file)
+    return LessonsLearnt.generate_hash_export(file.lesson_collects, file.lesson_collect_actions, file.lesson_collect_assessments)
   end
 
   # Return an hash

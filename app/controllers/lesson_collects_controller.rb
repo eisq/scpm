@@ -207,10 +207,10 @@ class LessonCollectsController < ApplicationController
       conditions << "is_archived = 1"
       conditions_close_parenthesis(conditions)
     else
-      # conditions_and(conditions)
-      # conditions_open_parenthesis(conditions)
-      # conditions << "is_archived = 0"
-      # conditions_close_parenthesis(conditions)
+      conditions_and(conditions)
+      conditions_open_parenthesis(conditions)
+      conditions << "is_archived = 0"
+      conditions_close_parenthesis(conditions)
     end
 
     # RISE
@@ -443,6 +443,13 @@ class LessonCollectsController < ApplicationController
       actions_conditions     << "lesson_collect_files.is_archived = 1"
       assessments_conditions << "lesson_collect_files.is_archived = 1"
       group_conditions_close_parenthesis(lessons_conditions, actions_conditions, assessments_conditions)
+    else
+      group_conditions_and(lessons_conditions, actions_conditions, assessments_conditions)
+      group_conditions_open_parenthesis(lessons_conditions, actions_conditions, assessments_conditions)
+      lessons_conditions     << "lesson_collect_files.is_archived = 0"
+      actions_conditions     << "lesson_collect_files.is_archived = 0"
+      assessments_conditions << "lesson_collect_files.is_archived = 0"
+      group_conditions_close_parenthesis(lessons_conditions, actions_conditions, assessments_conditions)
     end
 
     # RISE
@@ -594,6 +601,20 @@ class LessonCollectsController < ApplicationController
     redirect_to(:action=>'index', :imported=>1)
   end
 
+  def check_filename
+    filename = params[:filename]
+    if filename
+      file = LessonCollectFile.find(:first, :conditions => ["filename like ?", filename])
+      if file
+        render(:text=>true)
+      else
+        render(:text=>false)
+      end
+    else
+      render(:text=>"error")
+    end
+  end
+
   # --------
   # EXPORT
   # --------
@@ -624,6 +645,48 @@ class LessonCollectsController < ApplicationController
     end
   end
   
+  def export_file
+    lesson_file_id = params[:id]
+    if lesson_file_id != nil
+
+      # Log
+      download_log = LessonCollectFileDownload.find(:first, :conditions => ["lesson_collect_file_id = ? and user_id = ?", lesson_file_id, current_user.id], :order => "download_date desc")
+      if download_log == nil
+        download_log = LessonCollectFileDownload.new
+        download_log.user_id = current_user.id
+        download_log.lesson_collect_file_id = lesson_file_id
+        download_log.save
+      end
+      download_log.download_date = DateTime.now.strftime('%Y-%m-%d %H:%M:%S')
+      download_log.save
+
+      # Construct file
+      begin
+        @xml = Builder::XmlMarkup.new(:indent => 1) #Builder::XmlMarkup.new(:target => $stdout, :indent => 1)
+
+        @lesson_collect_file_obj  = LessonCollectFile.find(:first, :conditions => ["id = ?", lesson_file_id])
+        @filter_type_selected_obj = @lesson_collect_file_obj.lesson_collect_template_type
+
+        # Columns
+        @header                  = LessonsLearnt.generate_file_header(@lesson_collect_file_obj.lesson_collect_template_type.name, @lesson_collect_file_obj.pm, @lesson_collect_file_obj.qwr_sqr, @lesson_collect_file_obj.workstream, @lesson_collect_file_obj.suite_name, @lesson_collect_file_obj.project_name, @lesson_collect_file_obj.mt_qr)
+        @lessonCollectsHeader    = LessonsLearnt.generate_lesson_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
+        @lessonActionsHeader     = LessonsLearnt.generate_action_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
+        @lessonAssessmentsHeader = LessonsLearnt.generate_assessment_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
+
+        @exportHash              = LessonsLearnt.generate_hash_export_from_file(@lesson_collect_file_obj)
+
+        headers['Content-Type']         = "application/vnd.ms-excel"
+        headers['Content-Disposition']  = 'attachment; filename="'+@lesson_collect_file_obj.filename
+        headers['Cache-Control']        = ''
+        render "export.erb", :layout=>false
+      rescue Exception => e
+        render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+      end
+    end
+  end
+
+
+
   # ------
   # HELPER
   # ------

@@ -1,7 +1,36 @@
+<script src="/javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var $j = jQuery.noConflict();
+</script>
 <!-- IMPORT -->
 <h2> Lessons Learnt Import </h2>
 
-<%= form_tag({:action => 'import'}, :multipart => true) %>
+<%= form_tag({:action => 'import'}, :multipart => true, :id=>"import_form_id") %>
 <%= file_field 'upload', 'datafile' %>
-<%= submit_tag "Import" %></p>
+<input type="button" value="Import" id="import_button_id" />
 </form>
+
+<script type="text/javascript">
+	$j("#import_button_id").click(function () {
+		$j.ajax({
+			type: "POST",
+			url: "/lesson_collects/check_filename",
+	 		data: {filename : $j("#upload_datafile").val()}
+		})
+		.done(function( msg ) {
+			if ($j.parseJSON(msg) == true) {
+				if (confirm('Warning : A file with the same filename was already imported. Erase the previous file ?')) { 
+					$j("#import_form_id").submit();
+				}
+			} else {
+				$j("#import_form_id").submit();
+			}
+
+		})
+		.fail(function() 
+		{ 
+			alert("Error.");
+		})
+	});
+
+</script>
