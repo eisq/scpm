@@ -1,4 +1,4 @@
-<!--<%=
+<%=
 @xml.instruct! :xml, :version=>"1.0", :encoding=>"UTF-8"
 @xml.Workbook({
   'xmlns'      => "urn:schemas-microsoft-com:office:spreadsheet",
@@ -8,6 +8,7 @@
   'xmlns:ss'   => "urn:schemas-microsoft-com:office:spreadsheet"
   }) do
 
+# STYLES
 @xml.Styles do
   @xml.Style 'ss:ID' => 'Default', 'ss:Name' => 'Normal' do
      @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
@@ -46,57 +47,99 @@ end
       end
 
       # Rows
-      for row_data in @exportArray
-        file_data = row_data["file"]
-        for lesson in row_data["lessonCollects"]
-          style = {}
-          @xml.Row(style) do
+      for lesson in @exportHash["lessonCollects"]
+        style = {}
+        @xml.Row(style) do
+          # Lesson id
+          @xml.Cell do
+            @xml.Data lesson.lesson_id.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Milestone
+          @xml.Cell do
+            @xml.Data lesson.milestone, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Type lesson
+          @xml.Cell do
+            @xml.Data lesson.type_lesson, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Topics
+          @xml.Cell do
+            @xml.Data lesson.topics, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Cause
+          @xml.Cell do
+            @xml.Data lesson.cause, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Improvement
+          @xml.Cell do
+            @xml.Data lesson.improvement, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Axe
+          axe_name = lesson.lesson_collect_axe ? lesson.lesson_collect_axe.name : ""
+          @xml.Cell do
+            @xml.Data axe_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Sub Axe
+          sub_axe_name = lesson.lesson_collect_sub_axe ? lesson.lesson_collect_sub_axe.name : ""
+          @xml.Cell do
+            @xml.Data sub_axe_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # [PROJECT] Escalate
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_project']
             @xml.Cell do
-              @xml.Data file_data.workstream, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+              @xml.Data lesson.escalate_next_level, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
+          end
+          # [WS/PLM] Project 
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_ws'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_plm']
             @xml.Cell do
-              @xml.Data file_data.suite_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+              @xml.Data lesson.project_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
+          end
+          # [WS/PLM/MT] Action plan
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_ws'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_plm'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_mt']
             @xml.Cell do
-              @xml.Data file_data.project_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+              @xml.Data lesson.action_plan, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
+          end
+          # [WS/PLM/MT] Already exist
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_ws'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_plm'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_mt']
             @xml.Cell do
-              @xml.Data file_data.created_at.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' # DATE NOW
+              @xml.Data lesson.already_exist, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
+          end
+          # [WS/PLM] Redundancy
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_ws'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_plm']
             @xml.Cell do
-              @xml.Data file_data.pm, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+              @xml.Data lesson.redundancy, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
+          end
+          # [WS/PLM] Selected
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_ws'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_plm']
             @xml.Cell do
-              @xml.Data file_data.qwr_sqr, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+              @xml.Data lesson.selected, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
+          end
+          # [WS/PLM] Escalate
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_ws'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_plm']
             @xml.Cell do
-              @xml.Data lesson.lesson_id.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+              @xml.Data lesson.escalate_next_level, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
+          end
+          # [MT] Raised in DWS/PLM
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_mt']
             @xml.Cell do
-              @xml.Data lesson.milestone, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+              @xml.Data lesson.raised_in_dws_plm, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
+          end
+          # [WS/PLM/MT] Status
+          if @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_ws'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_plm'] or @filter_type_selected_obj.name ==  APP_CONFIG['lesson_template_mt']
             @xml.Cell do
-              @xml.Data lesson.type_lesson, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+              @xml.Data lesson.status, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
-            @xml.Cell do
-              @xml.Data lesson.topics, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data lesson.cause, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data lesson.improvement, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data lesson.axes, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data lesson.sub_axes, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
+          end
 
-          end #End  xml.row
-        end #End for
-
+        end #End  xml.row
       end #End for
     end #End xml.table
   end #End xml.worksheet
@@ -121,54 +164,75 @@ end
       end
 
       # Rows
-      for row_data in @exportArray
-        file_data = row_data["file"]
-        for action in row_data["lessonActions"]
-          style = {}
-          @xml.Row(style) do
-            @xml.Cell do
-              @xml.Data file_data.workstream, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data file_data.suite_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data file_data.project_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data file_data.created_at.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' # DATE NOW
-            end
-            @xml.Cell do
-              @xml.Data file_data.pm, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data file_data.qwr_sqr, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data action.ref, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data action.creation_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data action.source, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data action.title, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data action.status, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data action.due_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-          end #End  xml.row
-        end #End for
+      for action in @exportHash["lessonActions"]
+        style = {}
+        @xml.Row(style) do
+          # Ref.
+          @xml.Cell do
+            @xml.Data action.ref, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Creation Date
+          @xml.Cell do
+            @xml.Data action.creation_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Source
+          @xml.Cell do
+            @xml.Data action.source, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Title
+          @xml.Cell do
+            @xml.Data action.title, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Status
+          @xml.Cell do
+            @xml.Data action.status, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Actionee
+          @xml.Cell do
+            @xml.Data action.actionne, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Due date
+          @xml.Cell do
+            @xml.Data action.due_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Completion Date
+          @xml.Cell do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Proof of realisation
+          @xml.Cell do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Comments
+          @xml.Cell do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # KPI
+          @xml.Cell do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Risk/Issue Ref.
+          @xml.Cell do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # No data
+          @xml.Cell do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Benefit
+          @xml.Cell do
+            @xml.Data action.benefit, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Level of investment
+          @xml.Cell do
+            @xml.Data action.level_of_investment, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+        end #End  xml.row
       end #End for
     end #End xml.table
   end #End xml.worksheet
 
-# ASSESSMENT
+  # ASSESSMENT
   @xml.Worksheet 'ss:Name' => 'Assessment of quality service' do
     @xml.Table do
 
@@ -178,24 +242,6 @@ end
       end
 
       @xml.Row 'ss:StyleID' => 's62' do
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-       @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
         @xml.Cell do
           @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
@@ -227,64 +273,53 @@ end
       end
 
       # Rows
-      for row_data in @exportArray
-        file_data = row_data["file"]
-        for assessment in row_data["lessonCollectAssessment"]
-          style = {}
-          @xml.Row(style) do
-            @xml.Cell do
-              @xml.Data file_data.workstream, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data file_data.suite_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data file_data.project_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data file_data.created_at.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' # DATE NOW
-            end
-            @xml.Cell do
-              @xml.Data file_data.pm, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data file_data.qwr_sqr, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.lesson_id, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.milestone, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.mt_detailed_desc, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.quality_gates, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.milestones_preparation, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.project_setting_up, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.lessons_learnt, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.support_level, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.mt_improvements, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-            @xml.Cell do
-              @xml.Data assessment.comments, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-            end
-          end #End  xml.row
-        end #End for
+      for assessment in @exportHash["lessonCollectAssessment"]
+        style = {}
+        @xml.Row(style) do
+          # ID RMT
+          @xml.Cell do
+            @xml.Data assessment.lesson_id, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Milestone
+          @xml.Cell do
+            @xml.Data assessment.milestone, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Detail desc
+          @xml.Cell do
+            @xml.Data assessment.mt_detailed_desc, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Quality gates
+          @xml.Cell do
+            @xml.Data assessment.quality_gates, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Milestones Preparation
+          @xml.Cell do
+            @xml.Data assessment.milestones_preparation, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Project setting up
+          @xml.Cell do
+            @xml.Data assessment.project_setting_up, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Lessons learnt
+          @xml.Cell do
+            @xml.Data assessment.lessons_learnt, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Support level
+          @xml.Cell do
+            @xml.Data assessment.support_level, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Mt improvements
+          @xml.Cell do
+            @xml.Data assessment.mt_improvements, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          # Comments
+          @xml.Cell do
+            @xml.Data assessment.comments, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+        end #End  xml.row
       end #End for
     end #End xml.table
   end #End xml.worksheet
+end 
 
-end
-%>-->
+%>

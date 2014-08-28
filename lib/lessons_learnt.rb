@@ -27,7 +27,7 @@ module LessonsLearnt
     elsif template_type == APP_CONFIG['lesson_template_mt']
       LessonsLearntMt.import(lessons, actions, assessments, file_name)
     else
-      raise "Unknow Template type"
+      raise "Unknow Template type"+template_type +" - " +APP_CONFIG['lesson_template_mt']
     end
   end
 

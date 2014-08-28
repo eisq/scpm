@@ -107,7 +107,6 @@ module LessonsLearntMt
             "Improvement / Best Practices",
             "Analysis Axis",
             "Sub Axis Analysis",
-            "Project name",
             "Action Plan at PLM level",
             "Already exists/New Practice",
             "Raised in DWS, PLM",
@@ -126,7 +125,7 @@ module LessonsLearntMt
             "Proof of realisation",
             "Comments",
             "KPI",
-            "Risk/Issue Ref."
+            "Risk/Issue Ref.",
             "",
             "Benefit",
             "Level of investment"

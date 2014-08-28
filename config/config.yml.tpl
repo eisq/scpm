@@ -109,8 +109,7 @@ spider_load: 0.375
 lesson_template_project: "PROJECT"
 lesson_template_ws: "WS"
 lesson_template_plm: "PLM"
-lesson_template_mt: "M&T
-"  
+lesson_template_mt: "M&T"  
 # Presale
 presale_milestones_priority_setting_up:
     - M1

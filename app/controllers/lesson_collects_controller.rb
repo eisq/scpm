@@ -604,29 +604,16 @@ class LessonCollectsController < ApplicationController
       # Filter
       filter_by_row(params)
 
-      filter_type_selected_obj = LessonCollectTemplateType.find(:first, :conditions => ["id = ?", @filter_type_selected])
+      @filter_type_selected_obj = LessonCollectTemplateType.find(:first, :conditions => ["id = ?", @filter_type_selected])
 
       # Columns
 
-      @header                  = LessonsLearnt.generate_file_header(filter_type_selected_obj.name)
-      @lessonCollectsHeader    = LessonsLearnt.generate_lesson_columns(filter_type_selected_obj.name)
-      @lessonActionsHeader     = LessonsLearnt.generate_action_columns(filter_type_selected_obj.name)
-      @lessonAssessmentsHeader = LessonsLearnt.generate_assessment_columns(filter_type_selected_obj.name)
+      @header                  = LessonsLearnt.generate_file_header(@filter_type_selected_obj.name)
+      @lessonCollectsHeader    = LessonsLearnt.generate_lesson_columns(@filter_type_selected_obj.name)
+      @lessonActionsHeader     = LessonsLearnt.generate_action_columns(@filter_type_selected_obj.name)
+      @lessonAssessmentsHeader = LessonsLearnt.generate_assessment_columns(@filter_type_selected_obj.name)
 
-      
-
-      @exportHash = LessonsLearnt.generate_hash_export(@lessons, @actions, @assessments)
-      # @exportArray = Array.new
-      # lessonFiles.each do |lf|
-      #   exportHash = Hash.new
-      #   exportHash["file"] = lf
-      #   exportHash["lessonCollects"]          = LessonCollect.find(:all, :conditions=>["lesson_collect_file_id = ?", lf.id])
-      #   exportHash["lessonActions"]           = LessonCollectAction.find(:all, :conditions=>["lesson_collect_file_id = ?", lf.id])
-      #   exportHash["lessonCollectAssessment"] = LessonCollectAssessment.find(:all, :conditions=>["lesson_collect_file_id = ?", lf.id])
-      #   @exportArray << exportHash
-      # end
-
-
+      @exportHash              = LessonsLearnt.generate_hash_export(@lessons, @actions, @assessments)
 
       headers['Content-Type']         = "application/vnd.ms-excel"
       headers['Content-Disposition']  = 'attachment; filename="lessons_learnt_collect_export.xls"'
