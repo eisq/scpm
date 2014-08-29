@@ -1,6 +1,6 @@
 <h2>My opened CI Projects</h2>
 	<%= render(:partial=>"ci_project_all", :collection=>@projectsopened, :as=>:p) %>
 <br/><br/>
-<h2>My closed CI Projects</h2>
+<h2>My closed, deployed or rejected CI Projects</h2>
 	<%= render(:partial=>"ci_project_all", :collection=>@projectsclosed, :as=>:p) %>
 </table>

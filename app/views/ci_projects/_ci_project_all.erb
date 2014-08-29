@@ -1,10 +1,13 @@
 <h3>
-  <% if p.status != "Closed" %>
-  <%= link_to('Open', {:action=>'show', :id=>p.id}, {:class=>'menu grey'}) %>
+  <% if p.status != "Closed" and p.status != "Delivered" and p.status != "Rejected" %>
+    <%= link_to('Open', {:action=>'show', :id=>p.id}, {:class=>'menu grey'}) %>
   <% end %>
   <% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%>
-  <%=link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
+    <%=link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
   | <%= p.summary %>
+  <% if p.status == "Closed" or p.status == "Delivered" or p.status == "Rejected" %>
+    <span style="font-weight:normal; font-size:12px"> -> <%= p.status %></span>
+  <% end %>
 </h3>
   <% if p.backlog_request_id != nil %>
   	<p><b>Backlog request ID:</b> <%= p.backlog_request_id.to_s %></p>

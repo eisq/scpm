@@ -10,20 +10,21 @@ class CiProjectsController < ApplicationController
   def mine
     verif
     #@projects = CiProject.find(:all, :conditions=>["assigned_to=?", current_user.rmt_user]).sort_by {|p| [p.order]}
-    @projectsopened = CiProject.find(:all, :conditions=>["assigned_to=? and status!='closed'", current_user.rmt_user]).sort_by {|p| [p.order]}
-    @projectsclosed = CiProject.find(:all, :conditions=>["assigned_to=? and status='closed'", current_user.rmt_user]).sort_by {|p| [p.order]}
+    @projectsopened = CiProject.find(:all, :conditions=>["assigned_to=? and (status!='Closed' and status!='Rejected' and status!='Delivered')", current_user.rmt_user]).sort_by {|p| [p.order]}
+    @projectsclosed = CiProject.find(:all, :conditions=>["assigned_to=? and (status='Closed' or status='Delivered' or status='Rejected')", current_user.rmt_user]).sort_by {|p| [p.order]}
   end
 
   def all
     verif
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
-    @export_mantis_formula = ""
+    @export_mantis_formula = formula = ""
     @projects.each { |p|
-      if p.status != "Closed"
-        @export_mantis_formula += p.mantis_formula
-        @export_mantis_formula += ";finbug"
+      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected"
+        formula += p.mantis_formula
+        formula += ";finbug"
       end
     }
+    @export_mantis_formula = sanitize(formula)
   end
 
   def late
@@ -128,4 +129,17 @@ class CiProjectsController < ApplicationController
     id = params['id']
     @project = CiProject.find(id)
   end
+
+  def sanitize(value)
+    value.gsub!(130.chr, "e") # eacute
+    value.gsub!(133.chr, "a") # a grave
+    value.gsub!(135.chr, "c") # c cedille
+    value.gsub!(138.chr, "e") # e grave
+    value.gsub!(140.chr, "i") # i flex
+    value.gsub!(147.chr, "o") # o flex
+    value.gsub!(156.chr, "oe") # oe
+    value.gsub!(167.chr, "o") # °
+    return value
+  end
+
 end
