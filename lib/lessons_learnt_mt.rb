@@ -235,6 +235,8 @@ module LessonsLearntMt
       lesson_collect_assessment.comments                = a[ASSESSMENT_CELL_COMMENTS_LABEL]           
       lesson_collect_assessment.save  
     end
+
+    return lesson_file
   end
 
   # ------------------------------------------------------------------------------------

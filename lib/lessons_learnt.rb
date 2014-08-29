@@ -19,13 +19,13 @@ module LessonsLearnt
     template_type = LessonsLearnt.get_template_type(lessons)
 
     if template_type == APP_CONFIG['lesson_template_project']
-      LessonsLearntProject.import(lessons, actions, assessments, file_name)
+      return LessonsLearntProject.import(lessons, actions, assessments, file_name)
     elsif template_type == APP_CONFIG['lesson_template_ws']
-      LessonsLearntWs.import(lessons, actions, assessments, file_name)
+      return LessonsLearntWs.import(lessons, actions, assessments, file_name)
     elsif template_type == APP_CONFIG['lesson_template_plm']
-      LessonsLearntPlm.import(lessons, actions, assessments, file_name)
+      return LessonsLearntPlm.import(lessons, actions, assessments, file_name)
     elsif template_type == APP_CONFIG['lesson_template_mt']
-      LessonsLearntMt.import(lessons, actions, assessments, file_name)
+      return LessonsLearntMt.import(lessons, actions, assessments, file_name)
     else
       raise "Unknow Template type"+template_type +" - " +APP_CONFIG['lesson_template_mt']
     end
