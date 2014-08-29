@@ -205,7 +205,11 @@ end
 
       # Columns width
       for i in 0..@lessonActionsHeader.count do
-        @xml.Column nil, {'ss:Width' => 70}
+        if @action_columns_hidden.include? i
+          @xml.Column nil, {'ss:Width' => 70, 'ss:Hidden' => 1}
+        else
+          @xml.Column nil, {'ss:Width' => 70}
+        end
       end
 
       # Header

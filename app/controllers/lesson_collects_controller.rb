@@ -633,11 +633,13 @@ class LessonCollectsController < ApplicationController
       @lessonCollectsHeader    = LessonsLearnt.generate_lesson_columns(@filter_type_selected_obj.name)
       @lessonActionsHeader     = LessonsLearnt.generate_action_columns(@filter_type_selected_obj.name)
       @lessonAssessmentsHeader = LessonsLearnt.generate_assessment_columns(@filter_type_selected_obj.name)
-
+      @action_columns_hidden   = LessonsLearnt.index_of_actions_columns_hidden(@filter_type_selected_obj.name)
       @exportHash              = LessonsLearnt.generate_hash_export(@lessons, @actions, @assessments)
 
+      filename = @filter_type_selected_obj.name+"_"+DateTime.now.strftime('%Y-%m-%d %H:%M:%S')+"_LessonsLearnt.xls"
+
       headers['Content-Type']         = "application/vnd.ms-excel"
-      headers['Content-Disposition']  = 'attachment; filename="lessons_learnt_collect_export.xls"'
+      headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
       headers['Cache-Control']        = ''
       render(:layout=>false)
     rescue Exception => e
@@ -672,11 +674,11 @@ class LessonCollectsController < ApplicationController
         @lessonCollectsHeader    = LessonsLearnt.generate_lesson_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
         @lessonActionsHeader     = LessonsLearnt.generate_action_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
         @lessonAssessmentsHeader = LessonsLearnt.generate_assessment_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
-
+        @action_columns_hidden   = LessonsLearnt.index_of_actions_columns_hidden(@lesson_collect_file_obj.lesson_collect_template_type.name)
         @exportHash              = LessonsLearnt.generate_hash_export_from_file(@lesson_collect_file_obj)
 
         headers['Content-Type']         = "application/vnd.ms-excel"
-        headers['Content-Disposition']  = 'attachment; filename="'+@lesson_collect_file_obj.filename
+        headers['Content-Disposition']  = 'attachment; filename="'+@lesson_collect_file_obj.filename+'"'
         headers['Cache-Control']        = ''
         render "export.erb", :layout=>false
       rescue Exception => e
@@ -694,24 +696,20 @@ class LessonCollectsController < ApplicationController
     if (conditions.length > 0 and conditions[-1,1] != "(")
       conditions << " and "
     end
-    return conditions
   end
 
   def conditions_or(conditions)
     if (conditions.length > 0 and conditions[-1,1] != "(")
       conditions << " or "
     end
-    return conditions
   end
 
   def conditions_open_parenthesis(conditions)
     conditions << '('
-    return conditions
   end
 
   def conditions_close_parenthesis(conditions)
     conditions << ')'
-    return conditions
   end
 
   def group_conditions_and(lesson_conditions, action_conditions, assessment_conditions)

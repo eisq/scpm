@@ -72,7 +72,21 @@ module LessonsLearnt
       raise "Unknow Template type"
     end
   end
-
+  
+  def self.index_of_actions_columns_hidden(template_type)
+    if template_type == APP_CONFIG['lesson_template_project']
+      LessonsLearntProject.index_of_actions_columns_hidden
+    elsif template_type == APP_CONFIG['lesson_template_ws']
+      LessonsLearntWs.index_of_actions_columns_hidden
+    elsif template_type == APP_CONFIG['lesson_template_plm']
+      LessonsLearntPlm.index_of_actions_columns_hidden
+    elsif template_type == APP_CONFIG['lesson_template_mt']
+      LessonsLearntMt.index_of_actions_columns_hidden
+    else
+      raise "Unknow Template type"
+    end
+  end
+  
   def self.generate_assessment_columns(template_type)
     if template_type == APP_CONFIG['lesson_template_project']
       LessonsLearntProject.generate_assessment_columns

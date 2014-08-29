@@ -141,6 +141,10 @@ module LessonsLearntPlm
             "Level of investment"
           ]
   end
+  
+  def self.index_of_actions_columns_hidden
+    return [7,8,9,10,11]
+  end
 
   def self.generate_assessment_columns
     return ["ID RMT (LL ticket)",
