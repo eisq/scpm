@@ -978,7 +978,7 @@ class Project < ActiveRecord::Base
     person = nil
 
     self.requests.each do |r|
-      if (!result.include?(r.work_package))
+      if (!result.include?(r.work_package) and r.resolution == "in progress")
         if r.assigned_to != ''
           person = Person.find_by_rmt_user(r.assigned_to)
           result << r.work_package + "(" + person.name + ")"
