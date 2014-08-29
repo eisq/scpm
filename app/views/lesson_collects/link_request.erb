@@ -1,0 +1,5 @@
+<h2>Link the <%= @lesson_collect_file_obj.filename %> LL to a request</h2>
+
+<% @requests.each do |r| %>
+	<%= r.request_id %> - <% r.project.summary %> LINK BTN
+<% end %>

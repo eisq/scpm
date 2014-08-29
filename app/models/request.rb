@@ -247,6 +247,8 @@ class Request < ActiveRecord::Base
     "WP1.2 - Quality AssuranceCV"                         => 12
   }
 
+  Wp_lesson_learnt = ["WP1.6.8 - QWR Lessons Learnt"]
+
   Comp_index = {
   "Easy" 		  => 0,
   "Medium" 		=> 1,
@@ -794,6 +796,10 @@ class Request < ActiveRecord::Base
     rv = Wp_index_RFP2014[wp+(cv=="Yes" ? "CV":"")]
     raise "no workpackage #{wp}" if not rv
     rv
+  end
+
+  def self.wp_lesson_learnt
+    return Wp_lesson_learnt
   end
 
   def milestone_index(m)

@@ -597,8 +597,13 @@ class LessonCollectsController < ApplicationController
   end
 
   def import
-    LessonsLearnt.import(params[:upload])
-    redirect_to(:action=>'index', :imported=>1)
+    LessonsLearnt.import(params[:upload]) 
+    if (params[:already_exist] == "false")
+      redirect_to(:action=>'index', :imported=>1)
+    else
+      # redirect_to(:action=>'index', :imported=>1)
+      #  LESSONSLEARNT IMPORT DOIT RETOURNER L'ID DU FICHIER
+    end
   end
 
   def check_filename
@@ -612,6 +617,19 @@ class LessonCollectsController < ApplicationController
       end
     else
       render(:text=>"error")
+    end
+  end
+
+  def link_request
+    lesson_file_id = params[:id]
+    if lesson_file_id != nil
+      @lesson_collect_file_obj  = LessonCollectFile.find(:first, :conditions => ["id = ?", lesson_file_id])
+
+      requests_id_with_ll = LessonCollectFile.find(:all, :select => "request_id", :conditions => "request_id IS NOT NULL")
+
+      @requests = Request.find(:all, :conditions => ["requests.id NOT IN (?) AND requests.work_package IN (?) AND (requests.status = 'assigned' OR requests.status = 'to be validated')", requests_id_with_ll, Request.wp_lesson_learnt])
+
+      # @projects = Project.find(:all, :joins => ["JOIN requests ON requests.project_id = project.id"], :conditions => ["requests.id NOT IN (?) AND requests.work_package IN (?) AND (requests.status = 'assigned' OR requests.status = 'to be validated') ", requests_id_with_ll, Request.wp_lesson_learnt])
     end
   end
 

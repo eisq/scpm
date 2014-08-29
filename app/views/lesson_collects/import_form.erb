@@ -7,6 +7,7 @@
 
 <%= form_tag({:action => 'import'}, :multipart => true, :id=>"import_form_id") %>
 <%= file_field 'upload', 'datafile' %>
+<%= hidden_field_tag('already_exist', "false") %>
 <input type="button" value="Import" id="import_button_id" />
 </form>
 
@@ -20,6 +21,7 @@
 		.done(function( msg ) {
 			if ($j.parseJSON(msg) == true) {
 				if (confirm('Warning : A file with the same filename was already imported. Erase the previous file ?')) { 
+					$j("#already_exist").val("true")
 					$j("#import_form_id").submit();
 				}
 			} else {
