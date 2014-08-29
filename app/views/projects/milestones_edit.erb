@@ -194,6 +194,12 @@ function alert_msg(msg) {
 		  <%= hidden_field_tag('project_id', @project.id) %>
 		  <%= submit_tag('Save',:confirm=>"Are you sure ?") %>
 		<% end %>
+		<% form_tag({:action => 'create_sibling'}, {:class => "milestone_edit_form"}) do %>
+		  <%= select_tag ("lifecycle_id",options_for_select(@lifecycles,@project.lifecycle))  %>
+		  <%= hidden_field_tag('project_id', @project.id) %>
+		  <%= submit_tag('Create sibling',:confirm=>"Are you sure ?") %>
+		<% end %>
+
 	</div>
 
 	<!-- Buttons -->

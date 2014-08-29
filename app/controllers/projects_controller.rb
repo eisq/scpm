@@ -174,6 +174,11 @@ class ProjectsController < ApplicationController
     @project.check
     @status = @project.get_status
     @old_statuses = @project.statuses - [@status]
+    @sibling = Project.find(:first, :conditions => ["sibling_id = ?", @project.id])
+    @has_sibling = false
+    if @sibling != nil
+      @has_sibling = true
+    end
     #@checklist_items = TransverseItems.find()
   end
 
@@ -782,6 +787,24 @@ class ProjectsController < ApplicationController
     else
       redirect_to :action=>:milestones_edit, :id=>project_id
     end
+  end
+
+  def create_sibling
+    project_id    = params[:project_id]
+    lifecycle_id  = params[:lifecycle_id]
+    project       = Project.find(:first, :conditions => ["id = ?", project_id])
+    lifecycle     = Lifecycle.find(:first, :conditions => ["id = ?", lifecycle_id])
+    
+    if lifecycle_id and project
+      new_project   = Project.new
+      new_project.create_sibling(project)
+      new_project.lifecycle = lifecycle_id
+      new_project.lifecycle_object = lifecycle
+      new_project.save
+    end
+
+    redirect_to :action=>:show, :id=>new_project.id
+
   end
 
   # @param milestones = Sorted array (on index order) of milestones id

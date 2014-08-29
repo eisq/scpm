@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140823102122) do
+ActiveRecord::Schema.define(:version => 20140829143721) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -331,10 +331,18 @@ ActiveRecord::Schema.define(:version => 20140823102122) do
     t.string "name"
   end
 
+  create_table "lesson_collect_file_analyzes", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "lesson_collect_file_id"
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "lesson_collect_file_downloads", :force => true do |t|
-    t.integer "user_id"
-    t.integer "lesson_collect_file_id"
-    t.date    "download_date"
+    t.integer  "user_id"
+    t.integer  "lesson_collect_file_id"
+    t.datetime "download_date"
   end
 
   create_table "lesson_collect_files", :force => true do |t|
@@ -349,6 +357,8 @@ ActiveRecord::Schema.define(:version => 20140823102122) do
     t.integer  "request_id"
     t.string   "filename"
     t.string   "mt_qr"
+    t.text     "comment"
+    t.boolean  "is_archived",                     :default => false
   end
 
   create_table "lesson_collect_sub_axes", :force => true do |t|
@@ -620,6 +630,7 @@ ActiveRecord::Schema.define(:version => 20140823102122) do
     t.integer  "suite_tag_id"
     t.string   "project_code"
     t.integer  "sales_revenue", :default => 0
+    t.integer  "sibling_id"
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"

@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   Suite       = 6
 
   belongs_to  :project
+  belongs_to  :sibling, :class_name=>"Project", :foreign_key=>"sibling_id"
   belongs_to  :supervisor,  :class_name=>"Person"
   belongs_to  :lifecycle_object, :class_name=>"Lifecycle", :foreign_key=>"lifecycle_id"
   belongs_to  :qr_qwr, :class_name=>"Person"
@@ -955,6 +956,52 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def create_sibling(project)
+    self.name           = project.name
+    self.description    = project.description
+    self.brn            = project.brn
+    self.workstream     = project.workstream
+    self.project_id     = project.project_id
+    self.last_status    = project.last_status
+    self.supervisor_id  = project.supervisor_id
+    self.coordinator    = project.coordinator
+    self.pm             = project.pm
+    self.bpl            = project.bpl
+    self.ispl           = project.ispl
+    self.read_date      = project.read_date
+    self.lifecycle      = project.lifecycle
+    self.pm_deputy      = project.pm_deputy
+    self.ispm           = project.ispm
+    self.lifecycle_id   = project.lifecycle_id
+    self.qs_count       = project.qs_count
+    self.spider_count   = project.spider_count
+    self.is_running     = project.is_running
+    self.qr_qwr_id      = project.qr_qwr_id
+    self.dwr            = project.dwr
+    self.is_qr_qwr      = project.is_qr_qwr
+    self.suite_tag_id   = project.suite_tag_id
+    self.project_code   = project.project_code
+    self.sales_revenue  = project.sales_revenue
+
+    self.sibling_id     = project.id
+    self.save
+
+    # Last status
+    last_status = project.get_status
+    if last_status
+      new_status = last_status.clone
+      new_status.project_id = self.id
+      new_status.save
+    end
+
+    # Requests
+    project.requests.each do |r|
+      r.project_id = self.id
+      r.save
+    end
+
+  end
+  
 private
 
   def excel(a,b)
@@ -1031,6 +1078,7 @@ private
     end
     return priority
   end
+
 end
 
 module DiffExcel

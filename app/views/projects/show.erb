@@ -54,7 +54,7 @@ function add(id, nb_months, has_requests, has_rights) {
             <br/>
 
             <div class="milestone_bar">
-              <%= render(:partial=>'milestones/milestone', :collection=>@project.sorted_milestones) %>
+              <%= render(:partial=>'milestones/milestone', :collection=>@project.sorted_milestones, :locals=>{:editable=>!@has_sibling}) %>
             </div>
 
             <% if @project.project_id != nil and ( @project.is_qr_qwr or @project.requests.size > 0 )%>
@@ -76,12 +76,12 @@ function add(id, nb_months, has_requests, has_rights) {
                 <%= render(:partial=>'checklists/project_checklist_item', :collection=>@project.project_check_root_items, :as=>:i) %>
               </ul>
             <% end %>
-            <%= render(:partial=>'status', :object=>@status) %>
+            <%= render(:partial=>'status', :object=>@status, :locals=>{:editable=>!@has_sibling}) %>
             <br/>
             <%= link_to_function("Old (#{@old_statuses.size})", "$('old_statuses').toggle();", :class=>"menu") %>
             <div id='old_statuses' style="display:none;">
               <% for s in @old_statuses %>
-                <%= render(:partial=>'status', :object=>s) %>
+                <%= render(:partial=>'status', :object=>s, :locals=>{:editable=>!@has_sibling}) %>
               <% end %>
             </div>
 
@@ -90,13 +90,15 @@ function add(id, nb_months, has_requests, has_rights) {
 
       <div id="tabContent2" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="2"? "block":"none"%>;">
           <div>
-            <%= link_to('Add risk', {:controller=>'risks', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %>
-            <%= link_to('Run risk checklist', {
-                :controller=>'generic_risk_questions',
-                :action=>'run',
-                :id=>@project.id},
-              :class=>"btnlnk") %><br/>
-            <br/>
+            <% if !@has_sibling %>
+              <%= link_to('Add risk', {:controller=>'risks', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %>
+              <%= link_to('Run risk checklist', {
+                  :controller=>'generic_risk_questions',
+                  :action=>'run',
+                  :id=>@project.id},
+                  :class=>"btnlnk") %><br/>
+                <br/>
+            <% end %>
             Suggested status:
             <% suggested_status = @project.suggested_status %>
             <%= html_status(suggested_status) %>
@@ -144,8 +146,10 @@ function add(id, nb_months, has_requests, has_rights) {
 
       <div id="tabContent3" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="3"? "block":"none"%>;">
           <div>
-            <%= link_to('Add amendment', {:controller=>'amendments', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br />
-            <br />
+            <% if !@has_sibling %>
+              <%= link_to('Add amendment', {:controller=>'amendments', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br />
+              <br />
+            <% end %>
             <%= render(:file=>'amendments/amendments_header') %>
             <%= render(:partial=>'amendments/amendment', :collection=>@project.amendments) %>
             </table>
@@ -154,8 +158,10 @@ function add(id, nb_months, has_requests, has_rights) {
 
       <div id="tabContent4" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="4"? "block":"none"%>;">
           <div>
-            <%= link_to('Add action', {:controller=>'actions', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br/>
-            <br/>
+            <% if !@has_sibling %>
+              <%= link_to('Add action', {:controller=>'actions', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br/>
+              <br/>
+            <% end %>
             <%= render(:file=>'actions/actions_header') %>
             <%= render(:partial=>'actions/action', :collection=>@project.visible_actions(current_user.id)) %>
             </table>
@@ -164,24 +170,37 @@ function add(id, nb_months, has_requests, has_rights) {
 
       <div id="tabContent5" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="5"? "block":"none"%>;">
           <div>
-            <%= link_to('Add note', {:controller=>'notes', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br />
-            <br />
+            <% if !@has_sibling %>
+              <%= link_to('Add note', {:controller=>'notes', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br />
+              <br />
+            <% end %>
             <%= render(:partial=>'notes/note', :collection=>@project.visible_notes(current_user.id)) %>
           </div>
       </div>
 
       <div id="tabContent6" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="6"? "block":"none"%>;">
           <div>
-            <%= link_to('Edit project', {:action=>'edit', :id=>@project.id}, {:class=>'btnlnk'}) %>
-            <% if @project.responsibles.exists?(current_user) %>
-              <%= link_to_remote('Remove from my projects', {:url=>{:controller=>'projects', :action=>'remove_from_mine', :id=>@project.id}, :success=>"$('btnaddtomine').fade();"}, {:class=>'btnlnk special', :id=>'btnaddtomine'}) %>
-            <% else %>
-              <%= link_to_remote('Add to my projects', {:url=>{:controller=>'projects', :action=>'add_to_mine', :id=>@project.id}, :success=>"$('btnaddtomine').fade();"}, {:class=>'btnlnk special', :id=>'btnaddtomine'}) %>
+            <% if !@has_sibling %>
+              <%= link_to('Edit project', {:action=>'edit', :id=>@project.id}, {:class=>'btnlnk'}) %>
+              <% if @project.responsibles.exists?(current_user) %>
+                <%= link_to_remote('Remove from my projects', {:url=>{:controller=>'projects', :action=>'remove_from_mine', :id=>@project.id}, :success=>"$('btnaddtomine').fade();"}, {:class=>'btnlnk special', :id=>'btnaddtomine'}) %>
+              <% else %>
+                <%= link_to_remote('Add to my projects', {:url=>{:controller=>'projects', :action=>'add_to_mine', :id=>@project.id}, :success=>"$('btnaddtomine').fade();"}, {:class=>'btnlnk special', :id=>'btnaddtomine'}) %>
+              <% end %>
+              <%= link_to('Edit Lifecycle', {:action=>'milestones_edit', :id=>@project.id}, {:class=>'btnlnk'}) %>
             <% end %>
-            <%= link_to('Edit Lifecycle', {:action=>'milestones_edit', :id=>@project.id}, {:class=>'btnlnk'}) %>
+            <br/>
+            <br/>
+            <% if @project.sibling_id != nil %>
+              <b>This project is the sibling of the following project: </b>             
+              <%= link_to(@project.sibling.name, {:action=>'show', :id=>@project.sibling_id}, {:class=>'btnlnk'}) %>
 
-            <br/>
-            <br/>
+            <% end %>
+            <% if @sibling != nil %>
+              <b>This project has the following sibling: </b>
+              <%= link_to(@sibling.name, {:action=>'show', :id=>@sibling.id}, {:class=>'btnlnk'}) %>
+            <% end %>
+            <br />
             <b>Supervisor</b>: <% if not @project.supervisor_id %>?<% else %><%= @project.supervisor.name %><% end %><br/>
             <b>WS</b>: <%= @project.workstream %><br/>
             <b>BRN</b>: <%= @project.brn %><br/>

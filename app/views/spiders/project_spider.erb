@@ -197,14 +197,23 @@ function getDocHeight() {
 					currentAxeId = q.lifecycle_question.pm_type_axe.id.to_s
 				end
 				concat "<tr><td class='axe_tab' id='" + pmTabId + "_axe_" + q.lifecycle_question.pm_type_axe.id.to_s + "' style='background-color: #6D6D6D;color:white;border: 1px solid black;'>"+q.lifecycle_question.pm_type_axe.title+"</td>"
-				concat "<td style='border: 1px solid black;' class='grey_cell'>Note</td><td style='border: 1px solid black;' class='green_cell'>Ref.</td><td style='background-color: #6D6D6D;color:white;border: 1px solid black;width:80px;'>Recursive ? <input type='checkbox' class='check_all' id='check_all_" + q.lifecycle_question.pm_type_axe.id.to_s + "' /></td></tr>"
+				concat "<td style='border: 1px solid black;' class='grey_cell'>Note</td><td style='border: 1px solid black;' class='green_cell'>Ref.</td><td style='background-color: #6D6D6D;color:white;border: 1px solid black;width:80px;'>Recursive ? <input type='checkbox' class='check_all' id='check_all_" + q.lifecycle_question.pm_type_axe.id.to_s + "'"
+				if !@is_editable
+					concat " disabled"
+				end
+				concat " /></td></tr>"
 				currentAxes = q.lifecycle_question.pm_type_axe.title
 			end
 			
 			# Question line
 			concat '<tr><td class="spider_question_text">' + q.lifecycle_question.text  + '</td>'
 			# SELECT LIST - Question note
-			concat '<td><select class="question_note_' + q.lifecycle_question.pm_type_axe.id.to_s + '" name="spiderquest[' + q.id.to_s + '][]" value="' + q.note.to_s + '">'
+			concat '<td><select class="question_note_' + q.lifecycle_question.pm_type_axe.id.to_s + '" name="spiderquest[' + q.id.to_s + '][]" value="' + q.note.to_s + '"'
+
+			if !@is_editable
+				concat ' disabled'
+			end 
+			concat ' >'
 				# NI
 				concat '<option '
 				if (q.note.to_s == "NI") 
@@ -251,6 +260,10 @@ function getDocHeight() {
 			if (q.recursive)
 				concat ' checked'
 			end
+			if !@is_editable
+				concat ' disabled'
+			end
+
 			concat ' class="check check_' + q.lifecycle_question.pm_type_axe.id.to_s + '" /></td>'
 			concat '</tr>'	
 			j = j + 1
@@ -281,22 +294,29 @@ function getDocHeight() {
 	</end>
 	<div id="spider_form_buttons">
 		<h3>Validation</h3>
-		<input type="submit" value="Save" />
-		<input type="button" value="Consolidate" id="consolidate_btn" />
+		<% if @is_editable %>
+			<input type="submit" value="Save" />
+			<input type="button" value="Consolidate" id="consolidate_btn" />
+		<% end %>
 	</div>
 	<% end -%>	
 
 	<div id="spider_form_buttons_2">
 		<h3>Other Actions</h3>
-		<%= button_to("Delete", {:action=>'delete_spider', :id=>@spider.id, :project_id=>@project.id}, :confirm=>"Are you sure you want to delete this spider and its spider values ?", :method => :post) %>
+		<% if @is_editable %>
+			<%= button_to("Delete", {:action=>'delete_spider', :id=>@spider.id, :project_id=>@project.id}, :confirm=>"Are you sure you want to delete this spider and its spider values ?", :method => :post) %>
+		<% end %>
 	</div>
 <% else %>
 	<p>No data.</p>
 	<% form_tag({:action => "project_spider"}, :method => "get", :id => "form_create_spider") do -%>
 		<input type="hidden" value="<%= @currentProjectId %>" name="project_id" />
 		<input type="hidden" value="<%= @currentMilestoneId %>" name="milestone_id" />
+		<input type="hidden" value=true name="editable" />
 		<input type="hidden" value="1" name="create_spider" />
-		<input type="submit" value="Create new spider" />
+		<% if @is_editable %>
+			<input type="submit" value="Create new spider" />
+		<% end %>
 	<% end -%>
 <% end %>
 
@@ -312,6 +332,6 @@ function getDocHeight() {
 	spider_name << s.spider_consolidations.first().created_at.to_s
 	spider_name << "]"
 %>
-	<%= link_to spider_name, :action => "project_spider_history", :spider_id => s.id %><br />
+	<%= link_to spider_name, :action => "project_spider_history", :spider_id => s.id, :editable => @is_editable %><br />
 
 <% } %>
