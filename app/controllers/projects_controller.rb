@@ -801,6 +801,9 @@ class ProjectsController < ApplicationController
       new_project.lifecycle = lifecycle_id
       new_project.lifecycle_object = lifecycle
       new_project.save
+
+      project.is_running = 0
+      project.save
     end
 
     redirect_to :action=>:show, :id=>new_project.id

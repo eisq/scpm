@@ -1000,6 +1000,40 @@ class Project < ActiveRecord::Base
       r.save
     end
 
+    # Project people
+    project.project_people.each do |pp|
+      new_pp = pp.clone
+      new_pp.project_id = self.id
+      new_pp.save
+    end
+
+    # Risks
+    project.risks.each do |r|
+      new_risk = r.clone
+      new_risk.project_id = self.id
+      new_risk.save
+    end
+
+    # Amendments
+    project.amendments.each do |a|
+      new_amendment = a.clone
+      new_amendment.project_id = self.id
+      new_amendment.save
+    end
+
+    # Actions
+    project.actions.each do |a|
+      new_action = a.clone
+      new_action.project_id = self.id
+      new_action.save
+    end
+
+    # Notes
+    project.notes.each do |n|
+      new_note = n.clone
+      new_note.project_id = self.id
+      new_note.save
+    end
   end
   
 private
