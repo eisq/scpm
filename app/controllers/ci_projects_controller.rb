@@ -24,7 +24,7 @@ class CiProjectsController < ApplicationController
         formula += ";finbug"
       end
     }
-    @export_mantis_formula = sanitize(formula)
+    @export_mantis_formula = formula
   end
 
   def late
@@ -120,6 +120,8 @@ class CiProjectsController < ApplicationController
   def update_report
     p = CiProject.find(params[:id])
     previous_report_attribute = p.report
+    p.last_update = Time.now
+    p.last_update_person = current_user.rmt_user
     p.update_attributes(params[:project])
     p.update_attribute('previous_report', previous_report_attribute)
     redirect_to "/ci_projects/show/"+p.id.to_s
@@ -129,17 +131,4 @@ class CiProjectsController < ApplicationController
     id = params['id']
     @project = CiProject.find(id)
   end
-
-  def sanitize(value)
-    value.gsub!(130.chr, "e") # eacute
-    value.gsub!(133.chr, "a") # a grave
-    value.gsub!(135.chr, "c") # c cedille
-    value.gsub!(138.chr, "e") # e grave
-    value.gsub!(140.chr, "i") # i flex
-    value.gsub!(147.chr, "o") # o flex
-    value.gsub!(156.chr, "oe") # oe
-    value.gsub!(167.chr, "o") # °
-    return value
-  end
-
 end

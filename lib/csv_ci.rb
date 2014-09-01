@@ -156,15 +156,6 @@ private
     return nil if !value
     value.gsub!("\"","'")
     value.gsub!("\\","\\\\\\\\")
-    #value.gsub('é', 'e')
-    #value.gsub!(130.chr, "e") # eacute
-    #value.gsub!(133.chr, "a") # a grave
-    #value.gsub!(135.chr, "c") # c cedille
-    #value.gsub!(138.chr, "e") # e grave
-    #value.gsub!(140.chr, "i") # i flex
-    #value.gsub!(147.chr, "o") # o flex
-    #value.gsub!(156.chr, "oe") # oe
-    #value.gsub!(167.chr, "o") # °
     if value =~ /(\d\d)\/(\d\d)\/(\d\d\d\d)/
       value = "#{$2}/#{$1}/#{$3}"
     end

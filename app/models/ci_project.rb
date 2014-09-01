@@ -3,7 +3,7 @@
         def mantis_formula	
     	external_id_temp = "null"
     	if self.external_id.to_s != "" and self.external_id.to_s != nil
-    	external_id_temp = self.external_id.to_s
+    	   external_id_temp = self.external_id.to_s
     	end
     	
     	formula = ""
@@ -83,12 +83,12 @@
 	end
 	
 	def format(variable) #formate les variables pour les entrer dans la formule d'export Mantis.
-    	#Ici ajouter un contrôle des ";", si il y en dans la variable, le remplacer.
     	var = variable.to_s
     	if var == "" or var == nil or var == " "
-    	var = "null"
+    	   var = "null"
     	end
-    	var = ";" + var
+    	   var = ";" + var
+           var = sanitize_formula(var)
     	return var
 	end
 	
@@ -224,5 +224,17 @@
     	name.gsub!("-","_")
     	name
 	end
+
+    def sanitize_formula(value)
+    value.gsub!(130.chr, "e") # eacute
+    value.gsub!(133.chr, "a") # a grave
+    value.gsub!(135.chr, "c") # c cedille
+    value.gsub!(138.chr, "e") # e grave
+    value.gsub!(140.chr, "i") # i flex
+    value.gsub!(147.chr, "o") # o flex
+    value.gsub!(156.chr, "oe") # oe
+    value.gsub!(167.chr, "o") # °
+    return value
+  end
 	
 end

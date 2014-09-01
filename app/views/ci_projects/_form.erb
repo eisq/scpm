@@ -5,13 +5,43 @@
   	<tr><td>Launching date (dd-mm-yyyy)</td><td>	<%= text_field :project, :launching_date_ddmmyyyy %></td></tr>
   	<tr><td>&nbsp;</td><td></td></tr>
 
+  	<tr><td>SQLI validation date status</td>
+		<td><% if @project.sqli_validation_done == 0 %>
+		<%= radio_button :project, :sqli_validation_done, 1 %> Done
+		<%= radio_button :project, :sqli_validation_done, 0, :checked => true %> Not done
+		<% else %>
+		<%= radio_button :project, :sqli_validation_done, 1, :checked => true %> Done
+		<%= radio_button :project, :sqli_validation_done, 0 %> Not done
+		<% end %>
+	</td></tr>
+
 	<tr><td>SQLI validation date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :sqli_validation_date_objective %></td></tr>
 	<tr><td>SQLI validation date (yyyy-mm-dd)</td><td>				<%= text_field :project, :sqli_validation_date %></td></tr>
 	<tr><td>&nbsp;</td><td></td></tr>
 
+	<tr><td>Airbus validation date status</td>
+		<td><% if @project.airbus_validation_done == 0 %>
+		<%= radio_button :project, :airbus_validation_done, 1 %> Done
+		<%= radio_button :project, :airbus_validation_done, 0, :checked => true %> Not done
+		<% else %>
+		<%= radio_button :project, :airbus_validation_done, 1, :checked => true %> Done
+		<%= radio_button :project, :airbus_validation_done, 0 %> Not done
+		<% end %>
+	</td></tr>
+
 	<tr><td>Airbus validation date objective (yyyy-mm-dd)</td><td><%= text_field :project, :airbus_validation_date_objective %></td></tr>
 	<tr><td>Airbus validation date (yyyy-mm-dd)</td><td>					<%= text_field :project, :airbus_validation_date %></td></tr>
 	<tr><td>&nbsp;</td><td></td></tr>
+
+	<tr><td>Deployment status</td>
+		<td><% if @project.deployment_done == 0 %>
+		<%= radio_button :project, :deployment_done, 1 %> Done
+		<%= radio_button :project, :deployment_done, 0, :checked => true %> Not done
+		<% else %>
+		<%= radio_button :project, :deployment_done, 1, :checked => true %> Done
+		<%= radio_button :project, :deployment_done, 0 %> Not done
+		<% end %>
+	</td></tr>
 
 	<tr><td>Deployment date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :deployment_date_objective %></td></tr>
 	<tr><td>Deployment date (yyyy-mm-dd)</td><td>				<%= text_field :project, :deployment_date %></td></tr>
