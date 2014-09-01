@@ -160,14 +160,14 @@
         <br />
         <div>
           <%= render(:file=>'actions/actions_header') %>
-          <%= render(:partial=>'actions/action', :collection=>@actions) %>
+          <%= render(:partial=>'actions/action', :collection=>@actions, :locals=>{:editable=> true}) %>
           </table>
           <br/>
 		  <br/>
 			<%= link_to_function('Display closed actions', '$("my_closed").toggle()',{:class=>"btnlnk"}) %>
 			<div id="my_closed" style="display:none;">
 			<%= render(:file=>'actions/actions_header') %>
-			<%= render(:partial=>'actions/action', :collection=>@actions_closed) %>
+			<%= render(:partial=>'actions/action', :collection=>@actions_closed, :locals=>{:editable=> true}) %>
 			</table>
 			</div>
         </div>
@@ -177,7 +177,7 @@
         <br />
         <div>
           <%= render(:file=>'amendments/amendments_header') %>
-          <%= render(:partial=>'amendments/amendment', :collection=>@amendments) %>
+          <%= render(:partial=>'amendments/amendment', :collection=>@amendments, :locals=>{:editable=> true}) %>
           </table>
         </div>
     </div>
@@ -186,7 +186,7 @@
         <br />
         <div>
           <%= render(:file=>'risks/risks_header') %>
-          <%= render(:partial=>'risks/risk', :collection=>@risks) %>
+          <%= render(:partial=>'risks/risk', :collection=>@risks, :locals=>{:editable=> true}) %>
           </table>
         </div>
     </div>

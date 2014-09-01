@@ -57,7 +57,7 @@ class LifecycleQuestionsController < ApplicationController
      end
      
      # Create questions references
-     lf_milestones = LifecycleMilestone.find(:all,:conditions=>["lifecycle_id = ?",@question.lifecycle_id])
+     lf_milestones = LifecycleMilestone.find(:all,:conditions=>["lifecycle_id = ?",@question.lifecycle_id], :order=>"index_order")
      lf_milestones.each do |lm|
        qf_new = QuestionReference.new
        qf_new.question_id = @question.id

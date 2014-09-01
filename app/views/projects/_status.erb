@@ -7,13 +7,15 @@
 
         <%=html_status(status.status)%>
 
-        <%=link_to_function('Edit', "edit(#{status.id}, #{status.months_from_creation}, #{status.project.has_requests});")%>
-        <% if current_user.has_role?('Admin')%>
-          <%= link_to_remote(image_tag('cut.png'), :url=>{:controller=>'projects', :action=>'cut_status', :id=>status.id})%>
-          <%= link_to_remote(image_tag('delete.gif'), :url=>{:controller=>'projects',
-           :action=>'destroy_status', :id=>status.id}, :confirm=>"Sure?",
-           :success=>"new Effect.SwitchOff('status_#{status.id}');")%>
-        <%end%>
+        <% if editable %>
+          <%=link_to_function('Edit', "edit(#{status.id}, #{status.months_from_creation}, #{status.project.has_requests});")%>
+          <% if current_user.has_role?('Admin')%>
+            <%= link_to_remote(image_tag('cut.png'), :url=>{:controller=>'projects', :action=>'cut_status', :id=>status.id})%>
+            <%= link_to_remote(image_tag('delete.gif'), :url=>{:controller=>'projects',
+             :action=>'destroy_status', :id=>status.id}, :confirm=>"Sure?",
+             :success=>"new Effect.SwitchOff('status_#{status.id}');")%>
+          <%end%>
+        <% end %>
       </div>
       <br/>
     <% end %>
@@ -40,7 +42,7 @@
         <br/>
         <b>Last UP3P verification:</b> <%=status.ereporting_date%><br/>
 
-        <% if current_user.has_role?('Admin')%>
+        <% if current_user.has_role?('Admin') and editable %>
           <br/>
           <%= link_to_remote('Mark as read', {:url=>{:controller=>'projects',
            :action=>'mark_as_read', :id=>@project.id},

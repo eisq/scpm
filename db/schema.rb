@@ -327,6 +327,24 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.datetime "updated_at"
   end
 
+  create_table "lesson_collect_axes", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "lesson_collect_file_analyzes", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "lesson_collect_file_id"
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "lesson_collect_file_downloads", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "lesson_collect_file_id"
+    t.datetime "download_date"
+  end
+
   create_table "lesson_collect_files", :force => true do |t|
     t.string   "pm"
     t.string   "qwr_sqr"
@@ -335,6 +353,21 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.string   "project_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lesson_collect_template_type_id"
+    t.integer  "request_id"
+    t.string   "filename"
+    t.string   "mt_qr"
+    t.text     "comment"
+    t.boolean  "is_archived",                     :default => false
+  end
+
+  create_table "lesson_collect_sub_axes", :force => true do |t|
+    t.string  "name"
+    t.integer "lesson_collect_axe_id"
+  end
+
+  create_table "lesson_collect_template_types", :force => true do |t|
+    t.string "name"
   end
 
   create_table "lesson_collects", :force => true do |t|
@@ -349,6 +382,16 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.string   "sub_axes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lesson_collect_axe_id"
+    t.integer  "lesson_collect_sub_axe_id"
+    t.string   "escalate_next_level"
+    t.string   "project_name"
+    t.boolean  "action_plan"
+    t.boolean  "already_exist"
+    t.string   "redundancy"
+    t.boolean  "selected"
+    t.string   "status"
+    t.string   "raised_in_dws_plm"
   end
 
   create_table "lifecycle_milestones", :force => true do |t|
@@ -356,6 +399,7 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.integer  "milestone_name_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "index_order"
   end
 
   create_table "lifecycle_questions", :force => true do |t|
@@ -371,6 +415,7 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_active",  :default => true
   end
 
   create_table "line_tags", :force => true do |t|
@@ -396,6 +441,8 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
   create_table "milestone_names", :force => true do |t|
     t.string  "title"
     t.boolean "count_in_spider_prev", :default => true
+    t.boolean "is_active",            :default => true
+    t.boolean "multiple_creation",    :default => false
   end
 
   create_table "milestones", :force => true do |t|
@@ -409,6 +456,9 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.datetime "updated_at"
     t.integer  "done",                     :default => 0
     t.integer  "checklist_not_applicable", :default => 0
+    t.integer  "index_order"
+    t.boolean  "is_virtual",               :default => true
+    t.boolean  "to_export",                :default => false
   end
 
   add_index "milestones", ["project_id"], :name => "IDX_MILESTONES"
@@ -580,6 +630,7 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.integer  "suite_tag_id"
     t.string   "project_code"
     t.integer  "sales_revenue", :default => 0
+    t.integer  "sibling_id"
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
@@ -664,6 +715,7 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.string   "request_type"
     t.integer  "stream_id"
     t.string   "is_stream",               :default => "No"
+    t.string   "specific"
   end
 
   add_index "requests", ["project_id"], :name => "IDX_REQUESTS_ON_PROJECT_ID"

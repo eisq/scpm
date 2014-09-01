@@ -23,6 +23,7 @@ class SpidersController < ApplicationController
     # Search project from parameter
     id                   = params[:project_id]
     @delete_spider_conso = params[:delete_spider_conso]
+    @is_editable         = params[:editable]
 
     @project = Project.find(id)
     
@@ -44,6 +45,7 @@ class SpidersController < ApplicationController
     # Search project for paramater
     id                   = params[:spider_id]
     @delete_spider_conso = params[:delete_spider_conso]
+    @is_editable         = params[:editable]
 
     @spider = Spider.find(id)
     # generate_table_history
@@ -178,9 +180,9 @@ class SpidersController < ApplicationController
     if result == 1
       # Delete spider
       Spider.destroy(spider_id)
-      redirect_to :controller=>:spiders, :action=>:project_spider, :project_id=>spiderParam.project_id.to_s, :milestone_id=>spiderParam.milestone_id.to_s, :delete_spider_conso=>result
+      redirect_to :controller=>:spiders, :action=>:project_spider, :project_id=>spiderParam.project_id.to_s, :milestone_id=>spiderParam.milestone_id.to_s, :delete_spider_conso=>result, :editable=>true
     else
-      redirect_to :controller=>:spiders, :action=>:project_spider_history, :spider_id=>spiderParam.id.to_s, :delete_spider_conso=>result
+      redirect_to :controller=>:spiders, :action=>:project_spider_history, :spider_id=>spiderParam.id.to_s, :delete_spider_conso=>result, :editable=>true
     end
 
   end
@@ -305,14 +307,14 @@ class SpidersController < ApplicationController
       if(params[:consolidate_spider] == "1")
         project_spider_consolidate(spider, params[:list_choice])
      end
-     redirect_to :action=>:project_spider, :project_id=>params[:project_id], :milestone_id=>params[:milestone_id]
+     redirect_to :action=>:project_spider, :project_id=>params[:project_id], :milestone_id=>params[:milestone_id], :editable=>true
   end
   
   # Update spider from consolidation view
   def update_by_conso
     s = Spider.find(params[:id])
     s.update_attributes(params[:spider])
-    redirect_to  :action=>:project_spider_history, :spider_id=>s.id.to_s
+    redirect_to  :action=>:project_spider_history, :spider_id=>s.id.to_s, :editable=>true
   end
 
   def update_spider_file_name
