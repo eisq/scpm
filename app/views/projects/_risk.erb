@@ -12,5 +12,7 @@
 <td><% if risk.is_ria_action==1 %>Y<%else%>N<%end%></td>
 <td><%= my_time(risk.created_at) %></td>
 <td><%= my_time(risk.updated_at) %></td>
-<td><%= link_to('Edit', :controller=>'risks', :action=>'edit', :id=>risk.id) %></td>
+<% if editable == true %>
+	<td><%= link_to('Edit', :controller=>'risks', :action=>'edit', :id=>risk.id) %></td>
+<% end %>
 </tr>

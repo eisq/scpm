@@ -173,6 +173,11 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new(params[:project])
+    lifecycle_default = Lifecycle.get_default
+    if lifecycle_default
+      @project.lifecycle = lifecycle_default.id
+      @project.lifecycle_object = lifecycle_default
+    end
     # can not set project_id to 0 as we use that to filter projets later... but why...
     #@project.project_id = 0 if !@project.project_id
     check_qr_qwr_pdc(@project)
@@ -218,6 +223,11 @@ class ProjectsController < ApplicationController
     @project.check
     @status = @project.get_status
     @old_statuses = @project.statuses - [@status]
+    @sibling = Project.find(:first, :conditions => ["sibling_id = ?", @project.id])
+    @has_sibling = false
+    if @sibling != nil
+      @has_sibling = true
+    end
     #@checklist_items = TransverseItems.find()
   end
 
@@ -247,7 +257,6 @@ class ProjectsController < ApplicationController
     project.update_attributes(params[:project])
 
     project.propagate_attributes
-    project.set_lifecycle_old_param()
 
     # QR QWR
     if (!project.is_qr_qwr)
@@ -420,7 +429,16 @@ class ProjectsController < ApplicationController
     if not project
       project = Project.create(:name=>project_name)
       project.workstream = request.workstream
-      project.lifecycle_object = Lifecycle.first
+      lifecycle_name = request.lifecycle_name_for_request_type()
+      lifecycle = nil
+      if lifecycle_name
+        lifecycle = Lifecycle.find(:first, :conditions => ["name LIKE ?", "%#{lifecycle_name}%"])
+      end
+      if lifecycle
+        project.lifecycle_object = lifecycle
+      else
+        project.lifecycle_object = Lifecycle.first
+      end
       project.save
     end
 
@@ -430,7 +448,16 @@ class ProjectsController < ApplicationController
       wp.workstream = request.workstream
       wp.brn        = brn
       wp.project_id = project.id
-      wp.lifecycle_object = Lifecycle.first
+      lifecycle_name = request.lifecycle_name_for_request_type()
+      lifecycle = nil
+      if lifecycle_name
+        lifecycle = Lifecycle.find(:first, :conditions => ["name LIKE ?", "%#{lifecycle_name}%"])
+      end
+      if lifecycle
+        wp.lifecycle_object = lifecycle
+      else
+        wp.lifecycle_object = Lifecycle.first
+      end      
       wp.save
     end
 
@@ -755,6 +782,242 @@ class ProjectsController < ApplicationController
   def status_list_form
         @project = Project.find(params[:id])
   end
+
+
+  # -
+  # Milestones structure management
+  # -
+  def milestones_edit
+    project_id    = params[:id]
+    @project      = Project.find(:first, :conditions => ["id = ?", project_id])
+    @warning      = params[:warning]
+
+    @lifecycles   = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map{|l| [l.name, l.id]}
+    @milestones_name = MilestoneName.get_active_sorted.map{|m| [m.title, m.id]}
+    @milestones_name_multiple = MilestoneName.get_active_sorted.select { |m| m.multiple_creation == true }.map{|m| m.id}
+
+    # Milestones name hash to link milestone <=> milestones name
+    @milestones_limit_names = ""
+    @milestones_name_hash   = Hash.new
+    @milestones_name.each do |m_name|
+      @milestones_name_hash[m_name[0]] = m_name[1]
+    end
+  end
+
+  def lifecycle_change
+    project_id    = params[:project_id]
+    lifecycle_id  = params[:lifecycle_id]
+    project       = Project.find(:first, :conditions => ["id = ?", project_id])
+    lifecycle     = Lifecycle.find(:first, :conditions => ["id = ?", lifecycle_id])
+    has_data      = false
+
+    if lifecycle_id and project
+      
+      project.sorted_milestones.each do |m|
+        if m.has_data?
+          has_data = true
+        end
+      end
+
+      if has_data == false
+        # Change lifecycle
+        project.lifecycle = lifecycle_id
+        project.lifecycle_object = lifecycle
+        project.save
+        # Delete previous milestone
+        Milestone.destroy_all("project_id = #{project_id}")
+        # Generate new milestones
+        project.check(true)
+      end
+    end
+
+    if has_data
+      redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Lifecycle can't be modified because some milestones have data. Delete all milestone data."
+    else
+      redirect_to :action=>:milestones_edit, :id=>project_id
+    end
+  end
+
+  def create_sibling
+    project_id    = params[:project_id]
+    lifecycle_id  = params[:lifecycle_id]
+    project       = Project.find(:first, :conditions => ["id = ?", project_id])
+    lifecycle     = Lifecycle.find(:first, :conditions => ["id = ?", lifecycle_id])
+    
+    if lifecycle_id and project
+      new_project   = Project.new
+      new_project.create_sibling(project)
+      new_project.lifecycle = lifecycle_id
+      new_project.lifecycle_object = lifecycle
+      new_project.save
+
+      project.is_running = 0
+      project.save
+    end
+
+    redirect_to :action=>:show, :id=>new_project.id
+
+  end
+
+  # @param milestones = Sorted array (on index order) of milestones id
+  def milestones_order_change
+    milestones_order = params[:milestones]
+    if milestones_order
+      index_order = 1
+      milestones_order.each do |m|
+        milestone_object = Milestone.find(:first, :conditions => ["id = ?", m.to_s])
+        if milestone_object
+          milestone_object.index_order = index_order
+          milestone_object.save
+        end
+        index_order += 1
+      end
+    end
+    render(:nothing=>true)
+  end
+
+  def milestones_name_change
+      milestone_id        = params[:milestone_id]
+      milestone_name_id   = params[:milestone_name_id]
+
+      milestone       = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+      milestone_name  = MilestoneName.find(:first, :conditions => ["id = ?", milestone_name_id])
+
+      warning = nil
+      if milestone and milestone_name
+        has_data = milestone.has_data?
+        if has_data == false
+          milestone.name = milestone_name.title
+          milestone.save
+        else
+          warning = "Milestone can't be modified while it has data."
+        end
+      end
+
+      if warning != nil
+        render(:text=>warning)
+      else
+        render(:nothing=>true)
+      end
+  end
+
+  def milestone_virtual_name_change
+      milestone_id        = params[:milestone_id]
+      milestone_name      = params[:milestone_name]
+      milestone_to_export = params[:to_export]
+      milestone           = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+
+      warning = nil
+      if milestone and milestone_name
+        # Milestone name
+        if milestone.name != milestone_name
+          has_data = milestone.has_data?
+          if has_data == false
+            milestone.name = milestone_name
+            milestone.save
+          else
+            warning = "Milestone can't be modified while it has data."
+          end
+        end
+
+        # Milestone To export
+        if milestone_to_export and milestone.to_export != milestone_to_export
+          milestone.to_export = milestone_to_export
+          milestone.save
+        end
+      end
+
+      if warning != nil
+        render(:text=>warning)
+      else
+        render(:nothing=>true)
+      end
+  end
+
+  def milestone_is_virtual_change
+    milestone_id          = params[:milestone_id]
+    milestone_is_virtual  = params[:is_virtual]
+    milestone             = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+
+    warning = nil
+    if milestone and milestone_is_virtual
+      has_data = milestone.has_data?
+      if has_data == false
+        milestone.is_virtual = milestone_is_virtual
+        milestone.save
+      else
+        warning = "Milestone can't be modified while it has data."
+      end
+    end
+
+    if warning != nil
+      render(:text=>warning)
+    else
+      render(:nothing=>true)
+    end
+  end
+
+  def add_new_milestone
+    project_id        = params[:project_id]
+    milestone_name_id = params[:new_milestone]
+    milestone_count   = params[:new_milestone_count]
+
+    project         = Project.find(:first, :conditions => ["id = ?", project_id])
+    milestone_name  = MilestoneName.find(:first, :conditions => ["id = ?", milestone_name_id])
+
+    if project
+      # Max order index
+      max_index_order = 0
+      project.sorted_milestones.each do |m|
+        if m.index_order > max_index_order
+          max_index_order = m.index_order
+        end
+      end
+
+      i = 0
+      while i < milestone_count.to_i
+        # Create
+        new_milestone = Milestone.new
+        new_milestone.project = project
+        if milestone_name
+          new_milestone.name = milestone_name.title
+        else
+          new_milestone.name = project.lifecycle_object.lifecycle_milestones.find(:first).milestone_name.title
+        end
+        new_milestone.index_order = max_index_order + 1
+        new_milestone.status = -1
+        new_milestone.is_virtual = false
+        new_milestone.comments = ""
+        new_milestone.save
+
+        # Update index
+        max_index_order = max_index_order + 1
+        i = i + 1
+      end
+    end
+    redirect_to :action=>:milestones_edit, :id=>project_id
+  end
+
+  def delete_milestone
+    milestone_id  = params[:milestone_id]
+    milestone     = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+    project_id    = milestone.project_id
+    has_data      = false
+
+    if milestone
+      has_data = milestone.has_data?
+      if has_data == false
+        milestone.destroy
+      end
+    end
+    
+    if has_data == false
+      redirect_to :action=>:milestones_edit, :id=>project_id
+    else
+      redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Milestone can't be deleted while it has data. Delete all milestone data to be able to delete the milestone."
+    end
+  end
+  # - 
 
 private
 

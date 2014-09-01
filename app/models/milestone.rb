@@ -65,7 +65,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def checklist_to_delete?
-    self.checklist_not_applicable==1
+    self.checklist_not_applicable==1 or self.is_virtual == true
   end
 
   # Deploy checklist items from checklist templates
@@ -185,7 +185,7 @@ class Milestone < ActiveRecord::Base
     elsif self.status == 0
       self.update_attribute('status',-1) if rs.size == 0
     end
-    self.update_attribute('comments', self.comments.gsub("No request",shortnames(rs))) if rs.size > 0 and self.comments
+    # self.update_attribute('comments', self.comments.gsub("No request",shortnames(rs))) if rs.size > 0 and self.comments
 
     # check done
     self.update_attribute('done',1) if self.status == 1 and self.done == 0
@@ -238,6 +238,29 @@ class Milestone < ActiveRecord::Base
       end
     end
     return result;
+  end
+
+  def has_data?
+      has_data = false
+      if self.comments != nil and self.comments != ""
+        has_data = true
+      end
+      if self.milestone_date != nil and self.milestone_date != ""
+        has_data = true
+      end
+      if self.actual_milestone_date != nil and self.actual_milestone_date != ""
+        has_data = true
+      end
+      if self.spiders.size > 0
+        has_data = true
+      end
+      if self.done != 0
+        has_data = true
+      end
+      if self.status > 0
+        has_data = true
+      end
+      return has_data
   end
 
 end
