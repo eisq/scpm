@@ -1025,6 +1025,7 @@ class Project < ActiveRecord::Base
     project.actions.each do |a|
       new_action = a.clone
       new_action.project_id = self.id
+      new_action.progress = "closed"
       new_action.save
     end
 
