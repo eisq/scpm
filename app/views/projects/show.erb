@@ -196,13 +196,13 @@ function add(id, nb_months, has_requests, has_rights) {
             <% if @project.sibling_id != nil %>
               <b>This project is the sibling of the following project: </b>             
               <%= link_to(@project.sibling.name, {:action=>'show', :id=>@project.sibling_id}, {:class=>'btnlnk'}) %>
-
+            <br />
             <% end %>
             <% if @sibling != nil %>
               <b>This project has the following sibling: </b>
               <%= link_to(@sibling.name, {:action=>'show', :id=>@sibling.id}, {:class=>'btnlnk'}) %>
-            <% end %>
             <br />
+            <% end %>
             <b>Supervisor</b>: <% if not @project.supervisor_id %>?<% else %><%= @project.supervisor.name %><% end %><br/>
             <b>WS</b>: <%= @project.workstream %><br/>
             <b>BRN</b>: <%= @project.brn %><br/>
