@@ -154,11 +154,15 @@ private
 
   def sanitize_value(value)
     return nil if !value
-    value.gsub!("\"","'")
-    value.gsub!("\\","\\\\\\\\")
-    if value =~ /(\d\d)\/(\d\d)\/(\d\d\d\d)/
-      value = "#{$2}/#{$1}/#{$3}"
-    end
+    #value.force_encoding("UTF-8")
+    #value.gsub!("\"","'")
+    #value.gsub!("\\","\\\\\\\\")
+    #if value =~ /(\d\d)\/(\d\d)\/(\d\d\d\d)/
+      #value = "#{$2}/#{$1}/#{$3}"
+    #end
+    begin
+      value.encode("UTF-8")
+    rescue Encoding::UndefinedConversionError
     value
   end
 

@@ -15,7 +15,7 @@
     	formula += format(self.severity) #Sévérité
     	formula += format(self.reproducibility) #Reproductibilité
     	formula += format(self.summary) #Intitulé
-    	formula += format(self.description) #Description
+    	formula += self.description #Description
     	formula += format(self.status) #Etat
     	formula += format(self.submission_date) #Soumis le
     	formula += format(self.reporter) #Rapporteur
@@ -91,6 +91,18 @@
            var = sanitize_formula(var)
     	return var
 	end
+
+    def sanitize_formula(value)
+        value.gsub!(130.chr, "e") # eacute
+        value.gsub!(133.chr, "a") # a grave
+        value.gsub!(135.chr, "c") # c cedille
+        value.gsub!(138.chr, "e") # e grave
+        value.gsub!(140.chr, "i") # i flex
+        value.gsub!(147.chr, "o") # o flex
+        value.gsub!(156.chr, "oe") # oe
+        value.gsub!(167.chr, "o") # °
+        return value
+    end
 	
 	def css_class
     	if self.status == "New"
@@ -224,17 +236,4 @@
     	name.gsub!("-","_")
     	name
 	end
-
-    def sanitize_formula(value)
-    value.gsub!(130.chr, "e") # eacute
-    value.gsub!(133.chr, "a") # a grave
-    value.gsub!(135.chr, "c") # c cedille
-    value.gsub!(138.chr, "e") # e grave
-    value.gsub!(140.chr, "i") # i flex
-    value.gsub!(147.chr, "o") # o flex
-    value.gsub!(156.chr, "oe") # oe
-    value.gsub!(167.chr, "o") # °
-    return value
-  end
-	
 end
