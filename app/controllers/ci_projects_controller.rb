@@ -112,12 +112,16 @@ class CiProjectsController < ApplicationController
     old_p = p
     p.update_attributes(params[:project])
 
-    validators = 
-    ciperson = Person.find
+    validators = siglum = responsible = ""
 
     responsible = p.sqli_validation_responsible
-    person = Person.find(:all, :conditions=>["name=?",reponsible.name])
-    validators = person.name+","+APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
+    persons = Person.find(:all)
+    persons.each { |person|
+      if (person.name == reponsible)
+        siglum = person.rmt_user + ","
+      end
+    }
+    validators = siglum + APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
 
     if (old_p.sqli_validation_date != p.sqli_validation_date)
       p.sqli_date_alert = 1
