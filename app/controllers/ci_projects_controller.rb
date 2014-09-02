@@ -108,8 +108,25 @@ class CiProjectsController < ApplicationController
   end
 
   def update
+    valideurs = "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
     p = CiProject.find(params[:id])
+    old_p = p
     p.update_attributes(params[:project])
+
+    if (old_p.sqli_validation_date != p.sqli_validation_date)
+      p.sqli_date_alert = 1
+      date_validation_mail(p)
+    end
+    if (old_p.airbus_validation_date != p.airbus_validation_date)
+      p.airbus_date_alert = 1
+      date_validation_mail(p)
+    end
+    if (old_p.deployment_date != p.deployment_date)
+      p.deployment_date_alert = 1
+      date_validation_mail(p)
+    end
+
+    p.save
     redirect_to "/ci_projects/show/"+p.id.to_s
   end
 
@@ -139,6 +156,7 @@ class CiProjectsController < ApplicationController
     }
     @export_mantis_formula = formula
 
+    #formule pour test, à supprimer
     @export_mantis_formula_test = formula_test = ""
     #@projects_test = CiProject.find(:all, :conditions=>"external_id='380' or external_id='389' or external_id='395' or external_id='439'").sort_by {|p| [p.order||0, p.assigned_to||'']}
     @projects_test = CiProject.find(:all, :conditions=>"external_id='439'").sort_by {|p| [p.order||0, p.assigned_to||'']}
@@ -147,6 +165,10 @@ class CiProjectsController < ApplicationController
         formula_test += ";finbug"
     }
     @export_mantis_formula_test = formula_test
+  end
+
+  def date_validation_mail(project)
+      Mailer::deliver_ci_date_change(project)
   end
 
 end
