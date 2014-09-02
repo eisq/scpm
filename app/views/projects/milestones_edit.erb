@@ -186,7 +186,7 @@ function alert_msg(msg) {
 
 <!-- Lifecycle choice -->
 <div id="milestones_edit_menu_bar">
-	<p>Current lifecycle : <%= @project.lifecycle_object.name %></p>
+	<p>Current lifecycle : <strong><%= @project.lifecycle_object.name %></strong></p>
 	<div id="milestones_edit_lifecycle_choice" class="display_inline" >
 		Switch to lifecycle : 
 		<% form_tag({:action=>'lifecycle_change'}, {:class => "milestone_edit_form"}) do %>
@@ -194,10 +194,12 @@ function alert_msg(msg) {
 		  <%= hidden_field_tag('project_id', @project.id) %>
 		  <%= submit_tag('Save',:confirm=>"Are you sure ?") %>
 		<% end %>
+		<strong> OR </strong>
+		Create sibling with lifecycle :
 		<% form_tag({:action => 'create_sibling'}, {:class => "milestone_edit_form"}) do %>
 		  <%= select_tag ("lifecycle_id",options_for_select(@lifecycles,@project.lifecycle))  %>
 		  <%= hidden_field_tag('project_id', @project.id) %>
-		  <%= submit_tag('Create sibling',:confirm=>"Are you sure ?") %>
+		  <%= submit_tag('Create',:confirm=>"Are you sure ?") %>
 		<% end %>
 
 	</div>
