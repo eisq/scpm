@@ -1,5 +1,19 @@
 <h2>Link the <%= @lesson_collect_file_obj.filename %> LL to a request</h2>
 
-<% @requests.each do |r| %>
-	<%= r.request_id %> - <%= r.project.name if r.project %> LINK BTN
-<% end %>
+<ul>
+	<% @requests.each do |r| %>
+		<li>
+			<%= link_to("Link with this request", {:controller=>'lesson_collects', :action=>'link_to_request', :lesson_collect_file_id=>@lesson_collect_file_obj.id.to_s, :request_id=>r.id}) %>
+
+			[<a href='http://toulouse.sqli.com/EMN/view.php?id=<%= r.request_id %>'><%= r.request_id %></a>]
+
+			<% if r.project %>
+				<% project_name = r.project.name %>
+				<% project_name << ">> " + r.project.project.name if r.project.project %>
+				<%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>r.project.id}) %>
+			<% else %>
+				No project
+			<% end %> 
+		</li>
+	<% end %>
+</ul>

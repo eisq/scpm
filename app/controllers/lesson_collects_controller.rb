@@ -624,17 +624,43 @@ class LessonCollectsController < ApplicationController
     if lesson_file_id != nil
       @lesson_collect_file_obj  = LessonCollectFile.find(:first, :conditions => ["id = ?", lesson_file_id])
 
-      requests_id_with_ll = LessonCollectFile.find(:all, :select => "request_id", :conditions => "request_id IS NOT NULL")
+      requests_id_with_ll = LessonCollectFile.find(:all, :select => "request_id", :conditions => "request_id IS NOT NULL").map { |ll| ll.request_id}
       requests_id_with_ll_str = requests_id_with_ll.join(',')
 
       conditions = ""
       if requests_id_with_ll and requests_id_with_ll.count > 0
-        conditions = "requests.id NOT IN (#{requests_id_with_ll_str}) AND"
+        conditions = "requests.id NOT IN (#{requests_id_with_ll_str}) AND "
       end
       @requests = Request.find(:all, :conditions => [conditions + "requests.work_package IN (?) AND (requests.status = 'assigned' OR requests.status = 'to be validated')", Request.wp_lesson_learnt])
-
-      # @projects = Project.find(:all, :joins => ["JOIN requests ON requests.project_id = project.id"], :conditions => ["requests.id NOT IN (?) AND requests.work_package IN (?) AND (requests.status = 'assigned' OR requests.status = 'to be validated') ", requests_id_with_ll, Request.wp_lesson_learnt])
     end
+  end
+
+  def link_to_request
+    request_id              = params[:request_id]
+    lesson_collect_file_id  = params[:lesson_collect_file_id]
+
+    if request_id and lesson_collect_file_id
+      request = Request.find(:first, :conditions => ["id = ?", request_id])
+      lesson_collect_file = LessonCollectFile.find(:first, :conditions => ["id = ?", lesson_collect_file_id])
+      if request and lesson_collect_file
+        lesson_collect_file.request_id = request.id
+        lesson_collect_file.save
+      end
+    end
+    redirect_to(:action=>'general_detail', :id => lesson_collect_file.id)
+  end
+
+  def unlink_to_request
+    lesson_collect_file_id  = params[:lesson_collect_file_id]
+
+    if lesson_collect_file_id
+      lesson_collect_file = LessonCollectFile.find(:first, :conditions => ["id = ?", lesson_collect_file_id])
+      if lesson_collect_file
+        lesson_collect_file.request_id = nil
+        lesson_collect_file.save
+      end
+    end
+    redirect_to(:action=>'general_detail', :id => lesson_collect_file.id)
   end
 
   # --------

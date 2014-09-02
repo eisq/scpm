@@ -4,7 +4,11 @@
 	<p>Last import : <%= @lesson_collect_file.updated_at.strftime('%Y-%m-%d %H:%M:%S') %></p>
 	<p>Last time your downloaded this file: <%= @last_download.download_date.strftime('%Y-%m-%d %H:%M:%S')  if @last_download %> </p>
 	<p>Ticket: <%= @lesson_collect_file.request.summary if @lesson_collect_file.request %></p>
-	
+	<% if current_user.is_cpdp %>
+		<%= link_to("Unlink", {:controller=>'lesson_collects', :action=>'unlink_to_request', :lesson_collect_file_id=>@lesson_collect_file.id.to_s}) %><br />
+		<%= link_to("Link to another request", {:controller=>'lesson_collects', :action=>'link_request', :id=>@lesson_collect_file.id.to_s}) %>
+	<% end %>
+
 	<p>Lines:</p>
 	<ul>
 		<li>Collects: <%= @lesson_collect_file.lesson_collects.count.to_s %></li>
