@@ -14,14 +14,14 @@
 		<% if (@action_48hr.size > 0) %>
 		<span class="my_actions">My actions updated in the last 48 hours</span>
 		<%= render(:file=>'actions/actions_header') %>
-		<%= render(:partial=>'actions/action', :collection=>@action_48hr) %>
+		<%= render(:partial=>'actions/action', :collection=>@action_48hr, :locals=>{:editable=> true}) %>
 		</table>
 		<% end %>
 		<br />
 		<% if (@actions.size > 0) %>
 		<span class="my_actions">My opened actions</span>
 		<%= render(:file=>'actions/actions_header') %>
-		<%= render(:partial=>'actions/action', :collection=>@actions) %>
+		<%= render(:partial=>'actions/action', :collection=>@actions, :locals=>{:editable=> true}) %>
 		</table>
 		<% end %>
 	  </div>
