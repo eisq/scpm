@@ -2,14 +2,14 @@
 <%= @actions.size %> actions<br/>
 
 <%= render(:file=>'actions/actions_header') %>
-<%= render(:partial=>'action', :collection=>@actions) %>
+<%= render(:partial=>'action', :collection=>@actions, :locals=>{:editable=> true}) %>
 </table>
 <br/>
 <br/>
 <%= link_to_function('Display closed actions', '$("my_closed").toggle()') %>
 <div id="my_closed" style="display:none;">
 <%= render(:file=>'actions/actions_header') %>
-<%= render(:partial=>'action', :collection=>@actions_closed) %>
+<%= render(:partial=>'action', :collection=>@actions_closed, :locals=>{:editable=> true}) %>
 </table>
 </div>
 
