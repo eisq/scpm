@@ -14,6 +14,10 @@ class CiProjectsController < ApplicationController
     @projectsclosed = CiProject.find(:all, :conditions=>["assigned_to=? and (status='Closed' or status='Delivered' or status='Rejected')", current_user.rmt_user]).sort_by {|p| [p.order]}
   end
 
+  def alerts
+    @projects = CiProject.find(:all, :conditions=>["assigned_to=? and (sqli_date_alert=1 or airbus_date_alert=1 or deployment_date_alert=1) and (status!='Closed' and status!='Rejected' and status!='Delivered')", current_user.rmt_user]).sort_by {|p| [p.order]}
+  end
+
   def all
     verif
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
@@ -73,7 +77,7 @@ class CiProjectsController < ApplicationController
     directory = "public/data"
     path = File.join(directory, name)
     File.open(path, "wb") { |f| f.write(post['datafile'].read) }
-    report = CsvBacklogReport.new(path)
+    report = CsvCiReport.new(path)
     begin
       report.parse
       # transform the Report into a CiProject
