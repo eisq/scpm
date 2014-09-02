@@ -17,6 +17,21 @@
 
 	<tr><td>SQLI validation date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :sqli_validation_date_objective %></td></tr>
 	<tr><td>SQLI validation date (yyyy-mm-dd)</td><td>				<%= text_field :project, :sqli_validation_date %></td></tr>
+
+	<% if current_user.has_role?('Ci Manager') %>
+		<tr><td>
+		<% if @project.sqli_date_alert == 0 %>
+			Date committed</td><td>
+			<%= radio_button :project, :sqli_date_alert, 0, :checked => true %> Yes
+			<%= radio_button :project, :sqli_date_alert, 1 %> No
+		<% else %>
+			<span style="color:red;"><b>Date committed</b></span></td><td>
+			<%= radio_button :project, :sqli_date_alert, 0 %> Yes
+			<%= radio_button :project, :sqli_date_alert, 1, :checked => true %> <span style="color:red;"><b>No</b></span>
+		<% end %>
+		</td></tr>
+	<% end %>
+
 	<tr><td>&nbsp;</td><td></td></tr>
 
 	<tr><td>Airbus validation date status</td>
@@ -31,6 +46,21 @@
 
 	<tr><td>Airbus validation date objective (yyyy-mm-dd)</td><td><%= text_field :project, :airbus_validation_date_objective %></td></tr>
 	<tr><td>Airbus validation date (yyyy-mm-dd)</td><td>					<%= text_field :project, :airbus_validation_date %></td></tr>
+
+	<% if current_user.has_role?('Ci Manager') %>
+		<tr><td>
+		<% if @project.airbus_date_alert == 0 %>
+			Date committed</td><td>
+			<%= radio_button :project, :airbus_date_alert, 0, :checked => true %> Yes
+			<%= radio_button :project, :airbus_date_alert, 1 %> No
+		<% else %>
+			<span style="color:red;"><b>Date committed</b></span></td><td>
+			<%= radio_button :project, :airbus_date_alert, 0 %> Yes
+			<%= radio_button :project, :airbus_date_alert, 1, :checked => true %> <span style="color:red;"><b>No</b></span>
+		<% end %>
+		</td></tr>
+	<% end %>
+
 	<tr><td>&nbsp;</td><td></td></tr>
 
 	<tr><td>Deployment status</td>
@@ -45,7 +75,23 @@
 
 	<tr><td>Deployment date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :deployment_date_objective %></td></tr>
 	<tr><td>Deployment date (yyyy-mm-dd)</td><td>				<%= text_field :project, :deployment_date %></td></tr>
+
+	<% if current_user.has_role?('Ci Manager') %>
+		<tr><td>
+		<% if @project.deployment_date_alert == 0 %>
+			Date committed</td><td>
+			<%= radio_button :project, :deployment_date_alert, 0, :checked => true %> Yes
+			<%= radio_button :project, :deployment_date_alert, 1 %> No
+		<% else %>
+			<span style="color:red;"><b>Date committed</b></span></td><td>
+			<%= radio_button :project, :deployment_date_alert, 0 %> Yes
+			<%= radio_button :project, :deployment_date_alert, 1, :checked => true %> <span style="color:red;"><b>No</b></span>
+		<% end %>
+		</td></tr>
+	<% end %>
+
 	</table>
+
 </td><td valign="top">
 	<table>
 	<tr><td><h4>Information</h4></td></tr>

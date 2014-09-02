@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140901102700) do
+ActiveRecord::Schema.define(:version => 20140902193600) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -215,6 +215,9 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.integer  "sqli_validation_done",             :default => 0
     t.integer  "airbus_validation_done",           :default => 0
     t.integer  "deployment_done",                  :default => 0
+    t.integer  "sqli_date_alert",                  :default => 0
+    t.integer  "airbus_date_alert",                :default => 0
+    t.integer  "deployment_date_alert",            :default => 0
   end
 
   create_table "companies", :force => true do |t|
@@ -327,24 +330,6 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.datetime "updated_at"
   end
 
-  create_table "lesson_collect_axes", :force => true do |t|
-    t.string "name"
-  end
-
-  create_table "lesson_collect_file_analyzes", :force => true do |t|
-    t.integer  "person_id"
-    t.integer  "lesson_collect_file_id"
-    t.string   "comment"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "lesson_collect_file_downloads", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "lesson_collect_file_id"
-    t.datetime "download_date"
-  end
-
   create_table "lesson_collect_files", :force => true do |t|
     t.string   "pm"
     t.string   "qwr_sqr"
@@ -353,21 +338,6 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.string   "project_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "lesson_collect_template_type_id"
-    t.integer  "request_id"
-    t.string   "filename"
-    t.string   "mt_qr"
-    t.text     "comment"
-    t.boolean  "is_archived",                     :default => false
-  end
-
-  create_table "lesson_collect_sub_axes", :force => true do |t|
-    t.string  "name"
-    t.integer "lesson_collect_axe_id"
-  end
-
-  create_table "lesson_collect_template_types", :force => true do |t|
-    t.string "name"
   end
 
   create_table "lesson_collects", :force => true do |t|
@@ -382,16 +352,6 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.string   "sub_axes"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "lesson_collect_axe_id"
-    t.integer  "lesson_collect_sub_axe_id"
-    t.string   "escalate_next_level"
-    t.string   "project_name"
-    t.boolean  "action_plan"
-    t.boolean  "already_exist"
-    t.string   "redundancy"
-    t.boolean  "selected"
-    t.string   "status"
-    t.string   "raised_in_dws_plm"
   end
 
   create_table "lifecycle_milestones", :force => true do |t|
@@ -457,7 +417,7 @@ ActiveRecord::Schema.define(:version => 20140901102700) do
     t.integer  "done",                     :default => 0
     t.integer  "checklist_not_applicable", :default => 0
     t.integer  "index_order"
-    t.boolean  "is_virtual",               :default => true
+    t.boolean  "is_virtual",               :default => false
     t.boolean  "to_export",                :default => false
   end
 

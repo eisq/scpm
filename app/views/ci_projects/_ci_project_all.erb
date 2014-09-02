@@ -15,19 +15,31 @@
   <% end %>
 
   <% if p.sqli_validation_date != nil %>
-  	<p><b>SQLI validation date:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><%= p.sqli_validation_date.to_s + " (" + p.sqli_delay_new.to_s + " days delay)" %> </span></p>
+  	<p><b>SQLI validation date:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><%= p.sqli_validation_date.to_s + " (" + p.sqli_delay_new.to_s + " days delay)" %> </span>
+      <% if p.sqli_date_alert == 1 %>
+        <span style="color:red;"><b>Date unvalidated</b></span>
+      <% end %>
+    </p>
   <% elsif p.sqli_validation_date = nil and p.sqli_validation_date_objective != nil %>
     <p><b>SQLI validation date objective:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date_objective)%>"><%= p.sqli_validation_date_objective.to_s %> <%= p.sqli_delay_new.to_s %> </span></p>
   <% end %>
 
   <% if p.airbus_validation_date != nil %>
-  	<p><b>Airbus validation date:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><%= p.airbus_validation_date.to_s + " (" + p.airbus_delay_new.to_s + " days delay)" %></span></p>
+  	<p><b>Airbus validation date:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><%= p.airbus_validation_date.to_s + " (" + p.airbus_delay_new.to_s + " days delay)" %></span>
+      <% if p.airbus_date_alert == 1 %>
+        <span style="color:red;"><b>Date unvalidated</b></span>
+      <% end %>
+    </p>
   <% elsif p.airbus_validation_date = nil and p.airbus_validation_date_objective != nil %>
     <p><b>Airbus validation date objective:</b> <span class="<%=CiProject.late_css(p.sqli_validation_date_objective)%>"><%= p.airbus_validation_date_objective.to_s %></span></p>
   <% end %>
 
   <% if p.deployment_date != nil %>
-  <p><b>Deployment date:</b> <span class="<%=CiProject.late_css(p.deployment_date)%>"><%= p.deployment_date.to_s + " (" + p.deployment_delay_new.to_s + " days delay)" %></span></p>
+  <p><b>Deployment date:</b> <span class="<%=CiProject.late_css(p.deployment_date)%>"><%= p.deployment_date.to_s + " (" + p.deployment_delay_new.to_s + " days delay)" %></span>
+      <% if p.deployment_date_alert == 1 %>
+        <span style="color:red;"><b>Date unvalidated</b></span>
+      <% end %>
+    </p>
   <% elsif p.deployment_date = nil and p.deployment_date_objective != nil %>
   <p><b>Deployment date objective:</b> <span class="<%=CiProject.late_css(p.deployment_date_objective)%>"><%= p.deployment_date_objective.to_s %></span></p>
   <% end %>

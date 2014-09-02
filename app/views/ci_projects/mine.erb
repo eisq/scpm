@@ -1,6 +1,11 @@
 <h2>My opened CI Projects</h2>
 	<%= render(:partial=>"ci_project_all", :collection=>@projectsopened, :as=>:p) %>
 <br/><br/>
-<h2>My closed, deployed or rejected CI Projects <%= link_to_function("show", "$('').toggle();", :class=>"btnlnk") %></h2>
+<h2>
+	<span style="font-weight:normal; font-size:12px"><%= link_to_function("Show", "$('showclosed').toggle();", :class=>"btnlnk") %></span>
+	My closed, deployed or rejected CI Projects
+</h2>
+<div id="showclosed" style="display:none;">
 	<%= render(:partial=>"ci_project_all", :collection=>@projectsclosed, :as=>:p) %>
+</div>
 </table>

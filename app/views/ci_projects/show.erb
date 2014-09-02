@@ -37,6 +37,9 @@
     <% else %>
       <p><b>SQLI validation date:</b> <%= p.sqli_validation_date.to_s %></p>
     <% end %>
+    <% if p.sqli_date_alert == 1 %>
+      <span style="color:red;">-> date to be validated</span>
+    <% end %>
     <p>&nbsp;</p>
 
     <p><b>Airbus validation status:</b>
@@ -52,6 +55,9 @@
     <% else %>
       <p><b>Airbus validation date:</b><%= p.airbus_validation_date.to_s %></p>
     <% end %>
+    <% if p.airbus_date_alert == 1 %>
+      <span style="color:red;">-> date to be validated</span>
+    <% end %>
     <p>&nbsp;</p>
 
     <p><b>Deployment status:</b>
@@ -66,6 +72,9 @@
       <span class="ci_late"><p><b>Deployment date:</b></p></span>
     <% else %>
       <p><b>Deployment date:</b> <%= p.deployment_date.to_s %></p>
+    <% end %>
+    <% if p.deployment_date_alert == 1 %>
+      <span style="color:red;">-> date to be validated</span>
     <% end %>
 
   </td><td width=50>

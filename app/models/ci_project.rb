@@ -88,7 +88,7 @@
     	   var = "null"
     	end
     	   var = ";" + var
-           var = sanitize_formula(var)
+           var = sanitize_accents(var)
     	return var
 	end
 
@@ -236,4 +236,19 @@
     	name.gsub!("-","_")
     	name
 	end
+
+    def sanitize_accents(value)
+    value.gsub!(130.chr, "e") # eacute
+    value.gsub!(133.chr, "a") # a grave
+    value.gsub!(135.chr, "c") # c cedille
+    value.gsub!(138.chr, "e") # e grave
+    value.gsub!(140.chr, "i") # i flex
+    value.gsub!(147.chr, "o") # o flex
+    value.gsub!(156.chr, "oe") # oe
+    value.gsub!(167.chr, "o") # °
+    value.gsub!(150.chr, "u") # û
+    value.gsub!(136.chr, "e") # ê
+    #value.gsub!(245.chr, "ch") # §
+    return value
+  end
 end
