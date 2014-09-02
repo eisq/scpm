@@ -1,24 +1,25 @@
 <%= render(:file=>"tools/sdp_menu.erb") %>
-<%= link_to_function("Import/Export", "$('import').toggle();", :class=>"btnlnk") %>
+<%= link_to_function("Import", "$('import').toggle();", :class=>"btnlnk") %>
+<%= link_to('Export', {:action=>'mantis_export'}, :class=>"btnlnk") %>
 <div id="import" style="display:none;">
-	<h2>Mantis import</h2>
-	<%= form_tag({:action => 'do_upload'}, :multipart => true) %>
-	  <p>
-	    <label for="upload_file">Mantis CSV</label>
-	    <%= file_field 'upload', 'datafile' %>
-	    <%= submit_tag "Upload" %>
-	  </p>
-	</form>
-	<h2>Backlog import</h2>
-	<%= form_tag({:action => 'do_upload_backlog'}, :multipart => true) %>
-	  <p>
-	    <label for="upload_file">Backlog CSV</label>
-	    <%= file_field 'upload', 'datafile' %>
-	    <%= submit_tag "Upload" %>
-	  </p>
-	</form>
-	<h2>Mantis export</h2>
-	<%= @export_mantis_formula %>
+	<h2>Import</h2>
+	<table><tr><td>
+		<%= form_tag({:action => 'do_upload'}, :multipart => true) %>
+		  <p>
+		    <label for="upload_file">Mantis CSV</label>
+		    <%= file_field 'upload', 'datafile' %>
+		    <%= submit_tag "Upload" %>
+		  </p>
+		</form>
+	</td><td>
+		<%= form_tag({:action => 'do_upload_backlog'}, :multipart => true) %>
+		  <p>
+		    <label for="upload_file">Backlog CSV</label>
+		    <%= file_field 'upload', 'datafile' %>
+		    <%= submit_tag "Upload" %>
+		  </p>
+		</form>
+	</td></tr></table>
 </div>
 
 <h2>Projects list</h2>

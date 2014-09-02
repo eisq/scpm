@@ -17,14 +17,6 @@ class CiProjectsController < ApplicationController
   def all
     verif
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
-    @export_mantis_formula = formula = ""
-    @projects.each { |p|
-      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected"
-        formula += p.mantis_formula
-        formula += ";finbug"
-      end
-    }
-    @export_mantis_formula = formula
   end
 
   def late
@@ -68,7 +60,7 @@ class CiProjectsController < ApplicationController
           ci.save
         end
       }
-      redirect_to '/ci_projects/index'
+      redirect_to '/ci_projects/all'
     rescue Exception => e
       render(:text=>e)
     end
@@ -94,7 +86,7 @@ class CiProjectsController < ApplicationController
           ci.save
         end
       }
-      redirect_to '/ci_projects/index'
+      redirect_to '/ci_projects/all'
     rescue Exception => e
       render(:text=>e)
     end
@@ -131,4 +123,26 @@ class CiProjectsController < ApplicationController
     id = params['id']
     @project = CiProject.find(id)
   end
+
+  def mantis_export
+    @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @export_mantis_formula = formula = ""
+    @projects.each { |p|
+      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected"
+        formula += p.mantis_formula
+        formula += ";finbug"
+      end
+    }
+    @export_mantis_formula = formula
+
+    @export_mantis_formula_test = formula_test = ""
+    #@projects_test = CiProject.find(:all, :conditions=>"external_id='380' or external_id='389' or external_id='395' or external_id='439'").sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @projects_test = CiProject.find(:all, :conditions=>"external_id='439'").sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @projects_test.each { |p|
+        formula_test += p.mantis_formula
+        formula_test += ";finbug"
+    }
+    @export_mantis_formula_test = formula_test
+  end
+
 end
