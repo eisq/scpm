@@ -108,22 +108,28 @@ class CiProjectsController < ApplicationController
   end
 
   def update
-    valideurs = "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
     p = CiProject.find(params[:id])
     old_p = p
     p.update_attributes(params[:project])
 
+    validators = 
+    ciperson = Person.find
+
+    responsible = p.sqli_validation_responsible
+    person = Person.find(:all, :conditions=>["name=?",reponsible.name])
+    validators = person.name+","+APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
+
     if (old_p.sqli_validation_date != p.sqli_validation_date)
       p.sqli_date_alert = 1
-      date_validation_mail(p)
+      date_validation_mail(validators, p)
     end
     if (old_p.airbus_validation_date != p.airbus_validation_date)
       p.airbus_date_alert = 1
-      date_validation_mail(p)
+      date_validation_mail(validators, p)
     end
     if (old_p.deployment_date != p.deployment_date)
       p.deployment_date_alert = 1
-      date_validation_mail(p)
+      date_validation_mail(validators, p)
     end
 
     p.save
@@ -168,8 +174,8 @@ class CiProjectsController < ApplicationController
     @export_mantis_formula_test = formula_test
   end
 
-  def date_validation_mail(project)
-      Mailer::deliver_ci_date_change(project)
+  def date_validation_mail(validators, project)
+      Mailer::deliver_ci_date_change(validators, project)
   end
 
 end

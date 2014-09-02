@@ -67,11 +67,11 @@ class Mailer < ActionMailer::Base
     content_type "text/html; charset=utf-8"
   end
 
-  def ci_date_change(ciproject)
+  def ci_date_change(validators, ciproject)
     @from       = APP_CONFIG['ci_date_to_validate_source']
-    @recipients = APP_CONFIG['ci_date_to_validate_destination']
+    @recipients = validators
     @subject    = APP_CONFIG['ci_date_to_validate_object']
-    @ciproject = ciproject
+    @ciproject, @validators = ciproject, validators
     content_type "text/html; charset=utf-8"
   end
   
