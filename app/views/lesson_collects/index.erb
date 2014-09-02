@@ -64,6 +64,7 @@
 		<div style="margin-left:auto; margin-right:auto; width:200px;">
 			<input type="button" id="filter_button_id" value="Filter" />
 			<input type="button" id="export_button_id" value="Export" />
+			<input type="button" id="chart_button_id" value="Chart" />
 	  	</div>
 	 </div>
 <% end %>	
@@ -113,6 +114,9 @@
     	});
     	$j("#export_button_id").click(function(){
     		$j("#filter_form_id").attr('action', "/lesson_collects/export").submit();
+    	});
+    	$j("#chart_button_id").click(function(){
+    		$j("#filter_form_id").attr('action', "/lesson_collects/filter_chart").submit();
     	});
 	});
 </script>
