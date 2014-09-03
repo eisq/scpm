@@ -112,14 +112,14 @@
 	<%= text_area :project, :description, {:cols=>69, :rows=>3} %>
 	</td></tr>
 	<tr><td>Backlog request ID</td><td>	
-		<% if (@project.backlog_request_id == nil) %> None
-		 <% else %> <%= @project.backlog_request_id %> <% end %>
+		<% if (@project.num_req_backlog == nil) %> None
+		 <% else %> <%= @project.num_req_backlog %> <% end %>
 	</td></tr>
 	<tr><td>Assigned to</td><td>	<%= @project.assigned_to %>
 	</td></tr>
 	
 	<tr><td>Priority</td><td>				<%= @project.priority %> </td></tr>
-	<tr><td>SVN delivery folder</td><td>				<%= text_field :project, :svn_delivery_folder %></td></tr>
+	<tr><td>SVN delivery folder</td><td>				<%= text_field :project, :path_svn %></td></tr>
 	<tr><td>CI Objectives 2014</td><td>				<%= @project.ci_objectives_2014 %> </td></tr>
 	</table>
 </td></tr>

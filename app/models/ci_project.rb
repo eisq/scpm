@@ -1,93 +1,107 @@
     class CiProject < ActiveRecord::Base
 
-        def mantis_formula	
+        def mantis_formula
+
     	external_id_temp = "null"
     	if self.external_id.to_s != "" and self.external_id.to_s != nil
     	   external_id_temp = self.external_id.to_s
     	end
-    	
-    	formula = ""
-    	formula += external_id_temp #ID Externe
-    	formula += list_type(self.type) #Type
-    	formula += list_stage(self.stage) #Etape
-    	formula += list_category(self.category) #Catégorie
-    	formula += ";null" #Exigences
-    	formula += list_severity(self.severity) #Sévérité
-    	formula += list_reproducibility(self.reproducibility) #Reproductibilité
-    	formula += format(self.summary) #Intitulé
-    	formula += format(self.description) #Description
-    	formula += list_status(self.status) #Etat
-    	formula += format(self.submission_date) #Soumis le
-    	formula += list_reporter_and_responsible(self.reporter) #Rapporteur
-    	formula += list_visibility(self.visibility) #Public/Interne
-    	formula += list_reporter_and_responsible(self.assigned_to) #Responsable
-    	formula += list_priority(self.priority) #Priorité
-    	formula += ";null" #Version de détection
-    	formula += ";null" #Version de prise en compte
-    	formula += ";null" #Charge de résolution (en heures)
-    	formula += ";null" #Etapes pour reproduire
-    	formula += format(self.additional_information) #Informations complémentaires
-    	formula += ";null" #Cause de la demande
-    	formula += ";null" #Phase de détection
-    	formula += ";null" #Phase d'injection
-    	formula += ";null" #Test réel de détection
-    	formula += ";null" #Test théorique de détection
-    	formula += format(self.impact) #Impact (en j/h)
-    	formula += format(self.impact_time) #Impact en délai (en j)
-    	formula += list_typology_of_change(self.typology_of_change) #Typologie du changement
-    	formula += format(self.deliverables_updated) #Livrables mis à jour
-    	formula += format(self.iteration) #Itération
-    	formula += format(self.lot) #Lot
-    	formula += format(self.entity) #Entité
-    	formula += format(self.team) #Equipe
-    	formula += format(self.domain) #Domaine
-    	formula += format(self.backlog_request_id) #Num Req Backlog
-    	formula += format(self.origin) #Origin
-    	formula += ";null" #Output Type
-    	formula += ";null" #Deliverables list
-    	formula += ";null" #Dev Team
-    	formula += ";null" #Deployment
-    	formula += format(self.airbus_responsible) #Airbus Responsible
-    	formula += invert_date(self.airbus_validation_date) #Airbus validation date
-    	formula += invert_date(self.airbus_validation_date_objective) #Airbus validation date objective
-    	formula += invert_date(self.airbus_validation_date_review) #Airbus Validation Date Review
-    	formula += format(self.ci_objectives_2010_2011) #CI Objective 2010/2011
-    	formula += format(self.ci_objectives_2012) #CI Objective 2012
-    	formula += format(self.ci_objectives_2013) #CI Objectives 2013
-    	formula += format(self.deliverable_folder) #Deliverable Folder
-    	formula += invert_date(self.deployment_date) #Deployment date
-    	formula += invert_date(self.deployment_date_objective) #Deployment date objective
-    	formula += invert_date(self.specification_date) #Specification date
-    	formula += invert_date(self.kick_off_date) #Kick-Off Date
-    	formula += invert_date(self.launching_date_ddmmyyyy) #Launching date (dd/mm/yyyy)
-    	formula += invert_date(self.sqli_validation_date) #SQLI Validation date
-    	formula += invert_date(self.sqli_validation_date_objective) #SQLI Validation date objective
-    	formula += invert_date(self.specification_date_objective) #Specification date Objective
-    	formula += format(self.sqli_validation_responsible) #SQLI validation Responsible
-    	formula += format(self.ci_objectives_2014) #CI Objectives 2014
-    	formula += invert_date(self.kick_off_date) #Airbus Kick-Off Date
-    	formula += format(self.airbus_responsible) #Airbus validation responsible
-    	formula += format(self.linked_req) #Linked Req
-    	formula += format(self.quick_fix) #Quick Fix
-    	formula += format(self.level_of_impact) #Level of Impact
-    	formula += format(self.impacted_mnt_process) #Impacted M&T process
-    	formula += format(self.path_backlog) #Path backlog
-    	formula += format(self.svn_delivery_folder) #Path SVN
-    	formula += format(self.path_sfs_airbus) #Path SFS Airbus
-    	formula += format(self.item_type) #Item Type
-    	formula += invert_date(self.verification_date_objective) #Verification Date Objective
-    	formula += invert_date(self.verification_date) #Verification Date
-    	formula += format(self.request_origin) #Request Origin
+
+        formula = ""
+        formula += external_id_temp #ID Externe
+        formula += list_type(self.type)
+        formula += list_stage(self.stage)
+        formula += list_category(self.category)
+        formula += ";null" #Requirements
+        formula += list_severity(self.severity)
+        formula += list_reproductibility(self.reproductibility)
+        formula += format(self.summary)
+        formula += format(self.description)
+        formula += list_status(status)
+        formula += format(self.submission_date)
+        formula += list_reporter_and_responsible(self.reporter)
+        #formula += format(self.last_update)
+        #formula += format(self.last_update_person)
+        formula += list_visibility(self.visibility)
+        formula += list_reporter_and_responsible(self.assigned_to)
+        formula += list_priority(self.priority)
+        formula += list_detection_version(self.detection_version)
+        formula += format(self.fixed_in_version)
+        #formula += format(self.status_precisions)
+        formula += format(self.resolution_charge)
+        #formula += format(self.duplicated_id)
+        formula += format(self.stages_to_reproduce)
+        formula += format(self.additional_informations)
+        #formula += invert_date(self.taking_into_account_date)
+        #formula += invert_date(self.realisation_date)
+        #formula += format(self.realisation_author)
+        #formula += invert_date(self.delivery_date)
+        #formula += invert_date(self.reopening_date)
+        formula += format(self.issue_origin)
+        formula += format(self.detection_phase)
+        formula += format(self.injection_phase)
+        formula += format(self.real_test_of_detection)
+        formula += format(self.theoretical_test_of_detection)
+        formula += ";null" # Impact (in m/d)
+        formula += ";null" # Impact in delay (in days)
+        formula += ";null" # Change type
+        formula += ";null" # Updated deliverables
+        formula += format(self.iteration)
+        formula += format(self.lot)
+        formula += format(self.entity)
+        formula += format(self.team)
+        formula += format(self.domain)
+        formula += format(self.num_req_backlog)
+        formula += format(self.origin)
+        formula += format(self.output_type)
+        formula += format(self.deliverables_list)
+        formula += format(self.dev_team)
+        formula += invert_date(self.deployment)
+        formula += format(self.airbus_responsible)
+        formula += invert_date(self.airbus_validation_date)
+        formula += invert_date(self.airbus_validation_date_objective)
+        formula += invert_date(self.airbus_validation_date_review)
+        formula += format(self.ci_objective_20102011)
+        formula += format(self.ci_objective_2012)
+        formula += format(self.ci_objectives_2013)
+        formula += format(self.deliverable_folder)
+        formula += invert_date(self.deployment_date)
+        formula += invert_date(self.deployment_date_objective)
+        formula += invert_date(self.specification_date)
+        formula += invert_date(self.kick_off_date)
+        formula += invert_date(self.launching_date_ddmmyyyy)
+        formula += invert_date(self.sqli_validation_date)
+        formula += invert_date(self.sqli_validation_date_objective)
+        formula += invert_date(self.specification_date_objective)
+        formula += format(self.sqli_validation_responsible)
+        formula += format(self.ci_objectives_2014)
+        formula += ";null" # Airbus kick-off date
+        formula += ";null" # Airbus validation responsible
+        formula += format(self.linked_req)
+        formula += format(self.quick_fix)
+        formula += format(self.level_of_impact)
+        formula += format(self.impacted_mnt_process)
+        formula += format(self.path_backlog)
+        formula += format(self.path_svn)
+        formula += format(self.path_sfs_airbus)
+        formula += format(self.item_type)
+        formula += invert_date(self.verification_date_objective)
+        formula += invert_date(self.verification_date)
+        formula += format(self.request_origin)
+        #formula += format(self.issue_history)
     	
     	return formula
 	end
 
     def invert_date(date)
-        dateinverted = ";"+date.to_s
+        if date == "" or date == nil
+            dateinverted = "null"
+        else
+            year,month,day = date.to_s.split("-")
+            dateinverted = day+"/"+month+"/"+year
+        end
 
-        #dateconvert = date.day+"/"+date.month+"/"+date.year
-        #dateconvert = format(dateconvert)
-        #return dateconvert
+        dateinverted = format(dateinverted)
         return dateinverted
     end
 
@@ -105,7 +119,14 @@
     end
 
     def list_stage(var)
-        var = "32182"
+        case var
+        when "Continuous Improvement"
+            puts var = "32182"
+        when "Test_CI"
+            puts var = "33082"
+        else
+            puts var = "0"
+        end
         var = format(var)
         return var
     end
@@ -148,7 +169,7 @@
         return var
     end
 
-    def list_reproducibility(var)
+    def list_reproductibility(var)
         case var
         when "always"
             puts var = "10"
@@ -307,14 +328,16 @@
         return var
     end
 
-    def list_typology_of_change(var)
+    def list_detection_version(var)
         case var
-        when "New requirement"
-            puts var = "new_requirement"
-        when "Requirement updatable"
-            puts var = "modif_requirement"
-        when "Micro-change"
-            puts var = "micro_change"
+        when "v1.0"
+            puts var = "13330"
+        when " v1.0"
+            puts var = "13330"
+        when "v2.0"
+            puts var = "13382"
+        when " v2.0"
+            puts var = "13382"
         else
             puts var = "null"
         end
@@ -368,7 +391,7 @@
 	end
 	
 	def is_late_css
-    	if self.sqli_validation_date_review and (self.status=="Accepted" or self.status=="Assigned") and self.sqli_validation_date_review <= Date.today()
+    	if self.sqli_validation_date and (self.status=="Accepted" or self.status=="Assigned") and self.sqli_validation_date <= Date.today()
     		return "ci_late_report"
     	elsif self.airbus_validation_date_review and self.status=="Verified" and self.airbus_validation_date_review <= Date.today()
     		return "ci_late_report"
@@ -390,7 +413,7 @@
 	
 	def sqli_delay
     	return nil if !self.sqli_validation_date_objective
-    	return self.sqli_validation_date_review - self.sqli_validation_date_objective
+    	return self.sqli_validation_date - self.sqli_validation_date_objective
 	end
 	
 	def sqli_delay_new
@@ -410,7 +433,7 @@
 	
 	def deployment_delay
     	return nil if !self.deployment_date_objective
-    	return self.deployment_date_review - self.deployment_date_objective
+    	return self.deployment_date - self.deployment_date_objective
 	end
 	
 	def deployment_delay_new

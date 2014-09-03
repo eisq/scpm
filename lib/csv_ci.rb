@@ -2,84 +2,81 @@ require 'csv'
 
 class CsvCi
 
-  attr_accessor  :internal_id, #Interne
-    :external_id, #ID
-    :type, #Type (new)
-    :stage, #Etape
-    :category, #Catégorie
-    :severity, #Sévérité
-    :reproducibility, #Reproductibilité (new)
-    :summary, #Intitulé
-    :description, #Description
-    :status, #Etat
-    :submission_date, #Soumission
-    :reporter, #Rapporteur
-    :last_update, #Mise à jour
-    :last_update_person, #Personne dernière màj
-    :assigned_to, #Assigné à
-    :priority, #Priorité
-    :visibility, #Visibilité
-    :detection_version, #Version de détection (new)
-    :version_taken_into_account, #Version de prise en compte (new)
-    :status_precision, #Précision sur l'état (new)
-    :resolution_charge, #Charge de résolution
-    :id_duplicate, #Doublon d'ID (new)
-    :steps_to_reproduce, #Etapes pour reproduire (new)
-    :additional_information, #Informations complémentaires
-    :taking_into_account_date, #Date de prise en compte
-    :realisaton_date, #Date de réalisation
-    :realisation_author, #Personne de réalisation
-    :delivery_date, #Date de livraison
-    :reopening_date, #Date de réouverture (new)
-    :detection_phase, #Phase de détection (new)
-    :injection_phase, #Phase d'injection (new)
-    :impact, #Impact (en j/h) (new)
-    :impact_time, #Impact en délai (en j) (new)
-    :typology_of_change, #Typologie du changement (new)
-    :deliverables_updated, #Livrables mis à jour (new)
-    :iteration, #Itération (new)
-    :lot, #Lot (new)
-    :entity, #Entité (new)
-    :team, #Equipe (new)
-    :domain, #Domaine (new)
-    :backlog_request_id, #Num Req Backlog (new)
-    :origin, #Origin
-    :improvement_target_objective, #Output Type
-    :deliverable_list, #Deliverables list
-    :accountable, #Dev Team
-    :deployment, #Deployment
-    :airbus_responsible, #Airbus Responsible
-    :airbus_validation_date, #Airbus validation date
-    :airbus_validation_date_objective, #Airbus validation date objective
-    :airbus_validation_date_review, #Airbus validation Date Review
-    :ci_objectives_2010_2011, #CI Objective 2010/2011 (new)
-    :ci_objectives_2012, #CI Objective 2012 (new)
-    :ci_objectives_2013, #CI Objectives 2013
-    :deployment_date, #Deployment date
-    :deployment_date_objective, #Deployment date objective
-    :specification_date, #Specification date (new)
-    :kick_off_date, #Kick-Off Date
-    :launching_date_ddmmyyyy, #Launching date (dd/mm/yyyy)
-    :sqli_validation_date, #SQLI Validation date
-    :sqli_validation_date_objective, #SQLI Validation date objective
-    :specification_date_objective, #Specification date Objective (new)
-    :sqli_validation_responsible, #SQLI validation Responsible
-    :ci_objectives_2014, #CI Objectives 2014 (new)
-    :linked_req, #Linked Req (new)
-    :quick_fix, #Quick Fix (new)
-    :level_of_impact, #Level of Impact (new)
-    :impacted_mnt_process, #Impacted M&T process (new)
-    :path_backlog, #Path backlog (new)
-    :deliverable_folder, #Path SVN
-    :path_sfs_airbus, #Path SFS Airbus (new)
-    :item_type, #Item Type (new)
-    :verification_date_objective, #Verification Date Objective (new)
-    :verification_date, #Verification Date (new)
-    :request_origin, #Request Origin (new)
-    :issue_history, #Historique du ticket
-    :scope_l2,
-    :sqli_validation_date_review,
-    :deployment_date_review
+  attr_accessor  :internal_id,
+      :external_id,
+      :type,
+      :stage,
+      :category,
+      :severity,
+      :reproductibility,
+      :summary,
+      :description,
+      :status,
+      :submission_date,
+      :reporter,
+      :last_update,
+      :last_update_person,
+      :assigned_to,
+      :priority,
+      :visibility,
+      :detection_version,
+      :fixed_in_version,
+      :status_precisions,
+      :resolution_charge,
+      :duplicated_id,
+      :stages_to_reproduce,
+      :additional_informations,
+      :taking_into_account_date,
+      :realisation_date,
+      :realisation_author,
+      :delivery_date,
+      :reopening_date,
+      :issue_origin,
+      :detection_phase,
+      :injection_phase,
+      :real_test_of_detection,
+      :theoretical_test_of_detection,
+      :iteration,
+      :lot,
+      :entity,
+      :team,
+      :domain,
+      :num_req_backlog,
+      :origin,
+      :output_type,
+      :deliverables_list,
+      :dev_team,
+      :deployment,
+      :airbus_responsible,
+      :airbus_validation_date,
+      :airbus_validation_date_objective,
+      :airbus_validation_date_review,
+      :ci_objective_20102011,
+      :ci_objective_2012,
+      :ci_objectives_2013,
+      :deliverable_folder,
+      :deployment_date,
+      :deployment_date_objective,
+      :specification_date,
+      :kick_off_date,
+      :launching_date_ddmmyyyy,
+      :sqli_validation_date,
+      :sqli_validation_date_objective,
+      :specification_date_objective,
+      :sqli_validation_responsible,
+      :ci_objectives_2014,
+      :linked_req,
+      :quick_fix,
+      :level_of_impact,
+      :impacted_mnt_process,
+      :path_backlog,
+      :path_svn,
+      :path_sfs_airbus,
+      :item_type,
+      :verification_date_objective,
+      :verification_date,
+      :request_origin,
+      :issue_history
 
   def initialize
   end
@@ -172,6 +169,7 @@ private
     name.gsub!(" ","_")
     name.gsub!("-","_")
     name.gsub!(".","")
+    name.gsub!("&","n")
     name.gsub!(/\d\d\_/,"")
     #name.gsub!(/\_\d\d/ ,"")
     name = "internal_id" if name == "internal"

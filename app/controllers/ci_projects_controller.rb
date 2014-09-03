@@ -24,23 +24,23 @@ class CiProjectsController < ApplicationController
   end
 
   def late
-    @toassign = CiProject.find(:all, :conditions=>"assigned_to='' and status!='Closed' and status!='Delivered' and status!='Rejected'", :order=>"sqli_validation_date_review desc")
-    @sqli     = CiProject.find(:all, :conditions=>"status='Accepted' or status='Assigned'", :order=>"sqli_validation_date_review desc")
-    @todeploy = CiProject.find(:all, :conditions=>"status='Validated'", :order=>"sqli_validation_date_review desc")
-    @airbus   = CiProject.find(:all, :conditions=>"status='Verified'", :order=>"sqli_validation_date_review desc")
+    @toassign = CiProject.find(:all, :conditions=>"assigned_to='' and status!='Closed' and status!='Delivered' and status!='Rejected'", :order=>"sqli_validation_date desc")
+    @sqli     = CiProject.find(:all, :conditions=>"status='Accepted' or status='Assigned'", :order=>"sqli_validation_date desc")
+    @todeploy = CiProject.find(:all, :conditions=>"status='Validated'", :order=>"sqli_validation_date desc")
+    @airbus   = CiProject.find(:all, :conditions=>"status='Verified'", :order=>"sqli_validation_date desc")
   end
 
   def verif
     CiProject.all.each { |p| 
-      p.sqli_validation_date_review   = p.sqli_validation_date_objective if !p.sqli_validation_date_review
+      p.sqli_validation_date   = p.sqli_validation_date_objective if !p.sqli_validation_date
       p.airbus_validation_date_review = p.airbus_validation_date_objective if !p.airbus_validation_date_review
-      p.deployment_date_review        = p.deployment_date_objective if !p.deployment_date_review
+      p.deployment_date        = p.deployment_date_objective if !p.deployment_date
       p.save
     }
   end
 
   def report
-    @sqli     = CiProject.find(:all, :conditions=>"deployment='External' and visibility='Public' and (status='Accepted' or status='Assigned')", :order=>"sqli_validation_date_review")
+    @sqli     = CiProject.find(:all, :conditions=>"deployment='External' and visibility='Public' and (status='Accepted' or status='Assigned')", :order=>"sqli_validation_date")
     @airbus   = CiProject.find(:all, :conditions=>"deployment='External' and visibility='Public' and (status='Verified')", :order=>"airbus_validation_date_review")
   end
 
@@ -116,9 +116,7 @@ class CiProjectsController < ApplicationController
 
     p.update_attributes(params[:project])
 
-    validators = ""
-    siglum = ""
-    responsible = ""
+    validators = siglum = responsible = ""
 
     responsible = p.sqli_validation_responsible
     persons = Person.find(:all)
@@ -176,7 +174,7 @@ class CiProjectsController < ApplicationController
     #formule pour test, à supprimer
     @export_mantis_formula_test = formula_test = ""
     #@projects_test = CiProject.find(:all, :conditions=>"external_id='380' or external_id='389' or external_id='395' or external_id='439'").sort_by {|p| [p.order||0, p.assigned_to||'']}
-    @projects_test = CiProject.find(:all, :conditions=>"external_id='580'").sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @projects_test = CiProject.find(:all, :conditions=>"external_id='587'").sort_by {|p| [p.order||0, p.assigned_to||'']}
     @projects_test.each { |p|
         formula_test += p.mantis_formula
         formula_test += ";finbug"

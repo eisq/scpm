@@ -78,8 +78,7 @@ class CsvBacklog
     :request_origin, #Request Origin (new)
     :issue_history, #Historique du ticket
     :scope_l2,
-    :sqli_validation_date_review,
-    :deployment_date_review
+    :deployment_date
 
   def initialize
   end

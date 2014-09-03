@@ -10,8 +10,8 @@
     <span style="font-weight:normal; font-size:12px"> -> <%= p.status %></span>
   <% end %>
 </h3>
-  <% if p.backlog_request_id != nil %>
-  	<p><b>Backlog request ID:</b> <%= p.backlog_request_id.to_s %></p>
+  <% if p.num_req_backlog != nil %>
+  	<p><b>Backlog request ID:</b> <%= p.num_req_backlog.to_s %></p>
   <% end %>
 
   <% if p.sqli_validation_date != nil %>
