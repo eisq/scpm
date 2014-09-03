@@ -98,7 +98,7 @@
         when "Evolution"
             puts var = "50"
         else
-            puts var = "null;"
+            puts var = "null"
         end
         var = format(var)
         return var
@@ -142,7 +142,7 @@
         when "block"
             puts var = "80"
         else
-            puts var = "null;"
+            puts var = "null"
         end
         var = format(var)
         return var
@@ -163,7 +163,7 @@
         when "N/A"
             puts var = "100"
         else
-            puts var = "null;"
+            puts var = "null"
         end
         var = format(var)
         return var
@@ -198,7 +198,7 @@
         when "Rejected"
             puts var = "95"
         else
-            puts var = "null;"
+            puts var = "null"
         end
         var = format(var)
         return var
@@ -269,7 +269,7 @@
         when "zallou"
             puts var = "10000629"
         else
-            puts var = "null;"
+            puts var = "null"
         end
         var = format(var)
         return var
@@ -282,7 +282,7 @@
         when "Internal"
             puts var = "50"
         else
-            puts var = "null;"
+            puts var = "null"
         end
         var = format(var)
         return var
@@ -301,7 +301,7 @@
         when "Urgent"
             puts var = "50"
         else
-            puts var = "null;"
+            puts var = "null"
         end
         var = format(var)
         return var
@@ -316,7 +316,7 @@
         when "Micro-change"
             puts var = "micro_change"
         else
-            puts var = "null;"
+            puts var = "null"
         end
         var = format(var)
         return var
