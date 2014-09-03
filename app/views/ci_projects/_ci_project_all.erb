@@ -17,7 +17,7 @@
   <% if p.sqli_validation_date != nil %>
   	<p><b>SQLI validation date:</b><%= p.sqli_validation_date.to_s + " (" + p.sqli_delay_new.to_s + " days delay)" %>
       <% if p.sqli_date_alert == 1 %>
-        <span style="color:red;"><b>Date unvalidated</b></span>
+        <span style="color:red;"><b>Date not validated</b></span>
       <% end %>
     </p>
   <% elsif p.sqli_validation_date = nil and p.sqli_validation_date_objective != nil %>
@@ -27,7 +27,7 @@
   <% if p.airbus_validation_date != nil %>
   	<p><b>Airbus validation date:</b> <%= p.airbus_validation_date.to_s + " (" + p.airbus_delay_new.to_s + " days delay)" %>
       <% if p.airbus_date_alert == 1 %>
-        <span style="color:red;"><b>Date unvalidated</b></span>
+        <span style="color:red;"><b>Date not validated</b></span>
       <% end %>
     </p>
   <% elsif p.airbus_validation_date = nil and p.airbus_validation_date_objective != nil %>
@@ -37,7 +37,7 @@
   <% if p.deployment_date != nil %>
   <p><b>Deployment date:</b> <%= p.deployment_date.to_s + " (" + p.deployment_delay_new.to_s + " days delay)" %>
       <% if p.deployment_date_alert == 1 %>
-        <span style="color:red;"><b>Date unvalidated</b></span>
+        <span style="color:red;"><b>Date not validated</b></span>
       <% end %>
     </p>
   <% elsif p.deployment_date = nil and p.deployment_date_objective != nil %>

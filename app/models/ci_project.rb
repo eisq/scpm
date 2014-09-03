@@ -15,7 +15,7 @@
     	formula += list_severity(self.severity) #Sévérité
     	formula += list_reproducibility(self.reproducibility) #Reproductibilité
     	formula += format(self.summary) #Intitulé
-    	formula += self.description #Description
+    	formula += format(self.description) #Description
     	formula += list_status(self.status) #Etat
     	formula += format(self.submission_date) #Soumis le
     	formula += list_reporter_and_responsible(self.reporter) #Rapporteur

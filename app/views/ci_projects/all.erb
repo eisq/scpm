@@ -6,13 +6,13 @@
 	<h2>Import</h2></td></tr>
 	<tr><td>
 	<%= form_tag({:action => 'do_upload'}, :multipart => true) %>
-	    <label for="upload_file">Mantis CSV</label>
+	    <label for="upload_file">Mantis CSV (MS DOS)</label>
 	    <%= file_field 'upload', 'datafile' %>
 	    <%= submit_tag "Upload" %>
 	</form>
 	</td><td>
 	<%= form_tag({:action => 'do_upload_backlog'}, :multipart => true) %>
-	    <label for="upload_file">Backlog CSV</label>
+	    <label for="upload_file">Backlog CSV (MS DOS)</label>
 	    <%= file_field 'upload', 'datafile' %>
 	    <%= submit_tag "Upload" %>
 	</form>
