@@ -7,33 +7,62 @@
 
 
 <script type="text/javascript"> 
-
-var axes_array = Array();
-<% @axes_axis.each do |a| %>
-	axes_array.push("<%= a %>");
-<% end %>
-
-var sub_axes_array = Array();
-<% @sub_axes_axis.each do |a| %>
-	sub_axes_array.push("<%= a %>");
-<% end %>
-
 $(function () {
-	var axe_serie 		= Array();
-	var sub_axe_serie 	= Array();
-	<% @axes_hash.each do |k, v|%>
-		axe_serie.push(<%= v %>); 
+	// Parameters
+	var axes_array = Array();
+	var series = Array();
+
+	// width / (number of element + 0.5)
+	// var pie_y_padding = $("#axe_chart_container_id").width() / <%= @axes_data.count %>;
+	var pie_y_padding = 85;
+	var pie_position_y = 85;
+
+	// Axes object
+	var axes_object  = Object();
+	axes_object.type = 'bar';
+	axes_object.name = 'Axes';
+	axes_object.data = Array();
+
+	var datasource = Array();
+	<% @axes_data.each do |a_key, a_value| %>
+		// Axe legend
+		axes_array.push("<%= a_key %>");
+
+		// Sub axe object
+		var sub_axes_object  = Object();
+		sub_axes_object.type = 'pie';
+		sub_axes_object.name = "<%= a_key %>";
+		sub_axes_object.data = Array();
+	    sub_axes_object.center = [850, pie_position_y];
+	    sub_axes_object.size = 80;
+	    sub_axes_object.showInLegend = false;
+	    sub_axes_object.dataLabels = { enabled: false };
+
+		<% a_value.each do |s_a_key, s_a_value| %>
+			<% if s_a_key == "value" %>
+				axes_object.data.push(parseInt(<%= s_a_value %>));
+			<% else %>
+				var data_object 	= Object();
+				data_object.y 	 	= parseInt(<%= s_a_value %>);
+				data_object.name 	= "<%= s_a_key %>";
+				sub_axes_object.data.push(data_object);
+			<% end %>
+		<% end %>
+
+		if(sub_axes_object.data.length == 0) {
+				var data_object 	= Object();
+				data_object.y 	 	= parseInt(1);
+				data_object.name 	= "FAKE";
+				sub_axes_object.data.push(data_object);
+		}
+		series.push(sub_axes_object);
+		pie_position_y += pie_y_padding;
 	<% end %>
-	<% @sub_axes_hash.each do |k, v|%>
-		sub_axe_serie.push(<%= v %>); 
-	<% end %>
-	generate_lesson_chart("axe_chart_container_id", "Axes", axes_array, axe_serie, 'column');
-	generate_lesson_chart("sub_axe_chart_container_id", "Sub-Axes", sub_axes_array, sub_axe_serie, 'bar');
+	series.push(axes_object);
+
+	generate_lesson_complex_chart("axe_chart_container_id", "Axes", axes_array, series);
 });
 </script>
 
-Axes
-<div class="axe_chart" id="axe_chart_container_id" style="height:500px;"></div>
+<div class="axe_chart" id="axe_chart_container_id" style="height:800px;width:1200px;"></div>
 
-Sub-Axes
-<div class="sub_axe_chart" id="sub_axe_chart_container_id" style="height:500px;"></div>

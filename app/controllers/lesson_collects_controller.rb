@@ -538,42 +538,35 @@ class LessonCollectsController < ApplicationController
     end
   end
 
+
   def filter_chart
     
       # Filter
       filter_by_row(params)
 
-      # @filter_type_selected_obj = LessonCollectTemplateType.find(:first, :conditions => ["id = ?", @filter_type_selected])
+      # Prepare data store
+      @axes_data = Hash.new
+      axes_list = LessonCollectAxe.find(:all)
 
-      @axes_hash     = Hash.new
-      @sub_axes_hash = Hash.new
+      axes_list.each do |axe|
+        axe_hash              = Hash.new
+        axe_hash["value"]     = 0
+        axe.lesson_collect_sub_axes.each do |sub_axe|
+          axe_hash[sub_axe.name] = 0
+        end
+        @axes_data[axe.name] = axe_hash
+      end
+
+      # Set value in data store
       @lessons.each do |l|
-        if l.lesson_collect_axe
-          if @axes_hash[l.lesson_collect_axe.name] == nil
-            @axes_hash[l.lesson_collect_axe.name] = 1
-          else
-            @axes_hash[l.lesson_collect_axe.name] = @axes_hash[l.lesson_collect_axe.name] + 1
-          end
-        end
-
-        if l.lesson_collect_sub_axe
-          if @sub_axes_hash[l.lesson_collect_sub_axe.name] == nil
-            @sub_axes_hash[l.lesson_collect_sub_axe.name] = 1
-          else
-            @sub_axes_hash[l.lesson_collect_sub_axe.name] = @sub_axes_hash[l.lesson_collect_sub_axe.name] + 1
+        if l.lesson_collect_axe and @axes_data[l.lesson_collect_axe.name]
+          @axes_data[l.lesson_collect_axe.name]["value"] = @axes_data[l.lesson_collect_axe.name]["value"] + 1
+          if l.lesson_collect_sub_axe and @axes_data[l.lesson_collect_axe.name][l.lesson_collect_sub_axe.name]
+            @axes_data[l.lesson_collect_axe.name][l.lesson_collect_sub_axe.name] = @axes_data[l.lesson_collect_axe.name][l.lesson_collect_sub_axe.name] + 1
           end
         end
       end
 
-      @axes_axis = Array.new
-      @axes_hash.keys.each do |key|
-        @axes_axis << key
-      end
-
-      @sub_axes_axis = Array.new
-      @sub_axes_hash.keys.each do |key|
-        @sub_axes_axis << key
-      end
       render(:layout=>"spider")
   end
 
