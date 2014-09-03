@@ -109,31 +109,38 @@ class CiProjectsController < ApplicationController
 
   def update
     p = CiProject.find(params[:id])
-    old_p = p
+
+    old_sqli_date = p.sqli_validation_date
+    old_airbus_date = p.airbus_validation_date
+    old_deployment_date = p.deployment_date
+
     p.update_attributes(params[:project])
 
-    validators = siglum = responsible = ""
+    validators = ""
+    siglum = ""
+    responsible = ""
 
-    #responsible = p.sqli_validation_responsible
-    #persons = Person.find(:all)
-    #persons.each { |person|
-      #if (person.name == reponsible)
-      #  siglum = person.rmt_user + ","
-      #end
-    #}
-    #validators = siglum + APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
+    responsible = p.sqli_validation_responsible
+    persons = Person.find(:all)
+    persons.each { |person|
+      if (person.name == responsible)
+        siglum += person.rmt_user + ","
+      end
+    }
 
-    if (old_p.sqli_validation_date != p.sqli_validation_date)
+    validators = siglum + APP_CONFIG['ci_date_to_validate_destination']; #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
+
+    if (old_sqli_date != p.sqli_validation_date)
       p.sqli_date_alert = 1
-      #date_validation_mail(validators, p)
+      date_validation_mail(validators, p)
     end
-    if (old_p.airbus_validation_date != p.airbus_validation_date)
+    if (old_airbus_date != p.airbus_validation_date)
       p.airbus_date_alert = 1
-      #date_validation_mail(validators, p)
+      date_validation_mail(validators, p)
     end
-    if (old_p.deployment_date != p.deployment_date)
+    if (old_deployment_date != p.deployment_date)
       p.deployment_date_alert = 1
-      #date_validation_mail(validators, p)
+      date_validation_mail(validators, p)
     end
 
     p.save
@@ -165,7 +172,6 @@ class CiProjectsController < ApplicationController
       end
     }
     @export_mantis_formula = formula
-
 
     #formule pour test, à supprimer
     @export_mantis_formula_test = formula_test = ""
