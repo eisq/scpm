@@ -9,19 +9,19 @@
     	formula = ""
     	formula += external_id_temp #ID Externe
     	formula += list_type(self.type) #Type
-    	formula += format(self.stage) #Etape
-    	formula += format(self.category) #Catégorie
+    	formula += list_stage(self.stage) #Etape
+    	formula += list_category(self.category) #Catégorie
     	formula += ";null" #Exigences
-    	formula += format(self.severity) #Sévérité
-    	formula += format(self.reproducibility) #Reproductibilité
+    	formula += list_severity(self.severity) #Sévérité
+    	formula += list_reproducibility(self.reproducibility) #Reproductibilité
     	formula += format(self.summary) #Intitulé
     	formula += self.description #Description
-    	formula += format(self.status) #Etat
+    	formula += list_status(self.status) #Etat
     	formula += format(self.submission_date) #Soumis le
-    	formula += format(self.reporter) #Rapporteur
-    	formula += format(self.visibility) #Public/Interne
-    	formula += format(self.assigned_to) #Responsable
-    	formula += format(self.priority) #Priorité
+    	formula += list_reporter_and_responsible(self.reporter) #Rapporteur
+    	formula += list_visibility(self.visibility) #Public/Interne
+    	formula += list_reporter_and_responsible(self.assigned_to) #Responsable
+    	formula += list_priority(self.priority) #Priorité
     	formula += ";null" #Version de détection
     	formula += ";null" #Version de prise en compte
     	formula += ";null" #Charge de résolution (en heures)
@@ -34,7 +34,7 @@
     	formula += ";null" #Test théorique de détection
     	formula += format(self.impact) #Impact (en j/h)
     	formula += format(self.impact_time) #Impact en délai (en j)
-    	formula += format(self.typology_of_change) #Typologie du changement
+    	formula += list_typology_of_change(self.typology_of_change) #Typologie du changement
     	formula += format(self.deliverables_updated) #Livrables mis à jour
     	formula += format(self.iteration) #Itération
     	formula += format(self.lot) #Lot
@@ -48,24 +48,24 @@
     	formula += ";null" #Dev Team
     	formula += ";null" #Deployment
     	formula += format(self.airbus_responsible) #Airbus Responsible
-    	formula += format(self.airbus_validation_date) #Airbus validation date
-    	formula += format(self.airbus_validation_date_objective) #Airbus validation date objective
-    	formula += format(self.airbus_validation_date_review) #Airbus Validation Date Review
+    	formula += invert_date(self.airbus_validation_date) #Airbus validation date
+    	formula += invert_date(self.airbus_validation_date_objective) #Airbus validation date objective
+    	formula += invert_date(self.airbus_validation_date_review) #Airbus Validation Date Review
     	formula += format(self.ci_objectives_2010_2011) #CI Objective 2010/2011
     	formula += format(self.ci_objectives_2012) #CI Objective 2012
     	formula += format(self.ci_objectives_2013) #CI Objectives 2013
     	formula += format(self.deliverable_folder) #Deliverable Folder
-    	formula += format(self.deployment_date) #Deployment date
-    	formula += format(self.deployment_date_objective) #Deployment date objective
-    	formula += format(self.specification_date) #Specification date
-    	formula += format(self.kick_off_date) #Kick-Off Date
-    	formula += format(self.launching_date_ddmmyyyy) #Launching date (dd/mm/yyyy)
-    	formula += format(self.sqli_validation_date) #SQLI Validation date
-    	formula += format(self.sqli_validation_date_objective) #SQLI Validation date objective
-    	formula += format(self.specification_date_objective) #Specification date Objective
+    	formula += invert_date(self.deployment_date) #Deployment date
+    	formula += invert_date(self.deployment_date_objective) #Deployment date objective
+    	formula += invert_date(self.specification_date) #Specification date
+    	formula += invert_date(self.kick_off_date) #Kick-Off Date
+    	formula += invert_date(self.launching_date_ddmmyyyy) #Launching date (dd/mm/yyyy)
+    	formula += invert_date(self.sqli_validation_date) #SQLI Validation date
+    	formula += invert_date(self.sqli_validation_date_objective) #SQLI Validation date objective
+    	formula += invert_date(self.specification_date_objective) #Specification date Objective
     	formula += format(self.sqli_validation_responsible) #SQLI validation Responsible
     	formula += format(self.ci_objectives_2014) #CI Objectives 2014
-    	formula += format(self.kick_off_date) #Airbus Kick-Off Date
+    	formula += invert_date(self.kick_off_date) #Airbus Kick-Off Date
     	formula += format(self.airbus_responsible) #Airbus validation responsible
     	formula += format(self.linked_req) #Linked Req
     	formula += format(self.quick_fix) #Quick Fix
@@ -75,349 +75,247 @@
     	formula += format(self.svn_delivery_folder) #Path SVN
     	formula += format(self.path_sfs_airbus) #Path SFS Airbus
     	formula += format(self.item_type) #Item Type
-    	formula += format(self.verification_date_objective) #Verification Date Objective
-    	formula += format(self.verification_date) #Verification Date
+    	formula += invert_date(self.verification_date_objective) #Verification Date Objective
+    	formula += invert_date(self.verification_date) #Verification Date
     	formula += format(self.request_origin) #Request Origin
     	
     	return formula
 	end
 
     def invert_date(date)
-
-
-        return date
+        dateinverted = date.to_s
+        #dateconvert = date.day+"/"+date.month+"/"+date.year
+        #dateconvert = format(dateconvert)
+        #return dateconvert
+        return dateinverted
     end
 
     def list_type(var)
         case var
-        when var == "Anomaly"
+        when "Anomaly"
             puts var = "10"
-        when var == "Evolution"
+        when "Evolution"
             puts var = "50"
         else
-            puts "null;"
+            puts var = "null;"
         end
         var = format(var)
         return var
     end
 
-    def list_stage
+    def list_stage(var)
         var = "32182"
         var = format(var)
         return var
     end
 
-    def list_category
+    def list_category(var)
         case var
-        when var == "Autres"
-            puts var = "21360"
-        when var == "Bundle"
-            puts var = "21361"
-        when var == "Methodo Airbus (GPP, LBIP ...)"
-            puts var = "21362"
-        when var == "Methodo Airbus (GPP, LBIP...)"
-            puts var = "21363"
-        when var == "Project"
-            puts var = "21364"
-        else
-            puts "null;"
+            when "Autres"
+                puts var = "21360"
+            when "Bundle"
+                puts var = "21361"
+            when "Methodo Airbus (GPP, LBIP ...)"
+                puts var = "21362"
+            when "Methodo Airbus (GPP, LBIP...)"
+                puts var = "21363"
+            when "Project"
+                puts var = "21364"
+            else
+                puts var = "null"
         end
         var = format(var)
         return var
     end
 
-    def list_severity
+    def list_severity(var)
         case var
-        when var == "text"
+        when "text"
             puts var = "30"
-        when var == "tweak"
+        when "tweak"
             puts var = "40"
-        when var == "minor"
+        when "minor"
             puts var = "50"
-        when var == "major"
+        when "major"
             puts var = "60"
-        when var == "block"
+        when "block"
             puts var = "80"
         else
-            puts "null;"
+            puts var = "null;"
         end
         var = format(var)
         return var
     end
 
-    def list_reproducibility
+    def list_reproducibility(var)
         case var
-        when var == "always"
+        when "always"
             puts var = "10"
-        when var == "sometimes"
+        when "sometimes"
             puts var = "30"
-        when var == "random"
+        when "random"
             puts var = "50"
-        when var == "have not tried"
+        when "have not tried"
             puts var = "70"
-        when var == "unable to duplicate"
+        when "unable to duplicate"
             puts var = "90"
-        when var == "N/A"
+        when "N/A"
             puts var = "100"
         else
-            puts "null;"
+            puts var = "null;"
         end
         var = format(var)
         return var
     end
 
-    def list_status
+    def list_status(var)
         case var
-        when var == "New"
+        when "New"
             puts var = "10"
-        when var == "Analyse"
+        when "Analyse"
             puts var = "12"
-        when var == "Qqualification"
+        when "Qqualification"
             puts var = "17"
-        when var == "Comment"
+        when "Comment"
             puts var = "20"
-        when var == "Accepted"
+        when "Accepted"
             puts var = "30"
-        when var == "Assigned"
+        when "Assigned"
             puts var = "50"
-        when var == "Realised"
+        when "Realised"
             puts var = "80"
-        when var == "Verified"
+        when "Verified"
             puts var = "82"
-        when var == "Validated"
+        when "Validated"
             puts var = "85"
-        when var == "Delivered"
+        when "Delivered"
             puts var = "87"
-        when var == "Reopened"
+        when "Reopened"
             puts var = "88"
-        when var == "Closed"
+        when "Closed"
             puts var = "90"
-        when var == "Rejected"
+        when "Rejected"
             puts var = "95"
         else
-            puts "null;"
+            puts var = "null;"
         end
         var = format(var)
         return var
     end
 
-    def list_reporter_and_responsible
+    def list_reporter_and_responsible(var)
         case var
-        when var == "acario"
+        when "acario"
             puts var = "10000720"
-        when var == "agoupil"
+        when "agoupil"
             puts var = "999843"
-        when var == "bmonteils"
+        when "bmonteils"
             puts var = "9999622"
-        when var == "btisseur"
+        when "btisseur"
             puts var = "46"
-        when var == "ccaron"
+        when "ccaron"
             puts var = "10000292"
-        when var == "capottier"
+        when "capottier"
             puts var = "10000560"
-        when var == "cpages"
+        when "cpages"
             puts var = "9999919"
-        when var == "cdebortoli"
+        when "cdebortoli"
             puts var = "9999245"
-        when var == "dadupont"
+        when "dadupont"
             puts var = "4437"
-        when var == "fplisson"
+        when "fplisson"
             puts var = "9999515"
-        when var == "jmondy"
+        when "jmondy"
             puts var = "7772"
-        when var == "lbalansac"
+        when "lbalansac"
             puts var = "100000222"
-        when var == "mbuscail"
+        when "mbuscail"
             puts var = "9999327"
-        when var == "mmaglionepiromallo"
+        when "mmaglionepiromallo"
             puts var = "7728"
-        when var == "mantoine"
+        when "mantoine"
             puts var = "7793"
-        when var == "mblatche"
+        when "mblatche"
             puts var = "9999516"
-        when var == "mbekkouch"
+        when "mbekkouch"
             puts var = "3652"
-        when var == "nrigaud"
+        when "nrigaud"
             puts var = "10000958"
-        when var == "ngagnaire"
+        when "ngagnaire"
             puts var = "10000260"
-        when var == "nmenvielle"
+        when "nmenvielle"
             puts var = "10000710"
-        when var == "ocabrera"
+        when "ocabrera"
             puts var = "10001140"
-        when var == "pdestefani"
+        when "pdestefani"
             puts var = "10000559"
-        when var == "pescande"
+        when "pescande"
             puts var = "9999311"
-        when var == "pcauquil"
+        when "pcauquil"
             puts var = "7323"
-        when var == "rbaillard"
+        when "rbaillard"
             puts var = "10000709"
-        when var == "rallin"
+        when "rallin"
             puts var = "7363"
-        when var == "swezel"
+        when "swezel"
             puts var = "10001620"
-        when var == "saury"
+        when "saury"
             puts var = "10000239"
-        when var == "stessier"
+        when "stessier"
             puts var = "7330"
-        when var == "vlaffont"
+        when "vlaffont"
             puts var = "7155"
-        when var == "zallou"
+        when "zallou"
             puts var = "10000629"
         else
-            puts "null;"
+            puts var = "null;"
         end
         var = format(var)
         return var
     end
 
-    def list_visibility
+    def list_visibility(var)
         case var
-        when var == "Public"
+        when "Public"
             puts var = "10"
-        when var == "Internal"
+        when "Internal"
             puts var = "50"
         else
-            puts "null;"
+            puts var = "null;"
         end
         var = format(var)
         return var
     end
 
-    def list_priority
+    def list_priority(var)
         case var
-        when var == "None"
+        when "None"
             puts var = "10"
-        when var == "Low"
+        when "Low"
             puts var = "20"
-        when var == "Normal"
+        when "Normal"
             puts var = "30"
-        when var == "High"
+        when "High"
             puts var = "40"
-        when var == "Urgent"
+        when "Urgent"
             puts var = "50"
         else
-            puts "null;"
+            puts var = "null;"
         end
         var = format(var)
         return var
     end
 
-    def list_typology_of_change
+    def list_typology_of_change(var)
         case var
-        when var == "New requirement"
+        when "New requirement"
             puts var = "new_requirement"
-        when var == "Requirement updatable"
+        when "Requirement updatable"
             puts var = "modif_requirement"
-        when var == "Micro-change"
+        when "Micro-change"
             puts var = "micro_change"
         else
-            puts "null;"
-        end
-        var = format(var)
-        return var
-    end
-
-    def list_domain
-        case var
-        when var == ""
-            puts var = ""
-        when var == ""
-            puts var = ""
-        else
-            puts "null;"
-        end
-        var = format(var)
-        return var
-    end
-
-    def list_origin
-        case var
-        when var == ""
-            puts var = ""
-        when var == ""
-            puts var = ""
-        else
-            puts "null;"
-        end
-        var = format(var)
-        return var
-    end
-
-    def list_ci_objectives_2010_2011
-        case var
-        when var == ""
-            puts var = ""
-        when var == ""
-            puts var = ""
-        else
-            puts "null;"
-        end
-        var = format(var)
-        return var
-    end
-
-    def list_ci_objectives_2012
-        case var
-        when var == ""
-            puts var = ""
-        when var == ""
-            puts var = ""
-        else
-            puts "null;"
-        end
-        var = format(var)
-        return var
-    end
-
-    def list_ci_objectives_2013
-        case var
-        when var == ""
-            puts var = ""
-        when var == ""
-            puts var = ""
-        else
-            puts "null;"
-        end
-        var = format(var)
-        return var
-    end
-
-    def list_ci_objectives_2014
-        case var
-        when var == ""
-            puts var = ""
-        when var == ""
-            puts var = ""
-        else
-            puts "null;"
-        end
-        var = format(var)
-        return var
-    end
-
-    def list_quick_fix
-        case var
-        when var == ""
-            puts var = ""
-        when var == ""
-            puts var = ""
-        else
-            puts "null;"
-        end
-        var = format(var)
-        return var
-    end
-
-    def list_level_of_impact
-        case var
-        when var == ""
-            puts var = ""
-        when var == ""
-            puts var = ""
-        else
-            puts "null;"
+            puts var = "null;"
         end
         var = format(var)
         return var
