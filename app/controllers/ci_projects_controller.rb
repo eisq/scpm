@@ -124,11 +124,11 @@ class CiProjectsController < ApplicationController
     persons = Person.find(:all)
     persons.each { |person|
       if (person.name == responsible)
-        siglum += person.rmt_user + ","
+        siglum += person.rmt_user + "@sqli.com,"
       end
     }
 
-    validators = siglum + APP_CONFIG['ci_date_to_validate_destination']; #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
+    validators = siglum + APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
 
     if (old_sqli_date != p.sqli_validation_date)
       p.sqli_date_alert = 1

@@ -8,7 +8,7 @@
     	
     	formula = ""
     	formula += external_id_temp #ID Externe
-    	formula += format(self.type) #Type
+    	formula += list_type(self.type) #Type
     	formula += format(self.stage) #Etape
     	formula += format(self.category) #Catégorie
     	formula += ";null" #Exigences
@@ -28,8 +28,8 @@
     	formula += ";null" #Etapes pour reproduire
     	formula += format(self.additional_information) #Informations complémentaires
     	formula += ";null" #Cause de la demande
-    	formula += format(self.detection_phase) #Phase de détection
-    	formula += format(self.injection_phase) #Phase d'injection
+    	formula += ";null" #Phase de détection
+    	formula += ";null" #Phase d'injection
     	formula += ";null" #Test réel de détection
     	formula += ";null" #Test théorique de détection
     	formula += format(self.impact) #Impact (en j/h)
@@ -81,7 +81,348 @@
     	
     	return formula
 	end
-	
+
+    def invert_date(date)
+
+
+        return date
+    end
+
+    def list_type(var)
+        case var
+        when var == "Anomaly"
+            puts var = "10"
+        when var == "Evolution"
+            puts var = "50"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_stage
+        var = "32182"
+        var = format(var)
+        return var
+    end
+
+    def list_category
+        case var
+        when var == "Autres"
+            puts var = "21360"
+        when var == "Bundle"
+            puts var = "21361"
+        when var == "Methodo Airbus (GPP, LBIP ...)"
+            puts var = "21362"
+        when var == "Methodo Airbus (GPP, LBIP...)"
+            puts var = "21363"
+        when var == "Project"
+            puts var = "21364"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_severity
+        case var
+        when var == "text"
+            puts var = "30"
+        when var == "tweak"
+            puts var = "40"
+        when var == "minor"
+            puts var = "50"
+        when var == "major"
+            puts var = "60"
+        when var == "block"
+            puts var = "80"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_reproducibility
+        case var
+        when var == "always"
+            puts var = "10"
+        when var == "sometimes"
+            puts var = "30"
+        when var == "random"
+            puts var = "50"
+        when var == "have not tried"
+            puts var = "70"
+        when var == "unable to duplicate"
+            puts var = "90"
+        when var == "N/A"
+            puts var = "100"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_status
+        case var
+        when var == "New"
+            puts var = "10"
+        when var == "Analyse"
+            puts var = "12"
+        when var == "Qqualification"
+            puts var = "17"
+        when var == "Comment"
+            puts var = "20"
+        when var == "Accepted"
+            puts var = "30"
+        when var == "Assigned"
+            puts var = "50"
+        when var == "Realised"
+            puts var = "80"
+        when var == "Verified"
+            puts var = "82"
+        when var == "Validated"
+            puts var = "85"
+        when var == "Delivered"
+            puts var = "87"
+        when var == "Reopened"
+            puts var = "88"
+        when var == "Closed"
+            puts var = "90"
+        when var == "Rejected"
+            puts var = "95"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_reporter_and_responsible
+        case var
+        when var == "acario"
+            puts var = "10000720"
+        when var == "agoupil"
+            puts var = "999843"
+        when var == "bmonteils"
+            puts var = "9999622"
+        when var == "btisseur"
+            puts var = "46"
+        when var == "ccaron"
+            puts var = "10000292"
+        when var == "capottier"
+            puts var = "10000560"
+        when var == "cpages"
+            puts var = "9999919"
+        when var == "cdebortoli"
+            puts var = "9999245"
+        when var == "dadupont"
+            puts var = "4437"
+        when var == "fplisson"
+            puts var = "9999515"
+        when var == "jmondy"
+            puts var = "7772"
+        when var == "lbalansac"
+            puts var = "100000222"
+        when var == "mbuscail"
+            puts var = "9999327"
+        when var == "mmaglionepiromallo"
+            puts var = "7728"
+        when var == "mantoine"
+            puts var = "7793"
+        when var == "mblatche"
+            puts var = "9999516"
+        when var == "mbekkouch"
+            puts var = "3652"
+        when var == "nrigaud"
+            puts var = "10000958"
+        when var == "ngagnaire"
+            puts var = "10000260"
+        when var == "nmenvielle"
+            puts var = "10000710"
+        when var == "ocabrera"
+            puts var = "10001140"
+        when var == "pdestefani"
+            puts var = "10000559"
+        when var == "pescande"
+            puts var = "9999311"
+        when var == "pcauquil"
+            puts var = "7323"
+        when var == "rbaillard"
+            puts var = "10000709"
+        when var == "rallin"
+            puts var = "7363"
+        when var == "swezel"
+            puts var = "10001620"
+        when var == "saury"
+            puts var = "10000239"
+        when var == "stessier"
+            puts var = "7330"
+        when var == "vlaffont"
+            puts var = "7155"
+        when var == "zallou"
+            puts var = "10000629"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_visibility
+        case var
+        when var == "Public"
+            puts var = "10"
+        when var == "Internal"
+            puts var = "50"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_priority
+        case var
+        when var == "None"
+            puts var = "10"
+        when var == "Low"
+            puts var = "20"
+        when var == "Normal"
+            puts var = "30"
+        when var == "High"
+            puts var = "40"
+        when var == "Urgent"
+            puts var = "50"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_typology_of_change
+        case var
+        when var == "New requirement"
+            puts var = "new_requirement"
+        when var == "Requirement updatable"
+            puts var = "modif_requirement"
+        when var == "Micro-change"
+            puts var = "micro_change"
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_domain
+        case var
+        when var == ""
+            puts var = ""
+        when var == ""
+            puts var = ""
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_origin
+        case var
+        when var == ""
+            puts var = ""
+        when var == ""
+            puts var = ""
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_ci_objectives_2010_2011
+        case var
+        when var == ""
+            puts var = ""
+        when var == ""
+            puts var = ""
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_ci_objectives_2012
+        case var
+        when var == ""
+            puts var = ""
+        when var == ""
+            puts var = ""
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_ci_objectives_2013
+        case var
+        when var == ""
+            puts var = ""
+        when var == ""
+            puts var = ""
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_ci_objectives_2014
+        case var
+        when var == ""
+            puts var = ""
+        when var == ""
+            puts var = ""
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_quick_fix
+        case var
+        when var == ""
+            puts var = ""
+        when var == ""
+            puts var = ""
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_level_of_impact
+        case var
+        when var == ""
+            puts var = ""
+        when var == ""
+            puts var = ""
+        else
+            puts "null;"
+        end
+        var = format(var)
+        return var
+    end
+
 	def format(variable) #formate les variables pour les entrer dans la formule d'export Mantis.
     	var = variable.to_s
     	if var == "" or var == nil or var == " "
