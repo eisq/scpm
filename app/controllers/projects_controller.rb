@@ -31,8 +31,18 @@ class ProjectsController < ApplicationController
     @workstreams = Workstream.all()
     @workstreams = @workstreams.map { |ws| ws.name }
 
-    @actions      = Action.find(:all, :conditions=>["progress in('in_progress', 'open') and person_id in #{session[:project_filter_qr]}"])
-    @actions_closed       = Action.find(:all, :conditions=>"person_id in #{session[:project_filter_qr]} and progress in('closed','abandonned')", :order=>"due_date")
+    actions_condition = "progress in('in_progress', 'open')"
+    if session[:project_filter_qr] != nil
+      actions_condition << " and person_id in #{session[:project_filter_qr]}"
+    end
+    @actions      = Action.find(:all, :conditions=>actions_condition)
+
+    actions_closed_condition = "progress in('closed','abandonned')"
+    if session[:project_filter_qr] != nil
+      actions_closed_condition << " and person_id in #{session[:project_filter_qr]}"
+    end
+    @actions_closed       = Action.find(:all, :conditions=>actions_closed_condition, :order=>"due_date")
+
     @total_wps    = Project.count
     @total_status = Status.count
 
