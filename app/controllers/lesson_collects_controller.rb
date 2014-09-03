@@ -545,36 +545,36 @@ class LessonCollectsController < ApplicationController
 
       # @filter_type_selected_obj = LessonCollectTemplateType.find(:first, :conditions => ["id = ?", @filter_type_selected])
 
-      axes_hash     = Hash.new
-      sub_axes_hash = Hash.new
+      @axes_hash     = Hash.new
+      @sub_axes_hash = Hash.new
       @lessons.each do |l|
         if l.lesson_collect_axe
-          if axes_hash[l.lesson_collect_axe.name] == nil
-            axes_hash[l.lesson_collect_axe.name] = 1
+          if @axes_hash[l.lesson_collect_axe.name] == nil
+            @axes_hash[l.lesson_collect_axe.name] = 1
           else
-            axes_hash[l.lesson_collect_axe.name] = axes_hash[l.lesson_collect_axe.name] + 1
+            @axes_hash[l.lesson_collect_axe.name] = @axes_hash[l.lesson_collect_axe.name] + 1
           end
         end
 
         if l.lesson_collect_sub_axe
-          if sub_axes_hash[l.lesson_collect_sub_axe.name] == nil
-            sub_axes_hash[l.lesson_collect_sub_axe.name] = 1
+          if @sub_axes_hash[l.lesson_collect_sub_axe.name] == nil
+            @sub_axes_hash[l.lesson_collect_sub_axe.name] = 1
           else
-            sub_axes_hash[l.lesson_collect_sub_axe.name] = sub_axes_hash[l.lesson_collect_sub_axe.name] + 1
+            @sub_axes_hash[l.lesson_collect_sub_axe.name] = @sub_axes_hash[l.lesson_collect_sub_axe.name] + 1
           end
         end
       end
 
-      axes_axis = Array.new
-      axes_hash.keys.each do |key|
-        axes_axis << key
+      @axes_axis = Array.new
+      @axes_hash.keys.each do |key|
+        @axes_axis << key
       end
 
-      sub_axes_axis = Array.new
-      sub_axes_hash.keys.each do |key|
-        sub_axes_axis << key
+      @sub_axes_axis = Array.new
+      @sub_axes_hash.keys.each do |key|
+        @sub_axes_axis << key
       end
-
+      render(:layout=>"spider")
   end
 
   # --------

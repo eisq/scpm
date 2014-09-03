@@ -1,4 +1,4 @@
-function generate_lesson_chart(chartId,chartName,xAxisArray,serie)
+function generate_lesson_chart(chartId,chartName,xAxisArray,serie, type)
 {
 
 	// Chart generation
@@ -6,7 +6,7 @@ function generate_lesson_chart(chartId,chartName,xAxisArray,serie)
 	            
 	    chart: {
 	        renderTo: chartId,
-            type: 'column'
+            type: type
 	    },
 	    
 	    title: {
@@ -18,7 +18,6 @@ function generate_lesson_chart(chartId,chartName,xAxisArray,serie)
             type: 'category',
 	        categories: xAxisArray,
 	        labels: {
-                rotation: -45,
                 style: {
                     fontSize: '13px',
                     fontFamily: 'Verdana, sans-serif'
@@ -30,12 +29,11 @@ function generate_lesson_chart(chartId,chartName,xAxisArray,serie)
             title: {
                 text: 'Count'
             },
-            lineWidth: 0,
-			max: 3
+			min: 0
 	    },
 	    
 	    tooltip: {
-            pointFormat: '<b>{point.y:.1f} </b>'
+            pointFormat: '<b>{point.y} </b>'
 	    },
 	    
 	    legend: {
@@ -48,7 +46,7 @@ function generate_lesson_chart(chartId,chartName,xAxisArray,serie)
 			url : "http://toulouse.sqli.com/eisq-portal/export_image/index.php"
 		},
 	    series: [{
-	        name: 'Reference',
+	        name: 'Axes',
 	        color: '#99B3FF',
 	        data: serie
 	    }]

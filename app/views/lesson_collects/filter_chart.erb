@@ -1,3 +1,5 @@
+<script src="/javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+
 <script src="/javascripts/highcharts/highcharts.js" type="text/javascript"></script>  
 <script src="/javascripts/highcharts/highcharts-more.js" type="text/javascript"></script>  
 <script src="/javascripts/highcharts/exporting.js" type="text/javascript"></script>  
@@ -5,14 +7,33 @@
 
 
 <script type="text/javascript"> 
+
+var axes_array = Array();
+<% @axes_axis.each do |a| %>
+	axes_array.push("<%= a %>");
+<% end %>
+
+var sub_axes_array = Array();
+<% @sub_axes_axis.each do |a| %>
+	sub_axes_array.push("<%= a %>");
+<% end %>
+
 $(function () {
-
-
+	var axe_serie 		= Array();
+	var sub_axe_serie 	= Array();
+	<% @axes_hash.each do |k, v|%>
+		axe_serie.push(<%= v %>); 
+	<% end %>
+	<% @sub_axes_hash.each do |k, v|%>
+		sub_axe_serie.push(<%= v %>); 
+	<% end %>
+	generate_lesson_chart("axe_chart_container_id", "Axes", axes_array, axe_serie, 'column');
+	generate_lesson_chart("sub_axe_chart_container_id", "Sub-Axes", sub_axes_array, sub_axe_serie, 'bar');
 });
 </script>
 
 Axes
-<div class="axe_chart" id"axe_chart_id"></div>
+<div class="axe_chart" id="axe_chart_container_id" style="height:500px;"></div>
 
 Sub-Axes
-<div class="sub_axe_chart" id"sub_axe_chart_id"></div>
+<div class="sub_axe_chart" id="sub_axe_chart_container_id" style="height:500px;"></div>
