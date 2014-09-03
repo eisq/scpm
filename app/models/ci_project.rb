@@ -83,7 +83,8 @@
 	end
 
     def invert_date(date)
-        dateinverted = date.to_s
+        dateinverted = ";"+date.to_s
+
         #dateconvert = date.day+"/"+date.month+"/"+date.year
         #dateconvert = format(dateconvert)
         #return dateconvert
