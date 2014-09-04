@@ -21,7 +21,7 @@
 	<% if current_user.is_cpdp or !@lesson_collect_file.is_archived %>
 		Archivé:  <%= check_box :lesson_collect_file, :is_archived %><br />
 	<% end %>
-	Commentaire:<br />
+	Comment:<br />
 	<%= hidden_field(:lesson_collect_file, :id) %>
 	<%= text_area :lesson_collect_file, :comment, {:rows=>3} %><br />
   	<%= submit_tag 'Save' %></p>

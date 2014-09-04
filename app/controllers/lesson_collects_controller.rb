@@ -602,6 +602,20 @@ class LessonCollectsController < ApplicationController
     end
   end
 
+  def create_analysis
+    lesson_file_id = params[:lesson_collect_file_id]
+    comment = params[:comment]
+
+    if lesson_file_id != nil and comment
+        new_analyse                         = LessonCollectFileAnalyze.new
+        new_analyse.lesson_collect_file_id  = lesson_file_id
+        new_analyse.person_id               = current_user.id
+        new_analyse.comment                 = comment
+        new_analyse.save
+    end
+    redirect_to(:action=>'analysis_detail', :id => lesson_file_id)
+  end
+
   def lesson_collect_file_comment_update
     lesson_file = LessonCollectFile.find(:first, :conditions=>["id = ?", params[:lesson_collect_file][:id]])
     if lesson_file.update_attributes(params[:lesson_collect_file])

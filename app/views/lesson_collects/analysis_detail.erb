@@ -1,9 +1,16 @@
 <%= render(:file=>"lesson_collects/menu", :locals=>{:dashboard => 1}) %>
 
+<br />
+<% form_tag(:action=>'create_analysis') do %>
+	Comment:<br />
+	<p><%= hidden_field_tag 'lesson_collect_file_id', @lesson_collect_file.id.to_s %></p>
+	<p><%= text_area_tag(:comment, nil, {:id=>'comment_id', :cols=>100, :rows=>5}) %></p>
+  	<%= submit_tag 'Save' %></p>
+<% end -%>
 
 <table>
-<tr><th>User</th><th>Date</th><tr>
+<tr><th>User</th>Comment<th></th><th>Date</th><tr>
 <% @lesson_collect_file.lesson_collect_file_analyzes.each do |d| %>
-	<tr><td><%= d.person.name %></td><td><%= d.download_date.to_s %></td><tr>
+	<tr><td><%= d.person.name %></td><td><%= my_simple_format(d.comment.to_s) %></td><td><%= d.created_at.to_s %></td><tr>
 <% end %>
 </table>
