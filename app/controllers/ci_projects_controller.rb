@@ -63,7 +63,7 @@ class CiProjectsController < ApplicationController
         # get the id if it exist, else create it
         if (p.stage != "BAM" and p.stage != "")
           ci = CiProject.find_by_external_id(p.external_id)
-          ci.to_implement = 0 if ci.to_implement == 1
+          # ci.to_implement = 0 if ci.to_implement == 1
           ci = CiProject.create(:external_id=>p.exterbal_id) if not ci
           ci.update_attributes(p.to_hash) # and it updates only the attributes that have changed !
           ci.save
@@ -196,6 +196,10 @@ class CiProjectsController < ApplicationController
 
   def date_validation_mail(validators, project)
       Mailer::deliver_ci_date_change(validators, project)
+  end
+
+  def dashboard
+    @ci_projects = CiProject.find(:all, :conditions=>"visibility = 'Public' and status = 'Assigned'").sort_by {|p| [p.order]}
   end
 
 end
