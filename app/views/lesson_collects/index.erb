@@ -61,6 +61,7 @@
 		  	<%= select_tag ("filter_ws",options_for_select(@ws_array,@filter_ws_selected),{:size=>6, :multiple => true})  %>
 		  	<%= select_tag ("filter_suite",options_for_select(@suites_array,@filter_suite_selected),{:size=>6, :multiple => true})  %>
 		</div>
+		<div style="margin-left:auto; margin-right:auto; width:200px;">Export and Chart button return specifics lessons and not files.</div>
 		<div style="margin-left:auto; margin-right:auto; width:200px;">
 			<input type="button" id="filter_button_id" value="Filter" />
 			<input type="button" id="export_button_id" value="Export" />
