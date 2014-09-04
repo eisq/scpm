@@ -18,6 +18,10 @@ class CiProjectsController < ApplicationController
     @projects = CiProject.find(:all, :conditions=>["assigned_to=? and (sqli_date_alert=1 or airbus_date_alert=1 or deployment_date_alert=1) and (status!='Closed' and status!='Rejected' and status!='Delivered')", current_user.rmt_user]).sort_by {|p| [p.order]}
   end
 
+  def create_ci
+    @project = CiProject.new()
+  end
+
   def all
     verif
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
@@ -59,6 +63,7 @@ class CiProjectsController < ApplicationController
         # get the id if it exist, else create it
         if (p.stage != "BAM" and p.stage != "")
           ci = CiProject.find_by_external_id(p.external_id)
+          ci.to_implement = 0 if ci.to_implement == 1
           ci = CiProject.create(:external_id=>p.exterbal_id) if not ci
           ci.update_attributes(p.to_hash) # and it updates only the attributes that have changed !
           ci.save
@@ -152,6 +157,13 @@ class CiProjectsController < ApplicationController
     p.last_update_person = current_user.rmt_user
     p.update_attributes(params[:project])
     p.update_attribute('previous_report', previous_report_attribute)
+    redirect_to "/ci_projects/show/"+p.id.to_s
+  end
+
+  def do_create_ci
+    p = CiProject.new(params[:project])
+    p.to_implement = 1
+    p.save
     redirect_to "/ci_projects/show/"+p.id.to_s
   end
 
