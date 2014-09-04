@@ -22,7 +22,8 @@ function generate_lesson_complex_chart(chartId, chartName, xAxisArray, series)
                 style: {
                     fontSize: '12px',
             		fontWeight: 'bold'
-                }
+                },
+                useHTML: true
             }
 	    },
 	        

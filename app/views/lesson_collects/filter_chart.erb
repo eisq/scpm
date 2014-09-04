@@ -21,7 +21,7 @@ $(function () {
 
 	var pie_position_y 	= (plot_height / 2);
 	var pie_y_padding 	= plot_height;
-	var pie_position_x  = 650;
+	var pie_position_x  = 850;
 
 
 	// Axes object
@@ -44,7 +44,7 @@ $(function () {
 	var datasource = Array();
 	<% @axes_data.each do |a_key, a_value| %>
 		// Axe legend
-		axes_array.push("<%= a_key %>");
+		axes_array.push("<%= a_key %>".replace(/_/g, "<br />"));
 
 		// Sub axe object
 		var sub_axes_object  = Object();
@@ -57,12 +57,14 @@ $(function () {
 	    sub_axes_object.dataLabels = { 
 	    	enabled: true, 
 	    	distance:30, 
+	    	userHtml:true,
 	    	style: {
             	fontWeight: 'bold'
-            } 
+            }
         };
 		sub_axes_object.allowPointSelect = true;
 		sub_axes_object.cursor = "pointer";
+
 
 		<% a_value.each do |s_a_key, s_a_value| %>
 			<% if s_a_key == "value" %>
@@ -71,9 +73,24 @@ $(function () {
 				data_object.color = Highcharts.getOptions().colors[parseInt(Math.floor(Math.random()*9))];
 				axes_object.data.push(data_object);
 			<% else %>
+				// Label splited each three spaces
+				var sub_axe_data_name_initial = "<%= s_a_key %>";
+				var sub_axe_data_name_array = sub_axe_data_name_initial.split(" ");
+				var sub_axe_data_name = "";
+				for (var i = 0; i < sub_axe_data_name_array.length; i++) {
+					if (i != 0 && i % 3 == 0) {
+						sub_axe_data_name += "<br />";
+					}
+					else if(i != 0) {
+						sub_axe_data_name += " ";
+					}
+					sub_axe_data_name += sub_axe_data_name_array[i];
+				}
+
+				// Data object
 				var data_object 	= Object();
 				data_object.y 	 	= parseInt(<%= s_a_value %>);
-				data_object.name 	= "<%= s_a_key %>";
+				data_object.name 	= sub_axe_data_name;
 				sub_axes_object.data.push(data_object);
 			<% end %>
 		<% end %>
