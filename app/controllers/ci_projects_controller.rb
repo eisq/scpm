@@ -8,7 +8,7 @@ class CiProjectsController < ApplicationController
 	end
 
   def mine
-    verif
+    #verif
     #@projects = CiProject.find(:all, :conditions=>["assigned_to=?", current_user.rmt_user]).sort_by {|p| [p.order]}
     @projectsopened = CiProject.find(:all, :conditions=>["assigned_to=? and (status!='Closed' and status!='Rejected' and status!='Delivered')", current_user.rmt_user]).sort_by {|p| [p.order]}
     @projectsclosed = CiProject.find(:all, :conditions=>["assigned_to=? and (status='Closed' or status='Delivered' or status='Rejected')", current_user.rmt_user]).sort_by {|p| [p.order]}
@@ -20,10 +20,20 @@ class CiProjectsController < ApplicationController
 
   def create_ci
     @project = CiProject.new()
+    @select_type = [['Anomaly', 20],['Evolution', 50]]
+    @select_stage = [['', 0], ['Continuous Improvement', 32182], ['Test_CI', 33082]]
+    @select_category = [['', 0], ['Autres', 21360], ['Bundle', 21361], ['Methodo Airbus (GPP, LBIP ...)', 21362], ['Methodo Airbus (GPP, LBIP...)', 21363], ['Project', 21364]]
+    @select_severity = [['', 0], ['text', 30], ['tweak', 40], ['minor', 50], ['major', 60], ['block', 80]]
+    @select_reproductibility = [['', 0], ['alaways', 10], ['sometimes', 30], ['random', 50], ['have not tried', 70], ['unable to deplicate', 90], ['N/A', 100]]
+    @select_status = [['', 0], ['New', 10], ['Analyse', 12], ['Qualification', 17], ['Comment', 20], ['Accepted', 30], ['Assigned', 50], ['Realised', 80], ['Verified', 82], ['Validated', 85], ['Delivered', 87], ['Reopened', 88], ['Closed', 90], ['Rejected', 95]]
+    @select_reporter_and_responsible = [['', 0], ['acario', 10000720], ['agoupil', 999843], ['bmonteils', 9999622], ['btisseur', 46], ['ccaron', 10000292], ['capottier', 10000560], ['cpages', 9999919], ['cdebortoli', 9999245], ['dadupont', 4437], ['fplisson', 9999515], ['jmondy', 7772], ['lbalansac', 100000222], ['mbuscail', 9999327], ['mmaglionepiromallo', 7728], ['mantoine', 7793], ['mblatche', 9999516], ['mbekkouch', 3652], ['nrigaud', 10000958], ['ngagnaire', 10000260], ['nmenvielle', 10000710], ['ocabrera', 10001140], ['pdestefani', 10000559], ['pescande', 9999311], ['pcauquil', 7323], ['rbaillard', 10000709], ['rallin', 7363], ['swezel', 10001620], ['saury', 10000239], ['stessier', 7330], ['vlaffont', 7155], ['zallou', 10000629]]
+    @select_visibility = [['', 0], ['Public', 10], ['Internal', 50]]
+    @select_priority = [['', 0], ['None', 10], ['Low', 20], ['Normal', 30], ['High', 40], ['Urgent', 50]]
+    @select_detection_version = [['', 0], ['v1.0', 13330], ['v2.0', 13382]]
   end
 
   def all
-    verif
+    #verif
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
   end
 

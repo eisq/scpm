@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140903231400) do
+ActiveRecord::Schema.define(:version => 20140904155900) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -214,6 +214,7 @@ ActiveRecord::Schema.define(:version => 20140903231400) do
     t.integer  "deployment_date_alert",            :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "to_implement"
   end
 
   create_table "companies", :force => true do |t|

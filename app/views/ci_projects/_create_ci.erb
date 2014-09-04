@@ -1,1 +1,64 @@
-create !
+(external_id)
+<p><%= label_tag 'Type' %> <%= select(:project, :type, options_for_select(@select_type)) %></p>
+<p><%= label_tag 'Stage' %> <%= select(:project, :stage, options_for_select(@select_stage)) %></p>
+<p><%= label_tag 'Category' %> <%= select(:project, :category, options_for_select(@select_category)) %></p>
+<p><%= label_tag 'Severity' %> <%= select(:project, :severity, options_for_select(@select_severity)) %></p>
+<p><%= label_tag 'Reproductibility' %> <%= select(:project, :reproductibility, options_for_select(@select_reproductibility)) %></p>
+<p><%= label_tag 'Summary' %> <%= text_field :project, :summary %></p>
+<p><%= label_tag 'Description' %> <%= text_area :project, :description %></p>
+<p><%= label_tag 'Status' %> <%= select(:project, :status, options_for_select(@select_status)) %></p>
+<p><%= label_tag 'Submission date' %> <%= text_field :project, :submission_date %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Reporter' %> <%= select(:project, :reporter, options_for_select(@select_reporter_and_responsible)) %></p>
+<p><%= label_tag 'Visibility' %> <%= select(:project, :visibility, options_for_select(@select_visibility)) %></p>
+<p><%= label_tag 'Assigned to' %> <%= select(:project, :assigned_to, options_for_select(@select_reporter_and_responsible)) %></p>
+<p><%= label_tag 'Priority' %> <%= select(:project, :priority, options_for_select(@select_priority)) %></p>
+<p><%= label_tag 'Detection version' %> <%= select(:project, :detection_version, options_for_select(@select_detection_version)) %></p>
+<p><%= label_tag 'Fixed in version' %> <%= text_field :project, :fixed_in_version %></p>
+<p><%= label_tag 'Resolution charge' %> <%= text_field :project, :resolution_charge %></p>
+<p><%= label_tag 'Stages to reproduce' %> <%= text_field :project, :stages_to_reproduce %></p>
+<p><%= label_tag 'Additional informations' %> <%= text_field :project, :additional_informations %></p>
+<p><%= label_tag 'Issue origin' %> <%= text_field :project, :issue_origin %></p>
+<p><%= label_tag 'Detection phase' %> <%= text_field :project, :detection_phase %></p>
+<p><%= label_tag 'Injection phase' %> <%= text_field :project, :injection_phase %></p>
+<p><%= label_tag 'Real test of detection' %> <%= text_field :project, :real_test_of_detection %></p>
+<p><%= label_tag 'Theoretical test of detection' %> <%= text_field :project, :theoretical_test_of_detection %></p>
+<p><%= label_tag 'Iteration' %> <%= text_field :project, :iteration %></p>
+<p><%= label_tag 'Lot' %> <%= text_field :project, :lot %></p>
+<p><%= label_tag 'Entity' %> <%= text_field :project, :entity %></p>
+<p><%= label_tag 'Team' %> <%= text_field :project, :team %></p>
+<p><%= label_tag 'Domain' %> <%= text_field :project, :domain %></p>
+<p><%= label_tag 'Backlog ID' %> <%= text_field :project, :num_req_backlog %></p>
+<p><%= label_tag 'Origin' %> <%= text_field :project, :origin %></p>
+<p><%= label_tag 'Output type' %> <%= text_field :project, :output_type %></p>
+<p><%= label_tag 'Deliverables list' %> <%= text_field :project, :deliverables_list %></p>
+<p><%= label_tag 'Dev team' %> <%= text_field :project, :dev_team %></p>
+<p><%= label_tag 'Deployment' %> <%= text_field :project, :deployment %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Airbus responsible' %> <%= text_field :project, :airbus_responsible %></p>
+<p><%= label_tag 'Airbus validation date' %> <%= text_field :project, :airbus_validation_date %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Airbus validation date objective' %> <%= text_field :project, :airbus_validation_date_objective %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Airbus validation date review' %> <%= text_field :project, :airbus_validation_date_review %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'CI Objectives 2010/2011' %> <%= text_field :project, :ci_objective_20102011 %></p>
+<p><%= label_tag 'CI Objectives 2012' %> <%= text_field :project, :ci_objective_2012 %></p>
+<p><%= label_tag 'CI Objectives 2013' %> <%= text_field :project, :ci_objectives_2013 %></p>
+<p><%= label_tag 'Deliverable folder' %> <%= text_field :project, :deliverable_folder %></p>
+<p><%= label_tag 'Deployment date' %> <%= text_field :project, :deployment_date %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Deployment date objective' %> <%= text_field :project, :deployment_date_objective %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Specification date' %> <%= text_field :project, :specification_date %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Kick-off date' %> <%= text_field :project, :kick_off_date %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Launching date' %> <%= text_field :project, :launching_date_ddmmyyyy %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'SQLI validation date' %> <%= text_field :project, :sqli_validation_date %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'SQLI validation date objective' %> <%= text_field :project, :sqli_validation_date_objective %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Specification date objective' %> <%= text_field :project, :specification_date_objective %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'SQLI validation responsible' %> <%= text_field :project, :sqli_validation_responsible %></p>
+<p><%= label_tag 'CI Objectives 2014' %> <%= text_field :project, :ci_objectives_2014 %></p>
+<p><%= label_tag 'Linked req' %> <%= text_field :project, :linked_req %></p>
+<p><%= label_tag 'Quick fix' %> <%= text_field :project, :quick_fix %></p>
+<p><%= label_tag 'Level of impact' %> <%= text_field :project, :level_of_impact %></p>
+<p><%= label_tag 'Impacted M&T Process' %> <%= text_field :project, :impacted_mnt_process %></p>
+<p><%= label_tag 'Path backlog' %> <%= text_field :project, :path_backlog %></p>
+<p><%= label_tag 'Path SVN' %> <%= text_field :project, :path_svn %></p>
+<p><%= label_tag 'Path SFS Airbus' %> <%= text_field :project, :path_sfs_airbus %></p>
+<p><%= label_tag 'Item type' %> <%= text_field :project, :item_type %></p>
+<p><%= label_tag 'Verification date objective' %> <%= text_field :project, :verification_date_objective %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Verification date' %> <%= text_field :project, :verification_date %> (dd/mm/yyyy)</p>
+<p><%= label_tag 'Request origin' %> <%= text_field :project, :request_origin %></p>

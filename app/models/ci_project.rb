@@ -98,6 +98,9 @@
             dateinverted = "null"
         else
             year,month,day = date.to_s.split("-")
+            if year.to_i < 100
+                year = "20"+year.to_s
+            end
             dateinverted = day+"/"+month+"/"+year
         end
 
@@ -196,7 +199,7 @@
             puts var = "10"
         when "Analyse"
             puts var = "12"
-        when "Qqualification"
+        when "Qualification"
             puts var = "17"
         when "Comment"
             puts var = "20"
