@@ -19,15 +19,16 @@
 	<tr>
 		<td><%= ci.num_req_backlog %></td>
 		<td><%= ci.priority %></td>
-		<td> ? / <%= ci.quick_fix %></td>
+		<td><%= ci.quick_fix %></td>
 		<td>#<%= ci.external_id.to_s%> - <%= ci.summary %></td>
-		<td><%= ci.linked_req.to_s %></td>
+		<td></td>
 		<td><%= ci.launching_date_ddmmyyyy.to_s %></td>
-		<td> ? </td>
+		<td><%= ci.report %></td>
+		<td><%= ci.previous_report %> </td>
 		<td><%= ci.assigned_to %></td>
 		<td><%= ci.airbus_validation_date.to_s %></td>
 		<td><%= ci.deployment %></td>
-		<td>?</td>
+		<td></td>
 	</tr>
 <% end %>
 
