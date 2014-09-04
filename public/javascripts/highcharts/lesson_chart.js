@@ -2,10 +2,12 @@
 function generate_lesson_complex_chart(chartId, chartName, xAxisArray, series)
 {
 // Chart generation
+
 	window.chart = new Highcharts.Chart({
 	            
 	    chart: {
-	        renderTo: chartId
+	        renderTo: chartId,
+            marginRight: 500
 	    },
 	    
 	    title: {
@@ -18,8 +20,8 @@ function generate_lesson_complex_chart(chartId, chartName, xAxisArray, series)
 	        categories: xAxisArray,
 	        labels: {
                 style: {
-                    fontSize: '13px',
-                    fontFamily: 'Verdana, sans-serif'
+                    fontSize: '12px',
+            		fontWeight: 'bold'
                 }
             }
 	    },

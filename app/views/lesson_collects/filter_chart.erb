@@ -12,16 +12,34 @@ $(function () {
 	var axes_array = Array();
 	var series = Array();
 
-	// width / (number of element + 0.5)
-	// var pie_y_padding = $("#axe_chart_container_id").width() / <%= @axes_data.count %>;
-	var pie_y_padding = 85;
-	var pie_position_y = 85;
+	var plot_number 	= <%= @axes_data.count %>;
+	var chart_height 	= $("#axe_chart_container_id").height();
+	var margin_top 		= 40;
+	var margin_bottom	= 50;
+	var chart_space		= chart_height - margin_top - margin_bottom;
+	var plot_height		= chart_space / plot_number;
+
+	var pie_position_y 	= (plot_height / 2);
+	var pie_y_padding 	= plot_height;
+	var pie_position_x  = 650;
+
 
 	// Axes object
 	var axes_object  = Object();
 	axes_object.type = 'bar';
 	axes_object.name = 'Axes';
 	axes_object.data = Array();
+
+	axes_object.dataLabels = { 
+		enabled: true, 
+		align: 'right',
+		color: '#FFFFFF', 
+		x: -10,
+        style: {
+            fontWeight: 'bold',
+            fontSize: '24px'
+        }
+    };
 
 	var datasource = Array();
 	<% @axes_data.each do |a_key, a_value| %>
@@ -33,14 +51,25 @@ $(function () {
 		sub_axes_object.type = 'pie';
 		sub_axes_object.name = "<%= a_key %>";
 		sub_axes_object.data = Array();
-	    sub_axes_object.center = [850, pie_position_y];
+	    sub_axes_object.center = [pie_position_x, pie_position_y];
 	    sub_axes_object.size = 80;
 	    sub_axes_object.showInLegend = false;
-	    sub_axes_object.dataLabels = { enabled: false };
+	    sub_axes_object.dataLabels = { 
+	    	enabled: true, 
+	    	distance:30, 
+	    	style: {
+            	fontWeight: 'bold'
+            } 
+        };
+		sub_axes_object.allowPointSelect = true;
+		sub_axes_object.cursor = "pointer";
 
 		<% a_value.each do |s_a_key, s_a_value| %>
 			<% if s_a_key == "value" %>
-				axes_object.data.push(parseInt(<%= s_a_value %>));
+				var data_object = Object();
+				data_object.y   = parseInt(<%= s_a_value %>);		
+				data_object.color = Highcharts.getOptions().colors[parseInt(Math.floor(Math.random()*9))];
+				axes_object.data.push(data_object);
 			<% else %>
 				var data_object 	= Object();
 				data_object.y 	 	= parseInt(<%= s_a_value %>);
@@ -49,12 +78,12 @@ $(function () {
 			<% end %>
 		<% end %>
 
-		if(sub_axes_object.data.length == 0) {
-				var data_object 	= Object();
-				data_object.y 	 	= parseInt(1);
-				data_object.name 	= "FAKE";
-				sub_axes_object.data.push(data_object);
-		}
+		// if(sub_axes_object.data.length == 0) {
+		// 		var data_object 	= Object();
+		// 		data_object.y 	 	= parseInt(1);
+		// 		data_object.name 	= "FAKE";
+		// 		sub_axes_object.data.push(data_object);
+		// }
 		series.push(sub_axes_object);
 		pie_position_y += pie_y_padding;
 	<% end %>
@@ -64,5 +93,5 @@ $(function () {
 });
 </script>
 
-<div class="axe_chart" id="axe_chart_container_id" style="height:800px;width:1200px;"></div>
+<div class="axe_chart" id="axe_chart_container_id" style="height:1500px;width:1200px;"></div>
 
