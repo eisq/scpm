@@ -1,6 +1,6 @@
 require 'spreadsheet'
 class LessonCollectsController < ApplicationController
-  layout 'tools'         
+  layout 'lesson_learnt'         
 
   
   # --------
@@ -567,7 +567,6 @@ class LessonCollectsController < ApplicationController
         end
       end
 
-      render(:layout=>"spider")
   end
 
   # --------
