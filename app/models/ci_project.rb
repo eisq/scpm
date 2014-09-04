@@ -26,11 +26,11 @@
         formula += list_reporter_and_responsible(self.assigned_to)
         formula += list_priority(self.priority)
         formula += list_detection_version(self.detection_version)
-        formula += format(self.fixed_in_version)
+        formula += list_fixed_in_version(self.fixed_in_version)
         #formula += format(self.status_precisions)
-        formula += format(self.resolution_charge)
+        formula += ";null" #format(self.resolution_charge)
         #formula += format(self.duplicated_id)
-        formula += format(self.stages_to_reproduce)
+        formula += ";null" #format(self.stages_to_reproduce)
         formula += format(self.additional_informations)
         #formula += invert_date(self.taking_into_account_date)
         #formula += invert_date(self.realisation_date)
@@ -38,10 +38,10 @@
         #formula += invert_date(self.delivery_date)
         #formula += invert_date(self.reopening_date)
         formula += format(self.issue_origin)
-        formula += format(self.detection_phase)
-        formula += format(self.injection_phase)
-        formula += format(self.real_test_of_detection)
-        formula += format(self.theoretical_test_of_detection)
+        formula += ";null" #format(self.detection_phase)
+        formula += ";null" #format(self.injection_phase)
+        formula += ";null" #format(self.real_test_of_detection)
+        formula += ";null" #format(self.theoretical_test_of_detection)
         formula += ";null" # Impact (in m/d)
         formula += ";null" # Impact in delay (in days)
         formula += ";null" # Change type
@@ -49,11 +49,11 @@
         formula += format(self.iteration)
         formula += format(self.lot)
         formula += format(self.entity)
-        formula += format(self.team)
+        formula += ";null" #format(self.team)
         formula += format(self.domain)
         formula += format(self.num_req_backlog)
         formula += format(self.origin)
-        formula += format(self.output_type)
+        formula += ";null" #format(self.output_type)
         formula += format(self.deliverables_list)
         formula += format(self.dev_team)
         formula += invert_date(self.deployment)
@@ -340,6 +340,19 @@
         when "v2.0"
             puts var = "13382"
         when " v2.0"
+            puts var = "13382"
+        else
+            puts var = "null"
+        end
+        var = format(var)
+        return var
+    end
+
+    def list_fixed_in_version(var)
+        case var
+        when "v1.0"
+            puts var = "13330"
+        when "v2.0"
             puts var = "13382"
         else
             puts var = "null"
