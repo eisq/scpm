@@ -1013,7 +1013,7 @@ class Request < ActiveRecord::Base
   def milestone_names
     if self.milestone != 'N/A'
       PHASE_MILESTONES[self.milestone]
-    elsif self.specific != 'No'
+    elsif self.specific != nil and self.specific != 'No'
       PHASE_MILESTONES_SPECIFIC[self.specific]
     else
       PHASE_MILESTONES[self.work_package]
