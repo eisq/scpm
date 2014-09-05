@@ -190,14 +190,13 @@ class CiProjectsController < ApplicationController
   end
 
   def do_create_ci
-    p = CiProject.new(params[:project])
-
     last_external_id = 0
     projects = CiProject.find(:all).sort_by {|p| [p.external_id]}
     projects.each { |t|
       last_external_id = t.external_id
     }
 
+    p = CiProject.new(params[:project])
     p.external_id = (last_external_id + 1)
     p.to_implement = 1
     p.save
