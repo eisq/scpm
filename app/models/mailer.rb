@@ -66,5 +66,18 @@ class Mailer < ActionMailer::Base
     @person, @request_reminder_hash, @ciproject_reminder_hash = person, request_reminder_hash, ciproject_reminder_hash
     content_type "text/html; charset=utf-8"
   end
+
+  def ci_date_change(validators, ciproject)
+    @from       = APP_CONFIG['ci_date_to_validate_source']
+    @recipients = validators
+    @recipients_names = ""
+    validators.each { |v|
+      @recipients_names += " v.name "
+    }
+
+    @subject    = APP_CONFIG['ci_date_to_validate_object']
+    @ciproject, @validators = ciproject, validators
+    content_type "text/html; charset=utf-8"
+  end
   
 end

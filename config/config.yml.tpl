@@ -2,9 +2,28 @@
 scpm_title: "SCPM Title"
 scpm_address: "http://scpm.sqli.com"
 project_name: "Your project code so you can configure display options"
+task_import_config: 'simple' # or multiple'
 
 # report
 report_timeline_count: 30 # Number of timeline displayed in the list of projects
+report_kpi_projects_should_have_suite_for_wp: # The projects with following WPs must have a suite name
+    - WP1.5 - SQR
+report_spider_milestone_blacklist: # Milestones without spiders
+    - M14
+    - G9
+    - sM14
+    - CCB
+report_milestones_eligible_for_note:
+    - M3
+    - G2
+    - M5
+    - G5
+    - QG TD
+    - M13
+    - CCB
+report_project_creation_lifecycle: "Waterfall" # Default lifecycle for new project
+stream_project_creation_lifecycle_1: "Waterfall" # The type of lifecycle selected for a project created from stream management with the case 1
+stream_project_creation_lifecycle_2: "LBIP+" # The type of lifecycle selected for a project created from stream management with the case 2
 
 # menu and access configuration
 workloads_add_by_request_number: true
@@ -14,6 +33,7 @@ workloads_view_by_project_menu: false
 plannings_menu: false
 use_virtual_people: false
 workloads_suggested_request: true
+workloads_use_financial_monitoring: false # Show or not related PP4 functions
 
 # workloads
 # display length in months
@@ -28,9 +48,13 @@ workloads_max_height: 500
 consolidation_alert_on_overworkload: false
 consolidation_capped_next_weeks: false
 automatic_except_line_addition: false
+workloads_display_consumed_column: true
+workloads_display_diff_between_consumed_and_planned_column: true
+workloads_display_status_column: true
 workloads_show_filter: false # Show or hide the filter buttn
 workload_holiday_threshold_before_backup: 2 # Number of holidays days which need the attribution of a backup
-
+workload_show_overload_availability: false #Show on the availability parameters of workload if user is in overload
+workload_show_negative_sum_availability: false 
 
 # SDP
 use_multiple_projects_sdp_export: false
@@ -77,9 +101,22 @@ backup_change_email_source: "addressMail1@sqli.com"
 workload_alerts_email_source: "addressMail1@sqli.com"
 workload_alerts_email_destination: "addressMail1@sqli.com,addressMail2@sqli.com,addressMail3@sqli.com,addressMail4@sqli.com"
 
+# CI date to validate mail
+ci_date_to_validate_source: "addressMail1@sqli.com"
+ci_date_to_validate_destination: "addressMail1@sqli.com"
+ci_date_to_validate_object: "CI - date validation"
+
 # Load QS and spiders
 qs_load: 0.375
 spider_load: 0.375
+
+# Presale
+presale_milestones_priority_setting_up:
+    - M1
+    - M3
+presale_milestones_priority:
+    - M3
+    - M5
 
 # Summary export - workpackages which should be highlighted in the summary
     summary_workpackages_highlight: 

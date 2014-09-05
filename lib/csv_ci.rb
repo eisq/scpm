@@ -3,48 +3,80 @@ require 'csv'
 class CsvCi
 
   attr_accessor  :internal_id,
-    :external_id,
-    :stage,
-    :category,
-    :severity,
-    :summary,
-    :description,
-    :status,
-    :submission_date,
-    :reporter,
-    :last_update,
-    :last_update_person,
-    :assigned_to,
-    :priority,
-    :visibility,
-    :resolution_charge,
-    :additional_information,
-    :taking_into_account_date,
-    :realisaton_date,
-    :realisation_author,
-    :delivery_date,
-    :origin,
-    :improvement_target_objective,
-    :scope_l2,
-    :deliverable_list,
-    :accountable,
-    :deployment,
-    :launching_date_ddmmyyyy,
-    :sqli_validation_date_objective,
-    :airbus_validation_date_objective,
-    :sqli_validation_date_review,
-    :airbus_validation_date_review,
-    :deployment_date_objective,
-    :sqli_validation_date,
-    :airbus_validation_date,
-    :deployment_date,
-    :deployment_date_review,
-    :airbus_responsible,
-    :kick_off_date,
-    :deliverable_folder,
-    :ci_objectives_2013,
-    :sqli_validation_responsible,
-    :issue_history
+      :external_id,
+      :type,
+      :stage,
+      :category,
+      :severity,
+      :reproductibility,
+      :summary,
+      :description,
+      :status,
+      :submission_date,
+      :reporter,
+      :last_update,
+      :last_update_person,
+      :assigned_to,
+      :priority,
+      :visibility,
+      :detection_version,
+      :fixed_in_version,
+      :status_precisions,
+      :resolution_charge,
+      :duplicated_id,
+      :stages_to_reproduce,
+      :additional_informations,
+      :taking_into_account_date,
+      :realisation_date,
+      :realisation_author,
+      :delivery_date,
+      :reopening_date,
+      :issue_origin,
+      :detection_phase,
+      :injection_phase,
+      :real_test_of_detection,
+      :theoretical_test_of_detection,
+      :iteration,
+      :lot,
+      :entity,
+      :team,
+      :domain,
+      :num_req_backlog,
+      :origin,
+      :output_type,
+      :deliverables_list,
+      :dev_team,
+      :deployment,
+      :airbus_responsible,
+      :airbus_validation_date,
+      :airbus_validation_date_objective,
+      :airbus_validation_date_review,
+      :ci_objective_20102011,
+      :ci_objective_2012,
+      :ci_objectives_2013,
+      :deliverable_folder,
+      :deployment_date,
+      :deployment_date_objective,
+      :specification_date,
+      :kick_off_date,
+      :launching_date_ddmmyyyy,
+      :sqli_validation_date,
+      :sqli_validation_date_objective,
+      :specification_date_objective,
+      :sqli_validation_responsible,
+      :ci_objectives_2014,
+      :linked_req,
+      :quick_fix,
+      :level_of_impact,
+      :impacted_mnt_process,
+      :path_backlog,
+      :path_svn,
+      :path_sfs_airbus,
+      :item_type,
+      :verification_date_objective,
+      :verification_date,
+      :request_origin,
+      :issue_history
 
   def initialize
   end
@@ -112,6 +144,7 @@ private
       rescue Exception => e
         raise "Error: #{e} attr_name=#{attr_name}, value=#{sanitize_value(row[index])}"
       end
+      #eval("r.#{attr_name} = '#{row[index]}'")
       }
     @projects << r
   end
@@ -136,11 +169,11 @@ private
     name.gsub!(" ","_")
     name.gsub!("-","_")
     name.gsub!(".","")
+    name.gsub!("&","n")
     name.gsub!(/\d\d\_/,"")
     #name.gsub!(/\_\d\d/ ,"")
     name = "internal_id" if name == "internal"
     name = "external_id" if name == "id"
     name
   end
-
 end

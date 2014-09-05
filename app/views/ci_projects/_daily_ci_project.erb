@@ -30,9 +30,9 @@ end
 	<td><b><%= p.short_stage %></b></td>
 	<!-- SQLI DATE -->
 	<% 
-	  sqliDate = p.sqli_validation_date_review
+	  sqliDate = p.sqli_validation_date
 	  airbusDate = p.airbus_validation_date_review
-	  deploymentDate = p.deployment_date_review
+	  deploymentDate = p.deployment_date
 	  if date_type.eql?("objective")
 		 sqliDate = p.sqli_validation_date_objective
 		 airbusDate = p.airbus_validation_date_objective

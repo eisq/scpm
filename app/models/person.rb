@@ -16,6 +16,7 @@ class Person < ActiveRecord::Base
   include ApplicationHelper # for wlweek
 
   belongs_to :company
+  belongs_to :cost_profile
   has_many   :person_roles
   has_many   :roles, :through => :person_roles
   has_many   :open_actions, :class_name=>"Action", :conditions=>"progress='open' or progress='in_progress'"
@@ -32,8 +33,23 @@ class Person < ActiveRecord::Base
   before_save :before_person_save
 
   attr_accessor :password
-  
-  def projects_line
+
+  def tags
+    lines_tags = LineTag.find(:all, :conditions=>"line_id in ( select id from wl_lines where person_id=#{self.id} )").map{|l|l.tag_id}.uniq
+    tags = []
+    if !lines_tags.nil?
+      lines_tags.each do |l|
+        tags << Tag.find(l)
+      end
+    end
+    return tags
+  end
+
+  def lines_tagged
+    return LineTag.find(:all, :conditions=>"line_id in ( select id from wl_lines where person_id=#{self.id} )").map{|l|l.id}
+  end
+
+  def project_lines # lines associated to projects
     projects = WlLine.find(:all, :conditions=>["person_id=#{self.id} and project_id is not null"])
     return projects
   end
@@ -47,6 +63,7 @@ class Person < ActiveRecord::Base
     end
     return filter
   end
+
   def sdp_tasks
     sdp_tasks = []
     WlLine.find(:all, :conditions=>["person_id=#{self.id}"]).each do |l|
@@ -58,6 +75,7 @@ class Person < ActiveRecord::Base
     end
     return sdp_tasks
   end
+
   def iterations
     iterations = []
     self.sdp_tasks.each do |sdp_task|
@@ -67,12 +85,14 @@ class Person < ActiveRecord::Base
     return iterations.sort_by{|i| [i.project_code, i.name]} if iterations != []
     return iterations
   end
+
   def save_default_settings
     if self.settings.nil?
       self.settings = PersonSettings.new()
       self.save
     end
   end
+
   # calculate initial, remaining, balance, balance% and remaining delay
   def sdp_balance
     tasks = SDPTask.find(:all, :conditions=>"collab LIKE '%#{self.trigram}%'")
@@ -258,7 +278,7 @@ class Person < ActiveRecord::Base
       m.checklist_items.select{ |i|
         i.ctemplate.ctype!='folder' and i.status==0
         }.size > 0
-      }.sort_by { |m| [m.project.full_name, m.name] }  
+      }.sort_by { |m| [m.project.full_name, m.name] }
   end
 
   # based on workload, find tbv requests that need to be validated asap
@@ -288,11 +308,11 @@ class Person < ActiveRecord::Base
 
   def get_ciproject_reminder
     allTickets = CiProject.find(:all, :conditions=>["assigned_to=?", self.rmt_user])
-    # CiProject.late_css(p.sqli_validation_date_review) -> get if late for this date
-    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_review desc")
-    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date_review < Now()) or (airbus_validation_date_review < Now()) or (deployment_date_review < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_review desc")
+    # CiProject.late_css(p.sqli_validation_date) -> get if late for this date
+    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
+    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date < Now()) or (airbus_validation_date_review < Now()) or (deployment_date < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
     lateObjective  = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date_objective < Now()) or (airbus_validation_date_objective < Now()) or (deployment_date_objective < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_objective desc")
-    assignedNotKickoff = CiProject.find(:all, :conditions=>["kick_off_date IS NULL and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_review desc")
+    assignedNotKickoff = CiProject.find(:all, :conditions=>["kick_off_date IS NULL and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
     returnHash = {}
     if allTickets.size > 0
       returnHash["all"] = allTickets
@@ -308,7 +328,7 @@ class Person < ActiveRecord::Base
     end
     return returnHash
   end
-  
+
   def get_request_reminder
     #all = Request.all
     not_started          = Request.find(:all, :conditions=>["start_date != '' and start_date <= ? and resolution!='in progress' and resolution!='ended' and resolution!='aborted' and status!='cancelled'  and status!='removed' and status!='to be validated' and assigned_to = ?", Date.today(), self.rmt_user], :order=>"start_date")
@@ -337,7 +357,7 @@ class Person < ActiveRecord::Base
     #end
     return returnHash;
   end
-  
+
 protected
 
   # before filter

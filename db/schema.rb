@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140516145411) do
+ActiveRecord::Schema.define(:version => 20140904155900) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -130,9 +130,11 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
   create_table "ci_projects", :force => true do |t|
     t.integer  "internal_id"
     t.integer  "external_id"
+    t.string   "type"
     t.string   "stage"
     t.string   "category"
     t.string   "severity"
+    t.string   "reproductibility"
     t.text     "summary"
     t.text     "description"
     t.string   "status"
@@ -143,37 +145,76 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.string   "assigned_to"
     t.string   "priority"
     t.string   "visibility"
-    t.float    "resolution_charge"
-    t.text     "additional_information"
+    t.string   "detection_version"
+    t.string   "fixed_in_version"
+    t.string   "status_precisions"
+    t.string   "resolution_charge"
+    t.string   "duplicated_id"
+    t.string   "stages_to_reproduce"
+    t.string   "additional_informations"
     t.date     "taking_into_account_date"
-    t.date     "realisaton_date"
+    t.date     "realisation_date"
     t.string   "realisation_author"
     t.date     "delivery_date"
+    t.date     "reopening_date"
+    t.string   "issue_origin"
+    t.string   "detection_phase"
+    t.string   "injection_phase"
+    t.string   "real_test_of_detection"
+    t.string   "theoretical_test_of_detection"
+    t.string   "iteration"
+    t.string   "lot"
+    t.string   "entity"
+    t.string   "team"
+    t.string   "domain"
+    t.string   "num_req_backlog"
     t.string   "origin"
-    t.string   "improvement_target_objective"
-    t.string   "scope_l2"
-    t.text     "deliverable_list"
-    t.string   "accountable"
-    t.string   "deployment"
-    t.date     "launching_date_ddmmyyyy"
-    t.date     "sqli_validation_date_objective"
-    t.date     "airbus_validation_date_objective"
-    t.date     "deployment_date_objective"
-    t.date     "sqli_validation_date"
+    t.string   "output_type"
+    t.string   "deliverables_list"
+    t.string   "dev_team"
+    t.date     "deployment"
+    t.string   "airbus_responsible"
     t.date     "airbus_validation_date"
+    t.date     "airbus_validation_date_objective"
+    t.date     "airbus_validation_date_review"
+    t.string   "ci_objective_20102011"
+    t.string   "ci_objective_2012"
+    t.string   "ci_objectives_2013"
+    t.string   "deliverable_folder"
     t.date     "deployment_date"
-    t.date     "deployment_date_review"
+    t.date     "deployment_date_objective"
+    t.date     "specification_date"
+    t.date     "kick_off_date"
+    t.date     "launching_date_ddmmyyyy"
+    t.date     "sqli_validation_date"
+    t.date     "sqli_validation_date_objective"
+    t.date     "specification_date_objective"
+    t.string   "sqli_validation_responsible"
+    t.string   "ci_objectives_2014"
+    t.string   "linked_req"
+    t.string   "quick_fix"
+    t.string   "level_of_impact"
+    t.string   "impacted_mnt_process"
+    t.string   "path_backlog"
+    t.string   "path_svn"
+    t.string   "path_sfs_airbus"
+    t.string   "item_type"
+    t.date     "verification_date_objective"
+    t.date     "verification_date"
+    t.string   "request_origin"
+    t.string   "issue_history"
     t.integer  "strategic",                        :default => 0
+    t.string   "report"
+    t.string   "previous_report"
+    t.integer  "sqli_validation_done",             :default => 0
+    t.integer  "airbus_validation_done",           :default => 0
+    t.integer  "deployment_done",                  :default => 0
+    t.integer  "sqli_date_alert",                  :default => 0
+    t.integer  "airbus_date_alert",                :default => 0
+    t.integer  "deployment_date_alert",            :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "airbus_responsible"
-    t.date     "sqli_validation_date_review"
-    t.date     "airbus_validation_date_review"
-    t.date     "kick_off_date"
-    t.string   "deliverable_folder"
-    t.string   "ci_objectives_2013"
-    t.string   "sqli_validation_responsible"
-    t.text     "issue_history"
+    t.integer  "to_implement"
   end
 
   create_table "companies", :force => true do |t|
@@ -181,6 +222,14 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "wl_holidays_calendar_id"
+  end
+
+  create_table "cost_profiles", :force => true do |t|
+    t.string   "name"
+    t.integer  "cost"
+    t.integer  "company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "counter_base_values", :force => true do |t|
@@ -278,6 +327,24 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "updated_at"
   end
 
+  create_table "lesson_collect_axes", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "lesson_collect_file_analyzes", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "lesson_collect_file_id"
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "lesson_collect_file_downloads", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "lesson_collect_file_id"
+    t.datetime "download_date"
+  end
+
   create_table "lesson_collect_files", :force => true do |t|
     t.string   "pm"
     t.string   "qwr_sqr"
@@ -286,6 +353,21 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.string   "project_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lesson_collect_template_type_id"
+    t.integer  "request_id"
+    t.string   "filename"
+    t.string   "mt_qr"
+    t.text     "comment"
+    t.boolean  "is_archived",                     :default => false
+  end
+
+  create_table "lesson_collect_sub_axes", :force => true do |t|
+    t.string  "name"
+    t.integer "lesson_collect_axe_id"
+  end
+
+  create_table "lesson_collect_template_types", :force => true do |t|
+    t.string "name"
   end
 
   create_table "lesson_collects", :force => true do |t|
@@ -300,6 +382,16 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.string   "sub_axes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lesson_collect_axe_id"
+    t.integer  "lesson_collect_sub_axe_id"
+    t.string   "escalate_next_level"
+    t.string   "project_name"
+    t.boolean  "action_plan"
+    t.boolean  "already_exist"
+    t.string   "redundancy"
+    t.boolean  "selected"
+    t.string   "status"
+    t.string   "raised_in_dws_plm"
   end
 
   create_table "lifecycle_milestones", :force => true do |t|
@@ -307,6 +399,7 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.integer  "milestone_name_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "index_order"
   end
 
   create_table "lifecycle_questions", :force => true do |t|
@@ -320,6 +413,14 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
 
   create_table "lifecycles", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "is_active",  :default => true
+  end
+
+  create_table "line_tags", :force => true do |t|
+    t.integer  "line_id"
+    t.integer  "tag_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -340,6 +441,8 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
   create_table "milestone_names", :force => true do |t|
     t.string  "title"
     t.boolean "count_in_spider_prev", :default => true
+    t.boolean "is_active",            :default => true
+    t.boolean "multiple_creation",    :default => false
   end
 
   create_table "milestones", :force => true do |t|
@@ -353,6 +456,9 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "updated_at"
     t.integer  "done",                     :default => 0
     t.integer  "checklist_not_applicable", :default => 0
+    t.integer  "index_order"
+    t.boolean  "is_virtual",               :default => true
+    t.boolean  "to_export",                :default => false
   end
 
   add_index "milestones", ["project_id"], :name => "IDX_MILESTONES"
@@ -398,17 +504,18 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "rmt_user"
-    t.integer  "is_supervisor", :default => 0
+    t.integer  "is_supervisor",   :default => 0
     t.string   "login"
     t.string   "pwd"
     t.datetime "last_view"
-    t.integer  "has_left",      :default => 0
-    t.integer  "sdp_id",        :default => -1
+    t.integer  "has_left",        :default => 0
+    t.integer  "sdp_id",          :default => -1
     t.string   "trigram"
-    t.integer  "is_transverse", :default => 0
-    t.integer  "is_cpdp",       :default => 0
-    t.integer  "is_virtual",    :default => 0
+    t.integer  "is_transverse",   :default => 0
+    t.integer  "is_cpdp",         :default => 0
+    t.integer  "is_virtual",      :default => 0
     t.text     "settings"
+    t.integer  "cost_profile_id"
   end
 
   create_table "person_roles", :force => true do |t|
@@ -447,6 +554,47 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "updated_at"
   end
 
+  create_table "presale_comments", :force => true do |t|
+    t.integer  "presale_presale_type_id"
+    t.text     "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "person_id"
+  end
+
+  create_table "presale_ignore_projects", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "presale_type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "presale_presale_types", :force => true do |t|
+    t.integer  "presale_id"
+    t.integer  "presale_type_id"
+    t.integer  "opportunity_number"
+    t.date     "first_meeting_date"
+    t.string   "status"
+    t.string   "complexity"
+    t.date     "buyside_launch_date"
+    t.date     "buyside_accepted_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "milestone_name_id"
+  end
+
+  create_table "presale_types", :force => true do |t|
+    t.text     "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "presales", :force => true do |t|
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "project_people", :id => false, :force => true do |t|
     t.integer  "project_id"
     t.integer  "person_id"
@@ -481,6 +629,8 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.boolean  "is_qr_qwr",     :default => false
     t.integer  "suite_tag_id"
     t.string   "project_code"
+    t.integer  "sales_revenue", :default => 0
+    t.integer  "sibling_id"
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
@@ -565,6 +715,7 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.string   "request_type"
     t.integer  "stream_id"
     t.string   "is_stream",               :default => "No"
+    t.string   "specific"
   end
 
   add_index "requests", ["project_id"], :name => "IDX_REQUESTS_ON_PROJECT_ID"
@@ -879,6 +1030,12 @@ ActiveRecord::Schema.define(:version => 20140516145411) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_active",  :default => true
+  end
+
+  create_table "tags", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tasks", :force => true do |t|

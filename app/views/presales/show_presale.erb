@@ -1,0 +1,69 @@
+<%= render(:file=>"presales/menu", :locals=>{:dashboard => 1}) %>
+<div id="presale_content">
+<div id="presale_content_left">
+	<h3 class="presale_title">
+		Project informations
+	</h3>
+	<div>
+		<ul id="presale_project_info">
+			<!-- Project Name / link -->
+			<li>
+				<span class="presale_list_title">Project :</span>
+				<% name = "" %>
+				<% name += @presale.project.project.name+" > " if @presale.project.project %>
+				<% name += @presale.project.name %>
+				<span class="presale_list_value">
+					<%=link_to(name, :controller=>'projects', :action=>'show', :id=>@presale.project.id) %>
+				</span>
+			</li>
+			<!-- Workstream -->
+			<li>
+				<span class="presale_list_title">Workstream :</span> 
+				<span class="presale_list_value"><%= @presale.project.workstream %></span>
+			</li>
+			<!-- Next Milestone -->
+			<li>
+				<span class="presale_list_title">Next Milestone : </span>
+				<span class="presale_list_value">
+					<% if @presale.next_milestone %>
+						<%= @presale.next_milestone %>
+					<% else %>
+						N/A
+					<% end %>
+					
+					<% if @presale.next_milestone_date %>
+						(<%= @presale.next_milestone_date %>)
+					<% end %>
+				</span>
+			</li>
+			<!-- PM -->
+			<li>
+				<span class="presale_list_title">PM : </span>
+				<span class="presale_list_value"><%= @presale.project.pm %></span>
+			</li>
+			<!-- Suite -->
+			<li>
+				<span class="presale_list_title">Suite : </span>
+				<span class="presale_list_value">
+					<% if @presale.project.suite_tag %>
+						<%= @presale.project.suite_tag.name %>
+					<% else %>
+						N/A
+					<% end %>
+				</span>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div id="presale_content_right">
+	<% for presalePresaleType in @presale.presale_presale_types %>
+		<h3 class="presale_title"><%= presalePresaleType.getName %> last comment</h3>
+		<% lastComment = presalePresaleType.getLastComment %>
+		<% if lastComment != nil %>
+			<p><span class="bold">Last update time:</span> <%= time_ago_in_words(lastComment.updated_at.strftime("%Y-%m-%d %H:%M")) %></p>
+				<%= render(:partial=>'presale_comment', :object=>lastComment, :locals=>{:edit_mode => false}) %>
+		<% end %>
+	<% end %>
+</div>
+</div>

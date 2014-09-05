@@ -73,12 +73,12 @@ module WelcomeHelper
     	late_css_airbus = ""
     	late_css_deployment = ""
     	if(dateType.eql?("review"))
-    	  sqli_date = p.sqli_validation_date_review
+    	  sqli_date = p.sqli_validation_date
     	  airbus_date = p.airbus_validation_date_review
-    	  deployment_date = p.deployment_date_review
-      	late_css_sqli = CiProject.late_css(p.sqli_validation_date_review)
+    	  deployment_date = p.deployment_date
+      	late_css_sqli = CiProject.late_css(p.sqli_validation_date)
       	late_css_airbus = CiProject.late_css(p.airbus_validation_date_review)
-      	late_css_deployment = CiProject.late_css(p.deployment_date_review)
+      	late_css_deployment = CiProject.late_css(p.deployment_date)
   	  elsif(dateType.eql?("objective"))
         sqli_date = p.sqli_validation_date_objective
     	  airbus_date = p.airbus_validation_date_objective
@@ -87,9 +87,9 @@ module WelcomeHelper
         late_css_airbus = CiProject.late_css(p.airbus_validation_date_objective)
         late_css_deployment = CiProject.late_css(p.deployment_date_objective)
       else
-      	sqli_date = p.sqli_validation_date_review
+      	sqli_date = p.sqli_validation_date
       	airbus_date = p.airbus_validation_date_review
-      	deployment_date = p.deployment_date_review
+      	deployment_date = p.deployment_date
   	  end
       rv += "<tr class='#{p.sanitized_status}'>"
       rv += "<td><b>"+ link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}") + "</b></td>"

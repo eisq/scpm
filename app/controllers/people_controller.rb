@@ -9,7 +9,7 @@ class PeopleController < ApplicationController
 
   def index
     @people = Person.find(:all, :order=>"company_id, has_left, is_transverse, name")
-    @allCompanies = Person.all(:select => "DISTINCT(company_id)") 
+    @allCompanies = Person.all(:select => "DISTINCT(company_id)")
   end
 
   def new
@@ -17,6 +17,11 @@ class PeopleController < ApplicationController
     Company.create(:name=>"SQLI") if Company.find(:first) == nil
     @companies = Company.all
     @roles = Role.find(:all, :conditions=>"name != 'Super'")
+    cost_profiles = CostProfile.all(:order=>'company_id, name')
+    @profiles = []
+    if cost_profiles
+      @profiles = cost_profiles.map {|u| [u.company.name + ' - ' + u.name,u.id]}
+    end
   end
 
   def check_settings
@@ -41,7 +46,7 @@ class PeopleController < ApplicationController
         else
           @person.remove_role(r.name)
         end
-        }      
+        }
     end
     redirect_to('/people')
   end
@@ -57,13 +62,19 @@ class PeopleController < ApplicationController
 
   def edit
     @person = Person.find(params[:id])
-    @companies = Company.all
+    @companies = Company.all(:order=>'name')
+    cost_profiles = CostProfile.all(:order=>'company_id, name')
+    @profiles = []
+    if cost_profiles
+      @profiles = cost_profiles.map {|u| [u.company.name + ' - ' + u.name,u.id]}
+    end
     @roles = Role.find(:all, :conditions=>"name != 'Super'")
   end
 
   def update
     id = params[:id]
     @person = Person.find(id)
+
     if @person.update_attributes(params[:person]) # do a save
       @roles = Role.find(:all, :conditions=>"name != 'Super'")
       @roles.each { |r|
@@ -73,7 +84,17 @@ class PeopleController < ApplicationController
           @person.remove_role(r.name)
         end
         }
-      redirect_to "/people/"
+      login = params[:person][:login]
+      p = Person.find(:all, :conditions=>["login=?", login]) 
+      if p.size > 1
+        @person.login = ""
+        @person.save
+        flash[:error] = "Duplicate login with #{p.map{|i| '<a href=\'/people/edit/'+i.id.to_s+'\'>'+i.name+'</a>'}.join(', ')}"
+        redirect_to "/people/edit/#{id}"
+        return
+      else
+        redirect_to "/people/"
+      end
     else
       render :action => 'edit'
     end

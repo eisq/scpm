@@ -1,6 +1,27 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+// Copy selected element
+function selectElementContents(el){
+  var body = document.body, range, sel;
+
+  if (document.createRange && window.getSelection) {
+    range = document.createRange();
+    sel = window.getSelection();
+    sel.removeAllRanges();
+    try {
+      range.selectNodeContents(el);
+      sel.addRange(range);
+    } catch (e) {
+      range.selectNode(el);
+      sel.addRange(range);
+    }
+  } else if (body.createTextRange) {
+    range = body.createTextRange();
+    range.moveToElementText(el);
+    range.select();
+  }
+}
 
 function confirm_page_change() {
   alert('test');
@@ -102,6 +123,9 @@ function refresh_projects(sort) {
     onComplete: function(r) {
       $('timeline').update(r.responseText);
       $('loading').hide();
+      index_projects_timeline = 0;
+      total_results           = 0;
+      is_loading_projects = false;
       }
     });
 

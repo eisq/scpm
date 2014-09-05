@@ -141,10 +141,6 @@ class MilestonesController < ApplicationController
 
     # If no date error
     if error == 0
-      # Update parameters
-      if params[:milestone][:project_id]
-        m.project = Project.find(params[:milestone][:project_id])
-      end
 
       if params[:milestone][:name]
         m.name = params[:milestone][:name]
@@ -210,7 +206,7 @@ class MilestonesController < ApplicationController
 
   def ajax_milestone
     project = Project.find(params[:project_id])
-    render(:partial=>'milestones/milestone', :collection=>project.sorted_milestones)
+    render(:partial=>'milestones/milestone', :collection=>project.sorted_milestones, :locals=>{:editable=> true})
   end
 
 private

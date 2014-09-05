@@ -1,0 +1,45 @@
+<h3>
+  <% if p.status != "Closed" and p.status != "Delivered" and p.status != "Rejected" %>
+    <%= link_to('Open', {:action=>'show', :id=>p.id}, {:class=>'menu grey'}) %>
+  <% end %>
+  <% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%>
+    <%=link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
+  | <%= p.summary %>
+  &nbsp;&nbsp;<span style="font-weight:normal; font-size:13px"> Last reporting update: <%= p.last_update %> <%= p.last_update_person %> </span>
+  <% if p.status == "Closed" or p.status == "Delivered" or p.status == "Rejected" %>
+    <span style="font-weight:normal; font-size:12px"> -> <%= p.status %></span>
+  <% end %>
+</h3>
+  <% if p.num_req_backlog != nil %>
+  	<p><b>Backlog request ID:</b> <%= p.num_req_backlog.to_s %></p>
+  <% end %>
+
+  <% if p.sqli_validation_date != nil %>
+  	<p><b>SQLI validation date:</b><%= p.sqli_validation_date.to_s + " (" + p.sqli_delay_new.to_s + " days delay)" %>
+      <% if p.sqli_date_alert == 1 %>
+        <span style="color:red;"><b>Date not validated</b></span>
+      <% end %>
+    </p>
+  <% elsif p.sqli_validation_date = nil and p.sqli_validation_date_objective != nil %>
+    <p><b>SQLI validation date objective:</b> <%= p.sqli_validation_date_objective.to_s %></p>
+  <% end %>
+
+  <% if p.airbus_validation_date != nil %>
+  	<p><b>Airbus validation date:</b> <%= p.airbus_validation_date.to_s + " (" + p.airbus_delay_new.to_s + " days delay)" %>
+      <% if p.airbus_date_alert == 1 %>
+        <span style="color:red;"><b>Date not validated</b></span>
+      <% end %>
+    </p>
+  <% elsif p.airbus_validation_date = nil and p.airbus_validation_date_objective != nil %>
+    <p><b>Airbus validation date objective:</b> <%= p.airbus_validation_date_objective.to_s %></p>
+  <% end %>
+
+  <% if p.deployment_date != nil %>
+  <p><b>Deployment date:</b> <%= p.deployment_date.to_s + " (" + p.deployment_delay_new.to_s + " days delay)" %>
+      <% if p.deployment_date_alert == 1 %>
+        <span style="color:red;"><b>Date not validated</b></span>
+      <% end %>
+    </p>
+  <% elsif p.deployment_date = nil and p.deployment_date_objective != nil %>
+  <p><b>Deployment date objective:</b> <%= p.deployment_date_objective.to_s %></p>
+  <% end %>

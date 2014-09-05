@@ -2,6 +2,7 @@
 <tr><td>Project</td><td><%= text_field :project, :name %></td></tr>
 <% if APP_CONFIG['use_multiple_projects_sdp_export'] %>
   <tr><td>Code (TO2955)</td><td><%= text_field :project, :project_code %></td></tr>
+  <tr><td>Sales revenue</td><td><%= text_field :project, :sales_revenue %></td></tr>
 <% end %>
 <tr><td>Workstream</td><td>	<%= text_field :project, :workstream %></td></tr>
 <tr><td>BRN</td><td>				<%= text_field :project, :brn %></td></tr>
@@ -16,7 +17,6 @@
 <tr><td>DWR</td><td>				<%= text_field :project, :dwr %></td></tr>
 <tr><td>Supervisor</td><td>	<%= select(:project, :supervisor_id, @supervisors.map {|p| [p.name, p.id]}, :include_blank=>true) %></td></tr>
 <% lifecycle_list = Lifecycle.find(:all) %>
-<tr><td>Lifecycle</td><td>	<%= select(:project, :lifecycle_id, lifecycle_list.map {|l| [l.name, l.id]}) %></td></tr>
 <tr><td>Suite</td><td>
 	<% if @suiteTags %>
 		<%= select(:project, :suite_tag_id, @suiteTags.map {|s| [s.name, s.id]}, :include_blank=>true) %>

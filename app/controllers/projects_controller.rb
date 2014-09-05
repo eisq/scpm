@@ -31,7 +31,18 @@ class ProjectsController < ApplicationController
     @workstreams = Workstream.all()
     @workstreams = @workstreams.map { |ws| ws.name }
 
-    @actions      = Action.find(:all, :conditions=>["progress in('in_progress', 'open') and person_id in (?)", session[:project_filter_qr]])
+    actions_condition = "progress in('in_progress', 'open')"
+    if session[:project_filter_qr] != nil
+      actions_condition << " and person_id in #{session[:project_filter_qr]}"
+    end
+    @actions      = Action.find(:all, :conditions=>actions_condition)
+
+    actions_closed_condition = "progress in('closed','abandonned')"
+    if session[:project_filter_qr] != nil
+      actions_closed_condition << " and person_id in #{session[:project_filter_qr]}"
+    end
+    @actions_closed       = Action.find(:all, :conditions=>actions_closed_condition, :order=>"due_date")
+
     @total_wps    = Project.count
     @total_status = Status.count
 
@@ -42,12 +53,26 @@ class ProjectsController < ApplicationController
       @risks                = Risk.find(:all, :conditions=>"probability>0 and project_id in (#{@wps.collect{|p| p.id}.join(',')})", :order=>"updated_at")
       @risks_with_severity  = @risks.select { |risk| risk.severity > 0}
       @inconsistencies      = @wps.select{|wp| !wp.is_consistent_with_risks}
-      @checklist_milestones = @wps.map{|p| p.milestones}.flatten.select{ |m|
-        m.done == 1 and
+
+      # Checklist size
+      # Mode 1
+      @checklist_milestone_size = Milestone.find(:all,
+                             :joins=>["JOIN checklist_items ON checklist_items.milestone_id = milestones.id", "JOIN checklist_item_templates ON checklist_items.template_id = checklist_item_templates.id"],
+                             :conditions => ["milestones.project_id IN (?) and done = 1 AND checklist_item_templates.ctype <> 'folder' and checklist_items.status = 0", @wps.select{|p| p.id}], 
+                             :group=>'milestones.id').count
+      # Mode 2
+      checklist_milestone_not_done = Milestone.find(:all,
+                             :joins=>["JOIN checklist_items ON checklist_items.milestone_id = milestones.id", "JOIN checklist_item_templates ON checklist_items.template_id = checklist_item_templates.id"],
+                             :conditions => ["milestones.project_id IN (?) and done = 0 AND checklist_item_templates.ctype <> 'folder' and checklist_items.status = 1", @wps.select{|p| p.id}], 
+                             :group=>'milestones.id')
+      checklist_milestone_not_done_size = checklist_milestone_not_done.select { |m| 
         m.checklist_items.select{ |i|
           i.ctemplate.ctype!='folder' and i.status==0
           }.size > 0
-        }.sort_by { |m| [m.project.full_name, m.name] }
+      }.count
+      # Mode 1 + 2
+      @checklist_milestone_size += checklist_milestone_not_done_size
+      # End checklist size
 
       i_wps = 0 
       @projects_id = ""
@@ -63,13 +88,13 @@ class ProjectsController < ApplicationController
       @risks                = []
       @risks_with_severity  = []
       @inconsistencies      = []
-      @checklist_milestones = []
+      # @checklist_milestones = []
       @projects_id          = ""
     end
     f = session[:project_filter_qr]
     if f and f.size == 1
       filtered_person = Person.find(f[0].to_i) || current_user
-      @ci = CiProject.find(:all, :conditions=>["assigned_to=?", filtered_person.rmt_user], :order=>"sqli_validation_date_review desc")
+      @ci = CiProject.find(:all, :conditions=>["assigned_to=?", filtered_person.rmt_user], :order=>"sqli_validation_date desc")
     else
       @ci = []
     end
@@ -80,24 +105,56 @@ class ProjectsController < ApplicationController
     sort_projects_without_wps
   end
 
+  def show_checklists
+    @mode = params[:mode]
+    if @mode == nil
+      @mode = 1
+    end
+    @projects = params[:projects]
+
+    @checklist_milestone = []
+    if @mode.to_i == 1
+      # Milestone done with checklist item not done
+      @checklist_milestone = Milestone.find(:all,
+                             :joins=>["JOIN checklist_items ON checklist_items.milestone_id = milestones.id", 
+                              "JOIN checklist_item_templates ON checklist_items.template_id = checklist_item_templates.id",
+                              "JOIN projects ON milestones.project_id = projects.id"],
+                             :conditions => ["milestones.project_id IN (?) and done = 1 AND checklist_item_templates.ctype <> 'folder' and checklist_items.status = 0", @projects.select{|p| p.id}], 
+                             :group=>'milestones.id',
+                             :order=>("projects.name, milestones.name"))
+    else
+      # Milestone not done yet, with checklist items done
+      @checklist_milestone = Milestone.find(:all,
+                             :joins=>["JOIN checklist_items ON checklist_items.milestone_id = milestones.id", "JOIN checklist_item_templates ON checklist_items.template_id = checklist_item_templates.id",
+                              "JOIN projects ON milestones.project_id = projects.id"],
+                             :conditions => ["milestones.project_id IN (?) and done = 0 AND checklist_item_templates.ctype <> 'folder' and checklist_items.status = 1", @projects.select{|p| p.id}], 
+                             :group=>'milestones.id',
+                             :order=>("projects.name, milestones.name"))
+
+      # Conserve only the milestone with one or more checklist item not done
+      @checklist_milestone = @checklist_milestone.select { |m| 
+        m.checklist_items.select{ |i|
+          i.ctemplate.ctype!='folder' and i.status==0
+          }.size > 0
+      }
+    end
+  end
+
   def sort_projects
     case
       when session[:project_sort]=='read'
-        @projects = @projects.sort_by { |p| p.read_date ? p.read_date : Time.now-1.year }
         @wps = @wps.sort_by { |p| p.read_date ? p.read_date : Time.now-1.year}
       when session[:project_sort]=='update'
-        @projects = @projects.sort_by { |p| d = p.last_status_date; [p.project_requests_progress_status_html == 'ended' ? 1 : 0, d ? d : Time.zone.now] }
         @wps = @wps.sort_by { |p| d = p.last_status_date; [p.project_requests_progress_status_html == 'ended' ? 1 : 0, d ? d : Time.zone.now] }
       when session[:project_sort]=='alpha'
-        @projects = @projects.sort_by { |p| p.full_name }
         @wps = @wps.sort_by { |p| p.full_name }
       when session[:project_sort]=='workstream'
-        @projects = @projects.sort_by { |p| [p.workstream, p.full_name] }
         @wps = @wps.sort_by { |p| [p.workstream, p.full_name] }
     end
   end
 
  def sort_projects_without_wps
+    return if !@projects
     case
       when session[:project_sort]=='read'
         @projects = @projects.sort_by { |p| p.read_date ? p.read_date : Time.now-1.year }
@@ -126,6 +183,11 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new(params[:project])
+    lifecycle_default = Lifecycle.get_default
+    if lifecycle_default
+      @project.lifecycle = lifecycle_default.id
+      @project.lifecycle_object = lifecycle_default
+    end
     # can not set project_id to 0 as we use that to filter projets later... but why...
     #@project.project_id = 0 if !@project.project_id
     check_qr_qwr_pdc(@project)
@@ -154,7 +216,7 @@ class ProjectsController < ApplicationController
     end
     qr = params[:qr]
     if not qr;  session[:project_filter_qr] = nil
-    else;       session[:project_filter_qr] = qr.map {|t| t.to_i}
+    else;       session[:project_filter_qr] = "(#{qr.map{|t| "'#{t}'"}.join(',')})"
     end
     suiteTags = params[:suiteTags]
     if not suiteTags; session[:project_filter_suiteTags] = nil
@@ -171,6 +233,11 @@ class ProjectsController < ApplicationController
     @project.check
     @status = @project.get_status
     @old_statuses = @project.statuses - [@status]
+    @sibling = Project.find(:first, :conditions => ["sibling_id = ?", @project.id])
+    @has_sibling = false
+    if @sibling != nil
+      @has_sibling = true
+    end
     #@checklist_items = TransverseItems.find()
   end
 
@@ -200,7 +267,6 @@ class ProjectsController < ApplicationController
     project.update_attributes(params[:project])
 
     project.propagate_attributes
-    project.set_lifecycle_old_param()
 
     # QR QWR
     if (!project.is_qr_qwr)
@@ -373,7 +439,16 @@ class ProjectsController < ApplicationController
     if not project
       project = Project.create(:name=>project_name)
       project.workstream = request.workstream
-      project.lifecycle_object = Lifecycle.first
+      lifecycle_name = request.lifecycle_name_for_request_type()
+      lifecycle = nil
+      if lifecycle_name
+        lifecycle = Lifecycle.find(:first, :conditions => ["name LIKE ?", "%#{lifecycle_name}%"])
+      end
+      if lifecycle
+        project.lifecycle_object = lifecycle
+      else
+        project.lifecycle_object = Lifecycle.first
+      end
       project.save
     end
 
@@ -383,7 +458,16 @@ class ProjectsController < ApplicationController
       wp.workstream = request.workstream
       wp.brn        = brn
       wp.project_id = project.id
-      wp.lifecycle_object = Lifecycle.first
+      lifecycle_name = request.lifecycle_name_for_request_type()
+      lifecycle = nil
+      if lifecycle_name
+        lifecycle = Lifecycle.find(:first, :conditions => ["name LIKE ?", "%#{lifecycle_name}%"])
+      end
+      if lifecycle
+        wp.lifecycle_object = lifecycle
+      else
+        wp.lifecycle_object = Lifecycle.first
+      end      
       wp.save
     end
 
@@ -709,6 +793,247 @@ class ProjectsController < ApplicationController
         @project = Project.find(params[:id])
   end
 
+
+  # -
+  # Milestones structure management
+  # -
+  def milestones_edit
+    project_id    = params[:id]
+    @project      = Project.find(:first, :conditions => ["id = ?", project_id])
+    @warning      = params[:warning]
+
+    @lifecycles   = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map{|l| [l.name, l.id]}
+    @milestones_name = MilestoneName.get_active_sorted.map{|m| [m.title, m.id]}
+    @milestones_name_multiple = MilestoneName.get_active_sorted.select { |m| m.multiple_creation == true }.map{|m| m.id}
+
+    # Milestones name hash to link milestone <=> milestones name
+    @milestones_limit_names = ""
+    @milestones_name_hash   = Hash.new
+    @milestones_name.each do |m_name|
+      @milestones_name_hash[m_name[0]] = m_name[1]
+    end
+  end
+
+  def lifecycle_change
+    project_id    = params[:project_id]
+    lifecycle_id  = params[:lifecycle_id]
+    project       = Project.find(:first, :conditions => ["id = ?", project_id])
+    lifecycle     = Lifecycle.find(:first, :conditions => ["id = ?", lifecycle_id])
+    has_data      = false
+
+    if lifecycle_id and project
+      
+      project.sorted_milestones.each do |m|
+        if m.has_data?
+          has_data = true
+        end
+      end
+
+      if has_data == false
+        # Change lifecycle
+        project.lifecycle = lifecycle_id
+        project.lifecycle_object = lifecycle
+        project.save
+        # Delete previous milestone
+        Milestone.destroy_all("project_id = #{project_id}")
+        # Generate new milestones
+        project.check(true)
+      end
+    end
+
+    if has_data
+      redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Lifecycle can't be modified because some milestones have data. Delete all milestone data."
+    else
+      redirect_to :action=>:milestones_edit, :id=>project_id
+    end
+  end
+
+  def create_sibling
+    project_id    = params[:project_id]
+    lifecycle_id  = params[:lifecycle_id]
+    project       = Project.find(:first, :conditions => ["id = ?", project_id])
+    lifecycle     = Lifecycle.find(:first, :conditions => ["id = ?", lifecycle_id])
+    
+    if lifecycle_id and project
+      new_project   = Project.new
+      new_project.create_sibling(project)
+      new_project.lifecycle = lifecycle_id
+      new_project.lifecycle_object = lifecycle
+      new_project.save
+
+      project.is_running = 0
+      if project.lifecycle_object
+        project.name = "[" + project.lifecycle_object.name + "] " + project.name
+      else
+        project.name = "[SIBLING] " + project.name
+      end
+      project.save
+    end
+
+    redirect_to :action=>:show, :id=>new_project.id
+
+  end
+
+  # @param milestones = Sorted array (on index order) of milestones id
+  def milestones_order_change
+    milestones_order = params[:milestones]
+    if milestones_order
+      index_order = 1
+      milestones_order.each do |m|
+        milestone_object = Milestone.find(:first, :conditions => ["id = ?", m.to_s])
+        if milestone_object
+          milestone_object.index_order = index_order
+          milestone_object.save
+        end
+        index_order += 1
+      end
+    end
+    render(:nothing=>true)
+  end
+
+  def milestones_name_change
+      milestone_id        = params[:milestone_id]
+      milestone_name_id   = params[:milestone_name_id]
+
+      milestone       = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+      milestone_name  = MilestoneName.find(:first, :conditions => ["id = ?", milestone_name_id])
+
+      warning = nil
+      if milestone and milestone_name
+        has_data = milestone.has_data?
+        if has_data == false
+          milestone.name = milestone_name.title
+          milestone.save
+        else
+          warning = "Milestone can't be modified while it has data."
+        end
+      end
+
+      if warning != nil
+        render(:text=>warning)
+      else
+        render(:nothing=>true)
+      end
+  end
+
+  def milestone_virtual_name_change
+      milestone_id        = params[:milestone_id]
+      milestone_name      = params[:milestone_name]
+      milestone_to_export = params[:to_export]
+      milestone           = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+
+      warning = nil
+      if milestone and milestone_name
+        # Milestone name
+        if milestone.name != milestone_name
+          has_data = milestone.has_data?
+          if has_data == false
+            milestone.name = milestone_name
+            milestone.save
+          else
+            warning = "Milestone can't be modified while it has data."
+          end
+        end
+
+        # Milestone To export
+        if milestone_to_export and milestone.to_export != milestone_to_export
+          milestone.to_export = milestone_to_export
+          milestone.save
+        end
+      end
+
+      if warning != nil
+        render(:text=>warning)
+      else
+        render(:nothing=>true)
+      end
+  end
+
+  def milestone_is_virtual_change
+    milestone_id          = params[:milestone_id]
+    milestone_is_virtual  = params[:is_virtual]
+    milestone             = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+
+    warning = nil
+    if milestone and milestone_is_virtual
+      has_data = milestone.has_data?
+      if has_data == false
+        milestone.is_virtual = milestone_is_virtual
+        milestone.save
+      else
+        warning = "Milestone can't be modified while it has data."
+      end
+    end
+
+    if warning != nil
+      render(:text=>warning)
+    else
+      render(:nothing=>true)
+    end
+  end
+
+  def add_new_milestone
+    project_id        = params[:project_id]
+    milestone_name_id = params[:new_milestone]
+    milestone_count   = params[:new_milestone_count]
+
+    project         = Project.find(:first, :conditions => ["id = ?", project_id])
+    milestone_name  = MilestoneName.find(:first, :conditions => ["id = ?", milestone_name_id])
+
+    if project
+      # Max order index
+      max_index_order = 0
+      project.sorted_milestones.each do |m|
+        if m.index_order > max_index_order
+          max_index_order = m.index_order
+        end
+      end
+
+      i = 0
+      while i < milestone_count.to_i
+        # Create
+        new_milestone = Milestone.new
+        new_milestone.project = project
+        if milestone_name
+          new_milestone.name = milestone_name.title
+        else
+          new_milestone.name = project.lifecycle_object.lifecycle_milestones.find(:first).milestone_name.title
+        end
+        new_milestone.index_order = max_index_order + 1
+        new_milestone.status = -1
+        new_milestone.is_virtual = false
+        new_milestone.comments = ""
+        new_milestone.save
+
+        # Update index
+        max_index_order = max_index_order + 1
+        i = i + 1
+      end
+    end
+    redirect_to :action=>:milestones_edit, :id=>project_id
+  end
+
+  def delete_milestone
+    milestone_id  = params[:milestone_id]
+    milestone     = Milestone.find(:first, :conditions => ["id = ?", milestone_id])
+    project_id    = milestone.project_id
+    has_data      = false
+
+    if milestone
+      has_data = milestone.has_data?
+      if has_data == false
+        milestone.destroy
+      end
+    end
+    
+    if has_data == false
+      redirect_to :action=>:milestones_edit, :id=>project_id
+    else
+      redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Milestone can't be deleted while it has data. Delete all milestone data to be able to delete the milestone."
+    end
+  end
+  # - 
+
 private
 
   def get_status_progress
@@ -742,9 +1067,9 @@ private
   end
 
   def get_projects
+    # Text filtering
     if session[:project_filter_text] != "" and session[:project_filter_text] != nil
-      @projects = Project.all.select {|p| p.text_filter(session[:project_filter_text]) }
-      @wps      = @projects #.select {|wp| wp.has_status and wp.has_requests }
+      @wps = Project.get_projects_with_text(session[:project_filter_text], false)
       return
     end
     cond_wps = []
@@ -752,47 +1077,41 @@ private
     cond_wps << "last_status in #{session[:project_filter_status]}" if session[:project_filter_status] != nil
     cond_wps << "supervisor_id in #{session[:project_filter_supervisor]}" if session[:project_filter_supervisor] != nil
     cond_wps << "suite_tag_id in #{session[:project_filter_suiteTags]}" if session[:project_filter_suiteTags] != nil
+    cond_wps << "project_people.person_id in #{session[:project_filter_qr]}" if session[:project_filter_qr] != nil
     cond_wps << "is_running = 1"
-    cond_wps << "project_id IS NOT NULL"
+    cond_wps << "projects.project_id IS NOT NULL"
 
-    cond_projects = []
-    cond_projects << "workstream in #{session[:project_filter_workstream]}" if session[:project_filter_workstream] != nil
-    cond_projects << "last_status in #{session[:project_filter_status]}" if session[:project_filter_status] != nil
-    cond_projects << "supervisor_id in #{session[:project_filter_supervisor]}" if session[:project_filter_supervisor] != nil
-    cond_projects << "suite_tag_id in #{session[:project_filter_suiteTags]}" if session[:project_filter_suiteTags] != nil
-    cond_projects << "project_id is null"
-
-    @wps = Project.find(:all, :conditions=>cond_wps.join(" and "), :include=>['projects', 'requests', 'actions','milestones', 'checklist_items','amendments']) # do not filter workpackages with project is null
-
-    @projects = Project.find(:all, :conditions=>cond_projects.join(" and "))
-
-    if session[:project_filter_qr] != nil
-      @projects = @projects.select {|p| p.has_responsible(session[:project_filter_qr]) }
-      @wps = @wps.select {|p| p.has_responsible(session[:project_filter_qr]) }
-    end
-
+    @wps = Project.find(:all, :joins => ["LEFT OUTER JOIN project_people ON project_people.project_id = projects.id"], :conditions=>cond_wps.join(" and "), :group => "projects.id")
   end
 
   def get_projects_without_wps
     if session[:project_filter_text] != "" and session[:project_filter_text] != nil
-      @projects = Project.all.select {|p| p.text_filter(session[:project_filter_text]) }
+      @projects = Project.get_projects_with_text(session[:project_filter_text], true)
       return
     end
 
     cond_projects = []
-    cond_projects << "workstream in #{session[:project_filter_workstream]}" if session[:project_filter_workstream] != nil
-    cond_projects << "last_status in #{session[:project_filter_status]}" if session[:project_filter_status] != nil
-    cond_projects << "supervisor_id in #{session[:project_filter_supervisor]}" if session[:project_filter_supervisor] != nil
-    cond_projects << "suite_tag_id in #{session[:project_filter_suiteTags]}" if session[:project_filter_suiteTags] != nil
-    cond_projects << "project_id is null"
-
-
-    @projects = Project.find(:all, :conditions=>cond_projects.join(" and "))
-
-    if session[:project_filter_qr] != nil
-      @projects = @projects.select {|p| p.has_responsible(session[:project_filter_qr]) }
+    if session[:project_filter_workstream] != nil
+      cond_projects << "(projects.workstream in #{session[:project_filter_workstream]} or childs.workstream in #{session[:project_filter_workstream]})"
     end
+    if session[:project_filter_status] != nil
+      cond_projects << "(projects.last_status in #{session[:project_filter_status]} or childs.last_status in #{session[:project_filter_status]})"
+    end
+    if session[:project_filter_supervisor] != nil
+      cond_projects << "(projects.supervisor_id in #{session[:project_filter_supervisor]} or childs.supervisor_id in #{session[:project_filter_supervisor]})"
+    end
+    if session[:project_filter_suiteTags] != nil
+      cond_projects << "(projects.suite_tag_id in #{session[:project_filter_suiteTags]} or childs.suite_tag_id in #{session[:project_filter_suiteTags]})"
+    end
+    if session[:project_filter_qr] != nil
+      cond_projects << "(project_people.person_id in #{session[:project_filter_qr]} or childs_pp.person_id in #{session[:project_filter_qr]})"
+    end
+    
+    cond_projects << "(projects.project_id is null)"
 
+    @projects = Project.find(:all, :joins => ["LEFT OUTER JOIN projects as childs ON childs.project_id = projects.id","LEFT OUTER JOIN project_people ON project_people.project_id = projects.id", "LEFT OUTER JOIN project_people as childs_pp ON childs_pp.project_id = childs.id"],
+                                    :conditions=>cond_projects.join(" and "),
+                                    :group => "projects.id")
   end
 
   def no_responsible(p)

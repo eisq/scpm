@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   Suite       = 6
 
   belongs_to  :project
+  belongs_to  :sibling, :class_name=>"Project", :foreign_key=>"sibling_id"
   belongs_to  :supervisor,  :class_name=>"Person"
   belongs_to  :lifecycle_object, :class_name=>"Lifecycle", :foreign_key=>"lifecycle_id"
   belongs_to  :qr_qwr, :class_name=>"Person"
@@ -36,6 +37,8 @@ class Project < ActiveRecord::Base
   has_many    :project_check_root_items, :conditions=>"parent_id=0", :class_name=>"ChecklistItem"
   has_many    :spiders,      :dependent => :destroy
   has_many    :wl_lines, :dependent => :nullify
+  has_many    :presales, :dependent => :nullify
+  has_many    :presale_ignore_projects, :dependent => :nullify
 
   def planning
     planning = Planning.find(:first, :conditions=>["project_id=#{self.id}"])
@@ -192,7 +195,7 @@ class Project < ActiveRecord::Base
   # return true if the project or subprojects request is assigned to one of the users in the array
   def has_responsible(user_id_arr)
     user_id_arr.each { |id|
-      return true if ProjectPerson.find_by_project_id_and_person_id(self.id, id)
+      return true if ProjectPerson.find_by_project_id_and_person_id(self.id, id.to_i)
       self.projects.each { |p|
         return true if p.has_responsible(user_id_arr)
         }
@@ -250,21 +253,50 @@ class Project < ActiveRecord::Base
     return status
   end
 
-  def text_filter(text)
-    return true if self.name =~ /#{text}/i
-    return true if self.description =~ /#{text}/i
-    self.statuses.each { |s|
-      return true if s.explanation =~ /#{text}/i
-      return true if s.last_change =~ /#{text}/i
-      return true if s.actions =~ /#{text}/i
-      return true if s.operational_alert =~ /#{text}/i
-      return true if s.feedback =~ /#{text}/i
-      }
-    self.requests.each { |s|
-      return true if s.summary =~ /#{text}/i
-      return true if s.pm =~ /#{text}/i
-      }
-    return false
+  def self.get_projects_with_text(text, parentOnly)
+      cond_projects = []
+      cond_projects << "(projects.name LIKE '%#{text}%')"
+      cond_projects << "(projects.description LIKE '%#{text}%')"
+
+      cond_projects << "(project_statuses.explanation LIKE '%#{text}%')"
+      cond_projects << "(project_statuses.last_change LIKE '%#{text}%')"
+      cond_projects << "(project_statuses.actions LIKE '%#{text}%')"
+      cond_projects << "(project_statuses.operational_alert LIKE '%#{text}%')"
+      cond_projects << "(project_statuses.feedback LIKE '%#{text}%')"
+
+      cond_projects << "(project_requests.summary LIKE '%#{text}%')"
+      cond_projects << "(project_requests.pm LIKE '%#{text}%')"
+
+      projects = nil
+      if parentOnly == true
+        cond_projects << "(childs.name LIKE '%#{text}%')"
+        cond_projects << "(childs.description LIKE '%#{text}%')"
+
+        cond_projects << "(child_statuses.explanation LIKE '%#{text}%')"
+        cond_projects << "(child_statuses.last_change LIKE '%#{text}%')"
+        cond_projects << "(child_statuses.actions LIKE '%#{text}%')"
+        cond_projects << "(child_statuses.operational_alert LIKE '%#{text}%')"
+        cond_projects << "(child_statuses.feedback LIKE '%#{text}%')"
+
+        cond_projects << "(child_requests.summary LIKE '%#{text}%')"
+        cond_projects << "(child_requests.pm LIKE '%#{text}%')"
+
+        projects = Project.find(:all, 
+                               :joins =>["LEFT OUTER JOIN statuses as project_statuses ON project_statuses.project_id = projects.id",
+                                "LEFT OUTER JOIN requests as project_requests ON project_requests.project_id = projects.id",
+                                "LEFT OUTER JOIN projects as childs ON childs.project_id = projects.id",
+                                "LEFT OUTER JOIN statuses as child_statuses ON child_statuses.project_id = childs.id",
+                                "LEFT OUTER JOIN requests as child_requests ON child_requests.project_id = childs.id"],
+                                :conditions => "(#{cond_projects.join(" or ")}) and (projects.project_id is null)",
+                                :group => "projects.id")
+      else
+        projects = Project.find(:all, 
+                               :joins =>["LEFT OUTER JOIN statuses as project_statuses ON project_statuses.project_id = projects.id",
+                                "LEFT OUTER JOIN requests as project_requests ON project_requests.project_id = projects.id"],
+                                :conditions => cond_projects.join(" or "),
+                                :group => "projects.id")
+      end
+      return projects
   end
 
   def supervisor_name
@@ -362,51 +394,18 @@ class Project < ActiveRecord::Base
     return true
   end
 
-  def create_milestones
-    #LifecycleMilestone.find(:all, :conditions => ["lifecycle_id = ?",self.lifecycle_object.id]).each {|m| create_milestone(m.milestone_name.title)}
-    case self.lifecycle_object.name
-        when "Full GPP"
-          ['M1', 'M3', 'QG BRD', 'QG ARD', 'M5', 'M7', 'M9', 'M10', 'QG TD', 'M10a', 'QG MIP', 'M11', 'M12', 'M13', 'M14'].each {|m| create_milestone(m)}
-        when "Light GPP"
-          ['M1', 'M3', 'QG BRD', 'QG ARD', 'M5/M7', 'M9/M10', 'QG TD', 'QG MIP', 'M11', 'M12/M13', 'M14'].each {|m| create_milestone(m)}
-        when "Maintenance"
-          ['CCB', 'QG TD M', 'MIPM'].each {|m| create_milestone(m)}
-        when "LBIP Gx"
-          ['G0', 'G2', 'G3', 'G4', 'QG BRD', 'G5', 'G6', 'G7', 'G8', 'G9'].each {|m| create_milestone(m)}
-        when "LBIP gx"
-          ['g0', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9'].each {|m| create_milestone(m)}
-        when "LBIP pgx"
-          ['pg0', 'pg2', 'pg3', 'pg4', 'pg5', 'pg6', 'pg7', 'pg8', 'pg9'].each {|m| create_milestone(m)}
-        when "Suite"
-          ['sM1', 'sM3', 'sM5', 'sM13', 'sM14'].each {|m| create_milestone(m)}
-        end
-  end
-
-  def set_lifecycle_old_param
-    case self.lifecycle_object.name
-         when "Full GPP"
-           self.lifecycle = FullGPP
-         when "Light GPP"
-           self.lifecycle = LightGPP
-         when "Maintenance"
-           self.lifecycle = Maintenance
-         when "LBIP Gx"
-           self.lifecycle = LBIPGx
-         when "LBIP gx"
-           self.lifecycle = LBIPgx
-         when "LBIP pgx"
-           self.lifecycle = LBIPpgx
-         when "Suite"
-           self.lifecycle = Suite
+  def create_milestones(force=false)
+    if self.milestones.size == 0 or force == true
+      LifecycleMilestone.find(:all, :conditions => ["lifecycle_id = ?",self.lifecycle_object.id], :order => "index_order").each {|m| create_milestone(m)}
     end
   end
 
-  def check
-    self.check_milestones
+  def check(force=false)
+    self.check_milestones(force)
   end
 
-  def check_milestones
-    self.create_milestones
+  def check_milestones(force=false)
+    self.create_milestones(force)
     self.milestones.each(&:check)
   end
 
@@ -434,9 +433,9 @@ class Project < ActiveRecord::Base
     not rv and not find_milestone_by_name(m)
   end
 
-  def create_milestone(m)
-    rv = self.requests_string(m)
-    milestones.create(:project_id=>self.id, :name=>m, :comments=>rv[0], :status=>(rv[1] == 0 ? -1 : 0)) if can_create(m)
+  def create_milestone(lifecycle_milestone)
+    rv = self.requests_string(lifecycle_milestone.milestone_name.title)
+    milestones.create(:project_id=>self.id, :name=>lifecycle_milestone.milestone_name.title, :index_order=>lifecycle_milestone.index_order, :comments=>"", :status=>(rv[1] == 0 ? -1 : 0), :is_virtual=>0)
   end
 
   def requests_string(m)
@@ -617,6 +616,33 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def get_status_for_milestone(milestone)
+    status, style, decision = '',{}
+    if milestone
+      status += milestone.name + ': '+milestone.comments.split("\n").join("\r\n")
+      status += "\r\n" + milestone.date.to_s if milestone.date
+      status += "\r\n"
+      style  = get_cell_style_for_milestone(milestone)
+
+      case milestone.status
+        when -1
+          decision = "#no request# "
+        when 0
+          decision = "#unknown# "
+        when 1
+          decision = "#GO# "
+        when 2
+          decision = "#GO w/a# "
+        when 3
+          decision = "#NO GO# "
+        else
+          decision = "#NA# "
+      end
+
+    end
+    [status,style,decision]
+  end
+
   # names is a array of names mutually exclusive (if we found M5 we should not be able to found a G5)
   # ex: ['M5','G5','g5','pg5', 'CCB']
   def get_milestone_status(names)
@@ -629,22 +655,6 @@ class Project < ActiveRecord::Base
         status += "\r\n"
         style  = get_cell_style_for_milestone(m)
       end
-    end
-    [status,style]
-  end
-
-  # names is a array of names mutually exclusive (if we found M5 we should not be able to found a G5)
-  # ex: ['M5','G5','g5','pg5', 'CCB']
-  def get_multiple_milestone_status(names)
-    status, style = '',{}
-    for name in names
-      milestones = find_multiple_milestone_by_name(name)
-      milestones.each { |m|
-        status += name + ': '+m.comments.split("\n").join("\r\n")
-        status += "\r\n" + m.date.to_s if m.date
-        status += "\r\n"
-        style  = get_cell_style_for_milestone(m)
-      }
     end
     [status,style]
   end
@@ -686,69 +696,21 @@ class Project < ActiveRecord::Base
     return ["", "", {}]
   end
 
-  def sorted_milestones
-    #NaturalSort::naturalsort milestones
-    milestones.sort_by { |m| [milestone_order(m.name), (m.date ? m.date : Date.today())]}
+  def get_next_milestone
+    # Current milestone
+    i = get_current_milestone_index
+    # Not managed
+    return nil if not i or i >= milestones.size-1
+    # Next milestone
+    return sorted_milestones[i]
   end
 
-  def milestone_order(name)
-    case name
-    when 'M1';      3
-    when 'M3';      4
-    when 'QG BRD';  5
-    when 'QG ARD';  6
-    when 'M5';      7
-    when 'M5/M7';   8
-    when 'M7';      9
-    when 'M9';      10
-    when 'M9/M10';  11
-    when 'M10';     12
-    when 'CCB';     12
-    when 'QG TD';   13
-    when 'QG TD M';   13
-    when 'MIPM';    14
-    when 'M10a';    14
-    when 'QG MIP';  15
-    when 'M11';     16
-    when 'M12';     17
-    when 'M12/M13'; 18
-    when 'M13';     19
-    when 'M14';     20
-    when 'G0';  1
-    when 'G2';  2
-    when 'G3';  3
-    when 'G4';  4
-    when 'G5';  6
-    when 'G6';  7
-    when 'G7';  8
-    when 'G8';  9
-    when 'G9';  10
-    when 'g0';  1
-    when 'g2';  2
-    when 'g3';  3
-    when 'g4';  4
-    when 'g5';  6
-    when 'g6';  7
-    when 'g7';  8
-    when 'g8';  9
-    when 'g9';  10
-    when 'pg0';  1
-    when 'pg2';  2
-    when 'pg3';  3
-    when 'pg4';  4
-    when 'pg5';  6
-    when 'pg6';  7
-    when 'pg7';  8
-    when 'pg8';  9
-    when 'pg9';  10
-    when 'sM1';  3
-    when 'sM3';  4
-    when 'sM5';  7
-    when 'sM13'; 19
-    when 'sM14'; 20
-    else;        0
-    end
+  def sorted_milestones
+    #NaturalSort::naturalsort milestones
+    # milestones.sort_by { |m| [milestone_order(m.name), (m.date ? m.date : Date.today())]}
+    milestones.sort_by { |m| m.index_order}
   end
+ 
 
   # give a list of corresponding requests PM
   def request_pm
@@ -924,9 +886,16 @@ class Project < ActiveRecord::Base
   #Get the list of workpackages of requests linked to the project
   def get_workpackages_from_requests
     result = Array.new
+    person = nil
+
     self.requests.each do |r|
-      if (!result.include? (r.work_package))
-        result << r.work_package
+      if (!result.include?(r.work_package) and r.resolution == "in progress")
+        if r.assigned_to != ''
+          person = Person.find_by_rmt_user(r.assigned_to)
+          result << r.work_package + "(" + person.name + ")"
+        else
+          result << r.work_package + "(NA)"
+        end        
       end
     end
     return result;
@@ -945,6 +914,131 @@ class Project < ActiveRecord::Base
     end
     return false
   end
+
+  def get_suite_requests
+    suite_requests = Array.new
+    self.requests.each do |r|
+      suite_requests << r if (r.request_type == 'Yes' || r.request_type == 'Suite')
+    end
+    return suite_requests
+  end
+
+  # PRESALE 
+  def get_priority
+    p_priority = nil
+    self.milestones.select{|m| (APP_CONFIG['presale_milestones_priority_setting_up'] + APP_CONFIG['presale_milestones_priority']) .include? m.name}.each do |m|
+      if (APP_CONFIG['presale_milestones_priority'].include? m.name)
+        p_priority = calculPriority(m, p_priority)
+      end
+    end
+    return p_priority
+  end
+
+  # PRESALE 
+  def get_setting_up_priority
+    p_priority_setting_up = nil
+    self.milestones.select{|m| (APP_CONFIG['presale_milestones_priority_setting_up'] + APP_CONFIG['presale_milestones_priority']) .include? m.name}.each do |m|
+        if (APP_CONFIG['presale_milestones_priority_setting_up'].include? m.name)
+          p_priority_setting_up = calculPrioritySettingUp(m, p_priority_setting_up)
+        end
+      end
+      return p_priority_setting_up
+  end
+
+  #return the QR_QWR name (for the summary display)
+  def get_qr_qwr_name
+    qr_qwr = nil
+    if (self.is_qr_qwr && self.is_running && self.qr_qwr_id != nil && self.qr_qwr_id != 0)
+      qr_qwr = Person.find(self.qr_qwr_id)
+      return qr_qwr.name + ""
+    else
+      return "N/A"
+    end
+  end
+
+  def create_sibling(project)
+    self.name           = project.name
+    self.description    = project.description
+    self.brn            = project.brn
+    self.workstream     = project.workstream
+    self.project_id     = project.project_id
+    self.last_status    = project.last_status
+    self.supervisor_id  = project.supervisor_id
+    self.coordinator    = project.coordinator
+    self.pm             = project.pm
+    self.bpl            = project.bpl
+    self.ispl           = project.ispl
+    self.read_date      = project.read_date
+    self.lifecycle      = project.lifecycle
+    self.pm_deputy      = project.pm_deputy
+    self.ispm           = project.ispm
+    self.lifecycle_id   = project.lifecycle_id
+    self.qs_count       = project.qs_count
+    self.spider_count   = project.spider_count
+    self.is_running     = project.is_running
+    self.qr_qwr_id      = project.qr_qwr_id
+    self.dwr            = project.dwr
+    self.is_qr_qwr      = project.is_qr_qwr
+    self.suite_tag_id   = project.suite_tag_id
+    self.project_code   = project.project_code
+    self.sales_revenue  = project.sales_revenue
+
+    self.sibling_id     = project.id
+    self.save
+
+    # Last status
+    last_status = project.get_status
+    if last_status
+      new_status = last_status.clone
+      new_status.project_id = self.id
+      new_status.save
+    end
+
+    # Requests
+    project.requests.each do |r|
+      r.project_id = self.id
+      r.save
+    end
+
+    # Project people
+    project.project_people.each do |pp|
+      new_pp = pp.clone
+      new_pp.project_id = self.id
+      new_pp.save
+    end
+
+    # Risks
+    project.risks.each do |r|
+      new_risk = r.clone
+      new_risk.project_id = self.id
+      new_risk.save
+    end
+
+    # Amendments
+    project.amendments.each do |a|
+      new_amendment = a.clone
+      new_amendment.project_id = self.id
+      new_amendment.save
+    end
+
+    # Actions
+    project.actions.each do |a|
+      new_action = a.clone
+      new_action.project_id = self.id
+      new_action.save
+
+      a.progress = "closed"
+      a.save
+    end
+
+    # Notes
+    project.notes.each do |n|
+      new_note = n.clone
+      new_note.project_id = self.id
+      new_note.save
+    end
+  end
+  
 private
 
   def excel(a,b)
@@ -955,6 +1049,73 @@ private
     return "" if date_time == nil
     Date.today() - Date.parse(date_time.to_s)
   end
+
+  def calculPrioritySettingUp(milestone, lastPriority)
+    priority = lastPriority
+    # Milestone date
+    m_date = nil
+    if milestone.actual_milestone_date != nil
+      m_date = milestone.actual_milestone_date
+    elsif milestone.milestone_date != nil
+      m_date = milestone.milestone_date
+    end
+
+    # Current priority
+    current_priority = nil
+    case m_date
+    when nil    
+      current_priority = Presale::PRIORITY_NONE
+    when m_date >= Date.parse(Time.now.to_s) + 30.days
+      current_priority = Presale::PRIORITY_TO_BE_FOLLOWED
+    when m_date >= Date.parse(Time.now.to_s) + 14.days
+      current_priority = Presale::PRIORTY_IN_TIME
+    when m_date >= Date.parse(Time.now.to_s) + 7.days
+      current_priority = Presale::PRIORITY_URGENT
+    when m_date >= Date.parse(Time.now.to_s)
+      current_priority = Presale::PRIORITY_VERY_URGENT
+    else
+      current_priority = Presale::PRIORITY_TOO_LATE
+    end
+
+    # General Priority
+    if priority == nil or current_priority > priority 
+      priority = current_priority
+    end
+    return priority
+  end
+
+  def calculPriority(milestone, lastPriority)
+    priority = lastPriority
+    # Milestone date
+    m_date = nil
+    if milestone.actual_milestone_date != nil
+      m_date = milestone.actual_milestone_date
+    elsif milestone.milestone_date != nil
+      m_date = milestone.milestone_date
+    end
+
+    # Current priority
+    current_priority = nil
+    case m_date
+    when nil    
+      current_priority = Presale::PRIORITY_NONE
+    when m_date >= Date.parse(Time.now.to_s) + 120.days
+      current_priority = Presale::PRIORTY_IN_TIME
+    when m_date >= Date.parse(Time.now.to_s) + 60.days
+      current_priority = Presale::PRIORITY_URGENT
+    when m_date >= Date.parse(Time.now.to_s)
+      current_priority = Presale::PRIORITY_VERY_URGENT
+    else
+      current_priority = Presale::PRIORITY_TOO_LATE
+    end
+
+    # General Priority
+    if priority == nil or current_priority > priority 
+      priority = current_priority
+    end
+    return priority
+  end
+
 end
 
 module DiffExcel
