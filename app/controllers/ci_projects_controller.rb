@@ -115,6 +115,9 @@ class CiProjectsController < ApplicationController
               if ci.deployment_date.to_s != p.deployment_date.to_s
                 ci.update_attribute('deployment_date_alert', 1)
               end
+              if ci.airbus_validation_date.to_s != p.acceptance_date.to_s
+                ci.update_attribute('airbus_date_alert', 1)
+              end
               ci.update_attribute('num_req_backlog', p.id)
               ci.save
             end
