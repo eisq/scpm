@@ -862,6 +862,11 @@ class ProjectsController < ApplicationController
       new_project.save
 
       project.is_running = 0
+      if project.lifecycle_object
+        project.name = "[" + project.lifecycle_object.name + "] " + project.name
+      else
+        project.name = "[SIBLING] " + project.name
+      end
       project.save
     end
 
