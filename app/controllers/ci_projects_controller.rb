@@ -22,24 +22,24 @@ class CiProjectsController < ApplicationController
   def create_ci
     @project = CiProject.new()
     @select_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
-    @select_stage = [['', 0], ['Continuous Improvement', 'Continuous Improvement'], ['Test_CI', 'Test_CI']]
-    @select_category = [['', 0], ['Autres', 'Autres'], ['Bundle', 'Bundle'], ['Methodo Airbus (GPP, LBIP ...)', 'Methodo Airbus (GPP, LBIP ...)'], ['Methodo Airbus (GPP, LBIP...)', 'Methodo Airbus (GPP, LBIP...)'], ['Project', 'Project']]
-    @select_severity = [['', 0], ['text', 'text'], ['tweak', 'tweak'], ['minor', 'minor'], ['major', 'major'], ['block', 'block']]
-    @select_reproductibility = [['', 0], ['alaways', 'alaways'], ['sometimes', 'sometimes'], ['random', 'random'], ['have not tried', 'have not tried'], ['unable to deplicate', 'unable to deplicate'], ['N/A', 'N/A']]
-    @select_status = [['', 0], ['New', 'New'], ['Analyse', 'Analyse'], ['Qualification', 'Qualification'], ['Comment', 'Comment'], ['Accepted', 'Accepted'], ['Assigned', 'Assigned'], ['Realised', 'Realised'], ['Verified', 'Verified'], ['Validated', 'Validated'], ['Delivered', 'Delivered'], ['Reopened', 'Reopened'], ['Closed', 'Closed'], ['Rejected', 'Rejected']]
-    @select_reporter_and_responsible = [['', 0], ['acario', 'acario'], ['agoupil', 'agoupil'], ['bmonteils', 'bmonteils'], ['btisseur', 'btisseur'], ['ccaron', 'ccaron'], ['capottier', 'capottier'], ['cpages', 'cpages'], ['cdebortoli', 'cdebortoli'], ['dadupont', 'dadupont'], ['fplisson', 'fplisson'], ['jmondy', 'jmondy'], ['lbalansac', 'lbalansac'], ['mbuscail', 'mbuscail'], ['mmaglionepiromallo', 'mmaglionepiromallo'], ['mantoine', 'mantoine'], ['mblatche', 'mblatche'], ['mbekkouch', 'mbekkouch'], ['nrigaud', 'nrigaud'], ['ngagnaire', 'ngagnaire'], ['nmenvielle', 'nmenvielle'], ['ocabrera', 'ocabrera'], ['pdestefani', 'pdestefani'], ['pescande', 'pescande'], ['pcauquil', 'pcauquil'], ['rbaillard', 'rbaillard'], ['rallin', 'rallin'], ['swezel', 'swezel'], ['saury', 'saury'], ['stessier', 'stessier'], ['vlaffont', 'vlaffont'], ['zallou', 'zallou']]
-    @select_visibility = [['', 0], ['Public', 'Public'], ['Internal', 'Internal']]
-    @select_priority = [['', 0], ['None', 'None'], ['Low', 'Low'], ['Normal', 'Normal'], ['High', 'High'], ['Urgent', 'Urgent']]
-    @select_detection_version = [['', 0], ['v1.0', 'v1.0'], ['v2.0', 'v2.0']]
-    @select_fixed_in_version = [['', 0], ['v1.0', 'v1.0'], ['v2.0', 'v2.0']]
-    @select_issue_origin = [['', 0], ['Missing element', 'element_manquant'], ['Vague element', 'element_imprecis'], ['Wrong element', 'element_faux'], ['Modification', 'modification'], ['Improvement', 'amelioration'], ['Environment', 'environnement']]
-    @select_lot = [['', 0], ['v1.0', 'v1.0'], ['v2.0', 'v2.0']]
+    @select_stage = [['Continuous Improvement', 'Continuous Improvement']]
+    @select_category = [['Autres', 'Autres'], ['Bundle', 'Bundle'], ['Methodo Airbus (GPP, LBIP ...)', 'Methodo Airbus (GPP, LBIP ...)'], ['Methodo Airbus (GPP, LBIP...)', 'Methodo Airbus (GPP, LBIP...)'], ['Project', 'Project']]
+    @select_severity = [['minor', 'minor'], ['major', 'major'], ['block', 'block'], ['text', 'text'], ['tweak', 'tweak']]
+    @select_reproductibility = [['always', 'always'], ['sometimes', 'sometimes'], ['random', 'random'], ['have not tried', 'have not tried'], ['unable to deplicate', 'unable to deplicate'], ['N/A', 'N/A']]
+    @select_status = [['New', 'New']]
+    @project.submission_date = Date.today()
+    @project.reporter = current_user.rmt_user
+    @select_visibility = [['Public', 'Public'], ['Internal', 'Internal']]
+    @select_priority = [['None', 'None'], ['Low', 'Low'], ['Normal', 'Normal'], ['High', 'High'], ['Urgent', 'Urgent']]
+    #@select_issue_origin = [['', 0], ['Missing element', 'element_manquant'], ['Vague element', 'element_imprecis'], ['Wrong element', 'element_faux'], ['Modification', 'modification'], ['Improvement', 'amelioration'], ['Environment', 'environnement']]
+    #@select_lot = [['', 0], ['v1.0', 'v1.0'], ['v2.0', 'v2.0']]
     @select_entity = [['', 0], ['FuD', 'FuD'], ['PhD', 'PhD'], ['MnT', 'M&T']]
     @select_domain = [['', 0], ['EP', 'EP'], ['EV', 'EV'], ['ES', 'ES'], ['EY', 'EY'], ['EZ', 'EZ'], ['EZC', 'EZC'], ['EI', 'EI'], ['EZMC', 'EZMC'], ['EZMB', 'EZMB'], ['EC', 'EC'], ['EG', 'EG']]
     @select_origin = [['', 0], ['Airbus Feed back', 'Airbus Feed back'], ['SQLI Feed back', 'SQLI Feed back']]
     @select_dev_team = [['', 0], ['SQLI', 'SQLI'], ['EZMC', 'EZMC'], ['ICT', 'ICT']]
     @select_ci_objectives_2014 = [['', 0], ['Monitor scope management across programme', 'Monitor scope management across programme'], ['Acting on process adherence information', 'Acting on process adherence information'], ['Support E-M&T QMS setting up : Baseline all QMS components and manage them in configuration', 'Support E-M&T QMS setting up : Baseline all QMS components and manage them in configuration'], ['Support E-M&T QMS setting up : Setup Change management process involving appropriate stakeholder', 'Support E-M&T QMS setting up : Setup Change management process involving appropriate stakeholder'], ['Support E-M&T QMS setting up : Support E-M&T processes and method description and deployment', 'Support E-M&T QMS setting up : Support E-M&T processes and method description and deployment'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Support Agile and FastTrack deployment', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Support Agile and FastTrack deployment'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Adapt Quality activities and role to Agile, and FastTrack standards', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Adapt Quality activities and role to Agile, and FastTrack standards'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Deploy HLR principles (so called BD in GPP)', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Deploy HLR principles (so called BD in GPP)'], ['Industrialise 2013 initiatives: Lessons learnt process from collection to reuse', 'Industrialise 2013 initiatives: Lessons learnt process from collection to reuse'], ['Industrialise 2013 initiatives: DW/PLM Quality activity plan setting-up, changes and monitoring', 'Industrialise 2013 initiatives: DW/PLM Quality activity plan setting-up, changes and monitoring'], ['Industrialise 2013 initiatives: Project setting optimisation and defined adjustment criteria', 'Industrialise 2013 initiatives: Project setting optimisation and defined adjustment criteria'], ['Harmonize PLM WoW and setup a PLMQAP', 'Harmonize PLM WoW and setup a PLMQAP'], ['No target objective', 'No target objective']]
-    @select_level_of_impact = [['', 0], ['Very Hight', 'Very Hight '], ['High', ' High '], ['Medium', ' Medium '], ['Low', ' Low '], ['Very low', ' Very Low']]
+    #@select_level_of_impact = [['', 0], ['Very Hight', 'Very Hight '], ['High', ' High '], ['Medium', ' Medium '], ['Low', ' Low '], ['Very low', ' Very Low']]
+    @select_deployment = [['Internal', 'Internal'], ['External', 'External']]
   end
 
   def all
@@ -115,7 +115,7 @@ class CiProjectsController < ApplicationController
               if ci.deployment_date.to_s != p.deployment_date.to_s
                 ci.update_attribute('deployment_date_alert', 1)
               end
-              if ci.airbus_validation_date.to_s != p.acceptance_date.to_s
+              if ci.airbus_validation_date.to_s+"" != p.acceptance_date.to_s+""
                 ci.update_attribute('airbus_date_alert', 1)
               end
               ci.update_attribute('num_req_backlog', p.id)
