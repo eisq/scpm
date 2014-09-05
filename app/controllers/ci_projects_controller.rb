@@ -190,12 +190,12 @@ class CiProjectsController < ApplicationController
     p = CiProject.new(params[:project])
 
     last_external_id = 0
-    projects = CiProject.find(:all, :conditions=>"external_id != null and external_id != 0").sort_by {|p| [p.external_id]}
-    projects.each { |t|
+    projects = CiProject.find(:all).sort_by {|p| [p.external_id]}
+    projects.each { |t|
       last_external_id = t.external_id
     }
 
-    p.external_id = (last_external_id + 2)
+    p.external_id = (last_external_id + 1)
     p.to_implement = 1
     p.save
     redirect_to "/ci_projects/show/"+p.id.to_s
