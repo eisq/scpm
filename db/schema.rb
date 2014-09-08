@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140825164423) do
+ActiveRecord::Schema.define(:version => 20140905160811) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -130,9 +130,11 @@ ActiveRecord::Schema.define(:version => 20140825164423) do
   create_table "ci_projects", :force => true do |t|
     t.integer  "internal_id"
     t.integer  "external_id"
+    t.string   "type"
     t.string   "stage"
     t.string   "category"
     t.string   "severity"
+    t.string   "reproductibility"
     t.text     "summary"
     t.text     "description"
     t.string   "status"
@@ -143,75 +145,73 @@ ActiveRecord::Schema.define(:version => 20140825164423) do
     t.string   "assigned_to"
     t.string   "priority"
     t.string   "visibility"
-    t.float    "resolution_charge"
-    t.text     "additional_information"
+    t.string   "detection_version"
+    t.string   "fixed_in_version"
+    t.string   "status_precisions"
+    t.string   "resolution_charge"
+    t.string   "duplicated_id"
+    t.string   "stages_to_reproduce"
+    t.string   "additional_informations"
     t.date     "taking_into_account_date"
-    t.date     "realisaton_date"
+    t.date     "realisation_date"
     t.string   "realisation_author"
     t.date     "delivery_date"
-    t.string   "origin"
-    t.string   "improvement_target_objective"
-    t.string   "scope_l2"
-    t.text     "deliverable_list"
-    t.string   "accountable"
-    t.string   "deployment"
-    t.date     "launching_date_ddmmyyyy"
-    t.date     "sqli_validation_date_objective"
-    t.date     "airbus_validation_date_objective"
-    t.date     "deployment_date_objective"
-    t.date     "sqli_validation_date"
-    t.date     "airbus_validation_date"
-    t.date     "deployment_date"
-    t.date     "deployment_date_review"
-    t.integer  "strategic",                        :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "airbus_responsible"
-    t.date     "sqli_validation_date_review"
-    t.date     "airbus_validation_date_review"
-    t.date     "kick_off_date"
-    t.string   "deliverable_folder"
-    t.string   "ci_objectives_2013"
-    t.string   "sqli_validation_responsible"
-    t.text     "issue_history"
-    t.text     "type"
-    t.text     "reproducibility"
-    t.text     "detection_version"
-    t.text     "version_taken_into_account"
-    t.text     "status_precision"
-    t.text     "id_duplicate"
-    t.text     "steps_to_reproduce"
     t.date     "reopening_date"
-    t.text     "detection_phase"
-    t.text     "injection_phase"
-    t.text     "impact"
-    t.text     "impact_time"
-    t.text     "typology_of_change"
-    t.text     "deliverables_updated"
-    t.text     "iteration"
-    t.text     "lot"
-    t.text     "entity"
-    t.text     "team"
-    t.text     "domain"
-    t.integer  "backlog_request_id"
-    t.text     "ci_objectives_2010_2011"
-    t.text     "ci_objectives_2012"
+    t.string   "issue_origin"
+    t.string   "detection_phase"
+    t.string   "injection_phase"
+    t.string   "real_test_of_detection"
+    t.string   "theoretical_test_of_detection"
+    t.string   "iteration"
+    t.string   "lot"
+    t.string   "entity"
+    t.string   "team"
+    t.string   "domain"
+    t.string   "num_req_backlog"
+    t.string   "origin"
+    t.string   "output_type"
+    t.string   "deliverables_list"
+    t.string   "dev_team"
+    t.date     "deployment"
+    t.string   "airbus_responsible"
+    t.date     "airbus_validation_date"
+    t.date     "airbus_validation_date_objective"
+    t.date     "airbus_validation_date_review"
+    t.string   "ci_objective_20102011"
+    t.string   "ci_objective_2012"
+    t.string   "ci_objectives_2013"
+    t.string   "deliverable_folder"
+    t.date     "deployment_date"
+    t.date     "deployment_date_objective"
     t.date     "specification_date"
+    t.date     "kick_off_date"
+    t.date     "launching_date_ddmmyyyy"
+    t.date     "sqli_validation_date"
+    t.date     "sqli_validation_date_objective"
     t.date     "specification_date_objective"
-    t.text     "ci_objectives_2014"
-    t.integer  "linked_req"
-    t.text     "quick_fix"
-    t.text     "level_of_impact"
-    t.text     "impacted_mnt_process"
-    t.text     "path_backlog"
-    t.text     "path_sfs_airbus"
-    t.text     "item_type"
+    t.string   "sqli_validation_responsible"
+    t.string   "ci_objectives_2014"
+    t.string   "linked_req"
+    t.string   "quick_fix"
+    t.string   "level_of_impact"
+    t.string   "impacted_mnt_process"
+    t.string   "path_backlog"
+    t.string   "path_svn"
+    t.string   "path_sfs_airbus"
+    t.string   "item_type"
     t.date     "verification_date_objective"
     t.date     "verification_date"
-    t.text     "request_origin"
-    t.text     "report"
-    t.text     "previous_report"
-    t.text     "svn_delivery_folder"
+    t.string   "request_origin"
+    t.string   "issue_history"
+    t.integer  "strategic",                        :default => 0
+    t.string   "report"
+    t.string   "previous_report"
+    t.integer  "sqli_date_alert",                  :default => 0
+    t.integer  "airbus_date_alert",                :default => 0
+    t.integer  "deployment_date_alert",            :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "to_implement"
     t.integer  "sqli_validation_done",             :default => 0
     t.integer  "airbus_validation_done",           :default => 0
     t.integer  "deployment_done",                  :default => 0
@@ -340,9 +340,9 @@ ActiveRecord::Schema.define(:version => 20140825164423) do
   end
 
   create_table "lesson_collect_file_downloads", :force => true do |t|
-    t.integer "user_id"
-    t.integer "lesson_collect_file_id"
-    t.date    "download_date"
+    t.integer  "user_id"
+    t.integer  "lesson_collect_file_id"
+    t.datetime "download_date"
   end
 
   create_table "lesson_collect_files", :force => true do |t|
@@ -457,7 +457,7 @@ ActiveRecord::Schema.define(:version => 20140825164423) do
     t.integer  "done",                     :default => 0
     t.integer  "checklist_not_applicable", :default => 0
     t.integer  "index_order"
-    t.boolean  "is_virtual",               :default => true
+    t.boolean  "is_virtual",               :default => false
     t.boolean  "to_export",                :default => false
   end
 
@@ -630,6 +630,7 @@ ActiveRecord::Schema.define(:version => 20140825164423) do
     t.integer  "suite_tag_id"
     t.string   "project_code"
     t.integer  "sales_revenue", :default => 0
+    t.integer  "sibling_id"
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
