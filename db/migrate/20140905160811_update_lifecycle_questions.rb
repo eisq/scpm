@@ -42,7 +42,7 @@ class UpdateLifecycleQuestions < ActiveRecord::Migration
 
 			light_gpp_questions.each do |l|
 
-				old_lifecycle_question = LifecycleQuestion.find(:first, :conditions => ["text LIKE '?' and lifecycle_id = ?", l.text, waterfall_lifecycle.id.to_s])
+				old_lifecycle_question = LifecycleQuestion.find(:first, :conditions => ["text LIKE ? and lifecycle_id = ?", l.text, waterfall_lifecycle.id.to_s])
 				new_lifecycle_question = nil
 				if old_lifecycle_question
 					new_lifecycle_question = old_lifecycle_question
