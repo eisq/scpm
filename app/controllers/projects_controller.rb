@@ -31,17 +31,19 @@ class ProjectsController < ApplicationController
     @workstreams = Workstream.all()
     @workstreams = @workstreams.map { |ws| ws.name }
 
-    actions_condition = "progress in('in_progress', 'open')"
     if session[:project_filter_qr] != nil
-      actions_condition << " and person_id in #{session[:project_filter_qr]}"
+      @actions = Action.find(:all, :conditions=>"progress in('in_progress', 'open') and person_id in #{session[:project_filter_qr]}")
+    else
+      projects_id = @wps.map { |p| p.id }
+      @actions = Action.find(:all, :conditions=>["progress in('in_progress', 'open') and project_id in (?)", projects_id])
     end
-    @actions      = Action.find(:all, :conditions=>actions_condition)
 
-    actions_closed_condition = "progress in('closed','abandonned')"
     if session[:project_filter_qr] != nil
-      actions_closed_condition << " and person_id in #{session[:project_filter_qr]}"
+      @actions_closed       = Action.find(:all, :conditions=>"progress in('closed','abandonned') and person_id in #{session[:project_filter_qr]}", :order=>"due_date")
+    else
+      projects_id = @wps.map { |p| p.id }
+      @actions_closed = Action.find(:all, :conditions=>["progress in('closed','abandonned') and project_id in (?)", projects_id])
     end
-    @actions_closed       = Action.find(:all, :conditions=>actions_closed_condition, :order=>"due_date")
 
     @total_wps    = Project.count
     @total_status = Status.count
