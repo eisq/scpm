@@ -56,7 +56,8 @@ class UpdateLifecycleQuestions < ActiveRecord::Migration
 
 					# Update question references data
 			       	qrs = QuestionReference.find(:first, :conditions => ["question_id = ? and milestone_id = ?", l.id.to_s, q_m.to_s])
-			       	if qrs
+
+			       	if qrs and (qrs.milestone_name.title == 'M5/M7' or qrs.milestone_name.title == 'M9/M10' or qrs.milestone_name.title == 'M12/M13')
 			    		qf_new.note = qrs.note
 			       		qf_new.save
 			       	end
