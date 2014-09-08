@@ -41,23 +41,34 @@ class UpdateLifecycleQuestions < ActiveRecord::Migration
 			end
 
 			light_gpp_questions.each do |l|
-				new_lifecycle_question = l.clone
-				new_lifecycle_question.lifecycle_id = waterfall_lifecycle.id
-			 	new_lifecycle_question.created_at = Time.zone.now
-				new_lifecycle_question.save
+
+				old_lifecycle_question = LifecycleQuestion.find(:first, :conditions => ["text LIKE '?' and lifecycle_id = ?", l.text, waterfall_lifecycle.id.to_s])
+				new_lifecycle_question = nil
+				if old_lifecycle_question
+					new_lifecycle_question = old_lifecycle_question
+				else
+					new_lifecycle_question = l.clone
+					new_lifecycle_question.lifecycle_id = waterfall_lifecycle.id
+				 	new_lifecycle_question.created_at = Time.zone.now
+					new_lifecycle_question.save
+				end
 
 				# Create question references
 			 	waterfall_milestones_id.each do |q_m|
-			 	   	qf_new = QuestionReference.new
-			       	qf_new.question_id = new_lifecycle_question.id
-			       	qf_new.milestone_id = q_m
-			       	qf_new.note = 0
-			       	qf_new.save
+			 		qf_new = nil
+			 		if old_lifecycle_question == nil
+				 	   	qf_new = QuestionReference.new
+				       	qf_new.question_id = new_lifecycle_question.id
+				       	qf_new.milestone_id = q_m
+				       	qf_new.note = 0
+				       	qf_new.save
+				    else
+				    	qf_new = QuestionReference.find(:first, :conditions => ["question_id = ? and milestone_id = ?", new_lifecycle_question.id.to_s, q_m.to_s])
+				    end
 
 					# Update question references data
 			       	qrs = QuestionReference.find(:first, :conditions => ["question_id = ? and milestone_id = ?", l.id.to_s, q_m.to_s])
-
-			       	if qrs and (qrs.milestone_name.title == 'M5/M7' or qrs.milestone_name.title == 'M9/M10' or qrs.milestone_name.title == 'M12/M13')
+			       	if qrs and qf_new and (qrs.milestone_name.title == 'M5/M7' or qrs.milestone_name.title == 'M9/M10' or qrs.milestone_name.title == 'M12/M13')
 			    		qf_new.note = qrs.note
 			       		qf_new.save
 			       	end
