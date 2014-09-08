@@ -1,6 +1,5 @@
 class UpdateLifecycleQuestions < ActiveRecord::Migration
 
-	# TODO : Create all questions references at the lifecyclequestions creation, and only update the question references after that
 	def self.up
 		full_gpp_lifecycle 	= Lifecycle.find(:first, :conditions => ["name = 'Full GPP'"])
 		waterfall_lifecycle = Lifecycle.find(:first, :conditions => ["name = 'Waterfall'"])
@@ -18,19 +17,26 @@ class UpdateLifecycleQuestions < ActiveRecord::Migration
 
 		if waterfall_lifecycle
 			full_gpp_questions.each do |q|
+				# Create lifecycle question
 				new_lifecycle_question = q.clone
 			 	new_lifecycle_question.lifecycle_id = waterfall_lifecycle.id
 			 	new_lifecycle_question.created_at = Time.zone.now
 			 	new_lifecycle_question.save
 
-			 	qrs = QuestionReference.find(:all, :conditions => ["question_id = ?", q.id.to_s])
-			 	qrs.each do |qr|
-			 		if waterfall_milestones_id.include?(qr.milestone_name.id)
-				 		new_qr = qr.clone
-				 		new_qr.question_id = new_lifecycle_question.id
-			 			new_qr.created_at = Time.zone.now
-				 		new_qr.save
-				 	end
+			 	# Create question references
+			 	waterfall_milestones_id.each do |q_m|
+			 	   	qf_new = QuestionReference.new
+			       	qf_new.question_id = new_lifecycle_question.id
+			       	qf_new.milestone_id = q_m
+			       	qf_new.note = 0
+			       	qf_new.save
+			 	
+			 		# Update question references data
+			       	qrs = QuestionReference.find(:first, :conditions => ["question_id = ? and milestone_id = ?", q.id.to_s, q_m.to_s])
+			       	if qrs
+			    		qf_new.note = qrs.note
+			       		qf_new.save
+			       	end
 			 	end
 			end
 
@@ -40,16 +46,21 @@ class UpdateLifecycleQuestions < ActiveRecord::Migration
 			 	new_lifecycle_question.created_at = Time.zone.now
 				new_lifecycle_question.save
 
-				qrs = QuestionReference.find(:all, :conditions => ["question_id = ?", l.id.to_s])
-			 	qrs.each do |qr|
-			 		if qr.milestone_name.title == 'M5/M7' or qr.milestone_name.title == 'M9/M10' or qr.milestone_name.title == 'M12/M13'
-				 		new_qr = qr.clone
-				 		new_qr.question_id = new_lifecycle_question.id
-			 			new_qr.created_at = Time.zone.now
-				 		new_qr.save
-				 	end
-			 	end
+				# Create question references
+			 	waterfall_milestones_id.each do |q_m|
+			 	   	qf_new = QuestionReference.new
+			       	qf_new.question_id = new_lifecycle_question.id
+			       	qf_new.milestone_id = q_m
+			       	qf_new.note = 0
+			       	qf_new.save
 
+					# Update question references data
+			       	qrs = QuestionReference.find(:first, :conditions => ["question_id = ? and milestone_id = ?", l.id.to_s, q_m.to_s])
+			       	if qrs
+			    		qf_new.note = qrs.note
+			       		qf_new.save
+			       	end
+			    end
 			end
 		end
 
@@ -61,15 +72,21 @@ class UpdateLifecycleQuestions < ActiveRecord::Migration
 			 	new_lifecycle_question.created_at = Time.zone.now
 			 	new_lifecycle_question.save
 
-			 	qrs = QuestionReference.find(:all, :conditions => ["question_id = ?", q.id.to_s])
-			 	qrs.each do |qr|
-			 		if lbip_plus_milestones_id.include?(qr.milestone_name.id)
-				 		new_qr = qr.clone
-				 		new_qr.question_id = new_lifecycle_question.id
-			 			new_qr.created_at = Time.zone.now
-				 		new_qr.save
-				 	end
-			 	end
+				# Create question references
+				lbip_plus_milestones_id.each do |q_m|
+			 	   	qf_new = QuestionReference.new
+			       	qf_new.question_id = new_lifecycle_question.id
+			       	qf_new.milestone_id = q_m
+			       	qf_new.note = 0
+			       	qf_new.save
+
+					# Update question references data
+			       	qrs = QuestionReference.find(:first, :conditions => ["question_id = ? and milestone_id = ?", q.id.to_s, q_m.to_s])
+			       	if qrs
+			    		qf_new.note = qrs.note
+			       		qf_new.save
+			       	end
+				end
 			end
 		end
 
