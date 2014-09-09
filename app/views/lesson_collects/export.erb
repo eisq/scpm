@@ -8,32 +8,72 @@
   'xmlns:ss'   => "urn:schemas-microsoft-com:office:spreadsheet"
   }) do
 
-# STYLES
+
 @xml.Styles do
   @xml.Style 'ss:ID' => 'Default', 'ss:Name' => 'Normal' do
-     @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
-     @xml.Borders
-     @xml.Font 'ss:FontName' => 'Verdana'
-     @xml.Interior
-     @xml.NumberFormat
-     @xml.Protection 
+    @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
+    @xml.Borders
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Interior
+    @xml.NumberFormat
+    @xml.Protection 
   end
   @xml.Style 'ss:ID' => 's62', 'ss:Name' => 'Header' do
-    @xml.Font  'ss:Color'=>'#FFFFFF', 'ss:Bold'=>"1"
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#000000', 'ss:Bold'=>"1"
     @xml.Interior 'ss:Color'=>"#99CCFF", 'ss:Pattern'=>'Solid'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+    end
   end
   @xml.Style 'ss:ID' => 's75', 'ss:Name' => 'Closed' do
     @xml.Font 'ss:Color'=>'#C5BE97', 'ss:Italic' => '1'
+  end
+  @xml.Style 'ss:ID' => 's1024', 'ss:Name' => 'Classic' do
+    @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+    @xml.Interior
+    @xml.NumberFormat
+    @xml.Protection 
   end
 end
 
   # LESSONS LEARNT COLLECT
   @xml.Worksheet 'ss:Name' => 'Lessons learnt Collect' do
+
+    # @xml.WorksheetOptions do
+    #   @xml.DoNotDisplayGridlines '1'
+    # end
+    
     @xml.Table do
 
       # Columns width
-      for i in 0..@lessonCollectsHeader.count do
-        @xml.Column nil, {'ss:Width' => 70}
+      for i in 0..(@lessonCollectsHeader.count + 1) do
+        if i == 0
+          @xml.Column nil, {'ss:Width' => 70, 'ss:Hidden' => 1}
+        else
+          @xml.Column nil, {'ss:Width' => 70}
+        end
+      end
+
+      # Blank line + Template
+      @xml.Row 'ss:Hidden' => 1 do
+        @xml.Cell do
+          @xml.Data '', 'ss:Type' => 'String'
+          @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell do
+          @xml.Data @filter_type_selected_obj.name, 'ss:Type' => 'String'
+          @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
       end
 
       # Title
@@ -59,12 +99,16 @@ end
           @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell do
+          @xml.Data '', 'ss:Type' => 'String'
+          @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's62' do
           @xml.Data 'Lessons Learnt Collect', 'ss:Type' => 'String'
           @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
 
-      # Line
+      # Blank Line
       @xml.Row do
         @xml.Cell do
           @xml.Data '', 'ss:Type' => 'String'
@@ -99,19 +143,23 @@ end
               @xml.Data '', 'ss:Type' => 'String'
               @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
-
             @xml.Cell do
+              @xml.Data '', 'ss:Type' => 'String'
+              @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
+
+            @xml.Cell 'ss:StyleID' => 's62' do
               @xml.Data column[0], 'ss:Type' => 'String'
               @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
-            @xml.Cell do
+            @xml.Cell 'ss:StyleID' => 's62' do
               @xml.Data column[1], 'ss:Type' => 'String'
               @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
         end
       end
 
-      # Line
+      # Blank Line
       @xml.Row do
         @xml.Cell do
           @xml.Data '', 'ss:Type' => 'String'
@@ -121,6 +169,10 @@ end
 
       # Header Table
       @xml.Row 'ss:StyleID' => 's62' do
+        @xml.Cell do
+          @xml.Data '', 'ss:Type' => 'String'
+          @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
         for column in @lessonCollectsHeader do
           @xml.Cell do
             @xml.Data column, 'ss:Type' => 'String'
@@ -131,8 +183,12 @@ end
 
       # Rows
       for lesson in @exportHash["lessonCollects"]
-        style = {}
+        style = {'ss:StyleID' => 's1024'}
         @xml.Row(style) do
+          @xml.Cell do
+            @xml.Data '', 'ss:Type' => 'String'
+            @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
           # Lesson id
           @xml.Cell do
             @xml.Data lesson.lesson_id.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -233,7 +289,7 @@ end
 
       # Columns width
       for i in 0..@lessonActionsHeader.count do
-        if @action_columns_hidden.include? i
+        if @action_columns_hidden.include? i or i == 0
           @xml.Column nil, {'ss:Width' => 70, 'ss:Hidden' => 1}
         else
           @xml.Column nil, {'ss:Width' => 70}
@@ -263,6 +319,10 @@ end
           @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell do
+          @xml.Data '', 'ss:Type' => 'String'
+          @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's62' do
           @xml.Data 'Action Report', 'ss:Type' => 'String'
           @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
@@ -278,6 +338,10 @@ end
 
       # Header
       @xml.Row 'ss:StyleID' => 's62' do
+        @xml.Cell do
+          @xml.Data '', 'ss:Type' => 'String'
+          @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
         for column in @lessonActionsHeader do
           @xml.Cell do
             @xml.Data column, 'ss:Type' => 'String'
@@ -288,8 +352,12 @@ end
 
       # Rows
       for action in @exportHash["lessonActions"]
-        style = {}
+        style = {'ss:StyleID' => 's1024'}
         @xml.Row(style) do
+          @xml.Cell do
+            @xml.Data '', 'ss:Type' => 'String'
+            @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
           # Ref.
           @xml.Cell do
             @xml.Data action.ref, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -397,7 +465,7 @@ end
 
       # Rows
       for assessment in @exportHash["lessonCollectAssessment"]
-        style = {}
+        style = {'ss:StyleID' => 's1024'}
         @xml.Row(style) do
           # ID RMT
           @xml.Cell do
