@@ -47,7 +47,18 @@
 end
 
   @xml.Names do
+    @xml.NamedRange 'ss:Name' => 'Suite', 'ss:RefersTo' => '=Infos!R2C5:R19C5'
     @xml.NamedRange 'ss:Name' => 'Experience', 'ss:RefersTo' => '=Infos!R2C1:R3C1'
+    @xml.NamedRange 'ss:Name' => 'Milestone', 'ss:RefersTo' => '=Infos!R2C4:R9C4'
+    @xml.NamedRange 'ss:Name' => 'Axe', 'ss:RefersTo' => '=Infos!R1C11:R1C17'
+
+
+    @xml.NamedRange 'ss:Name' => 'Project_Organisation', 'ss:RefersTo' => '=Infos!R2C11:R6C11'
+    @xml.NamedRange 'ss:Name' => 'Project_Scope_Management', 'ss:RefersTo' => '=Infos!R2C12:R7C12'
+    @xml.NamedRange 'ss:Name' => 'Development_And_Supplier_Management', 'ss:RefersTo' => '=Infos!R2C13:R4C13'
+    @xml.NamedRange 'ss:Name' => 'Test_Management', 'ss:RefersTo' => '=Infos!R2C14:R5C14'
+    @xml.NamedRange 'ss:Name' => 'Product_Deployment', 'ss:RefersTo' => '=Infos!R2C15:R5C15'
+    @xml.NamedRange 'ss:Name' => 'Quality_Management_On_Project', 'ss:RefersTo' => '=Infos!R2C16:R4C16'
   end
 
   # LESSONS LEARNT COLLECT
@@ -58,9 +69,29 @@ end
     end
 
     @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R6C9"
+      @xml.Type "List"
+      @xml.Value "Suite"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
       @xml.Range "R9C4:R663C4"
       @xml.Type "List"
       @xml.Value "Experience"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R9C3:R663C3"
+      @xml.Type "List"
+      @xml.Value "Milestone"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R9C8:R663C8"
+      @xml.Type "List"
+      @xml.Value "Axe"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R9C9:R663C9"
+      @xml.Type "List"
+      @xml.Value "INDIRECT(RC[-1])"
     end
 
     @xml.Table do
