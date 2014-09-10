@@ -51,7 +51,7 @@ end
     @xml.NamedRange 'ss:Name' => 'Experience', 'ss:RefersTo' => '=Infos!R2C1:R3C1'
     @xml.NamedRange 'ss:Name' => 'Milestone', 'ss:RefersTo' => '=Infos!R2C4:R9C4'
     @xml.NamedRange 'ss:Name' => 'Axe', 'ss:RefersTo' => '=Infos!R1C11:R1C17'
-
+    @xml.NamedRange 'ss:Name' => 'Escalate', 'ss:RefersTo' => '=Infos!R2C3:R3C3'
 
     @xml.NamedRange 'ss:Name' => 'Project_Organisation', 'ss:RefersTo' => '=Infos!R2C11:R6C11'
     @xml.NamedRange 'ss:Name' => 'Project_Scope_Management', 'ss:RefersTo' => '=Infos!R2C12:R7C12'
@@ -59,10 +59,17 @@ end
     @xml.NamedRange 'ss:Name' => 'Test_Management', 'ss:RefersTo' => '=Infos!R2C14:R5C14'
     @xml.NamedRange 'ss:Name' => 'Product_Deployment', 'ss:RefersTo' => '=Infos!R2C15:R5C15'
     @xml.NamedRange 'ss:Name' => 'Quality_Management_On_Project', 'ss:RefersTo' => '=Infos!R2C16:R4C16'
+
+    @xml.NamedRange 'ss:Name' => 'ID_LL', 'ss:RefersTo' => "='Lessons learnt'!R11C2:R15C2"
+    @xml.NamedRange 'ss:Name' => 'Action_Satus', 'ss:RefersTo' => "=Infos!R2C9:R6C9"
+    @xml.NamedRange 'ss:Name' => 'Benefit_Invest', 'ss:RefersTo' => "=Infos!R2C10:R7C10"
+
+    @xml.NamedRange 'ss:Name' => 'Satisfaction', 'ss:RefersTo' => "=Infos!R2C6:R5C6"
+    @xml.NamedRange 'ss:Name' => 'Presentation', 'ss:RefersTo' => "=Infos!R2C8:R3C8"
   end
 
   # LESSONS LEARNT COLLECT
-  @xml.Worksheet 'ss:Name' => 'Lessons learnt Collect' do
+  @xml.Worksheet 'ss:Name' => 'Lessons learnt' do
 
     @xml.WorksheetOptions({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do
       @xml.DoNotDisplayGridlines
@@ -92,6 +99,11 @@ end
       @xml.Range "R9C9:R663C9"
       @xml.Type "List"
       @xml.Value "INDIRECT(RC[-1])"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R9C10:R663C10"
+      @xml.Type "List"
+      @xml.Value "Escalate"
     end
 
     @xml.Table do
@@ -327,6 +339,27 @@ end
 
   # ACTIONS
   @xml.Worksheet 'ss:Name' => 'Actions' do
+
+    @xml.WorksheetOptions({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do
+      @xml.DoNotDisplayGridlines
+    end
+
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R4C4:R1000C4"
+      @xml.Type "List"
+      @xml.Value "ID_LL"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R4C6:R100C6"
+      @xml.Type "List"
+      @xml.Value "Action_Satus"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R4C15:R1000C16"
+      @xml.Type "List"
+      @xml.Value "Benefit_Invest"
+    end
+
     @xml.Table do
 
       # Columns width
@@ -467,6 +500,28 @@ end
 
   # ASSESSMENT
   @xml.Worksheet 'ss:Name' => 'Assessment of quality service' do
+
+    @xml.WorksheetOptions({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do
+      @xml.DoNotDisplayGridlines
+    end
+
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R3C2:R1000C2"
+      @xml.Type "List"
+      @xml.Value "Milestone"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R3C4:R1000C8"
+      @xml.Type "List"
+      @xml.Value "Satisfaction"
+    end
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R3C3:R1000C3"
+      @xml.Type "List"
+      @xml.Value "Presentation"
+    end
+
+
     @xml.Table do
 
       # Columns width
@@ -590,7 +645,7 @@ end
           @xml.Data "Presentation", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell do
-          @xml.Data "Action_Satus", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Action_Status", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell do
           @xml.Data "Benefit_invest", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
