@@ -82,7 +82,7 @@ class CiProjectsController < ApplicationController
       # transform the Report into a CiProject
       report.projects.each { |p|
         # get the id if it exist, else create it
-        filter = DateTime.strptime('14/09/05 16:00', '%Y/%m/%d %H:%M') #we will manage only CIs started from this date.
+        filter = DateTime.strptime('14/09/11 12:00', '%Y/%m/%d %H:%M') #we will manage only CIs started from this date.
         if (p.stage != "BAM" and p.stage != "" and DateTime.strptime(p.submission_date, '%d/%m/%Y %H:%M') >= filter) #DateTime.strptime('2013/09/01 16:00', '%Y/%m/%d %H:%M')))
           ci = CiProject.find_by_external_id(p.external_id)
           # ci.to_implement = 0 if ci.to_implement == 1
