@@ -46,13 +46,23 @@
   end
 end
 
+  @xml.Names do
+    @xml.NamedRange 'ss:Name' => 'Experience', 'ss:RefersTo' => '=Infos!R2C1:R3C1'
+  end
+
   # LESSONS LEARNT COLLECT
   @xml.Worksheet 'ss:Name' => 'Lessons learnt Collect' do
 
-    # @xml.WorksheetOptions do
-    #   @xml.DoNotDisplayGridlines '1'
-    # end
-    
+    @xml.WorksheetOptions({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do
+      @xml.DoNotDisplayGridlines
+    end
+
+    @xml.DataValidation({'xmlns'      => "urn:schemas-microsoft-com:office:excel"}) do 
+      @xml.Range "R9C4:R663C4"
+      @xml.Type "List"
+      @xml.Value "Experience"
+    end
+
     @xml.Table do
 
       # Columns width
@@ -200,6 +210,7 @@ end
           # Type lesson
           @xml.Cell do
             @xml.Data lesson.type_lesson, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.NamedCell 'ss:Name' => 'Experience'
           end
           # Topics
           @xml.Cell do
@@ -283,7 +294,7 @@ end
     end #End xml.table
   end #End xml.worksheet
 
-# ACTIONS
+  # ACTIONS
   @xml.Worksheet 'ss:Name' => 'Actions' do
     @xml.Table do
 
@@ -511,6 +522,67 @@ end
       end #End for
     end #End xml.table
   end #End xml.worksheet
+
+  # INFOS
+  @xml.Worksheet 'ss:Name' => 'Infos' do
+    @xml.Table do
+
+      # Columns width
+      for i in 0..20 do
+        @xml.Column nil, {'ss:Width' => 70}
+      end
+
+      # Headers
+      @xml.Row 'ss:StyleID' => 's62' do
+        @xml.Cell do
+          @xml.Data "Experience", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "CoC", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Milestone", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Suite", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Satisfaction", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "To_Escalate?", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Presentation", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Action_Satus", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Benefit_invest", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Project_Organisation", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Project_Scope_Management", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Development_And_Supplier_Management", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Test_Management", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Product_Deployment", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Quality_Management_On_Project", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Cultural_Change", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Row 1
+      @xml.Row do
+        @xml.Cell do
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "EE", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Yes", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Lesson learnt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Row 2
+      @xml.Row do
+        @xml.Cell do
+          @xml.Data "Best Practice", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+    end #End xml.table
+  end #End xml.worksheet
+
 end 
 
 %>
