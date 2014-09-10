@@ -227,7 +227,7 @@ module LessonsLearntMt
       lesson_collect_assessment.milestone               = a[ASSESSMENT_CELL_MILESTONE_LABEL]            
       lesson_collect_assessment.mt_detailed_desc        = a[ASSESSMENT_CELL_DET_PRES_LABEL]
       lesson_collect_assessment.quality_gates           = a[ASSESSMENT_CELL_QUAL_GATES_LABEL]        
-      lesson_collect_assessment.milestones_preparation  = a[ASSESSMENT_CELL_MILESTONE_LABEL]      
+      lesson_collect_assessment.milestones_preparation  = a[ASSESSMENT_CELL_M_PREP_LABEL]      
       lesson_collect_assessment.project_setting_up      = a[ASSESSMENT_CELL_PROJ_SET_UP_LABEL]   
       lesson_collect_assessment.lessons_learnt          = a[ASSESSMENT_CELL_LESSONS_LABEL]       
       lesson_collect_assessment.support_level           = a[ASSESSMENT_CELL_SUPP_LABEL]        
