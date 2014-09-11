@@ -39,6 +39,7 @@ class LessonCollectsController < ApplicationController
 
     # Types list
     type_list = LessonCollectTemplateType.find(:all)
+    @types_array << ["All", -1]
     type_list.each{ |type|
       @types_array << [type.name, type.id]
     }

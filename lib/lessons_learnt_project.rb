@@ -331,9 +331,28 @@ module LessonsLearntProject
 
     # Loop conso
     consoSheet.each do |conso_row|
-      if ((i >= LESSON_BEGIN_CONTENT) and (conso_row[LESSON_CELL_ID]) and (conso_row[LESSON_CELL_ID].value) and (conso_row[LESSON_CELL_ID].value.length > 0))
+      if (i >= LESSON_BEGIN_CONTENT) and (conso_row[LESSON_CELL_ID]) 
+        
+        lesson_cell_id_value = ""
+        # Formula or string ?
+        if (conso_row[LESSON_CELL_ID].methods.include?("value"))
+          if (conso_row[LESSON_CELL_ID].value and conso_row[LESSON_CELL_ID].value.length == 0)
+            next
+          elsif(conso_row[LESSON_CELL_ID].value == nil)
+            next
+          else
+            lesson_cell_id_value = conso_row[LESSON_CELL_ID].value.to_s
+          end
+        else
+          if (conso_row[LESSON_CELL_ID].to_s.size == 0)
+            next
+          else
+            lesson_cell_id_value = conso_row[LESSON_CELL_ID].to_s
+          end
+        end
+
         row_hash = Hash.new
-        row_hash[LESSON_CELL_ID_LABEL]              = conso_row[LESSON_CELL_ID].value.to_s
+        row_hash[LESSON_CELL_ID_LABEL]              = lesson_cell_id_value
         row_hash[LESSON_CELL_MILESTONE_LABEL]       = conso_row[LESSON_CELL_MILESTONE].to_s
         row_hash[LESSON_CELL_LESSON_LEARNT_LABEL]   = conso_row[LESSON_CELL_LESSON_LEARNT].to_s
         row_hash[LESSON_CELL_TOPICS_LABEL]          = conso_row[LESSON_CELL_TOPICS].to_s
