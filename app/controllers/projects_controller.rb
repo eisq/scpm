@@ -181,6 +181,7 @@ class ProjectsController < ApplicationController
     @project     = Project.new(:project_id=>nil, :name=>'')
     @qr          = Person.find(:all,:include => [:person_roles,:roles], :conditions=>["roles.name = 'QR'"], :order=>"people.name asc")
     @supervisors = Person.find(:all, :conditions=>"is_supervisor=1", :order=>"name asc")
+    @tbp_projects= TbpProject.all.sort_by { |p| p.name}
   end
 
   def create
@@ -254,6 +255,7 @@ class ProjectsController < ApplicationController
     @qr          = Person.find(:all,:include => [:person_roles,:roles], :conditions=>["roles.name = 'QR' and is_supervisor=0 and has_left=0"], :order=>"people.name asc")    
     @supervisors = Person.find(:all, :conditions=>"is_supervisor=1", :order=>"name asc")
     @suiteTags   = SuiteTag.find(:all)
+    @tbp_projects= TbpProject.all.sort_by { |p| p.name}
   end
 
   def edit_status
@@ -1075,11 +1077,11 @@ private
       return
     end
     cond_wps = []
-    cond_wps << "workstream in #{session[:project_filter_workstream]}" if session[:project_filter_workstream] != nil
-    cond_wps << "last_status in #{session[:project_filter_status]}" if session[:project_filter_status] != nil
-    cond_wps << "supervisor_id in #{session[:project_filter_supervisor]}" if session[:project_filter_supervisor] != nil
-    cond_wps << "suite_tag_id in #{session[:project_filter_suiteTags]}" if session[:project_filter_suiteTags] != nil
-    cond_wps << "project_people.person_id in #{session[:project_filter_qr]}" if session[:project_filter_qr] != nil
+    cond_wps << "workstream in (#{session[:project_filter_workstream]})" if session[:project_filter_workstream] != nil
+    cond_wps << "last_status in (#{session[:project_filter_status]})" if session[:project_filter_status] != nil
+    cond_wps << "supervisor_id in (#{session[:project_filter_supervisor]})" if session[:project_filter_supervisor] != nil
+    cond_wps << "suite_tag_id in (#{session[:project_filter_suiteTags]})" if session[:project_filter_suiteTags] != nil
+    cond_wps << "project_people.person_id in (#{session[:project_filter_qr]})" if session[:project_filter_qr] != nil
     cond_wps << "is_running = 1"
     cond_wps << "projects.project_id IS NOT NULL"
 

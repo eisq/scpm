@@ -16,6 +16,7 @@ class Person < ActiveRecord::Base
   include ApplicationHelper # for wlweek
 
   belongs_to :company
+  belongs_to :tbp_collab, :class_name=>'TbpCollab', :foreign_key=>'tbp_collab_id', :primary_key=>'tbp_id'
   belongs_to :cost_profile
   has_many   :person_roles
   has_many   :roles, :through => :person_roles
@@ -50,8 +51,17 @@ class Person < ActiveRecord::Base
   end
 
   def project_lines # lines associated to projects
-    projects = WlLine.find(:all, :conditions=>["person_id=#{self.id} and project_id is not null"])
-    return projects
+    WlLine.find(:all, :conditions=>["person_id=#{self.id} and project_id is not null"])
+  end
+
+  # if the person has at least one planned for a project in the projects ids array
+  def has_workload_for_projects?(project_ids)
+    lines = project_lines.select{ |l|
+      next false if not project_ids.include?(l.project_id.to_s)
+      l.planned_sum > 0
+      }
+    puts "#{name}: #{lines.size}"
+    lines.size > 0
   end
 
   def projects_map
