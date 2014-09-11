@@ -434,7 +434,7 @@ end
             @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           # Ref.
-          @xml.Cell do
+          @xml.Cell ({'ss:Formula' => '=IF(RC[2]="","",CONCATENATE("A",(ROW()-3),"-",RC[2]))'}) do
             @xml.Data action.ref, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           # Creation Date
