@@ -21,14 +21,15 @@ class CiProjectsController < ApplicationController
 
   def create_ci
     @project = CiProject.new()
+    @project.submission_date = DateTime.now
+    @project.reporter = current_user.rmt_user
+
     @select_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
     @select_stage = [['Continuous Improvement', 'Continuous Improvement']]
     @select_category = [['Autres', 'Autres'], ['Bundle', 'Bundle'], ['Methodo Airbus (GPP, LBIP ...)', 'Methodo Airbus (GPP, LBIP ...)'], ['Methodo Airbus (GPP, LBIP...)', 'Methodo Airbus (GPP, LBIP...)'], ['Project', 'Project']]
     @select_severity = [['minor', 'minor'], ['major', 'major'], ['block', 'block'], ['text', 'text'], ['tweak', 'tweak']]
     @select_reproductibility = [['always', 'always'], ['sometimes', 'sometimes'], ['random', 'random'], ['have not tried', 'have not tried'], ['unable to deplicate', 'unable to deplicate'], ['N/A', 'N/A']]
     @select_status = [['New', 'New']]
-    @project.submission_date = Date.today()
-    @project.reporter = current_user.rmt_user
     @select_visibility = [['Public', 'Public'], ['Internal', 'Internal']]
     @select_priority = [['None', 'None'], ['Low', 'Low'], ['Normal', 'Normal'], ['High', 'High'], ['Urgent', 'Urgent']]
     #@select_issue_origin = [['', 0], ['Missing element', 'element_manquant'], ['Vague element', 'element_imprecis'], ['Wrong element', 'element_faux'], ['Modification', 'modification'], ['Improvement', 'amelioration'], ['Environment', 'environnement']]
@@ -81,7 +82,8 @@ class CiProjectsController < ApplicationController
       # transform the Report into a CiProject
       report.projects.each { |p|
         # get the id if it exist, else create it
-        if (p.stage != "BAM" and p.stage != "")
+        filter = DateTime.strptime('14/09/11 12:00', '%Y/%m/%d %H:%M') #we will manage only CIs started from this date.
+        if (p.stage != "BAM" and p.stage != "" and DateTime.strptime(p.submission_date, '%d/%m/%Y %H:%M') >= filter) #DateTime.strptime('2013/09/01 16:00', '%Y/%m/%d %H:%M')))
           ci = CiProject.find_by_external_id(p.external_id)
           # ci.to_implement = 0 if ci.to_implement == 1
           ci = CiProject.create(:external_id=>p.exterbal_id) if not ci
