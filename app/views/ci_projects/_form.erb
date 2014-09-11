@@ -18,7 +18,7 @@
 	<tr><td>SQLI validation date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :sqli_validation_date_objective %></td></tr>
 	<tr><td>SQLI validation date (yyyy-mm-dd)</td><td>				<%= text_field :project, :sqli_validation_date %></td></tr>
 
-	<% if current_user.has_role?('Ci Manager') %>
+	<%if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
 		<% if @project.sqli_date_alert == 0 %>
 			Date committed</td><td>
@@ -47,7 +47,7 @@
 	<tr><td>Airbus validation date objective (yyyy-mm-dd)</td><td><%= text_field :project, :airbus_validation_date_objective %></td></tr>
 	<tr><td>Airbus validation date (yyyy-mm-dd)</td><td>					<%= text_field :project, :airbus_validation_date %></td></tr>
 
-	<% if current_user.has_role?('Ci Manager') %>
+	<%if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
 		<% if @project.airbus_date_alert == 0 %>
 			Date committed</td><td>
@@ -75,8 +75,8 @@
 
 	<tr><td>Deployment date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :deployment_date_objective %></td></tr>
 	<tr><td>Deployment date (yyyy-mm-dd)</td><td>				<%= text_field :project, :deployment_date %></td></tr>
-
-	<% if current_user.has_role?('Ci Manager') %>
+	
+	<% if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
 		<% if @project.deployment_date_alert == 0 %>
 			Date committed</td><td>
@@ -117,10 +117,17 @@
 	</td></tr>
 	<tr><td>Assigned to</td><td>	<%= @project.assigned_to %>
 	</td></tr>
-	
+	<tr><td>SQLI Validator</td><td>	<%= @project.sqli_validation_responsiblel %>
+	</td></tr>
 	<tr><td>Priority</td><td>				<%= @project.priority %> </td></tr>
 	<tr><td>SVN delivery folder</td><td>				<%= text_field :project, :path_svn %></td></tr>
 	<tr><td>CI Objectives 2014</td><td>				<%= @project.ci_objectives_2014 %> </td></tr>
+	<tr><td>Current phase</td><td>
+	<%= text_area :project, :current_phase, {:cols=>69, :rows=>3} %>
+	</td></tr>
+	<tr><td>Next phase</td><td>
+	<%= text_area :project, :next_phase, {:cols=>69, :rows=>3} %>
+	</td></tr>
 	</table>
 </td></tr>
 </table>
