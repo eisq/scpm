@@ -12,57 +12,56 @@
 
 
 <!-- LIST -->
-<div id="filters_bar" style="border:1px solid black;">
+<div id="filters_bar">
 <% form_tag({:action=>'index'}, :id=>'filter_form_id') do %>
 	<div id="filter_hide_box">
 		<input type="button" value="Show/Hide" onclick="$j('#filters_bar_content').toggle();">
 	</div>
 	<div id="filters_bar_content">
-		<div>
+
+		<div id="filter_bar_template_type">
 			Template Types :
 			<%= select_tag ("filter_type_id", options_for_select(@types_array,@filter_type_selected.to_i)) %>
 		</div>
-		<br />
-		<div>
+
+		<div id="filter_bar_checkbox">
 			<%= check_box_tag(:filter_already_downloaded, true, @filter_already_downloaded) %> 
 			Already downloaded (<span style="color:red;">Unchecked: Files downloaded and not downloaded</span> <span style="color:green">Checked: Only downloaded files</span>)
-		</div>
-		<div>
+			<br />
 			<%= check_box_tag(:filter_is_archived, true, @filter_is_archived) %> Archived  (<span style="color:red;">Unchecked: Only unarchived files</span> <span style="color:green">Checked: Only archived files</span>)
-		<div>
+			<br />
 			<%= check_box_tag(:filter_rise, true, @filter_rise) %> RISE (<span style="color:red;">Unchecked: Files with and without RISE lines</span> <span style="color:green">Checked: Files which are, at least, on RISE line</span>)
 		</div>
-		<br />
-		<div>
+
+		<div id="filter_bar_date">
 			Begin date:
 			<%= text_field_tag('filter_begin_date', @filter_begin_date) %>
+			<br />
 			End date:
 			<%= text_field_tag('filter_end_date', @filter_end_date) %>
 		</div>
-		<br />
-		<div>
+
+		<div id="filter_bar_list">
 			Axe:
 			<%= select_tag ("filter_axe_id", options_for_select(@axes_array, @filter_axe_selected.to_i)) %>
+			<br />
 			Sub Axe:
 			<%= select_tag ("filter_sub_axe_id", options_for_select(@sub_axes_array, @filter_sub_axe_selected.to_i)) %>
-		</div>
-		<br />
-		<div>
+			<br />
 			Project:
 			<%= select_tag ("filter_project_id", options_for_select(@projects_array, @filter_project_selected.to_i)) %>
+			<br />
 			Milestone:
 			<%= select_tag ("filter_milestone_id", options_for_select(@milestones_array, @filter_milestone_selected.to_i)) %>
 		</div>
-		<br />
-		<div>
-			Workstreams       PLM
-		</div>
-		<div>
+
+		<div id="filter_bar_multi_list">
 		  	<%= select_tag ("filter_ws",options_for_select(@ws_array,@filter_ws_selected),{:size=>6, :multiple => true})  %>
 		  	<%= select_tag ("filter_suite",options_for_select(@suites_array,@filter_suite_selected),{:size=>6, :multiple => true})  %>
 		</div>
-		<div style="margin-left:auto; margin-right:auto; width:200px;">Export and Chart button return specifics lessons and not files.</div>
-		<div style="margin-left:auto; margin-right:auto; width:200px;">
+		
+		<div id="filter_bar_action">
+			Export and Chart button return specifics lessons and not files.
 			<input type="button" id="filter_button_id" value="Filter" />
 			<input type="button" id="export_button_id" value="Export" />
 			<input type="button" id="chart_button_id" value="Chart" />

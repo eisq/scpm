@@ -679,3 +679,71 @@ table.sortable td    {
   font-size: 1.4em;
   font-style: italic;
 }
+/* LESSON LEARNT */
+#filters_bar{
+  height : 500px;
+  width: 1200px;
+  position:relative;
+  display:block;
+  border : 1px solid orange;
+}
+#filters_bar_content {
+  height : 500px;
+  width: 1200px;
+  position:relative;
+  display:block;
+  border : 1px solid yellow;
+  margin-top:50px;
+}
+#filter_bar_template_type, #filter_bar_checkbox, #filter_bar_date, #filter_bar_list, #filter_bar_multi_list, #filter_bar_action, #filter_hide_box
+{
+  position: absolute;
+  display:inline;
+}
+
+#filter_hide_box{
+  width: 100px;
+  height: 50px;
+  right: 0px;
+  top:0px;
+  border: 1px solid  purple;
+}
+#filter_bar_template_type {
+  top:0px;
+  left:0px;
+  width: 100px;
+  height: 50px;
+  border:1px solid black;
+}
+#filter_bar_checkbox {
+  top: 50px;
+  left:210px;
+  width:700px;
+  border:1px solid green;
+}
+#filter_bar_date {
+  top: 50px;
+  left: 0px;
+  width:205px;
+  height:100px;
+  border:1px solid red;
+}
+#filter_bar_list {
+  top:200px;
+  left:0px;
+  width:400px;
+  height:200px;
+}
+#filter_bar_multi_list {
+  top:200px;
+  left:400px;
+  width:400px;
+  height:200px;
+}
+#filter_bar_action{
+  width:100px;
+  height:500px;
+  right:0px;
+  top:0px;
+  border: 1px solid gray;
+}
