@@ -147,7 +147,7 @@ class ProjectsController < ApplicationController
       when session[:project_sort]=='read'
         @wps = @wps.sort_by { |p| p.read_date ? p.read_date : Time.now-1.year}
       when session[:project_sort]=='update'
-        @wps = @wps.sort_by { |p| d = p.last_status_date; [p.project_requests_progress_status_html == 'ended' ? 1 : 0, d ? d : Time.zone.now] }
+        @wps = @wps.sort_by { |p| p.last_status_date ? p.last_status_date : Time.zone.now }
       when session[:project_sort]=='alpha'
         @wps = @wps.sort_by { |p| p.full_name }
       when session[:project_sort]=='workstream'
@@ -161,7 +161,7 @@ class ProjectsController < ApplicationController
       when session[:project_sort]=='read'
         @projects = @projects.sort_by { |p| p.read_date ? p.read_date : Time.now-1.year }
       when session[:project_sort]=='update'
-        @projects = @projects.sort_by { |p| d = p.last_status_date; [p.project_requests_progress_status_html == 'ended' ? 1 : 0, d ? d : Time.zone.now] }
+        @projects = @projects.sort_by { |p| p.last_status_date ? p.last_status_date : Time.zone.now }
       when session[:project_sort]=='alpha'
         @projects = @projects.sort_by { |p| p.full_name }
       when session[:project_sort]=='workstream'
