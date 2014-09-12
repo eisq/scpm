@@ -10,12 +10,22 @@
 	</div>
 <% end %>
 
+<script type="text/javascript">
+function menu_toggle(){
+	$j('#filters_bar_content').toggle();
 
+	if ($j('#filters_bar').height() > 30) {
+		$j('#filters_bar').height(30);
+	} else {
+		$j('#filters_bar').height(430);
+	}
+}
+</script>
 <!-- LIST -->
 <div id="filters_bar">
 <% form_tag({:action=>'index'}, :id=>'filter_form_id') do %>
 	<div id="filter_hide_box">
-		<input type="button" value="Show/Hide" onclick="$j('#filters_bar_content').toggle();">
+		<input type="button" value="Show/Hide" onclick="menu_toggle();">
 	</div>
 	<div id="filters_bar_content">
 
@@ -42,22 +52,20 @@
 		</div>
 
 		<div id="filter_bar_list">
-			Axe:
+			<p>Axe:</p>
 			<%= select_tag ("filter_axe_id", options_for_select(@axes_array, @filter_axe_selected.to_i)) %>
-			<br />
-			Sub Axe:
+			<p>Sub Axe:</p>
 			<%= select_tag ("filter_sub_axe_id", options_for_select(@sub_axes_array, @filter_sub_axe_selected.to_i)) %>
-			<br />
-			Project:
+			<p>Project:</p>
 			<%= select_tag ("filter_project_id", options_for_select(@projects_array, @filter_project_selected.to_i)) %>
-			<br />
-			Milestone:
+			<p>Milestone:</p>
 			<%= select_tag ("filter_milestone_id", options_for_select(@milestones_array, @filter_milestone_selected.to_i)) %>
 		</div>
 
 		<div id="filter_bar_multi_list">
-		  	<%= select_tag ("filter_ws",options_for_select(@ws_array,@filter_ws_selected),{:size=>6, :multiple => true})  %>
-		  	<%= select_tag ("filter_suite",options_for_select(@suites_array,@filter_suite_selected),{:size=>6, :multiple => true})  %>
+			<p>&nbsp;WS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Suite</p>
+		  	<%= select_tag ("filter_ws",options_for_select(@ws_array,@filter_ws_selected),{:size=>10, :multiple => true})  %>
+		  	<%= select_tag ("filter_suite",options_for_select(@suites_array,@filter_suite_selected),{:size=>10, :multiple => true})  %>
 		</div>
 		
 		<div id="filter_bar_action">
