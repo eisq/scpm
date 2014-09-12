@@ -719,6 +719,9 @@ class LessonCollectsController < ApplicationController
       filter_by_row(params)
 
       @filter_type_selected_obj = LessonCollectTemplateType.find(:first, :conditions => ["id = ?", @filter_type_selected])
+      if @filter_type_selected_obj == nil
+        @filter_type_selected_obj = LessonCollectTemplateType.find(:first, :conditions => ["name LIKE 'PROJECT'"])
+      end
 
       # Columns
 
@@ -761,17 +764,24 @@ class LessonCollectsController < ApplicationController
 
         @lesson_collect_file_obj  = LessonCollectFile.find(:first, :conditions => ["id = ?", lesson_file_id])
         @filter_type_selected_obj = @lesson_collect_file_obj.lesson_collect_template_type
+        if @filter_type_selected_obj == nil
+          @filter_type_selected_obj = LessonCollectTemplateType.find(:first, :conditions => ["name LIKE 'PROJECT'"])
+        end
 
         # Columns
-        @header                  = LessonsLearnt.generate_file_header(@lesson_collect_file_obj.lesson_collect_template_type.name, @lesson_collect_file_obj.pm, @lesson_collect_file_obj.qwr_sqr, @lesson_collect_file_obj.workstream, @lesson_collect_file_obj.suite_name, @lesson_collect_file_obj.project_name, @lesson_collect_file_obj.mt_qr)
-        @lessonCollectsHeader    = LessonsLearnt.generate_lesson_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
-        @lessonActionsHeader     = LessonsLearnt.generate_action_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
-        @lessonAssessmentsHeader = LessonsLearnt.generate_assessment_columns(@lesson_collect_file_obj.lesson_collect_template_type.name)
-        @action_columns_hidden   = LessonsLearnt.index_of_actions_columns_hidden(@lesson_collect_file_obj.lesson_collect_template_type.name)
+        @header                  = LessonsLearnt.generate_file_header(@filter_type_selected_obj.name, @lesson_collect_file_obj.pm, @lesson_collect_file_obj.qwr_sqr, @lesson_collect_file_obj.workstream, @lesson_collect_file_obj.suite_name, @lesson_collect_file_obj.project_name, @lesson_collect_file_obj.mt_qr)
+        @lessonCollectsHeader    = LessonsLearnt.generate_lesson_columns(@filter_type_selected_obj.name)
+        @lessonActionsHeader     = LessonsLearnt.generate_action_columns(@filter_type_selected_obj.name)
+        @lessonAssessmentsHeader = LessonsLearnt.generate_assessment_columns(@filter_type_selected_obj.name)
+        @action_columns_hidden   = LessonsLearnt.index_of_actions_columns_hidden(@filter_type_selected_obj.name)
         @exportHash              = LessonsLearnt.generate_hash_export_from_file(@lesson_collect_file_obj)
 
+        filename = @lesson_collect_file_obj.filename
+        if filename == nil
+          filename = "no_filename.xls"
+        end
         headers['Content-Type']         = "application/vnd.ms-excel"
-        headers['Content-Disposition']  = 'attachment; filename="'+@lesson_collect_file_obj.filename+'"'
+        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
         headers['Cache-Control']        = ''
         render "export.erb", :layout=>false
       rescue Exception => e
