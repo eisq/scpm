@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140909093300) do
+ActiveRecord::Schema.define(:version => 20140918152822) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -250,6 +250,86 @@ ActiveRecord::Schema.define(:version => 20140909093300) do
     t.integer  "counter_value"
     t.datetime "import_date"
     t.boolean  "validity",      :default => false
+  end
+
+  create_table "deviation_activities", :force => true do |t|
+    t.integer  "name"
+    t.boolean  "is_active",  :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_deliverables", :force => true do |t|
+    t.integer  "lifecycle_id"
+    t.integer  "milestone_name_id"
+    t.string   "name"
+    t.boolean  "is_active",         :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_questions", :force => true do |t|
+    t.integer  "deviation_deliverable_id"
+    t.integer  "deviation_activity_id"
+    t.integer  "milestone_id"
+    t.text     "question_text"
+    t.boolean  "is_active",                :default => true
+    t.boolean  "answer_reference",         :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spider_consolidations", :force => true do |t|
+    t.integer  "deviation_spider_id"
+    t.integer  "deviation_deliverable_id"
+    t.integer  "deviation_activity_id"
+    t.integer  "yes_counter"
+    t.integer  "no_counter"
+    t.integer  "score"
+    t.text     "justification"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spider_deliverables", :force => true do |t|
+    t.integer  "deviation_spider_id"
+    t.integer  "deviation_deliverable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spider_references", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "version_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spider_settings", :force => true do |t|
+    t.integer  "devia_spider_reference_id"
+    t.integer  "deviation_deliverable_id"
+    t.integer  "deviation_activity_id"
+    t.boolean  "answer_1",                  :default => false
+    t.boolean  "answer_2",                  :default => false
+    t.boolean  "answer_3",                  :default => false
+    t.text     "justification"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spider_values", :force => true do |t|
+    t.integer  "deviation_spider_deliverable_id"
+    t.integer  "deviation_question_id"
+    t.boolean  "answer"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spiders", :force => true do |t|
+    t.integer  "milestone_id"
+    t.boolean  "impact_count", :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "generic_risk_questions", :force => true do |t|

@@ -39,6 +39,7 @@ class Project < ActiveRecord::Base
   has_many    :wl_lines, :dependent => :nullify
   has_many    :presales, :dependent => :nullify
   has_many    :presale_ignore_projects, :dependent => :nullify
+  has_many    :deviation_spider_references
 
   def planning
     planning = Planning.find(:first, :conditions=>["project_id=#{self.id}"])
