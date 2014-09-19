@@ -2,7 +2,7 @@
 
 function change_lifecycle(lifecycle_id)
 {
-	location.replace(generate_url("index?lifecycle_id="+lifecycle_id));
+	location.replace(generate_url("index_deliverable?lifecycle_id="+lifecycle_id));
 }
 
 function create_new_deliverable() {
@@ -10,13 +10,13 @@ function create_new_deliverable() {
 }
 
 function generate_url(action_name) {
-  if(location.toString().indexOf("index") !== -1)
+  if(location.toString().indexOf("index_deliverable") !== -1)
   {
 	return action_name;
   }
   else
   {
-	return "deviation_deliverables/" + action_name;
+	return "deviation_tools/" + action_name;
   }
 }
 </SCRIPT>

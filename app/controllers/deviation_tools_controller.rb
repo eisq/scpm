@@ -1,8 +1,8 @@
-class DeviationDeliverablesController < ApplicationController
+class DeviationToolsController < ApplicationController
   layout 'spider'
 
 
-  def index
+  def index_deliverable
   	@lifecycles = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map {|l| [l.name, l.id]}
     if params[:lifecycle_id] != nil
       @lifecycle_index_select = params[:lifecycle_id]
@@ -19,7 +19,7 @@ class DeviationDeliverablesController < ApplicationController
   		@milestone_names = MilestoneName.find(:all, :conditions => ["is_active = 1"]).map {|m| [m.title, m.id]}
   		@deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
   	else
-		redirect_to :action=>'index'
+		redirect_to :action=>'index_deliverable'
   	end
   end
 
@@ -31,16 +31,16 @@ class DeviationDeliverablesController < ApplicationController
 	  	new_deliverable.name = "NEW DELIVERABLE - REPLACE IT"
 	  	new_deliverable.save
 
-	  	redirect_to :action=>'index', :lifecycle_id=>lifecycle_id
+	  	redirect_to :action=>'index_deliverable', :lifecycle_id=>lifecycle_id
 	 else
-	   redirect_to :action=>'index'
+	   redirect_to :action=>'index_deliverable'
 	 end
   end
   
   def update_deliverable
     deliverable = DeviationDeliverable.find(params[:deliverable][:id])
     deliverable.update_attributes(params[:deliverable])
-    redirect_to :action=>'index', :lifecycle_id=>deliverable.lifecycle_id
+    redirect_to :action=>'index_deliverable', :lifecycle_id=>deliverable.lifecycle_id
   end
 
   def delete_deliverable
@@ -48,9 +48,9 @@ class DeviationDeliverablesController < ApplicationController
     if deliverable
       lifecycle_id = deliverable.lifecycle_id
       deliverable.destroy
-      redirect_to :action=>'index', :lifecycle_id=>lifecycle_id
+      redirect_to :action=>'index_deliverable', :lifecycle_id=>lifecycle_id
     else
-      redirect_to :action=>'index'
+      redirect_to :action=>'index_deliverable'
     end
   end
 end
