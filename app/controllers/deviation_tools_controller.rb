@@ -55,4 +55,41 @@ class DeviationToolsController < ApplicationController
       redirect_to :action=>'index_deliverable'
     end
   end
+
+  # Activity
+  def index_activity
+    @activities = DeviationActivity.find(:all, :order => "name")
+  end
+
+  def detail_activity
+    activity_id = params[:activity_id]
+    if activity_id
+      @activity = DeviationActivity.find(:first, :conditions => ["id = ?", activity_id])
+    else
+    redirect_to :action=>'index_activity'
+    end
+  end
+
+  def new_activity
+    new_activity = DeviationActivity.new
+    new_activity.name = "NEW ACTIVITY - REPLACE IT"
+    new_activity.save
+
+    redirect_to :action=>'index_activity'
+  end
+
+  def update_activity
+    activity = DeviationActivity.find(params[:activity][:id])
+    activity.update_attributes(params[:activity])
+    redirect_to :action=>'index_activity'
+  end
+
+  def delete_activity
+    activity = DeviationActivity.find(:first, :conditions=>["id = ?", params[:activity_id]])
+    if activity
+      activity.destroy
+    end
+    redirect_to :action=>'index_activity'
+  end
+
 end

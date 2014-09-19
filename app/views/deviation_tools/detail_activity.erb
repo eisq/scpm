@@ -1,0 +1,7 @@
+<%= button_to "Delete", {:action => "delete_activity", :activity_id => @activity.id }, :method => :post %>
+
+<% form_for @activity, :url=>{:action=>'update_activity'} do |f| -%>
+  <%= render(:partial => "form_activity") %>
+  <p><label>&nbsp;</label>
+  <%= submit_tag 'Update' %></p>
+<% end -%>

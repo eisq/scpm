@@ -1,7 +1,7 @@
 class CreateDeviationActivities < ActiveRecord::Migration
   def self.up
     create_table :deviation_activities do |t|
-      t.integer :name
+      t.string :name
       t.boolean :is_active, :default => true
       t.timestamps
     end

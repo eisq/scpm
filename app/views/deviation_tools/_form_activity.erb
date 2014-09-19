@@ -1,0 +1,9 @@
+<%= hidden_field :activity, :id %>
+
+<p><%= label_tag 'Name' %>
+<%= text_field :activity, :name %> </p>
+
+<p><%= label_tag 'Is active' %>
+<%= radio_button :activity, :is_active, true %> Yes
+<%= radio_button :activity, :is_active, false %> No
+</p>

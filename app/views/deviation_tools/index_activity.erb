@@ -1,0 +1,18 @@
+<SCRIPT language="Javascript">
+function create_new_activity() {
+	location.replace("new_activity");
+}
+</SCRIPT>
+
+<input type="button", :id="add_activity", onclick="create_new_activity();" value="New activity" />
+<div id="activity_list">
+	<% @activities.each do |a| %>
+		<p>
+	    	<div style="float: left; width: auto;">
+	      		<%= a.name %> [Is Active : <%= a.is_active %>]
+	      		&nbsp;
+	    	</div>    
+	    	<%= button_to "Detail", {:action => "detail_activity", :activity_id => a.id }, {:method => :post} %>
+	  	</p>
+	<% end %>
+</div>
