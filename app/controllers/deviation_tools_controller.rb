@@ -92,4 +92,65 @@ class DeviationToolsController < ApplicationController
     redirect_to :action=>'index_activity'
   end
 
+
+  # Question
+  def index_question
+    @deliverables = DeviationDeliverable.find(:all, :conditions => ["is_active = 1"]).map {|d| [d.name, d.id]}
+    @activities   = DeviationActivity.find(:all, :conditions => ["is_active = 1"]).map {|a| [a.name, a.id]}
+    if params[:deliverable_id] != nil
+      @deliverable_index_select = params[:deliverable_id]
+    else
+      @deliverable_index_select = 1
+    end
+    if params[:activity_id] != nil
+      @activity_index_select = params[:activity_id]
+    else
+      @activity_index_select = 1
+    end
+
+    @questions = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", @deliverable_index_select.to_s, @activity_index_select.to_s], :order => "question_text")
+  end
+
+ def detail_question
+    question_id = params[:question_id]
+    if question_id
+      @question = DeviationQuestion.find(:first, :conditions => ["id = ?", question_id])
+    else
+    redirect_to :action=>'index_question'
+    end
+  end
+
+  def new_question
+    activity_id    = params[:activity_id]
+    deliverable_id = params[:deliverable_id]
+    if activity_id && deliverable_id
+      new_question = DeviationQuestion.new
+      new_question.deviation_activity_id = activity_id
+      new_question.deviation_deliverable_id = deliverable_id
+      new_question.question_text = "NEW QUESTION - REPLACE IT"
+      new_question.save
+
+      redirect_to :action=>'index_question', :activity_id=>activity_id, :deliverable_id=>deliverable_id
+   else
+     redirect_to :action=>'index_question'
+   end
+  end
+
+  def update_question
+    question = DeviationQuestion.find(params[:question][:id])
+    question.update_attributes(params[:question])
+    redirect_to :action=>'index_question', :activity_id=>question.deviation_activity_id, :deliverable_id=>question.deviation_deliverable_id
+  end
+
+  def delete_question
+    question = DeviationQuestion.find(:first, :conditions=>["id = ?", params[:question_id]])
+    if question
+      activity_id = question.deviation_activity_id
+      deliverable_id = question.deviation_deliverable_id
+      question.destroy
+      redirect_to :action=>'index_question', :activity_id=>activity_id, :deliverable_id=>deliverable_id
+    else
+      redirect_to :action=>'index_question'
+    end
+  end
 end

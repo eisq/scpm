@@ -1,0 +1,13 @@
+<%= hidden_field :question, :id %>
+
+<p><%= label_tag 'Question' %>
+<%= text_field :question, :question_text %> </p>
+
+<p><%= label_tag 'Answer reference' %>
+<%= radio_button :question, :answer_reference, true %> Yes
+<%= radio_button :question, :answer_reference, false %> No
+
+<p><%= label_tag 'Is active' %>
+<%= radio_button :question, :is_active, true %> Yes
+<%= radio_button :question, :is_active, false %> No
+</p>

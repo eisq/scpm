@@ -3,7 +3,6 @@ class CreateDeviationQuestions < ActiveRecord::Migration
     create_table :deviation_questions do |t|
       t.integer :deviation_deliverable_id
       t.integer :deviation_activity_id
-      t.integer :milestone_id
       t.text    :question_text
       t.boolean :is_active, :default => true
       t.boolean :answer_reference, :default => false
