@@ -26,5 +26,21 @@ Lifecycle : <%= select_tag('choose_lifecycle', options_for_select(@lifecycles, @
 
 <input type="button", :id="add_deliverable", onclick="create_new_deliverable();" value="New deliverable" />
 <div id="deliverable_list">
-  <%= render(:partial=>"deliverable", :collection=> @deliverables) %>
+<% @current_milestone_name_id = nil %>
+
+<% @deliverables.each do |d| %>
+
+  <% if @current_milestone_name_id == nil or @current_milestone_name_id != d.milestone_name_id %>
+    <h3><%= d.milestone_name.title %></h3>
+    <% @current_milestone_name_id =  d.milestone_name_id %>
+  <% end %>
+  
+  <p>
+      <div style="float: left; width: auto;">
+      <%= d.name %> [Is Active : <%= d.is_active %>]
+      &nbsp;
+    </div>    
+    <%= button_to "Detail", {:action => "detail_deliverable", :deliverable_id => d.id }, {:method => :post} %>
+  </p>
+<% end %>
 </div>
