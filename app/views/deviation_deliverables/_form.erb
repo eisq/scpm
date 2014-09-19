@@ -1,0 +1,13 @@
+<%= hidden_field :deliverable, :id %>
+
+<p><%= label_tag 'Milestone' %>
+<%= select(:deliverable, :milestone_name_id, @milestone_names) %>
+</p>
+
+<p><%= label_tag 'Name' %>
+<%= text_field :deliverable, :name %> </p>
+
+<p><%= label_tag 'Is active' %>
+<%= radio_button :deliverable, :is_active, true %> Yes
+<%= radio_button :deliverable, :is_active, false %> No
+</p>

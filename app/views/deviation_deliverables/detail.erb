@@ -1,0 +1,7 @@
+<%= button_to "Delete", {:action => "delete_deliverable", :deliverable_id => @deliverable.id }, :method => :post %>
+
+<% form_for @deliverable, :url=>{:action=>'update_deliverable'} do |f| -%>
+  <%= render(:partial => f) %>
+  <p><label>&nbsp;</label>
+  <%= submit_tag 'Update' %></p>
+<% end -%>
