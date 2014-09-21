@@ -1,4 +1,4 @@
-require 'google_chart'
+#require 'google_chart'
 
 class ToolsController < ApplicationController
 

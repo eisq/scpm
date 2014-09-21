@@ -5,16 +5,36 @@
 	<meta name="robots" content="all">
 	<title>BAM</title>
 	<link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
+	<style media="screen">
+	<% if Background.last %>
+  		body {
+		  background: url(<%= Background.last.url %>) no-repeat center center fixed;
+		  -webkit-background-size: cover;
+		  -moz-background-size: cover;
+		  -o-background-size: cover;
+		  background-size: cover;
+		  color: #000;
+		}
+    <% else %>
+  		body {
+		  background: url(/images/bg/background_03062013.jpg) no-repeat center center fixed;
+		  -webkit-background-size: cover;
+		  -moz-background-size: cover;
+		  -o-background-size: cover;
+		  background-size: cover;
+		  color: #000;
+		}
+    <% end %>
+</style>
 	<link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
 	<link href='http://fonts.googleapis.com/css?family=Stardos+Stencil&v1' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Zeyada&v1' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Special+Elite	&v1' rel='stylesheet' type='text/css'>
 	<link rel="Shortcut Icon" type="image/x-icon" href="/images/favicon.ico" />
+
   <%= javascript_include_tag :defaults %>
 </head>
-
-<body>
-
+<body class="image_div">
 <div id="banner">
 <%= image_tag('chrome.png', :class=>"chrome", :title=>"works better in Chrome (sadly, we don't test all browsers...)") %>
 <div class="title">Bundle Activity Manager</div>
