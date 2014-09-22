@@ -4,9 +4,9 @@ class CreateDeviationSpiderSettings < ActiveRecord::Migration
       t.integer :devia_spider_reference_id
       t.integer :deviation_deliverable_id
       t.integer :deviation_activity_id
-      t.boolean :answer_1, :default => false
-      t.boolean :answer_2, :default => false
-      t.boolean :answer_3, :default => false
+      t.text :answer_1
+      t.text :answer_2
+      t.text :answer_3
       t.text    :justification
       t.timestamps
     end

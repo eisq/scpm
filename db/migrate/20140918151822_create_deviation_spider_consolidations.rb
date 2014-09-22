@@ -4,8 +4,6 @@ class CreateDeviationSpiderConsolidations < ActiveRecord::Migration
       t.integer :deviation_spider_id
       t.integer :deviation_deliverable_id
       t.integer :deviation_activity_id
-      t.integer :yes_counter
-      t.integer :no_counter
       t.integer :score
       t.text :justification
       t.timestamps

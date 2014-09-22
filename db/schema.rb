@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140918152822) do
+ActiveRecord::Schema.define(:version => 20140922102733) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -253,7 +253,7 @@ ActiveRecord::Schema.define(:version => 20140918152822) do
   end
 
   create_table "deviation_activities", :force => true do |t|
-    t.integer  "name"
+    t.string   "name"
     t.boolean  "is_active",  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -271,10 +271,18 @@ ActiveRecord::Schema.define(:version => 20140918152822) do
   create_table "deviation_questions", :force => true do |t|
     t.integer  "deviation_deliverable_id"
     t.integer  "deviation_activity_id"
-    t.integer  "milestone_id"
     t.text     "question_text"
     t.boolean  "is_active",                :default => true
     t.boolean  "answer_reference",         :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spider_activity_values", :force => true do |t|
+    t.integer  "deviation_spider_id"
+    t.integer  "deviation_activity_id"
+    t.integer  "yes_counter"
+    t.integer  "no_counter"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -283,10 +291,17 @@ ActiveRecord::Schema.define(:version => 20140918152822) do
     t.integer  "deviation_spider_id"
     t.integer  "deviation_deliverable_id"
     t.integer  "deviation_activity_id"
-    t.integer  "yes_counter"
-    t.integer  "no_counter"
     t.integer  "score"
     t.text     "justification"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spider_deliverable_values", :force => true do |t|
+    t.integer  "deviation_spider_id"
+    t.integer  "deviation_deliverable_id"
+    t.integer  "yes_counter"
+    t.integer  "no_counter"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -309,9 +324,9 @@ ActiveRecord::Schema.define(:version => 20140918152822) do
     t.integer  "devia_spider_reference_id"
     t.integer  "deviation_deliverable_id"
     t.integer  "deviation_activity_id"
-    t.boolean  "answer_1",                  :default => false
-    t.boolean  "answer_2",                  :default => false
-    t.boolean  "answer_3",                  :default => false
+    t.text     "answer_1"
+    t.text     "answer_2"
+    t.text     "answer_3"
     t.text     "justification"
     t.datetime "created_at"
     t.datetime "updated_at"
