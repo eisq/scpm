@@ -25,20 +25,22 @@ class DeviationToolsController < ApplicationController
   end
 
   def new_deliverable
-  	lifecycle_id = params[:lifecycle_id]
-  	if lifecycle_id
-	  	new_deliverable = DeviationDeliverable.new
-	  	new_deliverable.lifecycle_id = lifecycle_id
-	  	new_deliverable.name = "NEW DELIVERABLE - REPLACE IT"
-      new_deliverable.milestone_name = MilestoneName.find(:first)
-	  	new_deliverable.save
-
-	  	redirect_to :action=>'index_deliverable', :lifecycle_id=>lifecycle_id
-	 else
-	   redirect_to :action=>'index_deliverable'
-	 end
+    lifecycle_id = params[:lifecycle_id]
+    if lifecycle_id
+      @deliverable = DeviationDeliverable.new
+      @deliverable.lifecycle_id = lifecycle_id
+      @milestone_names = MilestoneName.find(:all, :conditions => ["is_active = 1"]).map {|m| [m.title, m.id]}
+    else
+      redirect_to :action=>'index_deliverable'
+    end
   end
   
+  def create_deliverable
+    deliverable = DeviationDeliverable.new(params[:deliverable])
+    deliverable.save
+    redirect_to :action=>'detail_deliverable', :deliverable_id=>deliverable.id
+  end
+
   def update_deliverable
     deliverable = DeviationDeliverable.find(params[:deliverable][:id])
     deliverable.update_attributes(params[:deliverable])
@@ -71,11 +73,13 @@ class DeviationToolsController < ApplicationController
   end
 
   def new_activity
-    new_activity = DeviationActivity.new
-    new_activity.name = "NEW ACTIVITY - REPLACE IT"
-    new_activity.save
+    @activity = DeviationActivity.new
+  end
 
-    redirect_to :action=>'index_activity'
+  def create_activity
+    activity = DeviationActivity.new(params[:activity])
+    activity.save
+    redirect_to :action=>'detail_activity', :activity_id=>activity.id
   end
 
   def update_activity
@@ -120,20 +124,38 @@ class DeviationToolsController < ApplicationController
     end
   end
 
+  # def new_question
+   #  activity_id    = params[:activity_id]
+   #  deliverable_id = params[:deliverable_id]
+   #  if activity_id && deliverable_id
+   #    new_question = DeviationQuestion.new
+   #    new_question.deviation_activity_id = activity_id
+   #    new_question.deviation_deliverable_id = deliverable_id
+   #    new_question.question_text = "NEW QUESTION - REPLACE IT"
+   #    new_question.save
+
+   #    redirect_to :action=>'index_question', :activity_id=>activity_id, :deliverable_id=>deliverable_id
+   # else
+   #   redirect_to :action=>'index_question'
+   # end
+  # end
+
   def new_question
     activity_id    = params[:activity_id]
     deliverable_id = params[:deliverable_id]
     if activity_id && deliverable_id
-      new_question = DeviationQuestion.new
-      new_question.deviation_activity_id = activity_id
-      new_question.deviation_deliverable_id = deliverable_id
-      new_question.question_text = "NEW QUESTION - REPLACE IT"
-      new_question.save
-
-      redirect_to :action=>'index_question', :activity_id=>activity_id, :deliverable_id=>deliverable_id
+      @question = DeviationQuestion.new
+      @question.deviation_activity_id = activity_id
+      @question.deviation_deliverable_id = deliverable_id
    else
      redirect_to :action=>'index_question'
    end
+  end
+
+  def create_question
+    question = DeviationQuestion.new(params[:question])
+    question.save
+    redirect_to :action=>'detail_question', :question_id=>question.id
   end
 
   def update_question

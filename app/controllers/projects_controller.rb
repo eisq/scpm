@@ -1036,6 +1036,28 @@ class ProjectsController < ApplicationController
       redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Milestone can't be deleted while it has data. Delete all milestone data to be able to delete the milestone."
     end
   end
+
+  def spider_configuration
+    project_id = params[:project_id]
+    @project = Project.find(:first, :conditions => ["id = ?", project_id])
+
+    @last_import_date = "N/A"
+    @last_import = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
+
+    if @last_import
+      @last_import_date = last_import.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+    end
+  end
+
+  def update_spider_configuration
+    project_id = params[:project_id]
+    deviation_spider = params[:deviation_spider]
+    if project_id and deviation_spider
+      @project = Project.find(:first, :conditions => ["id = ?", project_id])
+      @project.deviation_spider = deviation_spider
+      @project.save
+    end
+  end
   # - 
 
 private
@@ -1145,6 +1167,5 @@ private
     end
     @risks
   end
-
 end
 

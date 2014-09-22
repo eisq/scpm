@@ -1,3 +1,4 @@
+<%= button_to "Deliverables", {:action => "index_deliverable" }, :method => :post %>
 <%= button_to "Delete", {:action => "delete_deliverable", :deliverable_id => @deliverable.id }, :method => :post %>
 
 <% form_for @deliverable, :url=>{:action=>'update_deliverable'} do |f| -%>

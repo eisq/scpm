@@ -65,7 +65,6 @@
     	<li><%= link_to('CHECK QS/Spiders Counters', {:controller=>'tools', :action=>'show_counter_history'}) %></li>
     	<li><%= link_to('CHECK QS/Spiders Counters without RMT', {:controller=>'tools', :action=>'show_counter_history_without_rmt'}) %></li>
       <li><%= link_to('CHECK KPI', {:controller=>'tools', :action=>'kpi_check'}) %></li>
-
 		</ul>
     </li>
     <li><%= link_to('WS Reporting', {:controller=>'workstreams', :action=>'index'}, {:class=>menu_style('workstreams','*')}) %>
@@ -130,6 +129,10 @@
         <li><%= link_to('Manage Axes',        				{:controller=>'pm_type_axes', :action=>'index'}) %></li>
         <li><%= link_to('Manage Questions',        		{:controller=>'lifecycle_questions', :action=>'index'}) %></li>
         <li><%= link_to('Manage Questions References',{:controller=>'question_references', :action=>'index'}) %></li>
+        <li class="hsep">Deviation Spiders</li>
+        <li><%= link_to('Manage activities',{:controller=>'deviation_tools', :action=>'index_activity'}) %></li>
+        <li><%= link_to('Manage deliverables',{:controller=>'deviation_tools', :action=>'index_deliverable'}) %></li>
+        <li><%= link_to('Manage questions',{:controller=>'deviation_tools', :action=>'index_question'}) %></li>
       </ul>
     </li>
 		<% end %>

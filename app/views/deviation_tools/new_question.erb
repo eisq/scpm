@@ -1,7 +1,6 @@
 <%= button_to "Questions", {:action => "index_question" }, :method => :post %>
-<%= button_to "Delete", {:action => "delete_question", :question_id => @question.id }, :method => :post %>
 
-<% form_for @question, :url=>{:action=>'update_question'} do |f| -%>
+<% form_for @question, :url=>{:action=>'create_question'} do |f| -%>
   <%= render(:partial => "form_question") %>
   <p><label>&nbsp;</label>
   <%= submit_tag 'Update' %></p>

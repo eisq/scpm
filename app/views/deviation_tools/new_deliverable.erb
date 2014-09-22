@@ -1,0 +1,7 @@
+<%= button_to "Deliverables", {:action => "index_deliverable" }, :method => :post %>
+
+<% form_for @deliverable, :url=>{:action=>'create_deliverable'} do |f| -%>
+  <%= render(:partial => "form_deliverable") %>
+  <p><label>&nbsp;</label>
+  <%= submit_tag 'Create' %></p>
+<% end -%>
