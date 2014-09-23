@@ -322,11 +322,11 @@ ActiveRecord::Schema.define(:version => 20140922170422) do
 
   create_table "deviation_spider_settings", :force => true do |t|
     t.integer  "devia_spider_reference_id"
-    t.integer  "deviation_deliverable_id"
-    t.integer  "deviation_activity_id"
-    t.text     "answer_1"
-    t.text     "answer_2"
-    t.text     "answer_3"
+    t.string   "deliverable_name"
+    t.string   "activity_name"
+    t.string   "answer_1"
+    t.string   "answer_2"
+    t.string   "answer_3"
     t.text     "justification"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -21,7 +21,7 @@ class DeviationSpider < ActiveRecord::Base
 
 				# deliverable_parameter = DeviationDeliverable.find(:first, 
 				                                                  # :joins=>["JOIN milestone_names ON milestone_names.id  = deviation_deliverables.milestone_name_id"], 
-				                                                  # :conditions => ["milestone_names."])
+				                                                  # :conditions => ["milestone_names.title LIKE ? and id = ?","%#{self.milestone.name}%"])
 			end
 		end
 		# Check base data
