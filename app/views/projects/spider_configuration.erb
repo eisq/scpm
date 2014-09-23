@@ -3,6 +3,15 @@ function setShowIgnore(object) {
 	window.location.replace("/projects/update_spider_configuration?project_id=<%= @project.id.to_s %>&deviation_spider="+object.value)  
 }
 </SCRIPT>
+
+<p>
+<%= form_tag({:action => 'do_upload_backlog'}, :multipart => true) %>
+    <label for="upload_file">Import deviation file</label>
+    <%= file_field 'upload', 'datafile' %>
+    <%= submit_tag "Upload" %>
+</form>
+</p>
+
 <h3>Project Spider Configuration</h3>
 
 <p>Deviation spider :
