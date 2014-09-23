@@ -1057,6 +1057,11 @@ class ProjectsController < ApplicationController
       @project.deviation_spider = deviation_spider
       @project.save
     end
+    if project_id
+      redirect_to :action=>:spider_configuration, :project_id=>project_id
+    else
+      redirect_to :action=>:index
+    end
   end
   # - 
 

@@ -1,11 +1,9 @@
 <SCRIPT type="text/javascript">
 function setShowIgnore(object) {
-	alert(object.value);
-	// window.location.replace("/presales/projects?presale_presale_type=<%= @presale_presale_type_id %>&show_ignored="+object.value)  
+	window.location.replace("/projects/update_spider_configuration?project_id=<%= @project.id.to_s %>&deviation_spider="+object.value)  
 }
 </SCRIPT>
 <h3>Project Spider Configuration</h3>
-
 
 <p>Deviation spider :
 	<% if @project.deviation_spider %>
@@ -19,7 +17,7 @@ function setShowIgnore(object) {
 
 <p>Last import : <%= @last_import_date %></p>
 
-<table>
+<!-- <table>
 <tr>
 	<th>Deliverable</th>
 	<th>Answer 1</th>
@@ -27,4 +25,4 @@ function setShowIgnore(object) {
 	<th>Answer 3</th>
 	<th>Justification</th>
 </tr>
-</table>
+</table> -->
