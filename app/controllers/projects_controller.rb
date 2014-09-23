@@ -1,4 +1,5 @@
 require 'builder'
+#require 'lib/csv_deviation'
 
 include ActionView::Helpers::DateHelper # just for time_ago_in_words...
 
@@ -358,6 +359,41 @@ class ProjectsController < ApplicationController
     Mailer::deliver_status_change(p)
     timestamps_on if params[:update] != '1'
     redirect_to :action=>:show, :id=>status.project_id
+  end
+
+  # import deviation file, provided by PSU, it will manage spider axes and questions
+  def import_deviation
+    #post = params[:upload]
+    #name =  post['datafile'].original_filename
+    #directory = "public/data"
+    #path = File.join(directory, name)
+    #File.open(path, "wb") { |f| f.write(post['datafile'].read) }
+    #report = CsvBacklogReport.new(path)
+    #begin
+    #  report.parse
+    #  report.projects.each { |p|
+    #    if (p.ticket_or_ci_ref != nil and p.ticket_or_ci_ref != "" and p.id != nil and p.id != "")
+    #      cis = p.ticket_or_ci_ref.split(" ")
+    #      cis.each { |c|
+    #        id_ci = c.split("#")
+    #        if id_ci.first == "CI"
+    #          ci = CiProject.find_by_external_id(id_ci.last.to_i)
+    #          if ci.deployment_date.to_s != p.deployment_date.to_s
+    #            ci.update_attribute('deployment_date_alert', 1)
+    #          end
+    #          if ci.airbus_validation_date.to_s+"" != p.acceptance_date.to_s+""
+    #            ci.update_attribute('airbus_date_alert', 1)
+    #          end
+    #          ci.update_attribute('num_req_backlog', p.id)
+    #          ci.save
+    #        end
+    #      }
+    #    end
+    #  }
+    #  redirect_to :action=>:show, :id=>project.id
+    #rescue Exception => e
+    #  render(:text=>e)
+    #end
   end
 
   # check request and suggest projects
