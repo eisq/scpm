@@ -4,7 +4,7 @@ class CreateDeviationSpiderValues < ActiveRecord::Migration
       t.integer :deviation_spider_deliverable_id
       t.integer :deviation_question_id
       t.boolean :answer
-      t.bollean :answer_reference
+      t.boolean :answer_reference
       t.timestamps
     end
   end

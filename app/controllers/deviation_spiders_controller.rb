@@ -7,6 +7,17 @@ class DeviationSpidersController < ApplicationController
 	    @milestone 	= Milestone.find(:first, :conditions=>["id = ?", milestone_id])  
 	    @project 	= @milestone.project
 
+
+	    @current_spider = nil
+		# Search the last spider
+   		last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
+    
+    	# If not spider currently edited
+    	if ((!last_spider) || (last_spider.deviation_spider_consolidations.count != 0))
+    		
+    	else
+
+    	end
 	    # call generate_current_table
 	    # generate_current_table(@project,@milestone,create_spider_param)
 	    # Search all spider from history (link)
@@ -22,14 +33,14 @@ class DeviationSpidersController < ApplicationController
 
 		@deviation_project = nil
 		if @milestone
-			@deviation_project = DeviationProject.new
-			@deviation_project.project_id 	= @milestone.project.id
-			@deviation_project.milestone_id = milestone_id
-			@deviation_project.init_spider_data
-			@deviation_project.save
+			@deviation_spider 				= DeviationSpider.new
+			@deviation_spider.milestone_id 	= milestone_id
+			@deviation_spider.save
+			@deviation_spider.init_spider_data
 			redirect_to :action=>:index, :milestone_id=>milestone_id
+		else
+			redirect_to :controller=>:projects, :action=>:index
 		end
-		redirect_to :controller=>:projects, :action=>:index
 	end
 
 end
