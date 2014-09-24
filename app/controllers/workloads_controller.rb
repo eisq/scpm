@@ -299,7 +299,9 @@ class WorkloadsController < ApplicationController
     @total_planned_days = 0
     @to_be_validated_in_wl_remaining_total = 0
     for p in @people
-      next if not p.has_workload_for_projects?(@project_ids)
+      if APP_CONFIG['workloads_add_by_project']
+        next if not p.has_workload_for_projects?(@project_ids)
+      end
       w = Workload.new(p.id,[],'','', {:add_holidays=>true})
       next if w.wl_lines.select{|l| l.wl_type != WL_LINE_HOLIDAYS}.size == 0 # do not display people with no lines at all
       @workloads << w
