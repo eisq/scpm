@@ -8,7 +8,6 @@ class DeviationSpider < ActiveRecord::Base
 
 
 	def init_spider_data
-
 		activities 		= Array.new
 		deliverables 	= Array.new
 
@@ -44,8 +43,6 @@ class DeviationSpider < ActiveRecord::Base
 
 
 		# Check last milestone
-		# 	<% if ((milestone_name_id!= nil) and (milestone.is_eligible_for_spider?) and (milestone.name[0..1]!='QG')) and milestone.is_virtual == false %>
-
 		project_milestones = self.milestone.project.sorted_milestones.select { |m| m.is_eligible_for_spider? and m.name[0..1]!='QG' and m.is_virtual == false }
 		i = 0
 		self_index = -1

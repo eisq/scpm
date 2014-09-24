@@ -5,7 +5,7 @@
 	<% @activities.each do |a| %>
 		<p>
 	    	<div style="float: left; width: auto;">
-	      		<%= a.name %> [Is Active : <%= a.is_active %>]
+	      		<%= a.deviation_meta_activity.name if a.deviation_meta_activity %> - <%= a.name %> [Is Active : <%= a.is_active %>]
 	      		&nbsp;
 	    	</div>    
 	    	<%= button_to "Detail", {:action => "detail_activity", :activity_id => a.id }, {:method => :post} %>
