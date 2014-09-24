@@ -364,11 +364,11 @@ class ProjectsController < ApplicationController
   # import deviation file, provided by PSU, it will manage spider axes and questions
   def import_deviation
     lesson_file = Deviation.import(params[:upload])
-    if (lesson_file.request_id != nil)
-      redirect_to(:action=>'index', :imported=>1)
-    else
-      redirect_to(:action=>'link_request', :id => lesson_file.id)
-    end
+    #if (lesson_file.request_id != nil)
+    #  redirect_to(:action=>'index', :imported=>1)
+    #else
+    #  redirect_to(:action=>'link_request', :id => lesson_file.id)
+    #end
   end
 
   # check request and suggest projects
