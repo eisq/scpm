@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140922170422) do
+ActiveRecord::Schema.define(:version => 20140923095822) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -254,9 +254,10 @@ ActiveRecord::Schema.define(:version => 20140922170422) do
 
   create_table "deviation_activities", :force => true do |t|
     t.string   "name"
-    t.boolean  "is_active",  :default => true
+    t.boolean  "is_active",                  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "deviation_meta_activity_id"
   end
 
   create_table "deviation_deliverables", :force => true do |t|
@@ -264,6 +265,13 @@ ActiveRecord::Schema.define(:version => 20140922170422) do
     t.integer  "milestone_name_id"
     t.string   "name"
     t.boolean  "is_active",         :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_meta_activities", :force => true do |t|
+    t.string   "name"
+    t.boolean  "is_active",  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -313,15 +321,8 @@ ActiveRecord::Schema.define(:version => 20140922170422) do
     t.datetime "updated_at"
   end
 
-  create_table "deviation_spider_references", :force => true do |t|
-    t.integer  "project_id"
-    t.integer  "version_number"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "deviation_spider_settings", :force => true do |t|
-    t.integer  "devia_spider_reference_id"
+    t.integer  "deviation_spider_reference_id"
     t.string   "deliverable_name"
     t.string   "activity_name"
     t.string   "answer_1"

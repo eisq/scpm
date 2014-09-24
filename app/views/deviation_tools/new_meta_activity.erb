@@ -1,0 +1,7 @@
+<%= button_to "Meta Activities", {:action => "index_meta_activity" }, :method => :post %>
+
+<% form_for @meta_activity, :url=>{:action=>'create_meta_activity'} do |f| -%>
+  <%= render(:partial => "form_meta_activity") %>
+  <p><label>&nbsp;</label>
+  <%= submit_tag 'Create' %></p>
+<% end -%>

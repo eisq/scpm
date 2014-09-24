@@ -96,6 +96,43 @@ class DeviationToolsController < ApplicationController
     redirect_to :action=>'index_activity'
   end
 
+  # Meta Activity
+  def index_meta_activity
+    @meta_activities = DeviationMetaActivity.find(:all, :order => "name")
+  end
+
+  def detail_meta_activity
+    meta_activity_id = params[:meta_activity_id]
+    if meta_activity_id
+      @meta_activity = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id])
+    else
+    redirect_to :action=>'index_meta_activity'
+    end
+  end
+
+  def new_meta_activity
+    @meta_activity = DeviationMetaActivity.new
+  end
+
+  def create_meta_activity
+    meta_activity = DeviationMetaActivity.new(params[:meta_activity])
+    meta_activity.save
+    redirect_to :action=>'detail_meta_activity', :meta_activity_id=>meta_activity.id
+  end
+
+  def update_meta_activity
+    meta_activity = DeviationMetaActivity.find(params[:meta_activity][:id])
+    meat_activity.update_attributes(params[:meta_activity])
+    redirect_to :action=>'index_meta_activity'
+  end
+
+  def delete_meta_activity
+    meta_activity = DeviationMetaActivity.find(:first, :conditions=>["id = ?", params[:meta_activity_id]])
+    if meta_activity
+      meta_activity.destroy
+    end
+    redirect_to :action=>'index_meta_activity'
+  end
 
   # Question
   def index_question
