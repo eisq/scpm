@@ -1,5 +1,4 @@
 <SCRIPT language="Javascript">
-
 function change_meta_activity(meta_activity_id)
 {
 	location.replace(generate_url("index?milestone_id=<%= @milestone.id.to_s %>&meta_activity_id="+meta_activity_id));
@@ -15,6 +14,30 @@ function generate_url(action_name) {
 	return "deviation_spiders/" + action_name;
   }
 }
+
+function set_question(question_id, checked)
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/update_question",
+ 		data: {deviation_spider_value_id: question_id, deviation_spider_value_answer: checked}
+	})
+	.done(function( msg ) {
+		var button_yes_id = "#button_yes_"+question_id;
+		var button_no_id = "#button_no_"+question_id;
+		if (checked == true) {
+			$(button_yes_id).attr('class', 'answer_button_select');
+			$(button_no_id).attr('class', 'answer_button');
+		} else {
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button_select');
+		}
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
 </SCRIPT>
 
 <p>
@@ -29,7 +52,8 @@ Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_
 <% table_activity = nil %>
 <% table_deliverable = nil %>
 <% @questions.each do |q| %>
-	
+
+	<!-- ACTIVITY -->
 	<% if table_activity == nil or table_activity != q.deviation_question.deviation_activity_id %>
 		<% if table_activity != nil %>
 			</table>
@@ -39,23 +63,44 @@ Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_
 			<td><%= q.deviation_question.deviation_activity.name %></td>
 			<td></td>
 			<td></td>
+			<td></td>
+			<td></td>
 		</tr>
 		<% table_activity 		= q.deviation_question.deviation_activity_id %>
 		<% table_deliverable	= nil %>
 	<% end %>
+
+	<!-- DELIVERABLE  -->
 	<% if table_deliverable == nil or table_deliverable != q.deviation_spider_deliverable.deviation_deliverable_id %>
 		<tr>
 			<td></td>
 			<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
 			<td></td>
+			<td></td>
+			<td></td>
 		</tr>
 		<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
 	<% end %>
 
+	<!-- QUESTION -->
 	<tr>
 		<td></td>
 		<td></td>
 		<td><%= q.deviation_question.question_text %></td>
+		<td>  
+			<% yes_class = 'class="answer_button"' %>
+			<% no_class = 'class="answer_button"' %>
+			<% if q.answer %>
+				<% yes_class = 'class="answer_button_select"' %>
+			<% end %>
+			<% if !q.answer and q.answer != nil %>
+				<% no_class = 'class="answer_button_select"' %>
+			<% end %>
+
+			<input <%= yes_class %> id="button_yes_<%= q.id.to_s %>" type="button" value="Yes" onclick="set_question('<%= q.id.to_s %>', true);" />
+			<input <%= no_class %>  id="button_no_<%= q.id.to_s %>"  type="button" value="No" onclick="set_question('<%= q.id.to_s %>', false);" />
+		</td>
+		<td><%= check_box_tag(:answer_reference, true, q.answer_reference, {:disabled => true}) %></td>
 	</tr>
 <% end %>
 </table>

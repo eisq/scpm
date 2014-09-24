@@ -91,7 +91,7 @@ class DeviationSpider < ActiveRecord::Base
 				new_deviation_spider_values = DeviationSpiderValue.new
 				new_deviation_spider_values.deviation_question_id = question.id
 				new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
-				new_deviation_spider_values.answer = 0
+				new_deviation_spider_values.answer = nil
 				new_deviation_spider_values.answer_reference = question.answer_reference
 				new_deviation_spider_values.save
 			end

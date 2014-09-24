@@ -7,7 +7,10 @@ class DeviationSpidersController < ApplicationController
 	    if @meta_activity_id == nil
 	    	@meta_activity_id = DeviationMetaActivity.find(:first).id
 	    end
-	    @meta_activities = DeviationMetaActivity.all.map { |ma| [ma.name, ma.id] }
+	    @meta_activities = DeviationMetaActivity.all.map { |ma| 
+	    	
+	    	[ma.name, ma.id] 
+	    }
 
 	    if milestone_id
 		    @milestone 	 = Milestone.find(:first, :conditions=>["id = ?", milestone_id])  
@@ -44,6 +47,15 @@ class DeviationSpidersController < ApplicationController
 		else
 			redirect_to :controller=>:projects, :action=>:index
 		end
+	end
+
+	def update_question
+		deviation_spider_value_id = params[:deviation_spider_value_id]
+		deviation_spider_value_answer = params[:deviation_spider_value_answer]
+		deviation_spider_value = DeviationSpiderValue.find(:first, :conditions => ["id = ?", deviation_spider_value_id])
+		deviation_spider_value.answer = deviation_spider_value_answer
+		deviation_spider_value.save
+		render(:nothing=>true)
 	end
 
 

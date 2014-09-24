@@ -52,3 +52,37 @@
 {
 	background-color: #8DC600;
 }
+
+
+/* DEVIATION */
+.answer_button
+{
+	width: 50px;
+  	border: 1px solid #900;
+  	font-weight: bold;
+  	border-radius: 5px;
+}
+
+.answer_button_select
+{
+	width: 50px;
+  	color: #FFF;
+  	background-color: #900;
+  	border: 1px solid #900;
+  	font-weight: bold;
+  	border-radius: 5px;
+}
+
+.answer_button:hover {
+  	color: #FFF;
+  	background: #FC9;
+  	cursor: pointer;
+  	border-color: #F00 #C30 #C30 #F00;
+}
+
+.answer_button_select:hover {
+  	color: #FFF;
+  	background: #FC9;
+  	cursor: pointer;
+  	border-color: #F00 #C30 #C30 #F00;
+}
