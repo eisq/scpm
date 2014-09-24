@@ -61,10 +61,10 @@ function set_question(question_id, checked)
 		<!-- ACTIVITY -->
 		<% if table_activity == nil or table_activity != q.deviation_question.deviation_activity_id %>
 			<% if table_activity != nil %>
-				</table>
+				</table><br />
 			<% end %>
 			<table class="deviation_spider_table">
-			<tr>
+			<tr class="deviation_spider_tr_activity">
 				<td><%= q.deviation_question.deviation_activity.name %></td>
 				<td></td>
 				<td></td>
@@ -77,7 +77,7 @@ function set_question(question_id, checked)
 
 		<!-- DELIVERABLE  -->
 		<% if table_deliverable == nil or table_deliverable != q.deviation_spider_deliverable.deviation_deliverable_id %>
-			<tr>
+			<tr class="deviation_spider_tr_deliverable">
 				<td></td>
 				<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
 				<td>
@@ -95,7 +95,7 @@ function set_question(question_id, checked)
 		<tr>
 			<td></td>
 			<td></td>
-			<td><%= q.deviation_question.question_text %></td>
+			<td width="400"><%= q.deviation_question.question_text %></td>
 			<td>  
 				<% yes_class = 'class="answer_button"' %>
 				<% no_class = 'class="answer_button"' %>

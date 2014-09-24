@@ -88,5 +88,14 @@
 }
 
 .deviation_spider_table {
+  	border-collapse: collapse;
 	border: 1px solid red;
+}
+.deviation_spider_tr_activity {
+	background-color:red;
+	color: white;
+}
+.deviation_spider_tr_deliverable {
+	background-color:#FF8080;
+	color: white;
 }
