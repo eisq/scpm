@@ -153,7 +153,9 @@
         <li><%= link_to('Projects',    {:controller=>'presales',           :action=>'projects'})  %></li>
       </ul>
     </li>
-
+	<% if current_user.has_role?('Admin') %>
+		<li><%= link_to('Background', {:controller=>'background', :action=>'index'}, {:class=>menu_style('background','index')}) %></li>
+	<% end %>
     </ul>
   </div>
 

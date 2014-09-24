@@ -1,0 +1,12 @@
+<h2> BAM's Background </h2>
+<% if params[:format].to_s == "1" %>
+	<strong> The format of the picture should be ".jpg"</strong>
+<% end %>
+<%= form_tag({:action => 'save'}, :multipart => true) %>
+<%= label_tag 'The internet address of the picture' %>
+<%= text_field :background, :url, {:size=>60} %>
+<%= submit_tag "Save" %></p>
+</form>
+<br /><br />
+<h2> The picture link actually used </h2>
+<a target="_blank" href="<%= @liens %>"><%= @liens %></a>

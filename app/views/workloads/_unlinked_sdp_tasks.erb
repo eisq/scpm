@@ -18,7 +18,7 @@
 <ul>
     <% requests_to_close.each do |req| %>
 	    <li>
-	        <a href='http://toulouse.sqli.com/EMN/view.php?id=#<%= req.request_id.to_s %>'> 
+	        <a href='http://toulouse.sqli.com/EMN/view.php?id=<%= req.request_id.to_s %>'> 
 	        <b><%= req.work_package %></b>
 	        <%= req.milestone %>
 	        <%= req.complexity %>

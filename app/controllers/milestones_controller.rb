@@ -166,11 +166,11 @@ class MilestonesController < ApplicationController
       m.save true
 
       # Redirect
-      if m.done == 1 and old == 0 and m.is_eligible_for_note?
-        redirect_to "/notes/new?project_id=#{m.project_id}&done=1"
-      else
+      # if m.done == 1 and old == 0 and m.is_eligible_for_note?
+        # redirect_to "/notes/new?project_id=#{m.project_id}&done=1"
+      # else
         redirect_to "/projects/show/#{m.project_id}"
-      end
+      # end
     else
       # Date error
       redirect_to("/milestones/edit?id=#{params[:id]}&date_error="+error.to_s)
