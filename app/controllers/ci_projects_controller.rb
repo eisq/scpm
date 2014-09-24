@@ -213,36 +213,32 @@ class CiProjectsController < ApplicationController
   end
 
   def mantis_export
-    @export_mantis_formula = formula = formula_to_implement = ""
+    @export_mantis_formula = formula = ""
+    @export_mantis_count = 0
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
     @projects.each { |p|
       #Formule pour mettre à jour les projets existants
-      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected" and (p.to_implement == nil or p.to_implement == 0)
+      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected"
         formula += p.mantis_formula
         formula += ";finbug"
         formula += "\n"
-      end
-      #Formule pour ajouter uniquement les nouveaux projets
-      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected" and p.to_implement != nil and p.to_implement == 1
-        formula_to_implement += p.mantis_formula
-        formula_to_implement += ";finbug"
-        formula_to_implement += "\n"
+        if p.to_implement == 1
+          @export_mantis_count += 1
+        end
       end
     }
     @export_mantis_formula = formula
-    @export_mantis_formula_to_implement = formula_to_implement
   end
 
   def mantis_implemented
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
     @projects.each { |p|
       if p.to_implement == 1
-        p.to_implement = 0
         CiProject.delete(p)
       end
       p.save
     }
-    redirect_to "/ci_projects/all"
+    redirect_to "/ci_projects/mantis_export"
   end
 
   def date_validation_mail(validators, project)

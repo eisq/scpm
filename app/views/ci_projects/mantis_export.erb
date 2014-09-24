@@ -1,11 +1,9 @@
 <h2>Mantis export</h2>
 
 <h3>All CI except delivered/closed/rejected</h3>
+<p> <% if @export_mantis_count > 0 %>
+	<%= @export_mantis_count %> to be implemented -> <%= link_to('implement', {:action=>'mantis_implemented'}, {:class=>'btnlnk'}) %>
+<% end %></p>
 <textarea rows="18" cols="150" readonly>
 	<%= @export_mantis_formula %>
-</textarea>
-
-<h3>Only CI flagged as "not imported into mantis" <%= link_to('tag as implemented', {:action=>'mantis_implemented'}, {:class=>'btnlnk'}) %></h3>
-<textarea rows="18" cols="150" readonly>
-	<%= @export_mantis_formula_to_implement %>
 </textarea>
