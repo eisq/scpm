@@ -6,39 +6,15 @@ class DeviationSpider < ActiveRecord::Base
 	belongs_to 	:milestone
 
 
+	Spider_parameters = Struct.new(:deliverables, :activities)
 
 	def init_spider_data
-		activities 		= Array.new
-		deliverables 	= Array.new
 
-		# Check PSU
-		deviation_spider_reference = self.milestone.project.get_current_deviation_spider_reference
-		if deviation_spider_reference
-			deviation_spider_reference.deviation_spider_settings.each do |setting|
-				activity_parameter = DeviationAcitivity.find(:first, :conditions => ["name LIKE ?","%#{setting.activity_name}%"])
-				if !activities.include? activity_parameter
-					activities << activity_parameter
-				end 		
-
-				deliverable_parameter = DeviationDeliverable.find(:first, 
-				                                                  :joins=>["JOIN milestone_names ON milestone_names.id  = deviation_deliverables.milestone_name_id"], 
-				                                                  :conditions => ["milestone_names.title LIKE ? and name LIKE ?","%#{self.milestone.name}%","%#{setting.deliverable_name}%"])
-
-				if !deliverables.include? deliverable_parameter
-					activities << deliverable_parameter
-				end 
-			end
-		else
-			all_deliverables = DeviationDeliverable.find(:all,:joins=>["JOIN milestone_names ON milestone_names.id  = deviation_deliverables.milestone_name_id"],:conditions => ["milestone_names.title LIKE ?","%#{self.milestone.name}%"])
-			deliverables = all_deliverables
-			all_activities = DeviationActivity.find(:all)
-			activities = all_activities
-		end
-
+		spider_parameters = self.get_parameters
 
 		# Create data
-		deliverables.each do |deliverable|
-			add_deliverable(deliverable, activities)
+		spider_parameters.deliverables.each do |deliverable|
+			add_deliverable(deliverable, spider_parameters.activities)
 		end
 
 
@@ -70,8 +46,8 @@ class DeviationSpider < ActiveRecord::Base
 						break if deliverable_not_completed
 					end
 
-					if deliverable_not_completed and !deliverables.include? spider_deliverable
-						add_deliverable(spider_deliverable.deviation_deliverable, activities)
+					if deliverable_not_completed and !spider_parameters.deliverables.include? spider_deliverable
+						add_deliverable(spider_deliverable.deviation_deliverable, spider_parameters.activities)
 					end
 
 				end
@@ -96,5 +72,39 @@ class DeviationSpider < ActiveRecord::Base
 				new_deviation_spider_values.save
 			end
 		end
+	end
+
+	def get_parameters
+		activities 		= Array.new
+		deliverables 	= Array.new
+
+		# Check PSU
+		deviation_spider_reference = self.milestone.project.get_current_deviation_spider_reference
+		if deviation_spider_reference
+			deviation_spider_reference.deviation_spider_settings.each do |setting|
+				activity_parameter = DeviationAcitivity.find(:first, :conditions => ["name LIKE ?","%#{setting.activity_name}%"])
+				if !activities.include? activity_parameter
+					activities << activity_parameter
+				end 		
+
+				deliverable_parameter = DeviationDeliverable.find(:first, 
+				                                                  :joins=>["JOIN milestone_names ON milestone_names.id  = deviation_deliverables.milestone_name_id"], 
+				                                                  :conditions => ["milestone_names.title LIKE ? and name LIKE ?","%#{self.milestone.name}%","%#{setting.deliverable_name}%"])
+
+				if !deliverables.include? deliverable_parameter
+					activities << deliverable_parameter
+				end 
+			end
+		else
+			all_deliverables = DeviationDeliverable.find(:all,:joins=>["JOIN milestone_names ON milestone_names.id  = deviation_deliverables.milestone_name_id"],:conditions => ["milestone_names.title LIKE ?","%#{self.milestone.name}%"])
+			deliverables = all_deliverables
+			all_activities = DeviationActivity.find(:all)
+			activities = all_activities
+		end
+
+		return_paramaters = Spider_parameters.new
+		return_paramaters.activities = activities
+		return_paramaters.deliverables = deliverables
+		return return_paramaters
 	end
 end

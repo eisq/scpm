@@ -86,3 +86,7 @@
   	cursor: pointer;
   	border-color: #F00 #C30 #C30 #F00;
 }
+
+.deviation_spider_table {
+	border: 1px solid red;
+}
