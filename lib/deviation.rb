@@ -4,18 +4,15 @@ module Deviation
 
   include ApplicationHelper
 
-  # ACTION SHEET ROWS INDEX 
-  BEGIN_CONTENT                     = 4
-
-  # ACTION SHEET CELLS INDEX  
+  # SHEET CELLS INDEX  
   CELL_DELIVERABLE                  = 1
   CELL_METHODOLOGY_TEMPLATE         = 2
   CELL_IS_JUSTIFIED                 = 3
   CELL_OTHER_TEMPLATE               = 4
   CELL_JUSTIFICATION                = 5
 
-  # ACTION SHEET CELLS LABEL
-  CELL_DELIVERABLE_LABEL            = "deliverable" 
+  # SHEET CELLS LABEL
+  CELL_DELIVERABLE_LABEL            = "Deliverables" 
   CELL_METHODOLOGY_TEMPLATE_LABEL   = "methodology_template"
   CELL_IS_JUSTIFIED_LABEL           = "is_justified"       
   CELL_OTHER_TEMPLATE_LABEL         = "other_template"        
@@ -46,11 +43,12 @@ module Deviation
   def self.parse_excel_content(sheet)
     # Var
     content_array = Array.new
-    i = 0
+    deliverable = ""
+    activity = ""
 
-    # Loop conso
+    # Loop sheet
     sheet.each do |sheet_row|
-      if ((i >= BEGIN_CONTENT) and (sheet_row[CELL_DELIVERABLE])  and (sheet_row[CELL_DELIVERABLE].value) and (sheet_row[CELL_DELIVERABLE].value.length > 0))
+      if ((sheet_row[CELL_DELIVERABLE])  and (sheet_row[CELL_DELIVERABLE].value) and (sheet_row[CELL_DELIVERABLE].value.length > 0))
         row_hash = Hash.new
         row_hash[CELL_DELIVERABLE_LABEL]           = sheet_row[CELL_DELIVERABLE].value.to_s
         row_hash[CELL_METHODOLOGY_TEMPLATE_LABEL] = sheet_row[CELL_METHODOLOGY_TEMPLATE].to_s
@@ -59,7 +57,6 @@ module Deviation
         row_hash[CELL_JUSTIFICATION_LABEL]        = sheet_row[CELL_JUSTIFICATION].to_s
         content_array << row_hash
       end
-      i += 1
     end
     return content_array
   end
