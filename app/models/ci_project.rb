@@ -3,7 +3,7 @@
         def mantis_formula
 
     	external_id_temp = "null"
-    	if self.external_id.to_s != "" and self.external_id.to_s != nil
+    	if self.external_id.to_s != nil and self.external_id.to_s != "" and self.external_id != 0
     	   external_id_temp = self.external_id.to_s
     	end
 

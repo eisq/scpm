@@ -85,8 +85,9 @@ class CiProjectsController < ApplicationController
         filter = DateTime.strptime('14/09/11 12:00', '%Y/%m/%d %H:%M') #we will manage only CIs started from this date.
         if (p.stage != "BAM" and p.stage != "" and DateTime.strptime(p.submission_date, '%d/%m/%Y %H:%M') >= filter) #DateTime.strptime('2013/09/01 16:00', '%Y/%m/%d %H:%M')))
           ci = CiProject.find_by_external_id(p.external_id)
-          # ci.to_implement = 0 if ci.to_implement == 1
-          ci = CiProject.create(:external_id=>p.exterbal_id) if not ci
+          if not ci or ci.external_id == 0
+            ci = CiProject.create(:external_id=>p.external_id)
+          end
           ci.update_attributes(p.to_hash) # and it updates only the attributes that have changed !
           ci.save
         end
@@ -199,7 +200,8 @@ class CiProjectsController < ApplicationController
     }
 
     p = CiProject.new(params[:project])
-    p.external_id = (last_external_id + 1)
+    #0 car ça nous le passe en "null" ainsi Mantis incrémente tout seul l'ID.
+    p.external_id = 0 #(last_external_id + 1)
     p.to_implement = 1
     p.save
     redirect_to "/ci_projects/show/"+p.id.to_s
@@ -214,13 +216,17 @@ class CiProjectsController < ApplicationController
     @export_mantis_formula = formula = formula_to_implement = ""
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
     @projects.each { |p|
-      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected"
+      #Formule pour mettre à jour les projets existants
+      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected" and (p.to_implement == nil or p.to_implement == 0)
         formula += p.mantis_formula
         formula += ";finbug"
+        formula += "\n"
       end
+      #Formule pour ajouter uniquement les nouveaux projets
       if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected" and p.to_implement != nil and p.to_implement == 1
         formula_to_implement += p.mantis_formula
         formula_to_implement += ";finbug"
+        formula_to_implement += "\n"
       end
     }
     @export_mantis_formula = formula
@@ -232,6 +238,7 @@ class CiProjectsController < ApplicationController
     @projects.each { |p|
       if p.to_implement == 1
         p.to_implement = 0
+        CiProject.delete(p)
       end
       p.save
     }
