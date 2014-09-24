@@ -1,0 +1,3 @@
+<% if @current_spider == nil %>
+	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
+<% end %>

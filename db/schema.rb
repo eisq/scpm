@@ -336,6 +336,7 @@ ActiveRecord::Schema.define(:version => 20140922170422) do
     t.integer  "deviation_spider_deliverable_id"
     t.integer  "deviation_question_id"
     t.boolean  "answer"
+    t.boolean  "answer_reference"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
