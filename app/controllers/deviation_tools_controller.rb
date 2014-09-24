@@ -64,6 +64,7 @@ class DeviationToolsController < ApplicationController
   end
 
   def detail_activity
+    @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"]).map {|ma| [ma.name, ma.id]}
     activity_id = params[:activity_id]
     if activity_id
       @activity = DeviationActivity.find(:first, :conditions => ["id = ?", activity_id])
@@ -73,6 +74,7 @@ class DeviationToolsController < ApplicationController
   end
 
   def new_activity
+    @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"]).map {|ma| [ma.name, ma.id]}
     @activity = DeviationActivity.new
   end
 

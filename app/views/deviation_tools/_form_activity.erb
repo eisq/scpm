@@ -1,5 +1,9 @@
 <%= hidden_field :activity, :id %>
 
+<p><%= label_tag 'Meta-Activity' %>
+<%= select(:activity, :deviation_meta_activity_id, @meta_activities) %>
+</p>
+
 <p><%= label_tag 'Name' %>
 <%= text_field :activity, :name %> </p>
 

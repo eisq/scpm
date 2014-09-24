@@ -1,5 +1,5 @@
 class DeviationQuestion < ActiveRecord::Base
-	has_many :deviation_activities
-	has_many :deviation_deliverables
+	belongs_to :deviation_activity
+	belongs_to :deviation_deliverable
 	has_many :deviation_spider_values
 end

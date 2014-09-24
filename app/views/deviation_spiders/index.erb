@@ -1,3 +1,61 @@
-<% if @current_spider == nil %>
+<SCRIPT language="Javascript">
+
+function change_meta_activity(meta_activity_id)
+{
+	location.replace(generate_url("index?milestone_id=<%= @milestone.id.to_s %>&meta_activity_id="+meta_activity_id));
+}
+
+function generate_url(action_name) {
+  if(location.toString().indexOf("index") !== -1)
+  {
+	return action_name;
+  }
+  else
+  {
+	return "deviation_spiders/" + action_name;
+  }
+}
+</SCRIPT>
+
+<p>
+Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %>
+</p>
+
+<% if @last_spider == nil %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
 <% end %>
+
+
+<% table_activity = nil %>
+<% table_deliverable = nil %>
+<% @questions.each do |q| %>
+	
+	<% if table_activity == nil or table_activity != q.deviation_question.deviation_activity_id %>
+		<% if table_activity != nil %>
+			</table>
+		<% end %>
+		<table>
+		<tr>
+			<td><%= q.deviation_question.deviation_activity.name %></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<% table_activity 		= q.deviation_question.deviation_activity_id %>
+		<% table_deliverable	= nil %>
+	<% end %>
+	<% if table_deliverable == nil or table_deliverable != q.deviation_spider_deliverable.deviation_deliverable_id %>
+		<tr>
+			<td></td>
+			<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
+			<td></td>
+		</tr>
+		<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
+	<% end %>
+
+	<tr>
+		<td></td>
+		<td></td>
+		<td><%= q.deviation_question.question_text %></td>
+	</tr>
+<% end %>
+</table>
