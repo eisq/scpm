@@ -59,6 +59,7 @@ class DeviationSpidersController < ApplicationController
 	    	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
 	    			@deliverables << spider_deliverable.deviation_deliverable
 	    	end
+	    	@score_list = [0,1,2,3]
 
 	    	# Create consolidations this is not already done
 	    	if @deviation_spider.deviation_spider_consolidations.count == 0
@@ -159,6 +160,17 @@ class DeviationSpidersController < ApplicationController
 		else
 			redirect_to :controller=>:projects, :action=>:index
 		end
+	end
+
+	def update_consolidation_score
+		deviation_spider_consolidation_id 		= params[:deviation_spider_consolidation_id]
+		deviation_spider_consolidation_score 	= params[:deviation_spider_consolidation_score]
+		if deviation_spider_consolidation_id and deviation_spider_consolidation_score
+			deviation_spider_consolidation = DeviationSpiderConsolidation.find(:first, :conditions => ["id = ?", deviation_spider_consolidation_id])
+			deviation_spider_consolidation.score = deviation_spider_consolidation_score
+			deviation_spider_consolidation.save
+		end
+		render(:nothing=>true)
 	end
 
 	# **
