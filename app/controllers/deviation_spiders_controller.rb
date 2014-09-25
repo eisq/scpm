@@ -167,6 +167,8 @@ class DeviationSpidersController < ApplicationController
 		deviation_spider_deliverable_id = params[:deviation_spider_deliverable_id]
 		if deviation_spider_deliverable_id
 			deviation_spider_deliverable = DeviationSpiderDeliverable.find(:first, :conditions => ["id = ?", deviation_spider_deliverable_id])
+			deviation_spider_deliverable.not_done = 1
+			deviation_spider_deliverable.save
 			deviation_spider_deliverable.deviation_spider_values.each do |s|
 				s.answer = 0
 				s.save

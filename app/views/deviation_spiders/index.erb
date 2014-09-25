@@ -94,7 +94,10 @@ function set_value_buttons(value_id, answer)
 					<%= button_to "Delete deliverable", {:action => "delete_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable.deviation_deliverable_id }, :confirm=>"Are you sure you want to delete this deliverable ? It will be deleted in all activities.", :method => :post %> 
 				</td>
 				<td>
-					<%= button_to "Set deliverable to NO", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable.deviation_deliverable_id }, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post %> 
+					<% deliverable_not_done_class = "deliverable_not_done" %>
+					<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
+
+					<%= button_to "Set deliverable to NO", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :class => deliverable_not_done_class %> 
 				</td>
 				<td></td>
 			</tr>
