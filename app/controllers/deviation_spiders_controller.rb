@@ -3,6 +3,9 @@ class DeviationSpidersController < ApplicationController
 
 	Conso_deliverable 	= Struct.new(:deliverable, :consolidations)
 	
+	# 
+	# INTERFACES
+	# 
 	def index
 	    milestone_id 	 = params[:milestone_id]
 	    @meta_activity_id = params[:meta_activity_id]
@@ -96,6 +99,19 @@ class DeviationSpidersController < ApplicationController
 
 	end
 
+	def create_spider_select_deliverables
+		deviation_spider_id = params[:deviation_spider_id]
+		if deviation_spider_id
+	   		@deviation_spider = DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+		else
+			redirect_to :controller=>:projects, :action=>:index
+		end
+	end
+
+
+	# 
+	# ACTIONS WITHOUT INTERFACE
+	# 
 	def create_spider
 	    milestone_id 	= params[:milestone_id]
 	    @milestone 	= Milestone.find(:first, :conditions=>["id = ?", milestone_id])  
@@ -106,7 +122,27 @@ class DeviationSpidersController < ApplicationController
 			@deviation_spider.milestone_id 	= milestone_id
 			@deviation_spider.save
 			@deviation_spider.init_spider_data
-			redirect_to :action=>:index, :milestone_id=>milestone_id
+			redirect_to :action=>:create_spider_select_deliverables, :deviation_spider_id=>@deviation_spider.id
+		else
+			redirect_to :controller=>:projects, :action=>:index
+		end
+	end
+
+	def set_spider_deliverables
+		deliverable_ids = params[:deliverables]
+		deviation_spider_id = params[:deviation_spider_id]
+
+		if deviation_spider_id
+	   		@deviation_spider = DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+			
+			deliverable_ids.each do |deliverable_id|
+				deviation_deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
+				if deviation_deliverable
+					deviation_spider_parameters = @deviation_spider.get_parameters
+					@deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities)
+				end
+			end
+			redirect_to :action=>:index, :milestone_id=>@deviation_spider.milestone_id
 		else
 			redirect_to :controller=>:projects, :action=>:index
 		end
@@ -116,7 +152,12 @@ class DeviationSpidersController < ApplicationController
 		deviation_spider_value_id = params[:deviation_spider_value_id]
 		deviation_spider_value_answer = params[:deviation_spider_value_answer]
 		deviation_spider_value = DeviationSpiderValue.find(:first, :conditions => ["id = ?", deviation_spider_value_id])
-		deviation_spider_value.answer = deviation_spider_value_answer
+
+		if deviation_spider_value.answer == to_boolean(deviation_spider_value_answer)
+			deviation_spider_value.answer = nil
+		else
+			deviation_spider_value.answer = to_boolean(deviation_spider_value_answer)
+		end
 		deviation_spider_value.save
 
 		# Update other questions
@@ -128,7 +169,11 @@ class DeviationSpidersController < ApplicationController
 				if deviation_spider_value.deviation_spider_deliverable_id == value.deviation_spider_deliverable_id and deviation_spider_value.deviation_question.question_text == value.deviation_question.question_text and value.id != deviation_spider_value.id
 
 					updated_spider_value_id << value.id.to_s
-					value.answer = deviation_spider_value.answer
+					if value.answer == to_boolean(deviation_spider_value_answer)
+						value.answer = nil
+					else
+						value.answer = to_boolean(deviation_spider_value_answer)
+					end
 					value.save
 				end
 			end
@@ -234,4 +279,8 @@ class DeviationSpidersController < ApplicationController
     		:joins => 'JOIN deviation_spider_consolidations ON deviation_spiders.id = deviation_spider_consolidations.deviation_spider_id',
     		:conditions => ["milestone_id= ?", milestone.id]).each { |s| @history.push(s) }
 	end
+
+	def to_boolean(str)
+      str == 'true'
+    end
 end

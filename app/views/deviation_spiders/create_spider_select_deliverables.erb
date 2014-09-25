@@ -1,0 +1,45 @@
+<SCRIPT language="Javascript">
+var deliverables_selected = Array();
+
+function select_deliverable(deliverable_id)
+{
+	var index = $.inArray(deliverable_id, deliverables_selected);
+	if (index == -1) {
+		deliverables_selected.push(deliverable_id);
+		$("#"+deliverable_id).attr('class', 'deliverable_not_done_select');
+	} else {
+		deliverables_selected.splice(index, 1);
+		$("#"+deliverable_id).attr('class', 'deliverable_not_done');
+	}
+}
+
+function send_deliverables()
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/set_spider_deliverables",
+ 		data: {deliverables: deliverables_selected, deviation_spider_id: "<%= @deviation_spider.id.to_s %>"}
+	})
+	.done(function( msg ) {
+		
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+
+</SCRIPT>
+
+
+<%= button_to "Go to Spider", {:action => "index", :milestone_id => @deviation_spider.milestone.id }, :method => :post %> 
+<h3>Deliverables not done in the previous milestone</h3>
+<ul>
+<% @deviation_spider.get_deliverables_not_done.each do |deliverable| %>
+	<li>
+		<%= deliverable.name %>
+		<input type="button" id="<%= deliverable.id.to_s %>" value="Add to spider" class="deliverable_not_done" onclick="select_deliverable(<%= deliverable.id.to_s %>);" />
+	</li>
+<% end %>
+</ul>
+<input type="button" value="Set selected deliverables" onclick="send_deliverables();" />

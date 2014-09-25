@@ -41,11 +41,21 @@ function set_value_buttons(value_id, answer)
 	var button_yes_id = "#button_yes_"+value_id;
 	var button_no_id = "#button_no_"+value_id;
 	if (answer == true) {
-		$(button_yes_id).attr('class', 'answer_button_select');
-		$(button_no_id).attr('class', 'answer_button');
+		if ($(button_yes_id).attr('class') == 'answer_button_select') {	
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button');
+		} else {
+			$(button_yes_id).attr('class', 'answer_button_select');
+			$(button_no_id).attr('class', 'answer_button');
+		}
 	} else {
-		$(button_yes_id).attr('class', 'answer_button');
-		$(button_no_id).attr('class', 'answer_button_select');
+		if ($(button_no_id).attr('class') == 'answer_button_select') {	
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button');
+		} else {
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button_select');
+		}
 	}
 }
 </SCRIPT>
