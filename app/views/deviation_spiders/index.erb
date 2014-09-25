@@ -23,24 +23,34 @@ function set_question(question_id, checked)
  		data: {deviation_spider_value_id: question_id, deviation_spider_value_answer: checked}
 	})
 	.done(function( msg ) {
-		var button_yes_id = "#button_yes_"+question_id;
-		var button_no_id = "#button_no_"+question_id;
-		if (checked == true) {
-			$(button_yes_id).attr('class', 'answer_button_select');
-			$(button_no_id).attr('class', 'answer_button');
-		} else {
-			$(button_yes_id).attr('class', 'answer_button');
-			$(button_no_id).attr('class', 'answer_button_select');
-		}
+		set_value_buttons(question_id, checked);
+
+		var spider_values_updated = msg.split(',')
+		for (var i = 0; i < spider_values_updated.length; i++) {
+			set_value_buttons(spider_values_updated[i], checked);
+		};
 	})
 	.fail(function() 
 	{ 
 		alert("Error");
 	})
 }
+
+function set_value_buttons(value_id, answer)
+{
+	var button_yes_id = "#button_yes_"+value_id;
+	var button_no_id = "#button_no_"+value_id;
+	if (answer == true) {
+		$(button_yes_id).attr('class', 'answer_button_select');
+		$(button_no_id).attr('class', 'answer_button');
+	} else {
+		$(button_yes_id).attr('class', 'answer_button');
+		$(button_no_id).attr('class', 'answer_button_select');
+	}
+}
 </SCRIPT>
 
-<% if @last_spider == nil %>
+<% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
 <% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
 	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>

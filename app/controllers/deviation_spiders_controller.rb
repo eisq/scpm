@@ -118,7 +118,23 @@ class DeviationSpidersController < ApplicationController
 		deviation_spider_value = DeviationSpiderValue.find(:first, :conditions => ["id = ?", deviation_spider_value_id])
 		deviation_spider_value.answer = deviation_spider_value_answer
 		deviation_spider_value.save
-		render(:nothing=>true)
+
+		# Update other questions
+		updated_spider_value_id = Array.new
+		deviation_spider = deviation_spider_value.deviation_spider_deliverable.deviation_spider
+		
+		deviation_spider.deviation_spider_deliverables.each do |deliverable|
+			deliverable.deviation_spider_values.each do |value|
+				if deviation_spider_value.deviation_spider_deliverable_id == value.deviation_spider_deliverable_id and deviation_spider_value.deviation_question.question_text == value.deviation_question.question_text and value.id != deviation_spider_value.id
+
+					updated_spider_value_id << value.id.to_s
+					value.answer = deviation_spider_value.answer
+					value.save
+				end
+			end
+		end
+
+		render(:text=>updated_spider_value_id.join(','))
 	end
 
 	def delete_spider_deliverable
