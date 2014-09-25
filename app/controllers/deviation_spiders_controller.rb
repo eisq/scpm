@@ -1,6 +1,8 @@
 class DeviationSpidersController < ApplicationController
 	layout "spider"
 
+	Conso_deliverable 	= Struct.new(:deliverable, :consolidations)
+	
 	def index
 	    milestone_id 	 = params[:milestone_id]
 	    @meta_activity_id = params[:meta_activity_id]
@@ -28,7 +30,69 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def update_spider
+	def index_history
+	    deviation_spider_id = params[:deviation_spider_id]
+	    @meta_activity_id 	= params[:meta_activity_id]
+	    if @meta_activity_id == nil
+	    	@meta_activity_id = DeviationMetaActivity.find(:first).id
+	    end
+	    @meta_activities = DeviationMetaActivity.all.map { |ma| [ma.name, ma.id] }
+
+	    if deviation_spider_id
+	   		@last_spider = DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+			generate_current_table(@last_spider,@meta_activity_id)
+	    else
+	    	redirect_to :controller=>:projects, :action=>:index
+	    end
+	end
+
+	def consolidate_interface
+	    deviation_spider_id = params[:deviation_spider_id]
+	    if deviation_spider_id
+
+			# General data
+	    	@deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+	    	@activities 		= @deviation_spider.get_parameters.activities
+	    	@deliverables 		= Array.new
+	    	@deviation_spider.deviation_spider_deliverables.all(
+	    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"], 
+	    	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
+	    			@deliverables << spider_deliverable.deviation_deliverable
+	    	end
+
+	    	# Create consolidations this is not already done
+	    	if @deviation_spider.deviation_spider_consolidations.count == 0
+		    	@activities.each do |activity|
+		    		@deliverables.each do |deliverable|
+		    			new_deviation_spider_consolidation = DeviationSpiderConsolidation.new
+		    			new_deviation_spider_consolidation.deviation_spider_id = deviation_spider_id
+		    			new_deviation_spider_consolidation.deviation_activity_id = activity.id
+		    			new_deviation_spider_consolidation.deviation_deliverable_id = deliverable.id
+		    			new_deviation_spider_consolidation.save
+		    		end
+		    	end
+		    end
+
+	    	# Parameters used to create the <table>
+			@deviation_spider_consolidations_array = Array.new
+
+			# Generate the data to show
+			@deliverables.each do |deliverable|
+				conso_deliverable = Conso_deliverable.new
+				conso_deliverable.deliverable = deliverable
+				conso_deliverable.consolidations = Array.new
+
+				deviation_spider_consolidations = @deviation_spider.deviation_spider_consolidations.all(:conditions => ["deviation_deliverable_id = ?", deliverable.id], :order => "deviation_activity_id")
+				deviation_spider_consolidations.each do |consolidation|
+					conso_deliverable.consolidations << consolidation
+				end
+
+				@deviation_spider_consolidations_array << conso_deliverable
+			end
+	    else
+	    	redirect_to :controller=>:projects, :action=>:index
+	    end
+
 	end
 
 	def create_spider

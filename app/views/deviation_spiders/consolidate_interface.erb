@@ -1,0 +1,26 @@
+<table>
+<% i = 0 %>
+<% table_deliverable = nil %>
+<% @deviation_spider_consolidations_array.each do |deliverable_conso| %>
+	
+	<% if i == 0 %>
+		<tr>
+			<td>Deliverables</td>
+			<% deliverable_conso.consolidations.each do |consolidation| %>
+				<td colspan="2"><%= consolidation.deviation_activity.name %></td>
+			<% end %>
+		</tr>
+	<% end %>
+
+	<tr>
+		<td><%= deliverable_conso.deliverable.name %></td>
+		<% deliverable_conso.consolidations.each do |consolidation| %>
+			<td><%= consolidation.score %> liste déroulante</td>
+			<td><%= consolidation.justification %> textfield</td>
+		<% end %>
+	<tr>
+
+	<% i = i + 1 %>
+<% end %>
+
+</table>

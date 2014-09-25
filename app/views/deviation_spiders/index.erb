@@ -42,9 +42,9 @@ function set_question(question_id, checked)
 
 <% if @last_spider == nil %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
-<% else %>
+<% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
 	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-	<div><%= button_to "Consolidate", {:action => "consolidate_spider", :deviation_spider_id => @last_spider.id} %></div>
+	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id} %></div>
 	<br />
 
 	<% form_tag(:action=>'add_spider_deliverable') do %>
@@ -116,7 +116,7 @@ function set_question(question_id, checked)
 
 
 	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-	<div><%= button_to "Consolidate", {:action => "consolidate_spider", :deviation_spider_id => @last_spider.id} %></div>
+	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id} %></div>
 	<br />
 
 <% end %>
@@ -133,6 +133,6 @@ function set_question(question_id, checked)
 		spider_name << s.deviation_spider_consolidations.first().created_at.to_s
 		spider_name << "]"
 	%>
-		<%= link_to spider_name, :action => "history_spider" %><br />
+		<%= link_to spider_name, :action => "index_history", :deviation_spider_id => s.id %><br />
 	<% } %>
 <% end %>
