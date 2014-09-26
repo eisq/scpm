@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140925142522) do
+ActiveRecord::Schema.define(:version => 20140926162822) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -266,11 +266,16 @@ ActiveRecord::Schema.define(:version => 20140925142522) do
     t.integer  "deviation_meta_activity_id"
   end
 
+  create_table "deviation_activity_deliverables", :force => true do |t|
+    t.integer  "deviation_activity_id"
+    t.integer  "deviation_deliverable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "deviation_deliverables", :force => true do |t|
-    t.integer  "lifecycle_id"
-    t.integer  "milestone_name_id"
     t.string   "name"
-    t.boolean  "is_active",         :default => true
+    t.boolean  "is_active",  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -278,6 +283,20 @@ ActiveRecord::Schema.define(:version => 20140925142522) do
   create_table "deviation_meta_activities", :force => true do |t|
     t.string   "name"
     t.boolean  "is_active",  :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_question_lifecycles", :force => true do |t|
+    t.integer  "deviation_question_id"
+    t.integer  "lifecycle_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_question_milestone_names", :force => true do |t|
+    t.integer  "deviation_question_id"
+    t.integer  "milestone_name_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -326,13 +345,6 @@ ActiveRecord::Schema.define(:version => 20140925142522) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "not_done",                 :default => false
-  end
-
-  create_table "deviation_spider_references", :force => true do |t|
-    t.integer  "project_id"
-    t.integer  "version_number"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "deviation_spider_settings", :force => true do |t|

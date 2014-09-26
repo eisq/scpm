@@ -8,6 +8,6 @@ class CreateDeviationMetaActivities < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :deviation_spider_references
+    drop_table :deviation_meta_activities
   end
 end
