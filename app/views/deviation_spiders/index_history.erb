@@ -17,6 +17,8 @@ function generate_url(action_name) {
 
 </SCRIPT>
 
+<div><%= button_to "Go to spider", {:action => "index", :milestone_id => @last_spider.milestone_id } %></div>
+
 <div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 <div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id} %></div>
 <br />
@@ -48,8 +50,12 @@ function generate_url(action_name) {
 			<td></td>
 			<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
 			<td></td>
-			<td></td>
-			<td></td>
+			<td colspan="2">
+				<% deliverable_not_done_class = "deliverable_not_done" %>
+				<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
+
+				<%= button_to "Not done without admissible justification", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :class => deliverable_not_done_class, :disabled => true %> 
+			</td>
 		</tr>
 		<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
 	<% end %>

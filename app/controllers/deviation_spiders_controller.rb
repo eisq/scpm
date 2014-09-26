@@ -142,9 +142,7 @@ class DeviationSpidersController < ApplicationController
 					@deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities)
 				end
 			end
-			redirect_to :action=>:index, :milestone_id=>@deviation_spider.milestone_id
-		else
-			redirect_to :controller=>:projects, :action=>:index
+			render(:nothing=>true)
 		end
 	end
 

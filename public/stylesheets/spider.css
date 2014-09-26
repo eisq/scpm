@@ -75,14 +75,14 @@
 
 .deliverable_not_done
 {
-	width: 120px;
+	width: 320px;
   	border: 1px solid #900;
   	font-weight: bold;
   	border-radius: 5px;
 }
 .deliverable_not_done_select
 {
-	width: 120px;
+	width: 320px;
   	color: #FFF;
   	background-color: #900;
   	border: 1px solid #900;

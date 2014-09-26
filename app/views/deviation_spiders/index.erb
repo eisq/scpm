@@ -60,6 +60,8 @@ function set_value_buttons(value_id, answer)
 }
 </SCRIPT>
 
+<div><%= button_to "Project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
+
 <% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
 <% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
@@ -103,13 +105,12 @@ function set_value_buttons(value_id, answer)
 				<td>
 					<%= button_to "Delete deliverable", {:action => "delete_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable.deviation_deliverable_id }, :confirm=>"Are you sure you want to delete this deliverable ? It will be deleted in all activities.", :method => :post %> 
 				</td>
-				<td>
+				<td colspan="2">
 					<% deliverable_not_done_class = "deliverable_not_done" %>
 					<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
 
-					<%= button_to "Set deliverable to NO", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :class => deliverable_not_done_class %> 
+					<%= button_to "Not done without admissible justification", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :class => deliverable_not_done_class %> 
 				</td>
-				<td></td>
 			</tr>
 			<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
 		<% end %>

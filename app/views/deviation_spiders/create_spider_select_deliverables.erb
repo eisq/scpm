@@ -21,7 +21,7 @@ function send_deliverables()
  		data: {deliverables: deliverables_selected, deviation_spider_id: "<%= @deviation_spider.id.to_s %>"}
 	})
 	.done(function( msg ) {
-		
+		location.replace("index?milestone_id=<%= @deviation_spider.milestone.id.to_s %>");
 	})
 	.fail(function() 
 	{ 
