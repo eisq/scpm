@@ -22,6 +22,9 @@ class DeviationSpider < ActiveRecord::Base
 		new_spider_deliverable = DeviationSpiderDeliverable.new
 		new_spider_deliverable.deviation_spider_id = self.id
 		new_spider_deliverable.deviation_deliverable_id = deliverable.id
+		if deliverable_not_done?(deliverable.id)
+			new_spider_deliverable.not_done = true
+		end		
 		new_spider_deliverable.save
 
 		activities.each do |activity|
@@ -30,7 +33,11 @@ class DeviationSpider < ActiveRecord::Base
 				new_deviation_spider_values = DeviationSpiderValue.new
 				new_deviation_spider_values.deviation_question_id = question.id
 				new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
-				new_deviation_spider_values.answer = nil
+				if new_spider_deliverable.not_done
+					new_deviation_spider_values.answer = false
+				else
+					new_deviation_spider_values.answer = nil
+				end
 				new_deviation_spider_values.answer_reference = question.answer_reference
 				new_deviation_spider_values.save
 			end
@@ -71,8 +78,8 @@ class DeviationSpider < ActiveRecord::Base
 		return return_paramaters
 	end
 
-
-	def get_deliverables_not_done
+	# Return a list of deliverable which should be not done from the spiders of the previous milestones
+	def get_deliverables_not_completed
 		deliverables_availables = Array.new
 
 		deviation_deliverables = Array.new
@@ -81,15 +88,8 @@ class DeviationSpider < ActiveRecord::Base
 		end
 
 		# Check last milestone
-		project_milestones = self.milestone.project.sorted_milestones.select { |m| m.is_eligible_for_spider? and m.name[0..1]!='QG' and m.is_virtual == false }
-		i = 0
-		self_index = -1
-		project_milestones.each do |sorted_milestone|
-			if sorted_milestone.id == self.milestone.id
-				self_index = i
-			end
-			i = i + 1
-		end	
+		project_milestones = get_project_milestones_with_spider()
+		self_index = get_spider_milestone_index()
 
 		# If the self milestone was found and it's not the first
 		if self_index > 0
@@ -117,4 +117,52 @@ class DeviationSpider < ActiveRecord::Base
 		end
 		return deliverables_availables
 	end
+
+	# Return a list of milestones sorted and available for spiders
+	def get_project_milestones_with_spider
+		return self.milestone.project.sorted_milestones.select { |m| m.is_eligible_for_spider? and m.name[0..1]!='QG' and m.is_virtual == false }
+	end
+
+	# Return the index of the milestone of the current spider from the array of sorted milestones
+	def get_spider_milestone_index
+		project_milestones = get_project_milestones_with_spider()
+		i = 0
+		self_index = -1
+		project_milestones.each do |sorted_milestone|
+			if sorted_milestone.id == self.milestone.id
+				self_index = i
+			end
+			i = i + 1
+		end	
+		return self_index
+	end
+
+	def deliverable_not_done?(deliverable_id)
+		deviation_deliverables = Array.new
+		self.deviation_spider_deliverables.each do |spider_deliverable|
+			deviation_deliverables << spider_deliverable.deviation_deliverable
+		end
+
+		project_milestones = get_project_milestones_with_spider()
+		self_index = get_spider_milestone_index()
+		deliverable_not_done = false
+
+		if self_index > 0
+			for i in 0..(self_index-1)
+				milestone_to_analyze 	= project_milestones[i]
+				spider_to_analyze 		= DeviationSpider.find(:last, :joins=>["JOIN deviation_spider_consolidations ON deviation_spiders.id  = deviation_spider_consolidations.deviation_spider_id"], :conditions =>["milestone_id = ?", milestone_to_analyze.id] )
+				if spider_to_analyze != nil
+					spider_deliverable_to_analyze = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ?", spider_to_analyze.id, deliverable_id])
+					if spider_deliverable_to_analyze != nil
+						if spider_deliverable_to_analyze.not_done == true
+							deliverable_not_done = true
+						end
+					end
+				end
+			end
+		end
+
+		return deliverable_not_done
+	end
+
 end

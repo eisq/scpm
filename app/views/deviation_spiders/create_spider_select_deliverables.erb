@@ -35,7 +35,7 @@ function send_deliverables()
 <%= button_to "Go to Spider", {:action => "index", :milestone_id => @deviation_spider.milestone.id }, :method => :post %> 
 <h3>Deliverables not done in the previous milestone</h3>
 <ul>
-<% @deviation_spider.get_deliverables_not_done.each do |deliverable| %>
+<% @deviation_spider.get_deliverables_not_completed.each do |deliverable| %>
 	<li>
 		<%= deliverable.name %>
 		<input type="button" id="<%= deliverable.id.to_s %>" value="Add to spider" class="deliverable_not_done" onclick="select_deliverable(<%= deliverable.id.to_s %>);" />
