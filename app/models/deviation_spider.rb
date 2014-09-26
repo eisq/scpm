@@ -18,7 +18,7 @@ class DeviationSpider < ActiveRecord::Base
 		end
 	end
 
-	def add_deliverable(deliverable, activities)
+	def add_deliverable(deliverable, activities, init_answers=false)
 		new_spider_deliverable = DeviationSpiderDeliverable.new
 		new_spider_deliverable.deviation_spider_id = self.id
 		new_spider_deliverable.deviation_deliverable_id = deliverable.id
@@ -36,7 +36,11 @@ class DeviationSpider < ActiveRecord::Base
 				if new_spider_deliverable.not_done
 					new_deviation_spider_values.answer = false
 				else
-					new_deviation_spider_values.answer = nil
+					if init_answers
+						# TODO : Init anwsers with previous spider deliverable only if we add the deliverable with the hand
+					else
+						new_deviation_spider_values.answer = nil
+					end
 				end
 				new_deviation_spider_values.answer_reference = question.answer_reference
 				new_deviation_spider_values.save
