@@ -4,94 +4,118 @@
 
     	external_id_temp = "null"
     	if self.external_id.to_s != nil and self.external_id.to_s != "" and self.external_id != 0
-    	   external_id_temp = self.external_id.to_s
+            if self.extract_bam_external_id == 0 and self.to_implement == 1
+                external_id_temp = self.external_id
+            else
+                external_id_temp = self.extract_bam_external_id.to_s
+            end
     	end
 
         formula = ""
-        formula += external_id_temp #ID Externe
-        formula += list_type(self.type)
-        formula += list_stage(self.stage)
-        formula += list_category(self.category)
-        formula += ";null" #Requirements
-        formula += list_severity(self.severity)
-        formula += list_reproductibility(self.reproductibility)
-        formula += format(self.summary)
-        formula += format(self.description)
-        formula += list_status(status)
-        formula += format(self.submission_date)
-        formula += list_reporter_and_responsible(self.reporter)
-        #formula += format(self.last_update)
-        #formula += format(self.last_update_person)
-        formula += list_visibility(self.visibility)
-        formula += list_reporter_and_responsible(self.assigned_to)
-        formula += list_priority(self.priority)
-        formula += list_detection_version(self.detection_version)
-        formula += list_fixed_in_version(self.fixed_in_version)
-        #formula += format(self.status_precisions)
-        formula += ";null" #format(self.resolution_charge)
-        #formula += format(self.duplicated_id)
-        formula += ";null" #format(self.stages_to_reproduce)
-        formula += format(self.additional_informations)
-        #formula += invert_date(self.taking_into_account_date)
-        #formula += invert_date(self.realisation_date)
-        #formula += format(self.realisation_author)
-        #formula += invert_date(self.delivery_date)
-        #formula += invert_date(self.reopening_date)
-        formula += format(self.issue_origin)
-        formula += ";null" #format(self.detection_phase)
-        formula += ";null" #format(self.injection_phase)
-        formula += ";null" #format(self.real_test_of_detection)
-        formula += ";null" #format(self.theoretical_test_of_detection)
-        formula += ";null" # Impact (in m/d)
-        formula += ";null" # Impact in delay (in days)
-        formula += ";null" # Change type
-        formula += ";null" # Updated deliverables
-        formula += format(self.iteration)
-        formula += format(self.lot)
-        formula += format(self.entity)
-        formula += ";null" #format(self.team)
-        formula += format(self.domain)
-        formula += format(self.num_req_backlog)
-        formula += format(self.origin)
-        formula += ";null" #format(self.output_type)
-        formula += format(self.deliverables_list)
-        formula += format(self.dev_team)
-        formula += invert_date(self.deployment)
-        formula += format(self.airbus_responsible)
-        formula += invert_date(self.airbus_validation_date)
-        formula += invert_date(self.airbus_validation_date_objective)
-        formula += invert_date(self.airbus_validation_date_review)
-        formula += format(self.ci_objective_20102011)
-        formula += format(self.ci_objective_2012)
-        formula += format(self.ci_objectives_2013)
-        formula += format(self.deliverable_folder)
-        formula += invert_date(self.deployment_date)
-        formula += invert_date(self.deployment_date_objective)
-        formula += invert_date(self.specification_date)
-        formula += invert_date(self.kick_off_date)
-        formula += invert_date(self.launching_date_ddmmyyyy)
-        formula += invert_date(self.sqli_validation_date)
-        formula += invert_date(self.sqli_validation_date_objective)
-        formula += invert_date(self.specification_date_objective)
-        formula += format(self.sqli_validation_responsible)
-        formula += format(self.ci_objectives_2014)
-        formula += ";null" # Airbus kick-off date
-        formula += ";null" # Airbus validation responsible
-        formula += format(self.linked_req)
-        formula += format(self.quick_fix)
-        formula += format(self.level_of_impact)
-        formula += format(self.impacted_mnt_process)
-        formula += format(self.path_backlog)
-        formula += format(self.path_svn)
-        formula += format(self.path_sfs_airbus)
-        formula += format(self.item_type)
-        formula += invert_date(self.verification_date_objective)
-        formula += invert_date(self.verification_date)
-        formula += format(self.request_origin)
-        #formula += format(self.issue_history)
-    	
+        if external_id_temp != "null" and external_id_temp != "0"
+            formula += external_id_temp #ID Externe
+            formula += list_type(self.type)
+            formula += list_stage(self.stage)
+            formula += list_category(self.category)
+            formula += ";null" #Requirements
+            formula += list_severity(self.severity)
+            formula += list_reproductibility(self.reproductibility)
+            formula += format(self.summary)
+            formula += format(self.description)
+            formula += list_status(status)
+            formula += format(self.submission_date)
+            formula += list_reporter_and_responsible(self.reporter)
+            #formula += format(self.last_update)
+            #formula += format(self.last_update_person)
+            formula += list_visibility(self.visibility)
+            formula += list_reporter_and_responsible(self.assigned_to)
+            formula += list_priority(self.priority)
+            formula += list_detection_version(self.detection_version)
+            formula += list_fixed_in_version(self.fixed_in_version)
+            #formula += format(self.status_precisions)
+            formula += ";null" #format(self.resolution_charge)
+            #formula += format(self.duplicated_id)
+            formula += ";null" #format(self.stages_to_reproduce)
+            formula += format(self.additional_informations)
+            #formula += invert_date(self.taking_into_account_date)
+            #formula += invert_date(self.realisation_date)
+            #formula += format(self.realisation_author)
+            #formula += invert_date(self.delivery_date)
+            #formula += invert_date(self.reopening_date)
+            formula += format(self.issue_origin)
+            formula += ";null" #format(self.detection_phase)
+            formula += ";null" #format(self.injection_phase)
+            formula += ";null" #format(self.real_test_of_detection)
+            formula += ";null" #format(self.theoretical_test_of_detection)
+            formula += ";null" # Impact (in m/d)
+            formula += ";null" # Impact in delay (in days)
+            formula += ";null" # Change type
+            formula += ";null" # Updated deliverables
+            formula += format(self.iteration)
+            formula += format(self.lot)
+            formula += format(self.entity)
+            formula += ";null" #format(self.team)
+            formula += format(self.domain)
+            formula += format(self.num_req_backlog)
+            formula += format(self.origin)
+            formula += ";null" #format(self.output_type)
+            formula += format(self.deliverables_list)
+            formula += format(self.dev_team)
+            formula += invert_date(self.deployment)
+            formula += format(self.airbus_responsible)
+            formula += invert_date(self.airbus_validation_date)
+            formula += invert_date(self.airbus_validation_date_objective)
+            formula += invert_date(self.airbus_validation_date_review)
+            formula += format(self.ci_objective_20102011)
+            formula += format(self.ci_objective_2012)
+            formula += format(self.ci_objectives_2013)
+            formula += format(self.deliverable_folder)
+            formula += invert_date(self.deployment_date)
+            formula += invert_date(self.deployment_date_objective)
+            formula += invert_date(self.specification_date)
+            formula += invert_date(self.kick_off_date)
+            formula += invert_date(self.launching_date_ddmmyyyy)
+            formula += invert_date(self.sqli_validation_date)
+            formula += invert_date(self.sqli_validation_date_objective)
+            formula += invert_date(self.specification_date_objective)
+            formula += format(self.sqli_validation_responsible)
+            formula += format(self.ci_objectives_2014)
+            formula += ";null" # Airbus kick-off date
+            formula += ";null" # Airbus validation responsible
+            formula += format(self.linked_req)
+            formula += format(self.quick_fix)
+            formula += format(self.level_of_impact)
+            formula += format(self.impacted_mnt_process)
+            formula += format(self.path_backlog)
+            formula += format(self.path_svn)
+            formula += format(self.path_sfs_airbus)
+            formula += format(self.item_type)
+            formula += invert_date(self.verification_date_objective)
+            formula += invert_date(self.verification_date)
+            formula += format(self.request_origin)
+            #formula += format(self.issue_history)
+            formula += ";finbug"
+            formula += "\n"
+        end
     	return formula
 	end
+
+    def extract_bam_external_id
+        bam_external_id = 0
+        if self.external_id.length > 7
+            temp, bam_external_id_temp = self.external_id.to_s.split(" [")
+            bam_external_id, temp = bam_external_id_temp.to_s.split("]")
+        end
+        return bam_external_id.to_i
+    end
+
+    def extract_mantis_external_id
+        mantis_external_id = 0
+        if self.external_id.length > 7
+            mantis_external_id, temp = self.external_id.to_s.split(" [")
+        end
+        return mantis_external_id.to_i
+    end
 
     def invert_date(date)
         if date == "" or date == nil

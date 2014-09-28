@@ -196,7 +196,7 @@ function getDocHeight() {
 				else
 					currentAxeId = q.lifecycle_question.pm_type_axe.id.to_s
 				end
-				concat "<tr><td class='axe_tab' id='" + pmTabId + "_axe_" + q.lifecycle_question.pm_type_axe.id.to_s + "' style='background-color: #6D6D6D;color:white;border: 1px solid black;'>"+q.lifecycle_question.pm_type_axe.title+"</td>"
+				concat "<tr><td class='axe_tab' id='" + pmTabId + "_axe_" + q.lifecycle_question.pm_type_axe.id.to_s + "' style='background-color: #6D6D6D;color:white;border: 1px solid black;'>"+q.lifecycle_question.pm_type_axe.title+ ">>> "+q.lifecycle_question.pm_type_axe.id.to_s+"</td>"
 				concat "<td style='border: 1px solid black;' class='grey_cell'>Note</td><td style='border: 1px solid black;' class='green_cell'>Ref.</td><td style='background-color: #6D6D6D;color:white;border: 1px solid black;width:80px;'>Recursive ? <input type='checkbox' class='check_all' id='check_all_" + q.lifecycle_question.pm_type_axe.id.to_s + "'"
 				if !@is_editable
 					concat " disabled"
@@ -264,7 +264,7 @@ function getDocHeight() {
 				concat ' disabled'
 			end
 
-			concat ' class="check check_' + q.lifecycle_question.pm_type_axe.id.to_s + '" /></td>'
+			concat ' class="check check_' + q.lifecycle_question.pm_type_axe.id.to_s + '" />'+q.lifecycle_question.pm_type_axe.id.to_s+'</td>'
 			concat '</tr>'	
 			j = j + 1
 		}
