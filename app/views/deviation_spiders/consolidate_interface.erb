@@ -1,0 +1,46 @@
+<SCRIPT language="Javascript">
+function change_score(consolidation_id, value)
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/update_consolidation_score",
+ 		data: {deviation_spider_consolidation_id: consolidation_id, deviation_spider_consolidation_score: value}
+	})
+	.done(function( msg ) {
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+
+</SCRIPT>
+
+<table>
+<% i = 0 %>
+<% table_deliverable = nil %>
+<% @deviation_spider_consolidations_array.each do |deliverable_conso| %>
+	
+	<% if i == 0 %>
+		<tr>
+			<td>Deliverables</td>
+			<% deliverable_conso.consolidations.each do |consolidation| %>
+				<td colspan="2"><%= consolidation.deviation_activity.name %></td>
+			<% end %>
+		</tr>
+	<% end %>
+
+	<tr>
+		<td><%= deliverable_conso.deliverable.name %></td>
+		<% deliverable_conso.consolidations.each do |consolidation| %>
+			<td><%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.id.to_s}, this.value);"}) %></td>
+			<td><%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.id}") %></td>
+		<% end %>
+	<tr>
+
+	<% i = i + 1 %>
+<% end %>
+
+</table>
+
+<div><%= button_to "Close", {:action => "index", :milestone_id => @deviation_spider.milestone_id } %></div>

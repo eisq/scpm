@@ -3,7 +3,7 @@ class Lifecycle < ActiveRecord::Base
   has_many :lifecycle_questions, :dependent=>:nullify
   has_many :lifecycle_milestones, :dependent=>:nullify, :order => "index_order"
   has_many :pm_type_axe, :through => :lifecycle_questions
-  has_many :deviation_deliverables
+  has_many :deviation_question_lifecycles
 
   def self.get_default
     lifecycle_name = APP_CONFIG['report_project_creation_lifecycle']

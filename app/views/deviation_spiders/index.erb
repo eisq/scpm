@@ -23,84 +23,140 @@ function set_question(question_id, checked)
  		data: {deviation_spider_value_id: question_id, deviation_spider_value_answer: checked}
 	})
 	.done(function( msg ) {
-		var button_yes_id = "#button_yes_"+question_id;
-		var button_no_id = "#button_no_"+question_id;
-		if (checked == true) {
-			$(button_yes_id).attr('class', 'answer_button_select');
-			$(button_no_id).attr('class', 'answer_button');
-		} else {
-			$(button_yes_id).attr('class', 'answer_button');
-			$(button_no_id).attr('class', 'answer_button_select');
-		}
+		set_value_buttons(question_id, checked);
+
+		var spider_values_updated = msg.split(',')
+		for (var i = 0; i < spider_values_updated.length; i++) {
+			set_value_buttons(spider_values_updated[i], checked);
+		};
 	})
 	.fail(function() 
 	{ 
 		alert("Error");
 	})
 }
+
+function set_value_buttons(value_id, answer)
+{
+	var button_yes_id = "#button_yes_"+value_id;
+	var button_no_id = "#button_no_"+value_id;
+	if (answer == true) {
+		if ($(button_yes_id).attr('class') == 'answer_button_select') {	
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button');
+		} else {
+			$(button_yes_id).attr('class', 'answer_button_select');
+			$(button_no_id).attr('class', 'answer_button');
+		}
+	} else {
+		if ($(button_no_id).attr('class') == 'answer_button_select') {	
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button');
+		} else {
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button_select');
+		}
+	}
+}
 </SCRIPT>
 
-<p>
-Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %>
-</p>
+<div><%= button_to "Project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
 
-<% if @last_spider == nil %>
+<% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
-<% end %>
+<% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
+	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
+	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id} %></div>
+	<br />
 
+	<% form_tag(:action=>'add_spider_deliverable') do %>
+	  Deliverables :
+	  <%= hidden_field_tag('deviation_spider_id', @last_spider.id) %>
+	  <%= select_tag ("deviation_deliverable_id", options_for_select(@deliverables_to_add))  %>
+	  <%= submit_tag('Add to spider') %>
+	<% end %>
 
-<% table_activity = nil %>
-<% table_deliverable = nil %>
-<% @questions.each do |q| %>
+	<% table_activity = nil %>
+	<% table_deliverable = nil %>
+	<% @questions.each do |q| %>
 
-	<!-- ACTIVITY -->
-	<% if table_activity == nil or table_activity != q.deviation_question.deviation_activity_id %>
-		<% if table_activity != nil %>
-			</table>
+		<!-- ACTIVITY -->
+		<% if table_activity == nil or table_activity != q.deviation_question.deviation_activity_id %>
+			<% if table_activity != nil %>
+				</table><br />
+			<% end %>
+			<table class="deviation_spider_table">
+			<tr class="deviation_spider_tr_activity">
+				<td><%= q.deviation_question.deviation_activity.name %></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<% table_activity 		= q.deviation_question.deviation_activity_id %>
+			<% table_deliverable	= nil %>
 		<% end %>
-		<table>
+
+		<!-- DELIVERABLE  -->
+		<% if table_deliverable == nil or table_deliverable != q.deviation_spider_deliverable.deviation_deliverable_id %>
+			<tr class="deviation_spider_tr_deliverable">
+				<td></td>
+				<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
+				<td>
+					<%= button_to "Delete deliverable", {:action => "delete_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable.deviation_deliverable_id }, :confirm=>"Are you sure you want to delete this deliverable ? It will be deleted in all activities.", :method => :post %> 
+				</td>
+				<td colspan="2">
+					<% deliverable_not_done_class = "deliverable_not_done" %>
+					<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
+
+					<%= button_to "Not done without admissible justification", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :class => deliverable_not_done_class %> 
+				</td>
+			</tr>
+			<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
+		<% end %>
+
+		<!-- QUESTION -->
 		<tr>
-			<td><%= q.deviation_question.deviation_activity.name %></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
+			<td width="400"><%= q.deviation_question.question_text %></td>
+			<td>  
+				<% yes_class = 'class="answer_button"' %>
+				<% no_class = 'class="answer_button"' %>
+				<% if q.answer %>
+					<% yes_class = 'class="answer_button_select"' %>
+				<% end %>
+				<% if !q.answer and q.answer != nil %>
+					<% no_class = 'class="answer_button_select"' %>
+				<% end %>
+
+				<input <%= yes_class %> id="button_yes_<%= q.id.to_s %>" type="button" value="Yes" onclick="set_question('<%= q.id.to_s %>', true);" />
+				<input <%= no_class %>  id="button_no_<%= q.id.to_s %>"  type="button" value="No" onclick="set_question('<%= q.id.to_s %>', false);" />
+			</td>
+			<td><%= check_box_tag(:answer_reference, true, q.answer_reference, {:disabled => true}) %></td>
 		</tr>
-		<% table_activity 		= q.deviation_question.deviation_activity_id %>
-		<% table_deliverable	= nil %>
 	<% end %>
+	</table>
 
-	<!-- DELIVERABLE  -->
-	<% if table_deliverable == nil or table_deliverable != q.deviation_spider_deliverable.deviation_deliverable_id %>
-		<tr>
-			<td></td>
-			<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
-	<% end %>
 
-	<!-- QUESTION -->
-	<tr>
-		<td></td>
-		<td></td>
-		<td><%= q.deviation_question.question_text %></td>
-		<td>  
-			<% yes_class = 'class="answer_button"' %>
-			<% no_class = 'class="answer_button"' %>
-			<% if q.answer %>
-				<% yes_class = 'class="answer_button_select"' %>
-			<% end %>
-			<% if !q.answer and q.answer != nil %>
-				<% no_class = 'class="answer_button_select"' %>
-			<% end %>
+	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
+	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id} %></div>
+	<br />
 
-			<input <%= yes_class %> id="button_yes_<%= q.id.to_s %>" type="button" value="Yes" onclick="set_question('<%= q.id.to_s %>', true);" />
-			<input <%= no_class %>  id="button_no_<%= q.id.to_s %>"  type="button" value="No" onclick="set_question('<%= q.id.to_s %>', false);" />
-		</td>
-		<td><%= check_box_tag(:answer_reference, true, q.answer_reference, {:disabled => true}) %></td>
-	</tr>
 <% end %>
-</table>
+
+
+
+
+<h2>History</h2>
+<% if @history %>
+	<% @history.each { |s|
+		spider_name = "Spider [created the "
+		spider_name << s.created_at.to_s
+		spider_name << "] [Consolidated the "
+		spider_name << s.deviation_spider_consolidations.first().created_at.to_s
+		spider_name << "]"
+	%>
+		<%= link_to spider_name, :action => "index_history", :deviation_spider_id => s.id %><br />
+	<% } %>
+<% end %>

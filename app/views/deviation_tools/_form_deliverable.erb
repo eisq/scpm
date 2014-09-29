@@ -1,9 +1,4 @@
 <%= hidden_field :deliverable, :id %>
-<%= hidden_field :deliverable, :lifecycle_id %>
-
-<p><%= label_tag 'Milestone' %>
-<%= select(:deliverable, :milestone_name_id, @milestone_names) %>
-</p>
 
 <p><%= label_tag 'Name' %>
 <%= text_field :deliverable, :name %> </p>

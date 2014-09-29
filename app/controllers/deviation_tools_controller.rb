@@ -4,20 +4,12 @@ class DeviationToolsController < ApplicationController
 
   # Deliverable 
   def index_deliverable
-  	@lifecycles = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map {|l| [l.name, l.id]}
-    if params[:lifecycle_id] != nil
-      @lifecycle_index_select = params[:lifecycle_id]
-    else
-      @lifecycle_index_select = 1
-    end
-
-    @deliverables = DeviationDeliverable.find(:all, :conditions => ["lifecycle_id = ?", @lifecycle_index_select.to_s], :order => "milestone_name_id, name")
+    @deliverables = DeviationDeliverable.find(:all, :order => "name")
   end
 
   def detail_deliverable
   	deliverable_id = params[:deliverable_id]
   	if deliverable_id
-  		@milestone_names = MilestoneName.find(:all, :conditions => ["is_active = 1"]).map {|m| [m.title, m.id]}
   		@deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
   	else
 		redirect_to :action=>'index_deliverable'
@@ -25,14 +17,7 @@ class DeviationToolsController < ApplicationController
   end
 
   def new_deliverable
-    lifecycle_id = params[:lifecycle_id]
-    if lifecycle_id
-      @deliverable = DeviationDeliverable.new
-      @deliverable.lifecycle_id = lifecycle_id
-      @milestone_names = MilestoneName.find(:all, :conditions => ["is_active = 1"]).map {|m| [m.title, m.id]}
-    else
-      redirect_to :action=>'index_deliverable'
-    end
+    @deliverable = DeviationDeliverable.new
   end
   
   def create_deliverable
@@ -44,18 +29,15 @@ class DeviationToolsController < ApplicationController
   def update_deliverable
     deliverable = DeviationDeliverable.find(params[:deliverable][:id])
     deliverable.update_attributes(params[:deliverable])
-    redirect_to :action=>'index_deliverable', :lifecycle_id=>deliverable.lifecycle_id
+    redirect_to :action=>'index_deliverable'
   end
 
   def delete_deliverable
     deliverable = DeviationDeliverable.find(:first, :conditions=>["id = ?", params[:deliverable_id]])
     if deliverable
-      lifecycle_id = deliverable.lifecycle_id
       deliverable.destroy
-      redirect_to :action=>'index_deliverable', :lifecycle_id=>lifecycle_id
-    else
-      redirect_to :action=>'index_deliverable'
     end
+    redirect_to :action=>'index_deliverable'
   end
 
   # Activity
@@ -65,6 +47,8 @@ class DeviationToolsController < ApplicationController
 
   def detail_activity
     @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"]).map {|ma| [ma.name, ma.id]}
+    @deliverables = DeviationDeliverable.find(:all, :order => "name")
+
     activity_id = params[:activity_id]
     if activity_id
       @activity = DeviationActivity.find(:first, :conditions => ["id = ?", activity_id])
@@ -75,18 +59,37 @@ class DeviationToolsController < ApplicationController
 
   def new_activity
     @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"]).map {|ma| [ma.name, ma.id]}
+    @deliverables = DeviationDeliverable.find(:all, :order => "name")
     @activity = DeviationActivity.new
   end
 
   def create_activity
     activity = DeviationActivity.new(params[:activity])
     activity.save
+
+    deliverable_ids = params[:deliverable_ids]
+    deliverable_ids.each do |deliverable_id|
+      new_activity_deliverable = DeviationActivityDeliverable.new
+      new_activity_deliverable.deviation_deliverable_id = deliverable_id
+      new_activity_deliverable.deviation_activity_id = activity.id
+      new_activity_deliverable.save
+    end
+
     redirect_to :action=>'detail_activity', :activity_id=>activity.id
   end
 
   def update_activity
     activity = DeviationActivity.find(params[:activity][:id])
     activity.update_attributes(params[:activity])
+    
+    deliverable_ids = params[:deliverable_ids]
+    deliverable_ids.each do |deliverable_id|
+      new_activity_deliverable = DeviationActivityDeliverable.new
+      new_activity_deliverable.deviation_deliverable_id = deliverable_id
+      new_activity_deliverable.deviation_activity_id = activity.id
+      new_activity_deliverable.save
+    end
+
     redirect_to :action=>'index_activity'
   end
 
@@ -163,23 +166,9 @@ class DeviationToolsController < ApplicationController
     end
   end
 
-  # def new_question
-   #  activity_id    = params[:activity_id]
-   #  deliverable_id = params[:deliverable_id]
-   #  if activity_id && deliverable_id
-   #    new_question = DeviationQuestion.new
-   #    new_question.deviation_activity_id = activity_id
-   #    new_question.deviation_deliverable_id = deliverable_id
-   #    new_question.question_text = "NEW QUESTION - REPLACE IT"
-   #    new_question.save
-
-   #    redirect_to :action=>'index_question', :activity_id=>activity_id, :deliverable_id=>deliverable_id
-   # else
-   #   redirect_to :action=>'index_question'
-   # end
-  # end
-
   def new_question
+    #     @lifecycles = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map {|l| [l.name, l.id]}
+
     activity_id    = params[:activity_id]
     deliverable_id = params[:deliverable_id]
     if activity_id && deliverable_id

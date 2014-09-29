@@ -73,16 +73,48 @@
   	border-radius: 5px;
 }
 
-.answer_button:hover {
+.deliverable_not_done
+{
+	width: 320px;
+  	border: 1px solid #900;
+  	font-weight: bold;
+  	border-radius: 5px;
+}
+.deliverable_not_done_select
+{
+	width: 320px;
+  	color: #FFF;
+  	background-color: #900;
+  	border: 1px solid #900;
+  	font-weight: bold;
+  	border-radius: 5px;
+}
+
+.answer_button:hover, .deliverable_not_done:hover 
+{
   	color: #FFF;
   	background: #FC9;
   	cursor: pointer;
   	border-color: #F00 #C30 #C30 #F00;
 }
 
-.answer_button_select:hover {
+.answer_button_select:hover, .deliverable_not_done_select:hover 
+{
   	color: #FFF;
   	background: #FC9;
   	cursor: pointer;
   	border-color: #F00 #C30 #C30 #F00;
+}
+
+.deviation_spider_table {
+  	border-collapse: collapse;
+	border: 1px solid red;
+}
+.deviation_spider_tr_activity {
+	background-color:red;
+	color: white;
+}
+.deviation_spider_tr_deliverable {
+	background-color:#FF8080;
+	color: white;
 }
