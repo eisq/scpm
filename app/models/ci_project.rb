@@ -14,7 +14,7 @@
         formula = ""
         if external_id_temp != "null" and external_id_temp != "0"
             formula += external_id_temp #ID Externe
-            formula += list_type(self.type)
+            formula += list_type(self.ci_type)
             formula += list_stage(self.stage)
             formula += list_category(self.category)
             formula += ";null" #Requirements
@@ -104,6 +104,15 @@
         bam_external_id = 0
         if self.external_id.length > 7
             temp, bam_external_id_temp = self.external_id.to_s.split(" [")
+            bam_external_id, temp = bam_external_id_temp.to_s.split("]")
+        end
+        return bam_external_id.to_i
+    end
+
+    def self.extract_bam_external_id(external_id_local)
+        bam_external_id = 0
+        if external_id_local.length > 7
+            temp, bam_external_id_temp = external_id_local.to_s.split(" [")
             bam_external_id, temp = bam_external_id_temp.to_s.split("]")
         end
         return bam_external_id.to_i

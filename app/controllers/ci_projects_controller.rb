@@ -24,7 +24,7 @@ class CiProjectsController < ApplicationController
     @project.submission_date = DateTime.now
     @project.reporter = current_user.rmt_user
 
-    @select_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
+    @select_ci_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
     @select_stage = [['Continuous Improvement', 'Continuous Improvement']]
     @select_category = [['Autres', 'Autres'], ['Bundle', 'Bundle'], ['Methodo Airbus (GPP, LBIP ...)', 'Methodo Airbus (GPP, LBIP ...)'], ['Methodo Airbus (GPP, LBIP...)', 'Methodo Airbus (GPP, LBIP...)'], ['Project', 'Project']]
     @select_severity = [['minor', 'minor'], ['major', 'major'], ['block', 'block'], ['text', 'text'], ['tweak', 'tweak']]
@@ -91,7 +91,7 @@ class CiProjectsController < ApplicationController
             #On check si ce n'est pas un CI créé par le BAM et dont il faut mettre à jour l'id. exemple:
             #id venant de mantis : 0000615 [10001]
             #id du même CI enregistré dans la base BAM : 10001 -> car il a été créé dans le BAM en premier
-            id_bam_creation = p.extract_bam_external_id
+            id_bam_creation = CiProject.extract_bam_external_id(p.external_id).to_s
             if id_bam_creation != 0
               ci = CiProject.find_by_external_id(id_bam_creation)
             else
@@ -103,7 +103,7 @@ class CiProjectsController < ApplicationController
           #update only fields not potentially updated by BAM, to not erase data changed by users directly into the BAM
           ci.update_attribute('internal_id', p.internal_id)
           ci.update_attribute('external_id', p.external_id)
-          ci.update_attribute('type', p.type)
+          ci.update_attribute('ci_type', p.ci_type)
           ci.update_attribute('stage', p.stage)
           ci.update_attribute('category', p.category)
           ci.update_attribute('severity', p.severity)

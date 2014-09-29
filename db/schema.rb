@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140928185900) do
+ActiveRecord::Schema.define(:version => 20140929160800) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(:version => 20140928185900) do
   create_table "ci_projects", :force => true do |t|
     t.integer  "internal_id"
     t.text     "external_id"
-    t.string   "type"
+    t.string   "ci_type"
     t.string   "stage"
     t.string   "category"
     t.string   "severity"
