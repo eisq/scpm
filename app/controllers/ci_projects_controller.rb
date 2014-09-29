@@ -91,7 +91,7 @@ class CiProjectsController < ApplicationController
             #On check si ce n'est pas un CI créé par le BAM et dont il faut mettre à jour l'id. exemple:
             #id venant de mantis : 0000615 [10001]
             #id du même CI enregistré dans la base BAM : 10001 -> car il a été créé dans le BAM en premier
-            id_bam_creation = CiProject.extract_bam_external_id
+            id_bam_creation = p.extract_bam_external_id
             if id_bam_creation != 0
               ci = CiProject.find_by_external_id(id_bam_creation)
             else
