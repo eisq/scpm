@@ -1,12 +1,7 @@
 <SCRIPT language="Javascript">
 
-function change_lifecycle(lifecycle_id)
-{
-	location.replace(generate_url("index_deliverable?lifecycle_id="+lifecycle_id));
-}
-
 function create_new_deliverable() {
-	location.replace(generate_url("new_deliverable?lifecycle_id=" + $("#choose_lifecycle").val()));
+	location.replace(generate_url("new_deliverable"));
 }
 
 function generate_url(action_name) {
@@ -22,19 +17,10 @@ function generate_url(action_name) {
 </SCRIPT>
 
 
-Lifecycle : <%= select_tag('choose_lifecycle', options_for_select(@lifecycles, @lifecycle_index_select.to_i), {:onchange=>"change_lifecycle(this.value)"}) %>
-
 <input type="button", :id="add_deliverable", onclick="create_new_deliverable();" value="New deliverable" />
 <div id="deliverable_list">
-<% @current_milestone_name_id = nil %>
 
 <% @deliverables.each do |d| %>
-
-  <% if @current_milestone_name_id == nil or @current_milestone_name_id != d.milestone_name_id %>
-    <h3><%= d.milestone_name.title %></h3>
-    <% @current_milestone_name_id =  d.milestone_name_id %>
-  <% end %>
-  
   <p>
       <div style="float: left; width: auto;">
       <%= d.name %> [Is Active : <%= d.is_active %>]

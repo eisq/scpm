@@ -1,5 +1,5 @@
 <%= button_to "Activities", {:action => "index_activity" }, :method => :post %>
-<%= button_to "Delete", {:action => "delete_activity", :activity_id => @activity.id }, :method => :post %>
+<!-- <%= button_to "Delete", {:action => "delete_activity", :activity_id => @activity.id }, :method => :post %> -->
 
 <% form_for @activity, :url=>{:action=>'update_activity'} do |f| -%>
   <%= render(:partial => "form_activity") %>

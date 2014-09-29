@@ -11,3 +11,10 @@
 <%= radio_button :activity, :is_active, true %> Yes
 <%= radio_button :activity, :is_active, false %> No
 </p>
+
+
+
+<h3>Deliverables</h3>
+<% for deliverable in @deliverables %>
+	<%= check_box_tag('deliverable_ids[]', deliverable.id, @activity.has_deliverable?(deliverable.id)) %><%= "#{deliverable.name}" %><br/>
+<% end %>
