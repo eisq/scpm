@@ -277,7 +277,6 @@ class CiProjectsController < ApplicationController
     }
 
     p = CiProject.new(params[:project])
-
     #on va check l'external_ID créé par le BAM, la première occurence doit être 10000, si ce n'est pas le cas, le créé.
     if last_external_id < 9999
       last_external_id = 9999
@@ -285,6 +284,8 @@ class CiProjectsController < ApplicationController
     p.external_id = (last_external_id + 1).to_s
 
     p.to_implement = 1
+    p.reporter = current_user.rmt_user
+
     p.save
     redirect_to "/ci_projects/show/"+p.id.to_s
   end
