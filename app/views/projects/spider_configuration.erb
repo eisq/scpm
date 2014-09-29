@@ -5,7 +5,7 @@ function setShowIgnore(object) {
 </SCRIPT>
 
 <p>
-<%= form_tag({:action => 'do_upload_backlog'}, :multipart => true) %>
+<%= form_tag({:action => 'import_deviation'}, :multipart => true) %>
     <label for="upload_file">Import deviation file</label>
     <%= file_field 'upload', 'datafile' %>
     <%= submit_tag "Upload" %>
