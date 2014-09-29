@@ -47,7 +47,7 @@ class DeviationToolsController < ApplicationController
 
   def detail_activity
     @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"]).map {|ma| [ma.name, ma.id]}
-    @deliverables = DeviationDeliverable.find(:all, :order => "name")
+    @deliverables = DeviationDeliverable.find(:all, :conditions => ["is_active = 1"], :order => "name")
 
     activity_id = params[:activity_id]
     if activity_id
@@ -59,7 +59,7 @@ class DeviationToolsController < ApplicationController
 
   def new_activity
     @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"]).map {|ma| [ma.name, ma.id]}
-    @deliverables = DeviationDeliverable.find(:all, :order => "name")
+    @deliverables = DeviationDeliverable.find(:all, :conditions => ["is_active = 1"], :order => "name")
     @activity = DeviationActivity.new
   end
 
@@ -68,13 +68,14 @@ class DeviationToolsController < ApplicationController
     activity.save
 
     deliverable_ids = params[:deliverable_ids]
-    deliverable_ids.each do |deliverable_id|
-      new_activity_deliverable = DeviationActivityDeliverable.new
-      new_activity_deliverable.deviation_deliverable_id = deliverable_id
-      new_activity_deliverable.deviation_activity_id = activity.id
-      new_activity_deliverable.save
+    if deliverable_ids
+      deliverable_ids.each do |deliverable_id|
+        new_activity_deliverable = DeviationActivityDeliverable.new
+        new_activity_deliverable.deviation_deliverable_id = deliverable_id
+        new_activity_deliverable.deviation_activity_id = activity.id
+        new_activity_deliverable.save
+      end
     end
-
     redirect_to :action=>'detail_activity', :activity_id=>activity.id
   end
 
@@ -83,13 +84,14 @@ class DeviationToolsController < ApplicationController
     activity.update_attributes(params[:activity])
     
     deliverable_ids = params[:deliverable_ids]
-    deliverable_ids.each do |deliverable_id|
-      new_activity_deliverable = DeviationActivityDeliverable.new
-      new_activity_deliverable.deviation_deliverable_id = deliverable_id
-      new_activity_deliverable.deviation_activity_id = activity.id
-      new_activity_deliverable.save
+    if deliverable_ids
+      deliverable_ids.each do |deliverable_id|
+        new_activity_deliverable = DeviationActivityDeliverable.new
+        new_activity_deliverable.deviation_deliverable_id = deliverable_id
+        new_activity_deliverable.deviation_activity_id = activity.id
+        new_activity_deliverable.save
+      end
     end
-
     redirect_to :action=>'index_activity'
   end
 
@@ -141,23 +143,34 @@ class DeviationToolsController < ApplicationController
 
   # Question
   def index_question
-    @deliverables = DeviationDeliverable.find(:all, :conditions => ["is_active = 1"]).map {|d| [d.name, d.id]}
     @activities   = DeviationActivity.find(:all, :conditions => ["is_active = 1"]).map {|a| [a.name, a.id]}
-    if params[:deliverable_id] != nil
-      @deliverable_index_select = params[:deliverable_id]
-    else
-      @deliverable_index_select = 1
-    end
     if params[:activity_id] != nil
       @activity_index_select = params[:activity_id]
     else
-      @activity_index_select = 1
+      if @activities.count > 0
+        @activity_index_select = @activities[0][1]
+      else
+        @activity_index_select = 1
+      end
     end
 
+    @deliverables = DeviationDeliverable.find(:all, :joins => ["JOIN deviation_activity_deliverables ON deviation_activity_deliverables.deviation_deliverable_id = deviation_deliverables.id"], :conditions => ["is_active = 1 and deviation_activity_deliverables.deviation_activity_id = ?", @activity_index_select]).map {|d| [d.name, d.id]}
+    if params[:deliverable_id] != nil
+      @deliverable_index_select = params[:deliverable_id]
+    else
+      if @deliverables.count > 0
+        @deliverable_index_select = @deliverables[0][1]
+      else
+        @deliverable_index_select = 1
+      end
+    end
     @questions = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", @deliverable_index_select.to_s, @activity_index_select.to_s], :order => "question_text")
   end
 
  def detail_question
+    @lifecycles      = Lifecycle.find(:all, :conditions => ["is_active = 1"])
+    @milestone_names = MilestoneName.find(:all, :conditions => ["is_active = 1"])
+
     question_id = params[:question_id]
     if question_id
       @question = DeviationQuestion.find(:first, :conditions => ["id = ?", question_id])
@@ -167,7 +180,8 @@ class DeviationToolsController < ApplicationController
   end
 
   def new_question
-    #     @lifecycles = Lifecycle.find(:all, :conditions => ["is_active = 1"]).map {|l| [l.name, l.id]}
+    @lifecycles      = Lifecycle.find(:all, :conditions => ["is_active = 1"])
+    @milestone_names = MilestoneName.find(:all, :conditions => ["is_active = 1"])
 
     activity_id    = params[:activity_id]
     deliverable_id = params[:deliverable_id]
@@ -183,12 +197,54 @@ class DeviationToolsController < ApplicationController
   def create_question
     question = DeviationQuestion.new(params[:question])
     question.save
+
+    lifecycle_ids = params[:lifecycle_ids]
+    if lifecycle_ids
+      lifecycle_ids.each do |lifecycle_id|
+        new_deviation_question_lifecycle = DeviationQuestionLifecycle.new
+        new_deviation_question_lifecycle.deviation_question_id = question.id
+        new_deviation_question_lifecycle.lifecycle_id = lifecycle_id
+        new_deviation_question_lifecycle.save
+      end
+    end
+
+    milestone_name_ids = params[:milestone_name_ids]
+    if milestone_name_ids
+      milestone_name_ids.each do |milestone_name_id|
+        new_deviation_question_milestone_name = DeviationQuestionMilestoneName.new
+        new_deviation_question_milestone_name.deviation_question_id = question.id
+        new_deviation_question_milestone_name.milestone_name_id = milestone_name_id
+        new_deviation_question_milestone_name.save
+      end
+    end
+
     redirect_to :action=>'detail_question', :question_id=>question.id
   end
 
   def update_question
     question = DeviationQuestion.find(params[:question][:id])
     question.update_attributes(params[:question])
+
+    lifecycle_ids = params[:lifecycle_ids]
+    if lifecycle_ids
+      lifecycle_ids.each do |lifecycle_id|
+        new_deviation_question_lifecycle = DeviationQuestionLifecycle.new
+        new_deviation_question_lifecycle.deviation_question_id = question.id
+        new_deviation_question_lifecycle.lifecycle_id = lifecycle_id
+        new_deviation_question_lifecycle.save
+      end
+    end
+
+    milestone_name_ids = params[:milestone_name_ids]
+    if milestone_name_ids
+      milestone_name_ids.each do |milestone_name_id|
+        new_deviation_question_milestone_name = DeviationQuestionMilestoneName.new
+        new_deviation_question_milestone_name.deviation_question_id = question.id
+        new_deviation_question_milestone_name.milestone_name_id = milestone_name_id
+        new_deviation_question_milestone_name.save
+      end
+    end
+
     redirect_to :action=>'index_question', :activity_id=>question.deviation_activity_id, :deliverable_id=>question.deviation_deliverable_id
   end
 

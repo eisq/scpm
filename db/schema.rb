@@ -347,6 +347,13 @@ ActiveRecord::Schema.define(:version => 20140926162822) do
     t.boolean  "not_done",                 :default => false
   end
 
+  create_table "deviation_spider_references", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "version_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "deviation_spider_settings", :force => true do |t|
     t.integer  "deviation_spider_reference_id"
     t.string   "deliverable_name"

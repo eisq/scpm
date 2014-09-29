@@ -28,7 +28,12 @@ class DeviationSpider < ActiveRecord::Base
 		new_spider_deliverable.save
 
 		activities.each do |activity|
-			questions = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id])
+			questions = DeviationQuestion.find(:all, 
+			    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
+			    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
+			                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
+			            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}"])
+
 			questions.each do |question|
 				new_deviation_spider_values = DeviationSpiderValue.new
 				new_deviation_spider_values.deviation_question_id = question.id
@@ -62,23 +67,33 @@ class DeviationSpider < ActiveRecord::Base
 				end 		
 
 				deliverable_parameter = DeviationDeliverable.find(:first, 
-				                                                  :joins=>["JOIN milestone_names ON milestone_names.id  = deviation_deliverables.milestone_name_id"], 
-				                                                  :conditions => ["milestone_names.title LIKE ? and name LIKE ?","%#{self.milestone.name}%","%#{setting.deliverable_name}%"])
+				                                                  :conditions => ["name LIKE ?","%#{setting.deliverable_name}%"])
 
 				if !deliverables.include? deliverable_parameter
 					activities << deliverable_parameter
 				end 
 			end
 		else
-			all_deliverables = DeviationDeliverable.find(:all,:joins=>["JOIN milestone_names ON milestone_names.id  = deviation_deliverables.milestone_name_id"],:conditions => ["milestone_names.title LIKE ?","%#{self.milestone.name}%"])
-			deliverables = all_deliverables
-			all_activities = DeviationActivity.find(:all)
-			activities = all_activities
+			deliverables = DeviationDeliverable.find(:all,
+			                   :joins => ["JOIN deviation_questions ON deviation_questions.deviation_deliverable_id = deviation_deliverables.id",
+			                   	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
+			                   	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
+			                   	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
+			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}"],
+			                   	:group => "deviation_questions.deviation_deliverable_id")
+
+			activities = DeviationActivity.find(:all,
+			                   :joins => ["JOIN deviation_questions ON deviation_questions.deviation_activity_id = deviation_activities.id",
+			                   	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
+			                   	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
+			                   	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
+			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}"],
+			                   	:group => "deviation_questions.deviation_activity_id")
 		end
 
-		return_paramaters = Spider_parameters.new
-		return_paramaters.activities = activities
-		return_paramaters.deliverables = deliverables
+		return_paramaters 				= Spider_parameters.new
+		return_paramaters.activities 	= activities
+		return_paramaters.deliverables  = deliverables
 		return return_paramaters
 	end
 

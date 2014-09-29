@@ -64,7 +64,7 @@ class DeviationSpidersController < ApplicationController
 	    	end
 	    	@score_list = [0,1,2,3]
 
-	    	# Create consolidations this is not already done
+	    	# Create consolidations if this is not already done
 	    	if @deviation_spider.deviation_spider_consolidations.count == 0
 		    	@activities.each do |activity|
 		    		@deliverables.each do |deliverable|
