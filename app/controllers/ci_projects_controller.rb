@@ -298,7 +298,7 @@ class CiProjectsController < ApplicationController
   def mantis_export
     @export_mantis_formula = formula = ""
     @export_mantis_count = 0
-    @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @projects = CiProject.find(:all).sort_by {|p| [p.external_id]}
     @projects.each { |pr|
       #Formule pour mettre à jour les projets existants
       if pr.status!="Closed" and pr.status!="Delivered" and pr.status!="Rejected"
@@ -313,7 +313,7 @@ class CiProjectsController < ApplicationController
   end
 
   def mantis_implemented
-    @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @projects = CiProject.find(:all).sort_by {|p| [p.external_id]}
     @projects.each { |p|
       if p.to_implement == 1
         #CiProject.delete(p)
@@ -329,7 +329,7 @@ class CiProjectsController < ApplicationController
   end
 
   def dashboard
-    @ci_projects = CiProject.find(:all, :conditions=>"visibility = 'Public' and status = 'Assigned'").sort_by {|p| [p.order]}
+    @ci_projects = CiProject.find(:all).sort_by {|p| [p.id]}
   end
 
 end
