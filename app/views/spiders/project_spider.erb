@@ -71,9 +71,9 @@ $(function () {
 	  checkFilelink();
 	});
 
-	$('.check_all').change(function() {
+	$('.check_all').change(function() {
 		var check_status;
-		if ($(this).attr("checked") == "checked") {
+		if ($(this).prop("checked")) {
 			check_status = true;
 		} else {
 			check_status = false;
@@ -81,14 +81,14 @@ $(function () {
 
 		var checkbox_id = ".check_" + $(this).attr("id").replace(/[^\d.]/g, '');
 		$(checkbox_id).each(function(){
-			$(this).attr('checked', check_status);
+			$(this).prop('checked', check_status);
 		});
 	});
 
 	$('.check').change(function() {
 		var checkbox_id = "#check_all_" + $(this).attr("class").replace(/[^\d.]/g, '');
-		if (($(this).attr("checked") != "checked") && ($(checkbox_id).attr("checked") == "checked")) {
-			$(checkbox_id).attr('checked', false);
+		if ( (!$(this).prop("checked")) && ($(checkbox_id).prop("checked")) ) {
+			$(checkbox_id).prop('checked', false);
 		}
 	});
 
