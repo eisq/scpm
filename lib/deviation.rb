@@ -27,7 +27,7 @@ module Deviation
     doc           = Deviation.load_deviation_excel_file(file)
     file_name     = Deviation.get_file_name(file)
     psu       	  = doc.worksheet "PSU"
-    sheet_rows    = self.parse_excel_content(file)
+    sheet_rows    = self.parse_excel_content(psu)
     #on entre dans la bdd les infos du fichier PSU
     return sheet_rows
   end
