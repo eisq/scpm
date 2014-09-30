@@ -16,18 +16,17 @@ function change_score(consolidation_id, value)
 
 $( document ).ready(function() {
 	$(".conso_tf").focusout(function() {
-		alert( $(this).val());
-		// $.ajax({
-		// 	type: "POST",
-		// 	url: "/deviation_spiders/update_consolidation_text",
-	 // 		data: {deviation_spider_consolidation_id: consolidation_id, deviation_spider_consolidation_text: $(this).val()}
-		// })
-		// .done(function( msg ) {
-		// })
-		// .fail(function() 
-		// { 
-		// 	alert("Error");
-		// })
+		$.ajax({
+			type: "POST",
+			url: "/deviation_spiders/update_consolidation_text",
+	 		data: {deviation_spider_consolidation_id: $(this).attr('id'), deviation_spider_consolidation_text: $(this).val()}
+		})
+		.done(function( msg ) {
+		})
+		.fail(function() 
+		{ 
+			alert("Error");
+		})
 	});
 });
 </SCRIPT>

@@ -233,6 +233,17 @@ class DeviationSpidersController < ApplicationController
 		render(:nothing=>true)
 	end
 
+	def update_consolidation_text
+		deviation_spider_consolidation_id 		= params[:deviation_spider_consolidation_id]
+		deviation_spider_consolidation_text 	= params[:deviation_spider_consolidation_text]
+		if deviation_spider_consolidation_id and deviation_spider_consolidation_text
+			deviation_spider_consolidation = DeviationSpiderConsolidation.find(:first, :conditions => ["id = ?", deviation_spider_consolidation_id])
+			deviation_spider_consolidation.justification = deviation_spider_consolidation_text
+			deviation_spider_consolidation.save
+		end
+		render(:nothing=>true)
+	end
+
 	# **
 	# **
 	def generate_current_table(spider, meta_activity_id)
