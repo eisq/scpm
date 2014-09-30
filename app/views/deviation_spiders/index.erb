@@ -69,11 +69,13 @@ function set_value_buttons(value_id, answer)
 	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id} %></div>
 	<br />
 
-	<% form_tag(:action=>'add_spider_deliverable') do %>
-	  Deliverables :
-	  <%= hidden_field_tag('deviation_spider_id', @last_spider.id) %>
-	  <%= select_tag ("deviation_deliverable_id", options_for_select(@deliverables_to_add))  %>
-	  <%= submit_tag('Add to spider') %>
+	<% if @deliverables_to_add.count > 0 %>
+		<% form_tag(:action=>'add_spider_deliverable') do %>
+		  Deliverables :
+		  <%= hidden_field_tag('deviation_spider_id', @last_spider.id) %>
+		  <%= select_tag ("deviation_deliverable_id", options_for_select(@deliverables_to_add))  %>
+		  <%= submit_tag('Add to spider') %>
+		<% end %>
 	<% end %>
 
 	<% table_activity = nil %>

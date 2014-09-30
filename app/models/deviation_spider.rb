@@ -32,7 +32,7 @@ class DeviationSpider < ActiveRecord::Base
 			    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 			    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 			                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}"])
+			            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"])
 
 			questions.each do |question|
 				new_deviation_spider_values = DeviationSpiderValue.new
@@ -42,7 +42,9 @@ class DeviationSpider < ActiveRecord::Base
 					new_deviation_spider_values.answer = false
 				else
 					if init_answers
-						# TODO : Init anwsers with previous spider deliverable only if we add the deliverable with the hand
+						# TODO TODO TODO TODO
+						# TODO : Init anwsers with previous spider deliverable.
+						# Not sure if we need to do it. Wait for the requirements
 					else
 						new_deviation_spider_values.answer = nil
 					end
@@ -79,7 +81,7 @@ class DeviationSpider < ActiveRecord::Base
 			                   	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}"],
+			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"],
 			                   	:group => "deviation_questions.deviation_deliverable_id")
 
 			activities = DeviationActivity.find(:all,
@@ -87,7 +89,7 @@ class DeviationSpider < ActiveRecord::Base
 			                   	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}"],
+			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"],
 			                   	:group => "deviation_questions.deviation_activity_id")
 		end
 
@@ -97,7 +99,7 @@ class DeviationSpider < ActiveRecord::Base
 		return return_paramaters
 	end
 
-	# Return a list of deliverable which should be not done from the spiders of the previous milestones
+	# Return a list of deliverables are not be completed on the previous milestone.
 	def get_deliverables_not_completed
 		deliverables_availables = Array.new
 
@@ -120,13 +122,15 @@ class DeviationSpider < ActiveRecord::Base
 
 				last_spider.deviation_spider_deliverables.each do |spider_deliverable|
 					deliverable_not_completed = false
+
+					# If one not is to null or answer is different from the ref
 					spider_deliverable.deviation_spider_values.each do |spider_value|
-						if spider_value.answer == nil
+						if spider_value.answer == nil or spider_value.answer != spider_value.answer_reference
 							deliverable_not_completed = true
 						end
-						break if deliverable_not_completed
 					end
-
+					
+					# Add the delivrable as not completed if not completed AND not already present in the current spider
 					if deliverable_not_completed and !deviation_deliverables.include? spider_deliverable.deviation_deliverable
 						deliverables_availables << spider_deliverable.deviation_deliverable
 					end

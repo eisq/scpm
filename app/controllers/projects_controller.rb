@@ -363,20 +363,20 @@ class ProjectsController < ApplicationController
 
   # import deviation file, provided by PSU, it will manage spider axes and questions
   def import_deviation
-    psu_file_hash = Deviation.import(params[:upload])
-    # Save psu reference
-    deviation_spider_references = DeviationSpiderReferences.new
-    deviation_spider_references.version_number = ......
-    # Save psu settings
-    psu_file_hash.each do |psu|
-      deviation_spider_settings = DeviationSpiderSettings.new
-      deviation_spider_settings.devia_spider_reference_id = lesson_file.id
-      deviation_spider_settings.lesson_id                 = psu[LESSON_CELL_ID_LABEL]           
-      deviation_spider_settings.milestone                 = psu[LESSON_CELL_MILESTONE_LABEL]
-    #psu_file_hash.each {|row|
-      #row.
-    #}
-    redirect_to (:action=>'spider_configuration', :id=>@project.id)
+    # psu_file_hash = Deviation.import(params[:upload])
+    # # Save psu reference
+    # deviation_spider_references = DeviationSpiderReferences.new
+    # deviation_spider_references.version_number = ......
+    # # Save psu settings
+    # psu_file_hash.each do |psu|
+    #   deviation_spider_settings = DeviationSpiderSettings.new
+    #   deviation_spider_settings.devia_spider_reference_id = lesson_file.id
+    #   deviation_spider_settings.lesson_id                 = psu[LESSON_CELL_ID_LABEL]           
+    #   deviation_spider_settings.milestone                 = psu[LESSON_CELL_MILESTONE_LABEL]
+    # #psu_file_hash.each {|row|
+    #   #row.
+    # #}
+    # redirect_to (:action=>'spider_configuration', :id=>@project.id)
   end
 
   # check request and suggest projects
