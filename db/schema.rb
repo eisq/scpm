@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140926162822) do
+ActiveRecord::Schema.define(:version => 20140930143638) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -345,6 +345,7 @@ ActiveRecord::Schema.define(:version => 20140926162822) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "not_done",                 :default => false
+    t.boolean  "is_added_by_hand",         :default => false
   end
 
   create_table "deviation_spider_references", :force => true do |t|

@@ -198,7 +198,7 @@ class DeviationSpidersController < ApplicationController
 			deviation_deliverable 		= DeviationDeliverable.find(:first, :conditions => ["id = ?", deviation_deliverable_id])
 			deviation_spider 			= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
 			deviation_spider_parameters = deviation_spider.get_parameters
-			deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities)
+			deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities, true)
 			redirect_to :action=>:index, :milestone_id=>deviation_spider.milestone_id
 		else
 			redirect_to :controller=>:projects, :action=>:index

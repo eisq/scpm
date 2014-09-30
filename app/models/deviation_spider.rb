@@ -9,19 +9,22 @@ class DeviationSpider < ActiveRecord::Base
 	Spider_parameters = Struct.new(:deliverables, :activities)
 
 	def init_spider_data
-
 		spider_parameters = self.get_parameters
 
-		# Create data
 		spider_parameters.deliverables.each do |deliverable|
+			add_deliverable(deliverable, spider_parameters.activities)
+		end
+
+		get_deliverables_added_by_hand_in_previous_milestones.each do |deliverable|
 			add_deliverable(deliverable, spider_parameters.activities)
 		end
 	end
 
-	def add_deliverable(deliverable, activities, init_answers=false)
+	def add_deliverable(deliverable, activities, is_added_by_hand=false, init_answers=false)
 		new_spider_deliverable = DeviationSpiderDeliverable.new
 		new_spider_deliverable.deviation_spider_id = self.id
 		new_spider_deliverable.deviation_deliverable_id = deliverable.id
+		new_spider_deliverable.is_added_by_hand = is_added_by_hand
 		if deliverable_not_done?(deliverable.id)
 			new_spider_deliverable.not_done = true
 		end		
@@ -97,6 +100,38 @@ class DeviationSpider < ActiveRecord::Base
 		return_paramaters.activities 	= activities
 		return_paramaters.deliverables  = deliverables
 		return return_paramaters
+	end
+
+	def get_deliverables_added_by_hand_in_previous_milestones
+		deliverables_found = Array.new
+
+		deviation_deliverables = Array.new
+		self.deviation_spider_deliverables.each do |spider_deliverable|
+			deviation_deliverables << spider_deliverable.deviation_deliverable
+		end
+
+		# Get milestone index
+		project_milestones = get_project_milestones_with_spider()
+		self_index = get_spider_milestone_index()
+
+		# Search for each last spider consolidated for each previous milestone if we have deviation_deliverable added by hand and with questions availables for the milestone of our current spider
+		for i in 0..self_index
+			project_milestone = project_milestones[i]
+			last_spider = DeviationSpider.find(:last, :joins=>["JOIN deviation_spider_consolidations ON deviation_spiders.id  = deviation_spider_consolidations.deviation_spider_id"], :conditions =>["milestone_id = ?", project_milestone.id] )
+
+			if last_spider != nil
+				last_spider.deviation_spider_deliverables.each do |spider_deliverable|
+					if spider_deliverable.is_added_by_hand and !deviation_deliverables.include? spider_deliverable.deviation_deliverable
+
+						questions_count = DeviationQuestion.count(:joins=>["deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id"], :conditions=>["deviation_questions.deviation_deliverable_id = ? and milestone_names.title LIKE ?", spider_deliverable.deviation_deliverable.id, "%#{self.milestone.name}%"])
+						if questions_count > 0
+							deliverables_found << spider_deliverable.spider_deliverable
+						end
+					end
+				end
+			end
+		end
+
 	end
 
 	# Return a list of deliverables are not be completed on the previous milestone.
