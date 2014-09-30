@@ -1,5 +1,5 @@
 <h2>Edit CI : 
-<%= @project.external_id %> | <%= @project.summary %>
+<%= @project.extract_mantis_external_id %> | <%= @project.summary %>
 </h2>
 
 <% form_for @project, :url=>{:action=>'update', :id=>@project.id} do |f| -%>

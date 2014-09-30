@@ -32,17 +32,17 @@ class ProjectsController < ApplicationController
     @workstreams = @workstreams.map { |ws| ws.name }
 
     if session[:project_filter_qr] != nil
-      @actions = Action.find(:all, :conditions=>"progress in('in_progress', 'open') and person_id in #{session[:project_filter_qr]}")
+      @actions = Action.find(:all, :conditions=>"progress in('in_progress', 'open') and person_id in #{session[:project_filter_qr]}", :order=>"due_date")
     else
       projects_id = @wps.map { |p| p.id }
-      @actions = Action.find(:all, :conditions=>["progress in('in_progress', 'open') and project_id in (?)", projects_id])
+      @actions = Action.find(:all, :conditions=>["progress in('in_progress', 'open') and project_id in (?)", projects_id], :order=>"due_date")
     end
 
     if session[:project_filter_qr] != nil
       @actions_closed       = Action.find(:all, :conditions=>"progress in('closed','abandonned') and person_id in #{session[:project_filter_qr]}", :order=>"due_date")
     else
       projects_id = @wps.map { |p| p.id }
-      @actions_closed = Action.find(:all, :conditions=>["progress in('closed','abandonned') and project_id in (?)", projects_id])
+      @actions_closed = Action.find(:all, :conditions=>["progress in('closed','abandonned') and project_id in (?)", projects_id], :order=>"due_date")
     end
 
     @total_wps    = Project.count
@@ -147,7 +147,7 @@ class ProjectsController < ApplicationController
       when session[:project_sort]=='read'
         @wps = @wps.sort_by { |p| p.read_date ? p.read_date : Time.now-1.year}
       when session[:project_sort]=='update'
-        @wps = @wps.sort_by { |p| d = p.last_status_date; [p.project_requests_progress_status_html == 'ended' ? 1 : 0, d ? d : Time.zone.now] }
+        @wps = @wps.sort_by { |p| p.last_status_date ? p.last_status_date : Time.zone.now }
       when session[:project_sort]=='alpha'
         @wps = @wps.sort_by { |p| p.full_name }
       when session[:project_sort]=='workstream'
@@ -161,7 +161,7 @@ class ProjectsController < ApplicationController
       when session[:project_sort]=='read'
         @projects = @projects.sort_by { |p| p.read_date ? p.read_date : Time.now-1.year }
       when session[:project_sort]=='update'
-        @projects = @projects.sort_by { |p| d = p.last_status_date; [p.project_requests_progress_status_html == 'ended' ? 1 : 0, d ? d : Time.zone.now] }
+        @projects = @projects.sort_by { |p| p.last_status_date ? p.last_status_date : Time.zone.now }
       when session[:project_sort]=='alpha'
         @projects = @projects.sort_by { |p| p.full_name }
       when session[:project_sort]=='workstream'
@@ -181,6 +181,7 @@ class ProjectsController < ApplicationController
     @project     = Project.new(:project_id=>nil, :name=>'')
     @qr          = Person.find(:all,:include => [:person_roles,:roles], :conditions=>["roles.name = 'QR'"], :order=>"people.name asc")
     @supervisors = Person.find(:all, :conditions=>"is_supervisor=1", :order=>"name asc")
+    @tbp_projects= TbpProject.all.sort_by { |p| p.name}
   end
 
   def create
@@ -254,6 +255,7 @@ class ProjectsController < ApplicationController
     @qr          = Person.find(:all,:include => [:person_roles,:roles], :conditions=>["roles.name = 'QR' and is_supervisor=0 and has_left=0"], :order=>"people.name asc")    
     @supervisors = Person.find(:all, :conditions=>"is_supervisor=1", :order=>"name asc")
     @suiteTags   = SuiteTag.find(:all)
+    @tbp_projects= TbpProject.all.sort_by { |p| p.name}
   end
 
   def edit_status

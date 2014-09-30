@@ -66,7 +66,7 @@
 /* Icons
 ----------------------------------*/
 
-/* states and images */
+/* states and ../images */
 .ui-icon {
 	display: block;
 	text-indent: -99999px;
@@ -837,7 +837,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
 	border: 1px solid #fbcb09;
-	background: #fdf5ce url("images/ui-bg_glass_100_fdf5ce_1x400.png") 50% 50% repeat-x;
+	background: #fdf5ce url("../images/ui-bg_glass_100_fdf5ce_1x400.png") 50% 50% repeat-x;
 	font-weight: bold;
 	color: #c77405;
 }
@@ -873,7 +873,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
 	border: 1px solid #fed22f;
-	background: #ffe45c url("images/ui-bg_highlight-soft_75_ffe45c_1x100.png") 50% top repeat-x;
+	background: #ffe45c url("../images/ui-bg_highlight-soft_75_ffe45c_1x100.png") 50% top repeat-x;
 	color: #363636;
 }
 .ui-state-highlight a,
@@ -924,7 +924,7 @@ body .ui-tooltip {
 /* Icons
 ----------------------------------*/
 
-/* states and images */
+/* states and ../images */
 .ui-icon {
 	width: 16px;
 	height: 16px;

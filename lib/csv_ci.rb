@@ -4,7 +4,7 @@ class CsvCi
 
   attr_accessor  :internal_id,
       :external_id,
-      :type,
+      :ci_type,
       :stage,
       :category,
       :severity,

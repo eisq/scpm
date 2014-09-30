@@ -24,7 +24,7 @@ class CiProjectsController < ApplicationController
     @project.submission_date = DateTime.now
     @project.reporter = current_user.rmt_user
 
-    @select_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
+    @select_ci_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
     @select_stage = [['Continuous Improvement', 'Continuous Improvement']]
     @select_category = [['Autres', 'Autres'], ['Bundle', 'Bundle'], ['Methodo Airbus (GPP, LBIP ...)', 'Methodo Airbus (GPP, LBIP ...)'], ['Methodo Airbus (GPP, LBIP...)', 'Methodo Airbus (GPP, LBIP...)'], ['Project', 'Project']]
     @select_severity = [['minor', 'minor'], ['major', 'major'], ['block', 'block'], ['text', 'text'], ['tweak', 'tweak']]
@@ -69,6 +69,7 @@ class CiProjectsController < ApplicationController
     @airbus   = CiProject.find(:all, :conditions=>"deployment='External' and visibility='Public' and (status='Verified')", :order=>"airbus_validation_date_review")
   end
 
+  #Mantis vers BAM
   def do_upload
     post = params[:upload]
     redirect_to '/ci_projects/index' and return if post.nil? or post['datafile'].nil?    
@@ -85,9 +86,80 @@ class CiProjectsController < ApplicationController
         filter = DateTime.strptime('14/09/11 12:00', '%Y/%m/%d %H:%M') #we will manage only CIs started from this date.
         if (p.stage != "BAM" and p.stage != "" and DateTime.strptime(p.submission_date, '%d/%m/%Y %H:%M') >= filter) #DateTime.strptime('2013/09/01 16:00', '%Y/%m/%d %H:%M')))
           ci = CiProject.find_by_external_id(p.external_id)
-          # ci.to_implement = 0 if ci.to_implement == 1
-          ci = CiProject.create(:external_id=>p.exterbal_id) if not ci
-          ci.update_attributes(p.to_hash) # and it updates only the attributes that have changed !
+          #Si on ne trouve pas de CI correspondant dans la base
+          if !ci
+            #On check si ce n'est pas un CI créé par le BAM et dont il faut mettre à jour l'id. exemple:
+            #id venant de mantis : 0000615 [10001]
+            #id du même CI enregistré dans la base BAM : 10001 -> car il a été créé dans le BAM en premier
+            id_bam_creation = CiProject.extract_bam_external_id(p.external_id).to_s
+            if id_bam_creation != 0
+              ci = CiProject.find_by_external_id(id_bam_creation)
+            else
+              ci = CiProject.create(:external_id=>p.external_id)
+            end
+          end
+
+            #ci.update_attributes(p.to_hash) # and it updates only the attributes that have changed !
+          #update only fields not potentially updated by BAM, to not erase data changed by users directly into the BAM
+          ci.update_attribute('internal_id', p.internal_id)
+          ci.update_attribute('external_id', p.external_id)
+          ci.update_attribute('ci_type', p.ci_type)
+          ci.update_attribute('stage', p.stage)
+          ci.update_attribute('category', p.category)
+          ci.update_attribute('severity', p.severity)
+          ci.update_attribute('reproductibility', p.reproductibility)
+          ci.update_attribute('status', p.status)
+          ci.update_attribute('submission_date', p.submission_date)
+          ci.update_attribute('reporter', p.reporter)
+          ci.update_attribute('last_update_person', p.last_update_person)
+          ci.update_attribute('assigned_to', p.assigned_to)
+          ci.update_attribute('priority', p.priority)
+          ci.update_attribute('visibility', p.visibility)
+          ci.update_attribute('detection_version', p.detection_version)
+          ci.update_attribute('fixed_in_version', p.fixed_in_version)
+          ci.update_attribute('status_precisions', p.status_precisions)
+          ci.update_attribute('resolution_charge', p.resolution_charge)
+          ci.update_attribute('duplicated_id', p.duplicated_id)
+          ci.update_attribute('additional_informations', p.additional_informations)
+          ci.update_attribute('taking_into_account_date', p.taking_into_account_date)
+          ci.update_attribute('realisation_date', p.realisation_date)
+          ci.update_attribute('realisation_author', p.realisation_author)
+          ci.update_attribute('delivery_date', p.delivery_date)
+          ci.update_attribute('reopening_date', p.reopening_date)
+          ci.update_attribute('issue_origin', p.issue_origin)
+          ci.update_attribute('detection_phase', p.detection_phase)
+          ci.update_attribute('injection_phase', p.injection_phase)
+          ci.update_attribute('real_test_of_detection', p.real_test_of_detection)
+          ci.update_attribute('theoretical_test_of_detection', p.theoretical_test_of_detection)
+          ci.update_attribute('iteration', p.iteration)
+          ci.update_attribute('lot', p.lot)
+          ci.update_attribute('team', p.team)
+          ci.update_attribute('domain', p.domain)
+          ci.update_attribute('num_req_backlog', p.num_req_backlog)
+          ci.update_attribute('origin', p.origin)
+          ci.update_attribute('output_type', p.output_type)
+          ci.update_attribute('deliverables_list', p.deliverables_list)
+          ci.update_attribute('dev_team', p.dev_team)
+          ci.update_attribute('deployment', p.deployment)
+          ci.update_attribute('airbus_responsible', p.airbus_responsible)
+          ci.update_attribute('ci_objective_2012', p.ci_objective_2012)
+          ci.update_attribute('ci_objectives_2013', p.ci_objectives_2013)
+          ci.update_attribute('deliverable_folder', p.deliverable_folder)
+          ci.update_attribute('specification_date', p.specification_date)
+          ci.update_attribute('specification_date_objective', p.specification_date_objective)
+          ci.update_attribute('sqli_validation_responsible', p.sqli_validation_responsible)
+          ci.update_attribute('ci_objectives_2014', p.ci_objectives_2014)
+          ci.update_attribute('linked_req', p.linked_req)
+          ci.update_attribute('level_of_impact', p.level_of_impact)
+          ci.update_attribute('impacted_mnt_process', p.impacted_mnt_process)
+          ci.update_attribute('path_backlog', p.path_backlog)
+          ci.update_attribute('path_sfs_airbus', p.path_sfs_airbus)
+          ci.update_attribute('item_type', p.item_type)
+          ci.update_attribute('verification_date_objective', p.verification_date_objective)
+          ci.update_attribute('verification_date', p.verification_date)
+          ci.update_attribute('request_origin', p.request_origin)
+          ci.update_attribute('issue_history', p.issue_history)
+
           ci.save
         end
       }
@@ -97,6 +169,7 @@ class CiProjectsController < ApplicationController
     end
   end
 
+  #Backlog vers BAM
   def do_upload_backlog
     post = params[:upload]
     redirect_to '/ci_projects/index' and return if post.nil? or post['datafile'].nil?    
@@ -192,15 +265,27 @@ class CiProjectsController < ApplicationController
   end
 
   def do_create_ci
-    last_external_id = 0
-    projects = CiProject.find(:all).sort_by {|p| [p.external_id]}
+    extracted_external_id = default_external_id = last_external_id = 0
+    projects = CiProject.find(:all)
     projects.each { |t|
-      last_external_id = t.external_id
+      extracted_external_id = t.extract_bam_external_id
+      if ((extracted_external_id > 0) and (extracted_external_id > last_external_id))
+          last_external_id = extracted_external_id
+      elsif ((extracted_external_id == 0) and (t.external_id.to_i > last_external_id))
+          last_external_id = t.external_id.to_i
+      end
     }
 
     p = CiProject.new(params[:project])
-    p.external_id = (last_external_id + 1)
+    #on va check l'external_ID créé par le BAM, la première occurence doit être 10000, si ce n'est pas le cas, le créé.
+    if last_external_id < 9999
+      last_external_id = 9999
+    end
+    p.external_id = (last_external_id + 1).to_s
+
     p.to_implement = 1
+    p.reporter = current_user.rmt_user
+
     p.save
     redirect_to "/ci_projects/show/"+p.id.to_s
   end
@@ -211,31 +296,32 @@ class CiProjectsController < ApplicationController
   end
 
   def mantis_export
-    @export_mantis_formula = formula = formula_to_implement = ""
-    @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
-    @projects.each { |p|
-      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected"
-        formula += p.mantis_formula
-        formula += ";finbug"
-      end
-      if p.status!="Closed" and p.status!="Delivered" and p.status!="Rejected" and p.to_implement != nil and p.to_implement == 1
-        formula_to_implement += p.mantis_formula
-        formula_to_implement += ";finbug"
+    @export_mantis_formula = formula = ""
+    @export_mantis_count = 0
+    @projects = CiProject.find(:all).sort_by {|p| [p.external_id]}
+    @projects.each { |pr|
+      #Formule pour mettre à jour les projets existants
+      if pr.status!="Closed" and pr.status!="Delivered" and pr.status!="Rejected"
+        formula += pr.mantis_formula
+        #raise pr.to_implement
+        if pr.to_implement == 1
+          @export_mantis_count += 1
+        end
       end
     }
     @export_mantis_formula = formula
-    @export_mantis_formula_to_implement = formula_to_implement
   end
 
   def mantis_implemented
-    @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @projects = CiProject.find(:all).sort_by {|p| [p.external_id]}
     @projects.each { |p|
       if p.to_implement == 1
+        #CiProject.delete(p)
         p.to_implement = 0
       end
       p.save
     }
-    redirect_to "/ci_projects/all"
+    redirect_to "/ci_projects/mantis_export"
   end
 
   def date_validation_mail(validators, project)
@@ -243,7 +329,7 @@ class CiProjectsController < ApplicationController
   end
 
   def dashboard
-    @ci_projects = CiProject.find(:all, :conditions=>"visibility = 'Public' and status = 'Assigned'").sort_by {|p| [p.order]}
+    @ci_projects = CiProject.find(:all).sort_by {|p| [p.id]}
   end
 
 end

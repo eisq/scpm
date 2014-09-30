@@ -20,9 +20,15 @@
     <%= link_to_remote(image_tag('paste.png'), :url=>{:action=>'paste', :id=>project.id}) %>
     <%= link_to_remote(image_tag('delete.gif'), :url=>{:action=>'destroy', :id=>project.id}, :confirm=>"Sure?", :success=>"$('p_#{project.id}').hide();", :failure=>"alert(request.responseText)") %>
 
-    <span class="project_status_<%=status_html%>">
-    <%= status_html %>
-    </span>
+    <% if project.is_running %>
+      <span class="project_is_running">
+        Running
+      </span>
+    <% else %>
+      <span class="project_is_not_running">
+        Ended
+      </span>
+    <% end %>
   <% end %>
 
   <% if @display_actions %>

@@ -370,6 +370,15 @@ strong {
   font-style: italic;
   }
 
+/* IS RUNNING */
+.project_is_running {
+  font-style: italic;
+}
+.project_is_not_running {
+  background-color: #FAA;
+}
+
+
 /* ACTIONS */
 .action_closed, .action_abandonned {font-style: italic; color: #999;}
 .amendment1 {font-style: italic; color: #999;}
