@@ -48,8 +48,14 @@ $( document ).ready(function() {
 	<tr>
 		<td><%= deliverable_conso.deliverable.name %></td>
 		<% deliverable_conso.consolidations.each do |consolidation| %>
-			<td><%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.id.to_s}, this.value);"}) %></td>
-			<td><%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.id}", :class => "conso_tf") %></td>
+			<% if @editable %>
+				<td><%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.id.to_s}, this.value);"}) %></td>
+				<td><%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.id}", :class => "conso_tf") %></td>
+			<% else %>
+				<td><%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.id.to_s}, this.value);", :disabled => true}) %></td>
+				<td><%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.id}", :class => "conso_tf", :disabled => true) %></td>
+			<% end %>
+			
 		<% end %>
 	<tr>
 

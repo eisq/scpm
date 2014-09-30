@@ -20,7 +20,7 @@ function generate_url(action_name) {
 <div><%= button_to "Go to spider", {:action => "index", :milestone_id => @last_spider.milestone_id } %></div>
 
 <div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id} %></div>
+<div><%= button_to "Consolidation", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => false} %></div>
 <br />
 
 <% table_activity = nil %>
@@ -85,4 +85,4 @@ function generate_url(action_name) {
 
 
 <div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id} %></div>
+<div><%= button_to "Consolidation", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => false} %></div>

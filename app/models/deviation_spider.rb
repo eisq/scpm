@@ -8,6 +8,9 @@ class DeviationSpider < ActiveRecord::Base
 
 	Spider_parameters = Struct.new(:deliverables, :activities)
 
+	# ***
+	# SET
+	# ***
 	def init_spider_data
 		spider_parameters = self.get_parameters
 
@@ -35,7 +38,8 @@ class DeviationSpider < ActiveRecord::Base
 			    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 			    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 			                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"])
+			            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"],
+			            :group=>"deviation_questions.id")
 
 			questions.each do |question|
 				new_deviation_spider_values = DeviationSpiderValue.new
@@ -58,6 +62,9 @@ class DeviationSpider < ActiveRecord::Base
 		end
 	end
 
+	# ***
+	# GET
+	# ***
 	def get_parameters
 		activities 		= Array.new
 		deliverables 	= Array.new
@@ -102,6 +109,10 @@ class DeviationSpider < ActiveRecord::Base
 		return return_paramaters
 	end
 
+
+	# ***
+	# GET DELIVERABLES FROM PREVIOUS DATA
+	# ***
 	def get_deliverables_added_by_hand_in_previous_milestones
 		deliverables_found = Array.new
 
@@ -176,25 +187,6 @@ class DeviationSpider < ActiveRecord::Base
 		return deliverables_availables
 	end
 
-	# Return a list of milestones sorted and available for spiders
-	def get_project_milestones_with_spider
-		return self.milestone.project.sorted_milestones.select { |m| m.is_eligible_for_spider? and m.name[0..1]!='QG' and m.is_virtual == false }
-	end
-
-	# Return the index of the milestone of the current spider from the array of sorted milestones
-	def get_spider_milestone_index
-		project_milestones = get_project_milestones_with_spider()
-		i = 0
-		self_index = -1
-		project_milestones.each do |sorted_milestone|
-			if sorted_milestone.id == self.milestone.id
-				self_index = i
-			end
-			i = i + 1
-		end	
-		return self_index
-	end
-
 	def deliverable_not_done?(deliverable_id)
 		deviation_deliverables = Array.new
 		self.deviation_spider_deliverables.each do |spider_deliverable|
@@ -223,4 +215,25 @@ class DeviationSpider < ActiveRecord::Base
 		return deliverable_not_done
 	end
 
+	# ***
+	# GET MILESTONES
+	# ***
+	# Return a list of milestones sorted and available for spiders
+	def get_project_milestones_with_spider
+		return self.milestone.project.sorted_milestones.select { |m| m.is_eligible_for_spider? and m.name[0..1]!='QG' and m.is_virtual == false }
+	end
+
+	# Return the index of the milestone of the current spider from the array of sorted milestones
+	def get_spider_milestone_index
+		project_milestones = get_project_milestones_with_spider()
+		i = 0
+		self_index = -1
+		project_milestones.each do |sorted_milestone|
+			if sorted_milestone.id == self.milestone.id
+				self_index = i
+			end
+			i = i + 1
+		end	
+		return self_index
+	end
 end

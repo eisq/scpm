@@ -51,6 +51,11 @@ class DeviationSpidersController < ApplicationController
 
 	def consolidate_interface
 	    deviation_spider_id = params[:deviation_spider_id]
+	    @editable = params[:editable]
+	    if @editable == nil
+	    	@editable = false
+	    end
+	    
 	    if deviation_spider_id
 
 			# General data
@@ -245,6 +250,7 @@ class DeviationSpidersController < ApplicationController
 	end
 
 	# **
+	# INTERNAL
 	# **
 	def generate_current_table(spider, meta_activity_id)
 		@questions = DeviationSpiderValue.find(:all, 
