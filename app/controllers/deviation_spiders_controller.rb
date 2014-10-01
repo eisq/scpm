@@ -55,7 +55,7 @@ class DeviationSpidersController < ApplicationController
 	    if @editable == nil
 	    	@editable = false
 	    end
-	    
+
 	    if deviation_spider_id
 
 			# General data
