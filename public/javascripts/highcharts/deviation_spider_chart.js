@@ -87,7 +87,7 @@ function parse_chart_data(msg)
 }
 
 // Chart requests
-function show_deliverable_chart_data(deviation_spider_id, meta_activity_id)
+function show_deliverable_chart_data(deviation_spider_id, meta_activity_id, chart_name)
 {
 	$.ajax({
 		type: "POST",
@@ -97,7 +97,7 @@ function show_deliverable_chart_data(deviation_spider_id, meta_activity_id)
 	.done(function( msg ) {
 		// console.log(parse_chart_data(msg));
 		if (chart_deliverable == null) {
-			chart_deliverable = generate_spider_chart("deviation_spider_chart_deliverable", "deviation_spider_chart_deliverable", parse_chart_data(msg));
+			chart_deliverable = generate_spider_chart("deviation_spider_chart_deliverable", chart_name, parse_chart_data(msg));
 		} else {
 			chart_data_object = parse_chart_data(msg);
 			chart_deliverable.series[0].setData(chart_data_object.points_ref,true);
@@ -110,7 +110,7 @@ function show_deliverable_chart_data(deviation_spider_id, meta_activity_id)
 	})
 }
 
-function show_activity_chart_data(deviation_spider_id, meta_activity_id)
+function show_activity_chart_data(deviation_spider_id, meta_activity_id, chart_name)
 {
 	$.ajax({
 		type: "POST",
@@ -119,7 +119,7 @@ function show_activity_chart_data(deviation_spider_id, meta_activity_id)
 	})
 	.done(function( msg ) {
 		if (chart_activity == null) {
-			chart_activity = generate_spider_chart("deviation_spider_chart_activity", "deviation_spider_chart_activity", parse_chart_data(msg));
+			chart_activity = generate_spider_chart("deviation_spider_chart_activity", chart_name, parse_chart_data(msg));
 		} else {
 			chart_data_object = parse_chart_data(msg);
 			chart_activity.series[0].setData(chart_data_object.points_ref,true);

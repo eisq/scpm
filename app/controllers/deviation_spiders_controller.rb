@@ -10,7 +10,10 @@ class DeviationSpidersController < ApplicationController
 	    milestone_id 	 = params[:milestone_id]
 	    @meta_activity_id = params[:meta_activity_id]
 	    if @meta_activity_id == nil
-	    	@meta_activity_id = DeviationMetaActivity.find(:first).id
+	    	@meta_activity = DeviationMetaActivity.find(:first)
+	    	@meta_activity_id = @meta_activity.id
+	    else
+	    	@meta_activity = DeviationMetaActivity.find(:first, :conditions=>["id = ?", meta_activity_id])
 	    end
 	    @meta_activities = DeviationMetaActivity.all.map { |ma| [ma.name, ma.id] }
 
@@ -36,8 +39,11 @@ class DeviationSpidersController < ApplicationController
 	def index_history
 	    deviation_spider_id = params[:deviation_spider_id]
 	    @meta_activity_id 	= params[:meta_activity_id]
-	    if @meta_activity_id == nil
-	    	@meta_activity_id = DeviationMetaActivity.find(:first).id
+    	if @meta_activity_id == nil
+	    	@meta_activity = DeviationMetaActivity.find(:first)
+	    	@meta_activity_id = @meta_activity.id
+	    else
+	    	@meta_activity = DeviationMetaActivity.find(:first, :conditions=>["id = ?", meta_activity_id])
 	    end
 	    @meta_activities = DeviationMetaActivity.all.map { |ma| [ma.name, ma.id] }
 
@@ -373,7 +379,7 @@ class DeviationSpidersController < ApplicationController
 			chart.points << 0.0
 			chart.points_ref << 0.0
 		end
-		
+
 		return chart
 	end
 
