@@ -129,7 +129,7 @@ class DeviationToolsController < ApplicationController
 
   def update_meta_activity
     meta_activity = DeviationMetaActivity.find(params[:meta_activity][:id])
-    meat_activity.update_attributes(params[:meta_activity])
+    meta_activity.update_attributes(params[:meta_activity])
     redirect_to :action=>'index_meta_activity'
   end
 

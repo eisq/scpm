@@ -1,4 +1,8 @@
 <SCRIPT language="Javascript">
+
+var chart_deliverable 	= null;
+var chart_activity 		= null;
+// General methods
 function change_meta_activity(meta_activity_id)
 {
 	location.replace(generate_url("index?milestone_id=<%= @milestone.id.to_s %>&meta_activity_id="+meta_activity_id));
@@ -15,6 +19,7 @@ function generate_url(action_name) {
   }
 }
 
+// Table methods
 function set_question(question_id, checked)
 {
 	$.ajax({
@@ -29,6 +34,10 @@ function set_question(question_id, checked)
 		for (var i = 0; i < spider_values_updated.length; i++) {
 			set_value_buttons(spider_values_updated[i], checked);
 		};
+
+
+		show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Deliverable chart");
+		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Activity chart");
 	})
 	.fail(function() 
 	{ 
@@ -58,7 +67,18 @@ function set_value_buttons(value_id, answer)
 		}
 	}
 }
+
+// Open
+$( document ).ready(function() {
+	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0  %>
+		show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Deliverable chart");
+		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Activity chart");
+	<% end %>
+});
+
 </SCRIPT>
+<script src="/javascripts/highcharts/deviation_spider_chart.js" type="text/javascript"></script>  
+
 
 <div><%= button_to "Project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
 
@@ -144,6 +164,9 @@ function set_value_buttons(value_id, answer)
 	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></div>
 	<br />
+
+	<div class="deviation_spider_chart" id="deviation_spider_chart_deliverable"></div>
+	<div class="deviation_spider_chart" id="deviation_spider_chart_activity"></div>
 
 <% end %>
 
