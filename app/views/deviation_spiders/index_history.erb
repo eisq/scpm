@@ -1,4 +1,6 @@
 <SCRIPT language="Javascript">
+var chart_deliverable 	= null;
+var chart_activity 		= null;
 function change_meta_activity(meta_activity_id)
 {
 	location.replace(generate_url("index_history?deviation_spider_id=<%= @last_spider.id.to_s %>&meta_activity_id="+meta_activity_id));
@@ -15,7 +17,14 @@ function generate_url(action_name) {
   }
 }
 
+// Open
+$( document ).ready(function() {
+	show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>");
+	show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>");
+});
 </SCRIPT>
+<script src="/javascripts/highcharts/deviation_spider_chart.js" type="text/javascript"></script>  
+
 
 <div><%= button_to "Go to spider", {:action => "index", :milestone_id => @last_spider.milestone_id } %></div>
 
@@ -86,3 +95,7 @@ function generate_url(action_name) {
 
 <div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 <div><%= button_to "Consolidation", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => false} %></div>
+
+
+<div class="deviation_spider_chart" id="deviation_spider_chart_deliverable"></div>
+<div class="deviation_spider_chart" id="deviation_spider_chart_activity"></div>

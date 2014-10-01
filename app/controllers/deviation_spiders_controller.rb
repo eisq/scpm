@@ -131,7 +131,7 @@ class DeviationSpidersController < ApplicationController
 
 	    if deviation_spider_id and meta_activity_id
 	    	deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
-	    	chart_data = generate_deliverable_chart(deviation_spider, meta_activity_id)
+	    	chart_data = generate_activity_chart(deviation_spider, meta_activity_id)
 	    end
 
 	    render(:text=>"[" + "[" + '"' + chart_data.titles.join('","') + '"' + "]" + "," + "[" + chart_data.points.join(',') + "]" + "," + "[" + chart_data.points_ref.join(',') + "]" + "]")
@@ -368,6 +368,12 @@ class DeviationSpidersController < ApplicationController
 		chart.points 	 << (current_yes_count / current_question_count)
 		chart.points_ref << 1.0
 
+		if chart.titles.count <= 2
+			chart.titles << ""
+			chart.points << 0.0
+			chart.points_ref << 0.0
+		end
+		
 		return chart
 	end
 
@@ -412,6 +418,12 @@ class DeviationSpidersController < ApplicationController
 		chart.titles 	 << current_activity.name
 		chart.points 	 << (current_yes_count / current_question_count)
 		chart.points_ref << 1.0
+
+		if chart.titles.count <= 2
+			chart.titles << ""
+			chart.points << 0.0
+			chart.points_ref << 0.0
+		end
 
 		return chart
 	end

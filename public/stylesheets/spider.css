@@ -19,6 +19,13 @@
 	margin: 0 auto;
 	display: none;
 }
+.deviation_spider_chart{
+	right: 0px;
+	top: 180px;
+	width : 600px;
+	height : 400px;
+	margin: 0 auto;
+}
 .spider_container
 {
 	width : 100%;
