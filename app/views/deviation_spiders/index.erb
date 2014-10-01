@@ -1,3 +1,8 @@
+<!-- Generate the charts only one time, but change the points values and titles -->
+<!-- 1) Method with ajax call -->
+<!-- 2) Method to manage the data returned -->
+<!-- 3) Method to update the chart -->
+
 <SCRIPT language="Javascript">
 function change_meta_activity(meta_activity_id)
 {
@@ -58,6 +63,88 @@ function set_value_buttons(value_id, answer)
 		}
 	}
 }
+
+
+// CHARTS
+
+function generate_chart_data_object()
+{
+	var chart_data = new Object();
+	chart_data.titles 		= Array();
+	chart_data.points 		= Array();
+	chart_data.points_ref 	= Array();
+	return chart_data;
+}
+
+// function parse_chart_data_old(msg)
+// {
+// 	var chart_data = generate_chart_data_object();
+// 	var chart_data_groups = msg.split(',');
+// 	console.log(chart_data_groups);
+// 	if (chart_data_groups.length == 3) {	
+// 		for(var chart_data_titles in chart_data_groups[0]) {
+// 			var chart_data_titles_array = chart_data_titles.split(',')
+// 			chart_data.titles = chart_data_titles_array;
+// 		}
+// 		for(var chart_data_points in chart_data_groups[1]) {
+// 			var chart_data_points_array = chart_data_points.split(',')
+// 			chart_data.points = chart_data_points_array;
+// 		}
+// 		for(var chart_data_points_ref in chart_data_groups[2]) {
+// 			var chart_data_points_ref_array = chart_data_points_ref.split(',')
+// 			chart_data.points_ref = chart_data_points_ref_array;
+// 		}
+// 	}
+// }
+
+function parse_chart_data(msg)
+{
+	chart_data_from_json = $.parseJSON(msg);
+	var chart_data = generate_chart_data_object();
+	if (chart_data_from_json.length == 3) {
+		chart_data.titles 		= chart_data_from_json[0];
+		chart_data.points 		= chart_data_from_json[1];
+		chart_data.points_ref 	= chart_data_from_json[2];
+	}
+	return chart_data;
+}
+
+function get_deliverable_chart_data()
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/get_deliverable_chart",
+ 		data: {deviation_spider_id: "<%= @last_spider.id.to_s %>", meta_activity_id: "<%= @meta_activity_id %>"}
+	})
+	.done(function( msg ) {
+		console.log(parse_chart_data(msg));
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+
+function get_activity_chart_data()
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/get_activity_chart",
+ 		data: {deviation_spider_id: "<%= @last_spider.id.to_s %>", meta_activity_id: "<%= @meta_activity_id %>"}
+	})
+	.done(function( msg ) {
+		console.log(parse_chart_data(msg));
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+
+
+$( document ).ready(function() {
+	get_deliverable_chart_data();
+});
 </SCRIPT>
 
 <div><%= button_to "Project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
@@ -144,6 +231,8 @@ function set_value_buttons(value_id, answer)
 	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></div>
 	<br />
+
+
 
 <% end %>
 
