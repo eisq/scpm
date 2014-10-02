@@ -1,3 +1,4 @@
+require 'json'
 class DeviationSpider < ActiveRecord::Base
   	has_many    :deviation_spider_consolidations
   	has_many    :deviation_spider_deliverables
@@ -7,6 +8,7 @@ class DeviationSpider < ActiveRecord::Base
 
 
 	Spider_parameters = Struct.new(:deliverables, :activities)
+	Chart 			  = Struct.new(:titles, :points, :points_ref)
 
 	# ***
 	# SET
@@ -235,5 +237,135 @@ class DeviationSpider < ActiveRecord::Base
 			i = i + 1
 		end	
 		return self_index
+	end
+
+
+	# ***
+	# CHARTS
+	# ***
+
+	def generate_deliverable_chart(meta_activity_id)
+		
+		chart_questions = DeviationSpiderValue.find(:all, 
+		:joins => [
+			"JOIN deviation_spider_deliverables ON deviation_spider_deliverables.id = deviation_spider_values.deviation_spider_deliverable_id",
+			"JOIN deviation_deliverables ON deviation_deliverables.id = deviation_spider_deliverables.deviation_deliverable_id",
+			"JOIN deviation_questions ON deviation_questions.id = deviation_spider_values.deviation_question_id",
+			"JOIN deviation_activities ON deviation_activities.id = deviation_questions.deviation_activity_id"
+		], 
+		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", self.id, meta_activity_id], 
+		:order => "deviation_deliverables.id")
+
+		chart = Chart.new
+		chart.titles 		= Array.new
+		chart.points 		= Array.new
+		chart.points_ref 	= Array.new
+		current_deliverable 	= nil
+		current_yes_count		= 0.0
+		current_question_count 	= 0.0
+
+		chart_questions.each do |question|
+
+			# Deliverable
+			if (current_deliverable == nil) or (current_deliverable.id != question.deviation_spider_deliverable.deviation_deliverable.id)
+				if current_deliverable != nil
+					chart.titles 	 << current_deliverable.name
+					chart.points 	 << (current_yes_count / current_question_count)
+					chart.points_ref << 1.0
+				end
+
+				current_deliverable = question.deviation_spider_deliverable.deviation_deliverable
+				current_yes_count		= 0
+				current_question_count 	= 0
+			end
+
+			# Question
+			if question.answer == true
+				current_yes_count = current_yes_count + 1.0
+			end
+			current_question_count = current_question_count + 1.0
+		end
+
+		chart.titles 	 << current_deliverable.name
+		chart.points 	 << (current_yes_count / current_question_count)
+		chart.points_ref << 1.0
+
+		if chart.titles.count <= 2
+			chart.titles << ""
+			chart.points << 0.0
+			chart.points_ref << 0.0
+		end
+
+		return chart
+	end
+
+	def generate_activity_chart(meta_activity_id)
+		chart_questions = DeviationSpiderValue.find(:all, 
+		:joins => ["JOIN deviation_spider_deliverables ON deviation_spider_deliverables.id = deviation_spider_values.deviation_spider_deliverable_id",
+		"JOIN deviation_questions ON deviation_questions.id = deviation_spider_values.deviation_question_id",
+		"JOIN deviation_activities ON deviation_activities.id = deviation_questions.deviation_activity_id"], 
+		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", self.id, meta_activity_id], 
+		:order => "deviation_activities.id")
+
+		chart = Chart.new
+		chart.titles 		= Array.new
+		chart.points 		= Array.new
+		chart.points_ref 	= Array.new
+		current_activity 	= nil
+		current_yes_count		= 0.0
+		current_question_count 	= 0.0
+
+		chart_questions.each do |question|
+
+			# Activities
+			if (current_activity == nil) or (current_activity.id != question.deviation_question.deviation_activity_id)
+				if current_activity != nil
+					chart.titles 	 << current_activity.name
+					chart.points 	 << (current_yes_count / current_question_count)
+					chart.points_ref << 1.0
+				end
+
+				current_activity = question.deviation_question.deviation_activity
+				current_yes_count		= 0.0
+				current_question_count 	= 0.0
+			end
+
+			# Question
+			if question.answer == true
+				current_yes_count = current_yes_count + 1.0
+			end
+			current_question_count = current_question_count + 1.0
+		end
+		
+		chart.titles 	 << current_activity.name
+		chart.points 	 << (current_yes_count / current_question_count)
+		chart.points_ref << 1.0
+
+		if chart.titles.count <= 2
+			chart.titles << ""
+			chart.points << 0.0
+			chart.points_ref << 0.0
+		end
+
+		return chart
+	end
+
+	def generate_deliverable_charts
+		meta_activities = DeviationMetaActivity.find(:all, :conditions=>["is_active = 1"])
+
+		charts = Array.new
+		meta_activities.each do |meta_activity|
+			charts << generate_deliverable_chart(meta_activity)
+		end
+		return charts
+	end
+	def generate_activity_charts
+		meta_activities = DeviationMetaActivity.find(:all, :conditions=>["is_active = 1"])
+
+		charts = Array.new
+		meta_activities.each do |meta_activity|
+			charts << generate_activity_chart(meta_activity)
+		end
+		return charts
 	end
 end
