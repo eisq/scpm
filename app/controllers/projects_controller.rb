@@ -363,20 +363,36 @@ class ProjectsController < ApplicationController
 
   # import deviation file, provided by PSU, it will manage spider axes and questions
   def import_deviation
-    # psu_file_hash = Deviation.import(params[:upload])
-    # # Save psu reference
-    # deviation_spider_references = DeviationSpiderReferences.new
-    # deviation_spider_references.version_number = ......
-    # # Save psu settings
-    # psu_file_hash.each do |psu|
-    #   deviation_spider_settings = DeviationSpiderSettings.new
-    #   deviation_spider_settings.devia_spider_reference_id = lesson_file.id
-    #   deviation_spider_settings.lesson_id                 = psu[LESSON_CELL_ID_LABEL]           
-    #   deviation_spider_settings.milestone                 = psu[LESSON_CELL_MILESTONE_LABEL]
-    # #psu_file_hash.each {|row|
-    #   #row.
-    # #}
-    # redirect_to (:action=>'spider_configuration', :id=>@project.id)
+    project_id = params[:project_id]
+    psu_file_hash = Deviation.import(params[:upload])
+
+    # Save psu reference
+    deviation_spider_reference = DeviationSpiderReference.new
+    deviation_spider_reference.version_number = 1
+    DeviationSpiderReference.find(:all, :conditions=>["project_id=?", project_id], :order=>"version_number asc").each do |devia|
+      deviation_spider_reference.version_number = devia.version_number + 1
+    end
+    deviation_spider_reference.project_id = project_id
+    deviation_spider_reference.created_at = DateTime.now
+    deviation_spider_reference.updated_at = DateTime.now
+    deviation_spider_reference.save
+
+    # Save psu settings
+    psu_file_hash.each do |psu|
+      deviation_spider_setting = DeviationSpiderSetting.new
+      deviation_spider_setting.deviation_spider_reference_id = deviation_spider_reference.id
+      deviation_spider_setting.activity_name             = psu["activity"]
+      deviation_spider_setting.deliverable_name          = psu["deliverable"]
+      deviation_spider_setting.answer_1                  = psu["methodology_template"]
+      deviation_spider_setting.answer_2                  = psu["is_justified"]
+      deviation_spider_setting.answer_3                  = psu["other_template"]
+      deviation_spider_setting.justification             = psu["justification"]
+      deviation_spider_setting.created_at                = DateTime.now
+      deviation_spider_setting.updated_at                = DateTime.now
+      deviation_spider_setting.save
+    end
+
+    redirect_to "/projects/spider_configuration?project_id=#{project_id}"
   end
 
   # check request and suggest projects
@@ -1064,7 +1080,7 @@ class ProjectsController < ApplicationController
     @last_import = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
 
     if @last_import
-      @last_import_date = last_import.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+      @last_import_date = @last_import.updated_at.strftime("%Y-%m-%d %H:%M:%S")
     end
   end
 

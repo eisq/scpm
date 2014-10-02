@@ -5,13 +5,11 @@ module Deviation
   include ApplicationHelper
 
   # SHEET CELLS INDEX
-  CELL_META_ACTIVITY                = 0
-  CELL_ACTIVITY                     = 0
-  CELL_DELIVERABLE                  = 1
-  CELL_METHODOLOGY_TEMPLATE         = 2
-  CELL_IS_JUSTIFIED                 = 3
-  CELL_OTHER_TEMPLATE               = 4
-  CELL_JUSTIFICATION                = 5
+  CELL_0   = 0
+  CELL_1   = 1
+  CELL_2   = 2
+  CELL_3   = 3
+  CELL_4   = 4
 
   # SHEET CELLS LABEL
   CELL_META_ACTIVITY_LABEL          = "meta_activity"
@@ -48,29 +46,37 @@ module Deviation
   end
 
   def self.parse_excel_content(sheet)
-    # Var
     content_array = Array.new
-
+    into_deliverables = true
+    activity_temp = activity = ""
     # Loop sheet
-    sheet.each {|sheet_row|
-      if((sheet_row[CELL_META_ACTIVITY]) and (sheet_row[CELL_DELIVERABLE].value) and (sheet_row[CELL_DELIVERABLE].value.length > 0))
-        if sheet_row[CELL_META_ACTIVITY].value == (sheet_row[CELL_META_ACTIVITY+1]).value
-          raise sheet_row[CELL_META_ACTIVITY].value
-        end
+    sheet.each do |sheet_row|
+      #We are in a row Activity
+      if((into_deliverables==false) and sheet_row[CELL_0] and !sheet_row[CELL_1])
+        activity_temp = sheet_row[CELL_0]
       end
-    }
-      #if ((sheet_row[CELL_DELIVERABLE])  and (sheet_row[CELL_DELIVERABLE].value) and (sheet_row[CELL_DELIVERABLE].value.length > 0))
-      #  row_hash = Hash.new
-      #  row_hash[CELL_META_ACTIVITY_LABEL]          = sheet_row[CELL_META_ACTIVITY].value.to_s
-      #  row_hash[CELL_ACTIVITY_LABEL]               = sheet_row[CELL_ACTIVITY].value.to_s
-      #  row_hash[CELL_DELIVERABLE_LABEL]            = sheet_row[CELL_DELIVERABLE].value.to_s
-      #  row_hash[CELL_METHODOLOGY_TEMPLATE_LABEL]   = sheet_row[CELL_METHODOLOGY_TEMPLATE].to_s
-      #  row_hash[CELL_IS_JUSTIFIED_LABEL]           = sheet_row[CELL_IS_JUSTIFIED].to_s
-      #  row_hash[CELL_OTHER_TEMPLATE_LABEL]         = sheet_row[CELL_OTHER_TEMPLATE].to_s
-      #  row_hash[CELL_JUSTIFICATION_LABEL]          = sheet_row[CELL_JUSTIFICATION].to_s
-      #  content_array << row_hash
-      #end
+      #We are in the row index for deliverables
+      if (into_deliverables==false and sheet_row[CELL_0] and sheet_row[CELL_1] and (sheet_row[CELL_0]=="Deliverables"))
+        into_deliverables = true
+        activity = activity_temp
+      end
+      #We are in a row deliverable
+      if (into_deliverables==true and sheet_row[CELL_0] and sheet_row[CELL_1])
+        if sheet_row[CELL_0] != "Deliverables"
+          row_hash = Hash.new
+          row_hash[CELL_ACTIVITY_LABEL]               = activity
+          row_hash[CELL_DELIVERABLE_LABEL]            = sheet_row[CELL_0].to_s
+          row_hash[CELL_METHODOLOGY_TEMPLATE_LABEL]   = sheet_row[CELL_1].to_s
+          row_hash[CELL_IS_JUSTIFIED_LABEL]           = sheet_row[CELL_2].to_s
+          row_hash[CELL_OTHER_TEMPLATE_LABEL]         = sheet_row[CELL_3].to_s
+          row_hash[CELL_JUSTIFICATION_LABEL]          = sheet_row[CELL_4].to_s
+          content_array << row_hash
+        end
+      else
+        into_deliverables = false
+        activity_temp = sheet_row[CELL_0]
+      end
+    end
     return content_array
   end
-
 end
