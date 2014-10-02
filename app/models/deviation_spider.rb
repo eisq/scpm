@@ -8,7 +8,7 @@ class DeviationSpider < ActiveRecord::Base
 
 
 	Spider_parameters = Struct.new(:deliverables, :activities)
-	Chart 			  = Struct.new(:titles, :points, :points_ref)
+	Chart 			  = Struct.new(:meta_activity_name, :titles, :points, :points_ref)
 
 	# ***
 	# SET
@@ -255,8 +255,10 @@ class DeviationSpider < ActiveRecord::Base
 		], 
 		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", self.id, meta_activity_id], 
 		:order => "deviation_deliverables.id")
+		meta_activity_name = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id]).name
 
 		chart = Chart.new
+		chart.meta_activity_name = meta_activity_name
 		chart.titles 		= Array.new
 		chart.points 		= Array.new
 		chart.points_ref 	= Array.new
@@ -306,11 +308,13 @@ class DeviationSpider < ActiveRecord::Base
 		"JOIN deviation_activities ON deviation_activities.id = deviation_questions.deviation_activity_id"], 
 		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", self.id, meta_activity_id], 
 		:order => "deviation_activities.id")
+		meta_activity_name = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id]).name
 
 		chart = Chart.new
 		chart.titles 		= Array.new
 		chart.points 		= Array.new
 		chart.points_ref 	= Array.new
+		chart.meta_activity_name = meta_activity_name
 		current_activity 	= nil
 		current_yes_count		= 0.0
 		current_question_count 	= 0.0
