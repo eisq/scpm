@@ -78,9 +78,13 @@ $( document ).ready(function() {
 
 </SCRIPT>
 <script src="/javascripts/highcharts/deviation_spider_chart.js" type="text/javascript"></script>  
+<script src="/javascripts/highcharts/group_export.js" type="text/javascript"></script>
+
+
 
 
 <div><%= button_to "Project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
+
 
 <% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
@@ -165,8 +169,14 @@ $( document ).ready(function() {
 	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></div>
 	<br />
 
+
+
+	<input type="button" value="Export all deliverables chart" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" />
+	<input type="button" value="Export all activities chart" onclick="export_activities('<%= @last_spider.id.to_s %>');" />
+
 	<div class="deviation_spider_chart" id="deviation_spider_chart_deliverable"></div>
 	<div class="deviation_spider_chart" id="deviation_spider_chart_activity"></div>
+	<div class="deviation_spider_export_chart" id="export_chart"></div>
 
 <% end %>
 
