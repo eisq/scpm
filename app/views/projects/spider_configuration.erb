@@ -12,6 +12,12 @@ function setShowIgnore(object) {
 </form>
 </p>
 
+<% if @status_import != nil and @status_import != "" and @status_import == "Successful import" %>
+	<strong><span style='color:green;'><%= @status_import %></span></strong>
+<% else %>
+	<strong><span style='color:red;'><%= @status_import %></span></strong>
+<% end %>
+
 <h3>Project Spider Configuration</h3>
 
 <p>Deviation spider :

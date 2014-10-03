@@ -364,35 +364,45 @@ class ProjectsController < ApplicationController
   # import deviation file, provided by PSU, it will manage spider axes and questions
   def import_deviation
     project_id = params[:project_id]
-    psu_file_hash = Deviation.import(params[:upload])
+    #project = Project.find(:all, :conditions=>["project_id=?", project_id])
+    #get_current_milestone_index -> voir ce que ça retourne
+    #get_status_for_milestone(milestone) #returns [status,style,decision]: decision= "#no request# ", "#unknown# ", "#GO# ", "#GO w/a# ", "#NO GO# ", "#NA# "
 
-    # Save psu reference
-    deviation_spider_reference = DeviationSpiderReference.new
-    deviation_spider_reference.version_number = 1
-    DeviationSpiderReference.find(:all, :conditions=>["project_id=?", project_id], :order=>"version_number asc").each do |devia|
-      deviation_spider_reference.version_number = devia.version_number + 1
+    file = params[:upload]
+    file_name =  file['datafile'].original_filename
+    file_ext  = File.extname(file_name)
+    if (file_ext == ".xls")
+      psu_file_hash = Deviation.import(file)
+
+      # Save psu reference
+      deviation_spider_reference = DeviationSpiderReference.new
+      deviation_spider_reference.version_number = 1
+      DeviationSpiderReference.find(:all, :conditions=>["project_id=?", project_id], :order=>"version_number asc").each do |devia|
+        deviation_spider_reference.version_number = devia.version_number + 1
+      end
+      deviation_spider_reference.project_id = project_id
+      deviation_spider_reference.created_at = DateTime.now
+      deviation_spider_reference.updated_at = DateTime.now
+      deviation_spider_reference.save
+
+      # Save psu settings
+      psu_file_hash.each do |psu|
+        deviation_spider_setting = DeviationSpiderSetting.new
+        deviation_spider_setting.deviation_spider_reference_id  = deviation_spider_reference.id
+        deviation_spider_setting.activity_name                  = psu["activity"]
+        deviation_spider_setting.deliverable_name               = psu["deliverable"]
+        deviation_spider_setting.answer_1                       = psu["methodology_template"]
+        deviation_spider_setting.answer_2                       = psu["is_justified"]
+        deviation_spider_setting.answer_3                       = psu["other_template"]
+        deviation_spider_setting.justification                  = psu["justification"]
+        deviation_spider_setting.created_at                     = DateTime.now
+        deviation_spider_setting.updated_at                     = DateTime.now
+        deviation_spider_setting.save
+      end
+      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"Successful import"
+    else
+      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"Wrong file format, please upload .xls file only."
     end
-    deviation_spider_reference.project_id = project_id
-    deviation_spider_reference.created_at = DateTime.now
-    deviation_spider_reference.updated_at = DateTime.now
-    deviation_spider_reference.save
-
-    # Save psu settings
-    psu_file_hash.each do |psu|
-      deviation_spider_setting = DeviationSpiderSetting.new
-      deviation_spider_setting.deviation_spider_reference_id = deviation_spider_reference.id
-      deviation_spider_setting.activity_name             = psu["activity"]
-      deviation_spider_setting.deliverable_name          = psu["deliverable"]
-      deviation_spider_setting.answer_1                  = psu["methodology_template"]
-      deviation_spider_setting.answer_2                  = psu["is_justified"]
-      deviation_spider_setting.answer_3                  = psu["other_template"]
-      deviation_spider_setting.justification             = psu["justification"]
-      deviation_spider_setting.created_at                = DateTime.now
-      deviation_spider_setting.updated_at                = DateTime.now
-      deviation_spider_setting.save
-    end
-
-    redirect_to "/projects/spider_configuration?project_id=#{project_id}"
   end
 
   # check request and suggest projects
@@ -1074,6 +1084,7 @@ class ProjectsController < ApplicationController
 
   def spider_configuration
     project_id = params[:project_id]
+    @status_import = params[:status_import]
     @project = Project.find(:first, :conditions => ["id = ?", project_id])
 
     @last_import_date = "N/A"
