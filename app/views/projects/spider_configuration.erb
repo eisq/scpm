@@ -12,10 +12,10 @@ function setShowIgnore(object) {
 </form>
 </p>
 
-<% if @status_import != nil and @status_import != "" and @status_import == "Successful import" %>
-	<strong><span style='color:green;'><%= @status_import %></span></strong>
-<% else %>
-	<strong><span style='color:red;'><%= @status_import %></span></strong>
+<% if @status_import != nil and @status_import != "" and @status_import == "1" %>
+	<strong><span style='color:green;'> Successful import </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "0" %>
+	<strong><span style='color:red;'> Wrong file format, please upload .xls file only </span></strong>
 <% end %>
 
 <h3>Project Spider Configuration</h3>

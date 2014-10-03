@@ -399,9 +399,9 @@ class ProjectsController < ApplicationController
         deviation_spider_setting.updated_at                     = DateTime.now
         deviation_spider_setting.save
       end
-      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"Successful import"
+      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"1"
     else
-      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"Wrong file format, please upload .xls file only."
+      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
     end
   end
 
