@@ -1,4 +1,4 @@
-<p><%= label_tag 'Type' %> <%= select(:project, :type, options_for_select(@select_type)) %></p>
+<p><%= label_tag 'Type' %> <%= select(:project, :type, options_for_select(@select_ci_type)) %></p>
 <p><%= label_tag 'Stage' %> <%= select(:project, :stage, options_for_select(@select_stage)) %></p>
 <p><%= label_tag 'Category' %> <%= select(:project, :category, options_for_select(@select_category)) %></p>
 <p><%= label_tag 'Severity' %> <%= select(:project, :severity, options_for_select(@select_severity)) %></p>
@@ -27,5 +27,5 @@
 <p><%= label_tag 'SQLI validation date' %> <%= text_field :project, :sqli_validation_date %> (dd/mm/yyyy)</p>
 <p><%= label_tag 'SQLI validation date objective' %> <%= text_field :project, :sqli_validation_date_objective %> (dd/mm/yyyy)</p>
 <p><%= label_tag 'Specification date objective' %> <%= text_field :project, :specification_date_objective %> (dd/mm/yyyy)</p>
-<p><%= label_tag 'SQLI validation responsible' %> <%= text_field :project, :sqli_validation_responsible %></p>
+<p style="color:red;"><%= label_tag 'SQLI validation responsible' %> <%= text_field :project, :sqli_validation_responsible %></p>
 <p style="color:red;"><%= label_tag 'CI Objectives 2014' %> <%= select(:project, :ci_objectives_2014, options_for_select(@select_ci_objectives_2014)) %></p>

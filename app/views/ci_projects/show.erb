@@ -2,7 +2,7 @@
 
 <h2>
   <% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%>
-  <%=link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
+  <%=link_to(p.extract_mantis_external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
   | <%= p.summary %>
    &nbsp;&nbsp;<span style="font-weight:normal; font-size:13px"> Last reporting update: 
    <%= p.last_update %> <%= p.last_update_person %> </span>
