@@ -365,7 +365,7 @@ class ProjectsController < ApplicationController
   def import_deviation
     project_id = params[:project_id]
     #project = Project.find(:all, :conditions=>["project_id=?", project_id])
-    #get_current_milestone_index -> voir ce que ça retourne
+    #@milestone_index = Project.get_current_milestone_index
     #get_status_for_milestone(milestone) #returns [status,style,decision]: decision= "#no request# ", "#unknown# ", "#GO# ", "#GO w/a# ", "#NO GO# ", "#NA# "
 
     file = params[:upload]
@@ -433,12 +433,12 @@ class ProjectsController < ApplicationController
           parent = Project.find(:first, :conditions=>"name='#{r.project_name}'")
           if not parent
             # create parent
-            parent_id = Project.create(:project_id=>nil, :name=>r.project_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first).id
+            parent_id = Project.create(:project_id=>nil, :name=>r.project_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider=>true).id
           else
             parent_id = parent.id
           end
           #create wp
-          p = Project.create(:project_id=>parent_id, :name=>r.workpackage_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first)
+          p = Project.create(:project_id=>parent_id, :name=>r.workpackage_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider=>true)
           if r.project.requests.size == 1 # if that was the only request move all statuts and actions, etc.. to new project
             @text << "<u>#{r.project.full_name}</u>: #{r.workpackage_name} (new) != #{r.project.name} (old) => creating and moving ALL<br/>"
             r.project.move_all(p)
@@ -486,7 +486,7 @@ class ProjectsController < ApplicationController
 
     project = Project.find_by_name(project_name)
     if not project
-      project = Project.create(:name=>project_name)
+      project = Project.create(:name=>project_name, :deviation_spider=>true)
       project.workstream = request.workstream
       lifecycle_name = request.lifecycle_name_for_request_type()
       lifecycle = nil
@@ -503,7 +503,7 @@ class ProjectsController < ApplicationController
 
     wp = Project.find_by_name(workpackage_name, :conditions=>["project_id=?",project.id])
     if not wp
-      wp = Project.create(:name=>workpackage_name)
+      wp = Project.create(:name=>workpackage_name, :deviation_spider=>true)
       wp.workstream = request.workstream
       wp.brn        = brn
       wp.project_id = project.id
@@ -908,6 +908,7 @@ class ProjectsController < ApplicationController
       new_project.create_sibling(project)
       new_project.lifecycle = lifecycle_id
       new_project.lifecycle_object = lifecycle
+      new_project.deviation_spider = true
       new_project.save
 
       project.is_running = 0
@@ -1086,6 +1087,7 @@ class ProjectsController < ApplicationController
     project_id = params[:project_id]
     @status_import = params[:status_import]
     @project = Project.find(:first, :conditions => ["id = ?", project_id])
+    @milestone_index = @project.get_current_milestone_index
 
     @last_import_date = "N/A"
     @last_import = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")

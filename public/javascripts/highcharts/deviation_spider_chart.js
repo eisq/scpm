@@ -124,10 +124,6 @@ function show_deliverable_chart_data(deviation_spider_id, meta_activity_id, char
 			chart_deliverable.series[1].setData(chart_data_object.points,true);
 		}
 	})
-	.fail(function() 
-	{ 
-		alert("Error");
-	})
 }
 
 function show_activity_chart_data(deviation_spider_id, meta_activity_id, chart_name)

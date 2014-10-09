@@ -12,12 +12,12 @@ class DeviationSpidersController < ApplicationController
 	    	@meta_activity = DeviationMetaActivity.find(:first)
 	    	@meta_activity_id = @meta_activity.id
 	    else
-	    	@meta_activity = DeviationMetaActivity.find(:first, :conditions=>["id = ?", meta_activity_id])
+	    	@meta_activity = DeviationMetaActivity.find(:first, :conditions=>["id = ?", @meta_activity_id])
 	    end
 	    @meta_activities = DeviationMetaActivity.all.map { |ma| [ma.name, ma.id] }
 
 	    if milestone_id
-		    @milestone 	 = Milestone.find(:first, :conditions=>["id = ?", milestone_id])  
+		    @milestone 	 = Milestone.find(:first, :conditions=>["id = ?", milestone_id])
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
 
 	    	# If spider currently edited

@@ -4,13 +4,16 @@ function setShowIgnore(object) {
 }
 </SCRIPT>
 
-<p>
-<%= form_tag({:action => 'import_deviation', :project_id => @project.id}, :multipart => true) %>
-    <label for="upload_file">Import deviation file</label>
-    <%= file_field 'upload', 'datafile' %>
-    <%= submit_tag "Upload" %>
-</form>
-</p>
+<!-- if M7/G5 are not yet done -->
+<% if @milestone_index == nil or @milestone_index < 5 %>
+	<p>
+	<%= form_tag({:action => 'import_deviation', :project_id => @project.id}, :multipart => true) %>
+	    <label for="upload_file">Import deviation file</label>
+	    <%= file_field 'upload', 'datafile' %>
+	    <%= submit_tag "Upload" %>
+	</form>
+	</p>
+<% end %>
 
 <% if @status_import != nil and @status_import != "" and @status_import == "1" %>
 	<strong><span style='color:green;'> Successful import </span></strong>
@@ -18,26 +21,6 @@ function setShowIgnore(object) {
 	<strong><span style='color:red;'> Wrong file format, please upload .xls file only </span></strong>
 <% end %>
 
-<h3>Project Spider Configuration</h3>
-
-<p>Deviation spider :
-	<% if @project.deviation_spider %>
-		<%= radio_button_tag "deviation_spider", :false,  false, {:onclick=>"setShowIgnore(this);"} %> No
-		<%= radio_button_tag "deviation_spider", :true, true, {:onclick=>"setShowIgnore(this);"} %> Yes
-	<% else %>
-		<%= radio_button_tag "deviation_spider", :false,  true, {:onclick=>"setShowIgnore(this);"} %> No
-		<%= radio_button_tag "deviation_spider", :true, false, {:onclick=>"setShowIgnore(this);"} %> Yes
-	<% end %>
-</p>
-
 <p>Last import : <%= @last_import_date %></p>
 
-<!-- <table>
-<tr>
-	<th>Deliverable</th>
-	<th>Answer 1</th>
-	<th>Answer 2 </th>
-	<th>Answer 3</th>
-	<th>Justification</th>
-</tr>
-</table> -->
+<p><%= link_to("Back to project", {:action=>"show", :id=>@project.id}, :class=>"btnlnk") %></p>
