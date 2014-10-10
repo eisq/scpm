@@ -14,7 +14,7 @@ class DeviationSpidersController < ApplicationController
 	    else
 	    	@meta_activity = DeviationMetaActivity.find(:first, :conditions=>["id = ?", @meta_activity_id])
 	    end
-	    @meta_activities = DeviationMetaActivity.all.map { |ma| [ma.name, ma.id] }
+	    @meta_activities = DeviationMetaActivity.find(:all, :conditions=>["is_active = ?", true]).map { |ma| [ma.name, ma.id] }
 
 	    if milestone_id
 		    @milestone 	 = Milestone.find(:first, :conditions=>["id = ?", milestone_id])
@@ -311,6 +311,8 @@ class DeviationSpidersController < ApplicationController
 		"JOIN deviation_deliverables ON deviation_deliverables.id = deviation_spider_deliverables.deviation_deliverable_id"], 
 		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", spider.id, meta_activity_id], 
 		:order => "deviation_activities.name , deviation_deliverables.name, deviation_questions.question_text")
+		#raise spider.id.to_s + " - " + meta_activity_id.to_s
+		#raise @questions.count.to_s
 
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
 		@deliverables_to_add = DeviationDeliverable.find(:all, 

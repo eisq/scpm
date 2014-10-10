@@ -1,5 +1,5 @@
 class DeviationToolsController < ApplicationController
-  layout 'spider'
+  layout 'tools'
 
 
   # Deliverable 
@@ -196,6 +196,7 @@ class DeviationToolsController < ApplicationController
 
   def create_question
     question = DeviationQuestion.new(params[:question])
+    question.answer_reference = true
     question.save
 
     lifecycle_ids = params[:lifecycle_ids]
