@@ -16,16 +16,20 @@
 <p><%= label_tag 'Deliverables list' %> <%= text_field :project, :deliverables_list %></p>
 <p><%= label_tag 'Dev team' %> <%= select(:project, :dev_team, options_for_select(@select_dev_team)) %></p>
 <p style="color:red;"><%= label_tag 'Deployment' %> <%= select(:project, :deployment, options_for_select(@select_deployment)) %></p>
-<p><%= label_tag 'Airbus responsible' %> <%= text_field :project, :airbus_responsible %></p>
-<p><%= label_tag 'Airbus validation date' %> <%= text_field :project, :airbus_validation_date %> (yyyy-mm-dd)</p>
-<p><%= label_tag 'Airbus validation date objective' %> <%= text_field :project, :airbus_validation_date_objective %> (yyyy-mm-dd)</p>
-<p><%= label_tag 'Deployment date' %> <%= text_field :project, :deployment_date %> (yyyy-mm-dd)</p>
-<p><%= label_tag 'Deployment date objective' %> <%= text_field :project, :deployment_date_objective %> (yyyy-mm-dd)</p>
-<p><%= label_tag 'Specification date' %> <%= text_field :project, :specification_date %> (yyyy-mm-dd)</p>
+
 <p><%= label_tag 'Kick-off date' %> <%= text_field :project, :kick_off_date %> (yyyy-mm-dd)</p>
 <p style="color:red;"><%= label_tag 'Launching date' %> <%= text_field :project, :launching_date_ddmmyyyy %> (yyyy-mm-dd)</p>
-<p><%= label_tag 'SQLI validation date' %> <%= text_field :project, :sqli_validation_date %> (yyyy-mm-dd)</p>
-<p><%= label_tag 'SQLI validation date objective' %> <%= text_field :project, :sqli_validation_date_objective %> (yyyy-mm-dd)</p>
-<p><%= label_tag 'Specification date objective' %> <%= text_field :project, :specification_date_objective %> (yyyy-mm-dd)</p>
 <p style="color:red;"><%= label_tag 'SQLI validation responsible' %> <%= text_field :project, :sqli_validation_responsible %></p>
+<p><%= label_tag 'SQLI validation date objective' %> <%= text_field :project, :sqli_validation_date_objective %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'SQLI validation date' %> <%= text_field :project, :sqli_validation_date %> (yyyy-mm-dd)</p>
+
+<p><%= label_tag 'Airbus responsible' %> <%= text_field :project, :airbus_responsible %></p>
+<p><%= label_tag 'Airbus validation date objective' %> <%= text_field :project, :airbus_validation_date_objective %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'Airbus validation date' %> <%= text_field :project, :airbus_validation_date %> (yyyy-mm-dd)</p>
+
+<p><%= label_tag 'Deployment date objective' %> <%= text_field :project, :deployment_date_objective %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'Deployment date' %> <%= text_field :project, :deployment_date %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'Specification date objective' %> <%= text_field :project, :specification_date_objective %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'Specification date' %> <%= text_field :project, :specification_date %> (yyyy-mm-dd)</p>
+
 <p style="color:red;"><%= label_tag 'CI Objectives 2014' %> <%= select(:project, :ci_objectives_2014, options_for_select(@select_ci_objectives_2014)) %></p>
