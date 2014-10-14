@@ -9,19 +9,19 @@ class ToolsController < ApplicationController
   end
 
   include WelcomeHelper
+  
+  NB_QR                       = SdpConstant.find(:first, :conditions=>"constant_name='NB_QR'").constant_value
+  NB_FTE                      = SdpConstant.find(:first, :conditions=>"constant_name='NB_FTE'").constant_value  # TODO: should be automatically calculated from workloads
+  NB_DAYS_PER_MONTH           = SdpConstant.find(:first, :conditions=>"constant_name='NB_DAYS_PER_MONTH'").constant_value
+  MEETINGS_LOAD_PER_MONTH     = SdpConstant.find(:first, :conditions=>"constant_name='MEETINGS_LOAD_PER_MONTH'").constant_value
+  PM_LOAD_PER_MONTH           = SdpConstant.find(:first, :conditions=>"constant_name='PM_LOAD_PER_MONTH'").constant_value #was: NB_DAYS_PER_MONTH*2 + NB_DAYS_PER_MONTH/1.5 # CP + PMO + DP
+  WP_LEADERS_DAYS_PER_MONTH   = SdpConstant.find(:first, :conditions=>"constant_name='WP_LEADERS_DAYS_PER_MONTH'").constant_value #was: 18 # 10 + 4*2
 
-  NB_QR                       = 24
-  NB_FTE                      = 20  # TODO: should be automatically calculated from workloads
-  NB_DAYS_PER_MONTH           = 18
-  MEETINGS_LOAD_PER_MONTH     = 1
-  PM_LOAD_PER_MONTH           = 48 #was: NB_DAYS_PER_MONTH*2 + NB_DAYS_PER_MONTH/1.5 # CP + PMO + DP
-  WP_LEADERS_DAYS_PER_MONTH   = 12 #was: 18 # 10 + 4*2
-
-  PM_PROVISION_ADJUSTMENT     = -157.750
-  QA_PROVISION_ADJUSTMENT     = 4
-  RK_PROVISION_ADJUSTMENT     = -26.5 
-  CI_PROVISION_ADJUSTMENT     = -10.125
-  OP_PROVISION_ADJUSTMENT     = -75.750
+  PM_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='PM_PROVISION_ADJUSTMENT'").constant_value
+  QA_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='QA_PROVISION_ADJUSTMENT'").constant_value
+  RK_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='RK_PROVISION_ADJUSTMENT'").constant_value
+  CI_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='CI_PROVISION_ADJUSTMENT'").constant_value
+  OP_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='OP_PROVISION_ADJUSTMENT'").constant_value
 
   def index
   end

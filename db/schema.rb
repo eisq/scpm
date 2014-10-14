@@ -258,109 +258,6 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.boolean  "validity",      :default => false
   end
 
-  create_table "deviation_activities", :force => true do |t|
-    t.string   "name"
-    t.boolean  "is_active",                  :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "deviation_meta_activity_id"
-  end
-
-  create_table "deviation_deliverables", :force => true do |t|
-    t.integer  "lifecycle_id"
-    t.integer  "milestone_name_id"
-    t.string   "name"
-    t.boolean  "is_active",         :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_meta_activities", :force => true do |t|
-    t.string   "name"
-    t.boolean  "is_active",  :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_questions", :force => true do |t|
-    t.integer  "deviation_deliverable_id"
-    t.integer  "deviation_activity_id"
-    t.text     "question_text"
-    t.boolean  "is_active",                :default => true
-    t.boolean  "answer_reference",         :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_spider_activity_values", :force => true do |t|
-    t.integer  "deviation_spider_id"
-    t.integer  "deviation_activity_id"
-    t.integer  "yes_counter"
-    t.integer  "no_counter"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_spider_consolidations", :force => true do |t|
-    t.integer  "deviation_spider_id"
-    t.integer  "deviation_deliverable_id"
-    t.integer  "deviation_activity_id"
-    t.integer  "score"
-    t.text     "justification"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_spider_deliverable_values", :force => true do |t|
-    t.integer  "deviation_spider_id"
-    t.integer  "deviation_deliverable_id"
-    t.integer  "yes_counter"
-    t.integer  "no_counter"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_spider_deliverables", :force => true do |t|
-    t.integer  "deviation_spider_id"
-    t.integer  "deviation_deliverable_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_spider_references", :force => true do |t|
-    t.integer  "project_id"
-    t.integer  "version_number"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_spider_settings", :force => true do |t|
-    t.integer  "devia_spider_reference_id"
-    t.string   "deliverable_name"
-    t.string   "activity_name"
-    t.string   "answer_1"
-    t.string   "answer_2"
-    t.string   "answer_3"
-    t.text     "justification"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_spider_values", :force => true do |t|
-    t.integer  "deviation_spider_deliverable_id"
-    t.integer  "deviation_question_id"
-    t.boolean  "answer"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "deviation_spiders", :force => true do |t|
-    t.integer  "milestone_id"
-    t.boolean  "impact_count", :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "generic_risk_questions", :force => true do |t|
     t.text     "question"
     t.datetime "created_at"
@@ -677,7 +574,7 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.string   "brn"
     t.string   "workstream"
     t.integer  "project_id"
-    t.integer  "last_status",      :default => 0
+    t.integer  "last_status",    :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "supervisor_id"
@@ -686,22 +583,21 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.string   "bpl"
     t.string   "ispl"
     t.datetime "read_date"
-    t.integer  "lifecycle",        :default => 0
+    t.integer  "lifecycle",      :default => 0
     t.string   "pm_deputy"
     t.string   "ispm"
     t.integer  "lifecycle_id"
-    t.integer  "qs_count",         :default => 0
-    t.integer  "spider_count",     :default => 0
-    t.boolean  "is_running",       :default => true
+    t.integer  "qs_count",       :default => 0
+    t.integer  "spider_count",   :default => 0
+    t.boolean  "is_running",     :default => true
     t.integer  "qr_qwr_id"
     t.string   "dwr"
-    t.boolean  "is_qr_qwr",        :default => false
+    t.boolean  "is_qr_qwr",      :default => false
     t.integer  "suite_tag_id"
     t.string   "project_code"
-    t.integer  "sales_revenue",    :default => 0
-    t.integer  "sibling_id"
+    t.integer  "sales_revenue",  :default => 0
     t.integer  "tbp_project_id"
-    t.boolean  "deviation_spider", :default => true
+    t.integer  "sibling_id"
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
@@ -913,6 +809,14 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.float    "balancei"
     t.float    "balancer"
     t.float    "balancea"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sdp_constants", :force => true do |t|
+    t.string   "constant_name"
+    t.float    "constant_value"
+    t.string   "constant_comment"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
