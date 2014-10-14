@@ -105,7 +105,7 @@ class DeviationToolsController < ApplicationController
 
   # Meta Activity
   def index_meta_activity
-    @meta_activities = DeviationMetaActivity.find(:all, :order => "name")
+    @meta_activities = DeviationMetaActivity.find(:all, :order => "id")
   end
 
   def detail_meta_activity
@@ -181,7 +181,7 @@ class DeviationToolsController < ApplicationController
 
   def new_question
     @lifecycles      = Lifecycle.find(:all, :conditions => ["is_active = 1"])
-    @milestone_names = MilestoneName.find(:all, :conditions => ["is_active = 1"])
+    @milestone_names = MilestoneName.find(:all, :conditions => ["is_active = 1"]).sort_by {|m| [ m.title ] }
 
     activity_id    = params[:activity_id]
     deliverable_id = params[:deliverable_id]

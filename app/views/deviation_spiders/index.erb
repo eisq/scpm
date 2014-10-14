@@ -68,6 +68,21 @@ function set_value_buttons(value_id, answer)
 	}
 }
 
+function set_file_link(deviation_spider_id, link)
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/update_file_link",
+ 		data: {deviation_id: deviation_spider_id, file_link: link}
+	})
+	.done(function( msg ) {
+	})
+	.fail(function() 
+	{ 
+		alert("Error: set_question");
+	})
+}
+
 // Open
 $( document ).ready(function() {
 	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0  %>
@@ -83,15 +98,25 @@ $( document ).ready(function() {
 
 
 
-<div><%= button_to "Project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
+<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
 
+<%
+	projectName = ""
+	if( @project.project_id != nil)
+		projectName += @project.project.name
+	end
+	projectName += " > "+@project.name
+%>
+
+<h3>Project : <%= projectName %> - Milestone : <%= @milestone.name %></h3>
+
+<h2>Current spider</h2>
 
 <% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
 <% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
 	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></div>
-	<br />
+	<br /><br/><br/>
 
 	<% if @deliverables_to_add.count > 0 %>
 		<% form_tag(:action=>'add_spider_deliverable') do %>
@@ -164,15 +189,22 @@ $( document ).ready(function() {
 	<% end %>
 	</table>
 
-
+	<br/>
 	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-	<div><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></div>
-	<br />
+	<br/><br/>
 
+	<h2>Actions</h2>
+	
+	Delivery File Link : <input id="file_link" name="file_link" type="text" value="<%= @deviation_spider.file_link %>" onfocusout="set_file_link()" />
 
-
-	<input type="button" value="Export all deliverables chart" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" />
-	<input type="button" value="Export all activities chart" onclick="export_activities('<%= @last_spider.id.to_s %>');" />
+	<h2>Spiders actions: </h2>
+	<p><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %>
+		Delete
+	</p>
+	<br/>
+	<p>Charts actions: </p>
+	<p>Deliverables chart <input type="button" value="Export all deliverables chart" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /><p>
+	<p>Activities chart <input type="button" value="Export all activities chart" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></p>
 
 	<div class="deviation_spider_chart" id="deviation_spider_chart_deliverable"></div>
 	<div class="deviation_spider_chart" id="deviation_spider_chart_activity"></div>

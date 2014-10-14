@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140930143638) do
+ActiveRecord::Schema.define(:version => 20141014112800) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -135,8 +135,8 @@ ActiveRecord::Schema.define(:version => 20140930143638) do
 
   create_table "ci_projects", :force => true do |t|
     t.integer  "internal_id"
-    t.integer  "external_id"
-    t.string   "type"
+    t.text     "external_id"
+    t.string   "ci_type"
     t.string   "stage"
     t.string   "category"
     t.string   "severity"
@@ -381,6 +381,7 @@ ActiveRecord::Schema.define(:version => 20140930143638) do
     t.boolean  "impact_count", :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "file_link"
   end
 
   create_table "generic_risk_questions", :force => true do |t|
@@ -723,7 +724,7 @@ ActiveRecord::Schema.define(:version => 20140930143638) do
     t.integer  "sales_revenue",    :default => 0
     t.integer  "sibling_id"
     t.integer  "tbp_project_id"
-    t.boolean  "deviation_spider", :default => true
+    t.boolean  "deviation_spider", :default => false
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"

@@ -18,7 +18,9 @@ class DeviationSpidersController < ApplicationController
 
 	    if milestone_id
 		    @milestone 	 = Milestone.find(:first, :conditions=>["id = ?", milestone_id])
+		    @project 	 = Project.find(:first, :conditions=>["id = ?", @milestone.project_id])
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
+	   		@deviation_spider = DeviationSpider.find(:last, :conditions=> ["milestone_id = ?", milestone_id])
 
 	    	# If spider currently edited
 	    	if (@last_spider) and (@last_spider.deviation_spider_consolidations.count == 0)
@@ -235,6 +237,17 @@ class DeviationSpidersController < ApplicationController
 		render(:text=>updated_spider_value_id.join(','))
 	end
 
+	def update_file_link
+		deviation_spider_id = params[:deviation_id]
+		file_link = params[:file_link]
+		deviation_spider = DeviationSpider.find(:all, :conditions=>["id = ?", deviation_spider_id])
+
+		if file_link and file_link != "" and deviation_spider
+			deviation_spider.file_link = file_link
+			deviation_spider.save
+		end
+	end
+
 	def delete_spider_deliverable
 		deviation_spider_deliverable_id = params[:deviation_spider_deliverable_id]
 		if deviation_spider_deliverable_id
@@ -311,8 +324,6 @@ class DeviationSpidersController < ApplicationController
 		"JOIN deviation_deliverables ON deviation_deliverables.id = deviation_spider_deliverables.deviation_deliverable_id"], 
 		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", spider.id, meta_activity_id], 
 		:order => "deviation_activities.name , deviation_deliverables.name, deviation_questions.question_text")
-		#raise spider.id.to_s + " - " + meta_activity_id.to_s
-		#raise @questions.count.to_s
 
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
 		@deliverables_to_add = DeviationDeliverable.find(:all, 
