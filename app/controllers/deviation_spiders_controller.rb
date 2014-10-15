@@ -1,3 +1,4 @@
+require 'spreadsheet'
 class DeviationSpidersController < ApplicationController
 	layout "spider"
 
