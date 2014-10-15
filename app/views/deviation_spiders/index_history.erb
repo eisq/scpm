@@ -28,11 +28,12 @@ $( document ).ready(function() {
 <script src="/javascripts/highcharts/group_export.js" type="text/javascript"></script>
 
 
-<div><%= button_to "Go to spider", {:action => "index", :milestone_id => @last_spider.milestone_id } %></div>
+<div><%= link_to "Go to spider", {:action => "index", :milestone_id => @last_spider.milestone_id } %></div>
+
+<h2>Current spider</h2>
 
 <div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-<div><%= button_to "Consolidation", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => false} %></div>
-<br />
+<br/><br/><br/>
 
 <% table_activity = nil %>
 <% table_deliverable = nil %>
@@ -95,13 +96,25 @@ $( document ).ready(function() {
 </table>
 
 
-<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-<div><%= button_to "Consolidation", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => false} %></div>
+<br/>
+	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
+	<br/><br/>
 
+	<h2>Actions</h2>
+	Delivery file link: <%= @last_spider.file_link %>
 
+	<p><%= button_to "Delete consolidated spider", {:action => "delete_consolidated_spider", :deviation_spider_id => @last_spider.id} %></p>
 
-<input type="button" value="Export all deliverables chart" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" />
-<input type="button" value="Export all activities chart" onclick="export_activities('<%= @last_spider.id.to_s %>');" />
+	<br/>
+	<h2>Charts actions: </h2>
+	<table>
+	<tr>
+		<td>Deliverables chart: </td>
+		<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
+	</tr>
+		<td>Activities chart: </td>
+		<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
+	</tr></table>
 
 <div class="deviation_spider_chart" id="deviation_spider_chart_deliverable"></div>
 <div class="deviation_spider_chart" id="deviation_spider_chart_activity"></div>

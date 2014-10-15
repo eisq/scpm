@@ -47,9 +47,13 @@ function set_question(question_id, checked)
 
 function set_value_buttons(value_id, answer)
 {
+	var button_all_not_done_id = "#button_all_not_done_"+value_id;
+
 	var button_yes_id = "#button_yes_"+value_id;
 	var button_no_id = "#button_no_"+value_id;
 	if (answer == true) {
+		$(button_all_not_done_id).attr('class', 'deliverable_not_done');
+
 		if ($(button_yes_id).attr('class') == 'answer_button_select') {	
 			$(button_yes_id).attr('class', 'answer_button');
 			$(button_no_id).attr('class', 'answer_button');
@@ -66,21 +70,6 @@ function set_value_buttons(value_id, answer)
 			$(button_no_id).attr('class', 'answer_button_select');
 		}
 	}
-}
-
-function set_file_link(deviation_spider_id, link)
-{
-	$.ajax({
-		type: "POST",
-		url: "/deviation_spiders/update_file_link",
- 		data: {deviation_id: deviation_spider_id, file_link: link}
-	})
-	.done(function( msg ) {
-	})
-	.fail(function() 
-	{ 
-		alert("Error: set_question");
-	})
 }
 
 // Open
@@ -160,7 +149,7 @@ $( document ).ready(function() {
 					<% deliverable_not_done_class = "deliverable_not_done" %>
 					<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
 
-					<%= button_to "Not done without admissible justification", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :class => deliverable_not_done_class %> 
+					<%= button_to "Not done without admissible justification", {:action => "set_false_for_spider_deliverable", :meta_activity_id => @meta_activity_id, :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :id => "button_all_not_done_"+ q.id.to_s, :class => deliverable_not_done_class %> 
 				</td>
 			</tr>
 			<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
@@ -180,11 +169,9 @@ $( document ).ready(function() {
 				<% if !q.answer and q.answer != nil %>
 					<% no_class = 'class="answer_button_select"' %>
 				<% end %>
-
 				<input <%= yes_class %> id="button_yes_<%= q.id.to_s %>" type="button" value="Yes" onclick="set_question('<%= q.id.to_s %>', true);" />
 				<input <%= no_class %>  id="button_no_<%= q.id.to_s %>"  type="button" value="No" onclick="set_question('<%= q.id.to_s %>', false);" />
 			</td>
-			<td><%= check_box_tag(:answer_reference, true, q.answer_reference, {:disabled => true}) %></td>
 		</tr>
 	<% end %>
 	</table>
@@ -194,17 +181,26 @@ $( document ).ready(function() {
 	<br/><br/>
 
 	<h2>Actions</h2>
-	
-	Delivery File Link : <input id="file_link" name="file_link" type="text" value="<%= @deviation_spider.file_link %>" onfocusout="set_file_link()" />
+	<%= form_tag :action=>'update_file_link' %>
+		Delivery file link: <%= text_field_tag('file_link', @last_spider.file_link, {:size=>30}) %>
+	    <%= hidden_field_tag('deviation_id', @last_spider.id) %>
+	    <%= submit_tag "Save" %>
+	</form>
 
-	<h2>Spiders actions: </h2>
-	<p><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %>
-		Delete
-	</p>
-	<br/>
-	<p>Charts actions: </p>
-	<p>Deliverables chart <input type="button" value="Export all deliverables chart" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /><p>
-	<p>Activities chart <input type="button" value="Export all activities chart" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></p>
+	<p><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></p>
+
+	<p><%= button_to "Delete spider", {:action => "delete_current_spider", :deviation_spider_id => @last_spider.id} %></p>
+
+	<br/><br/>
+	<h2>Charts actions: </h2>
+	<table>
+	<tr>
+		<td>Deliverables chart: </td>
+		<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
+	</tr>
+		<td>Activities chart: </td>
+		<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
+	</tr></table>
 
 	<div class="deviation_spider_chart" id="deviation_spider_chart_deliverable"></div>
 	<div class="deviation_spider_chart" id="deviation_spider_chart_activity"></div>
@@ -212,11 +208,8 @@ $( document ).ready(function() {
 
 <% end %>
 
-
-
-
-<h2>History</h2>
 <% if @history %>
+<h2>History</h2>
 	<% @history.each { |s|
 		spider_name = "Spider [created the "
 		spider_name << s.created_at.to_s

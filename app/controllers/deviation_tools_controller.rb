@@ -46,7 +46,7 @@ class DeviationToolsController < ApplicationController
   end
 
   def detail_activity
-    @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"]).map {|ma| [ma.name, ma.id]}
+    @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"], :order => "meta_index").map {|ma| [ma.name, ma.id]}
     @deliverables = DeviationDeliverable.find(:all, :conditions => ["is_active = 1"], :order => "name")
 
     activity_id = params[:activity_id]
@@ -58,7 +58,7 @@ class DeviationToolsController < ApplicationController
   end
 
   def new_activity
-    @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"]).map {|ma| [ma.name, ma.id]}
+    @meta_activities = DeviationMetaActivity.find(:all, :conditions => ["is_active = 1"], :order => "meta_index").map {|ma| [ma.name, ma.id]}
     @deliverables = DeviationDeliverable.find(:all, :conditions => ["is_active = 1"], :order => "name")
     @activity = DeviationActivity.new
   end
@@ -105,13 +105,13 @@ class DeviationToolsController < ApplicationController
 
   # Meta Activity
   def index_meta_activity
-    @meta_activities = DeviationMetaActivity.find(:all, :order => "id")
+    @meta_activities = DeviationMetaActivity.find(:all, :order=>"meta_index")
   end
 
   def detail_meta_activity
     meta_activity_id = params[:meta_activity_id]
     if meta_activity_id
-      @meta_activity = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id])
+      @meta_activity = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id], :order=>"meta_index")
     else
     redirect_to :action=>'index_meta_activity'
     end
