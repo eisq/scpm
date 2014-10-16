@@ -9,19 +9,6 @@ class ToolsController < ApplicationController
   end
 
   include WelcomeHelper
-  
-  NB_QR                       = SdpConstant.find(:first, :conditions=>"constant_name='NB_QR'").constant_value
-  NB_FTE                      = SdpConstant.find(:first, :conditions=>"constant_name='NB_FTE'").constant_value  # TODO: should be automatically calculated from workloads
-  NB_DAYS_PER_MONTH           = SdpConstant.find(:first, :conditions=>"constant_name='NB_DAYS_PER_MONTH'").constant_value
-  MEETINGS_LOAD_PER_MONTH     = SdpConstant.find(:first, :conditions=>"constant_name='MEETINGS_LOAD_PER_MONTH'").constant_value
-  PM_LOAD_PER_MONTH           = SdpConstant.find(:first, :conditions=>"constant_name='PM_LOAD_PER_MONTH'").constant_value #was: NB_DAYS_PER_MONTH*2 + NB_DAYS_PER_MONTH/1.5 # CP + PMO + DP
-  WP_LEADERS_DAYS_PER_MONTH   = SdpConstant.find(:first, :conditions=>"constant_name='WP_LEADERS_DAYS_PER_MONTH'").constant_value #was: 18 # 10 + 4*2
-
-  PM_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='PM_PROVISION_ADJUSTMENT'").constant_value
-  QA_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='QA_PROVISION_ADJUSTMENT'").constant_value
-  RK_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='RK_PROVISION_ADJUSTMENT'").constant_value
-  CI_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='CI_PROVISION_ADJUSTMENT'").constant_value
-  OP_PROVISION_ADJUSTMENT     = SdpConstant.find(:first, :conditions=>"constant_name='OP_PROVISION_ADJUSTMENT'").constant_value
 
   def index
   end
@@ -129,8 +116,13 @@ class ToolsController < ApplicationController
   def sdp_index_prepare
     return if SDPTask.count.zero?
     begin
-      @nb_qr                             = NB_QR
-      @fte                               = NB_FTE
+      @nb_qr                             = SdpConstant.find(:first, :conditions=>["constant_name = ?", "NB_QR"])
+      @fte                               = SdpConstant.find(:first, :conditions=>["constant_name = ?", "NB_FTE"])
+      nb_days_per_month                  = SdpConstant.find(:first, :conditions=>["constant_name = ?", "NB_DAYS_PER_MONTH"])
+      meetings_load_per_month            = SdpConstant.find(:first, :conditions=>["constant_name = ?", "MEETINGS_LOAD_PER_MONTH"])
+      pm_load_per_month                  = SdpConstant.find(:first, :conditions=>["constant_name = ?", "PM_LOAD_PER_MONTH"]) #was: NB_DAYS_PER_MONTH*2 + NB_DAYS_PER_MONTH/1.5 # CP + PMO + DP
+      wp_leaders_days_per_month          = SdpConstant.find(:first, :conditions=>["constant_name = ?", "WP_LEADERS_DAYS_PER_MONTH"]) #was: 18 # 10 + 4*2
+
       @phases                            = SDPPhase.all
       @provisions                        = SDPTask.find(:all, :conditions=>"iteration='P'", :order=>'title')
       @sdp_initial_balance               = @phases.inject(0) { |sum, p| p.balancei+sum}
@@ -155,9 +147,9 @@ class ToolsController < ApplicationController
       @operational_total_2014            = op2014 + @operational2014_10percent
       @operational_total                 = @operational_total_2011 + @operational_total_2012 + @operational_total_2013 + @operational_total_2014
       @remaining                         = (tasks2010.inject(0) {|sum, t| t.remaining+sum} + tasks2011.inject(0) {|sum, t| t.remaining+sum} + tasks2012.inject(0) {|sum, t| t.remaining+sum} + tasks2013.inject(0) {|sum, t| t.remaining+sum} + tasks2014.inject(0) {|sum, t| t.remaining+sum})
-      @remaining_time                    = (@remaining/NB_FTE/NB_DAYS_PER_MONTH/0.001).round * 0.001
+      @remaining_time                    = (@remaining/@fte.constant_value/nb_days_per_month.constant_value/0.001).round * 0.001
       @phases.each { |p|  p.gain_percent = (p.initial==0) ? 0 : (p.balancei/p.initial*100/0.1).round * 0.1 }
-      @theorical_management              = round_to_hour((PM_LOAD_PER_MONTH + MEETINGS_LOAD_PER_MONTH*NB_QR + WP_LEADERS_DAYS_PER_MONTH)*@remaining_time)
+      @theorical_management              = round_to_hour((pm_load_per_month.constant_value + meetings_load_per_month.constant_value*@nb_qr.constant_value + wp_leaders_days_per_month.constant_value)*@remaining_time)
       montee                             = default_to_zero { SDPActivity.find_by_title('Montee en competences').remaining }
       souscharges                        = default_to_zero { SDPActivity.find_by_title('Sous charges').remaining }
       incidents                          = default_to_zero { SDPActivity.find_by_title('Incidents').remaining }
@@ -857,20 +849,27 @@ private
   end
 
   def calculate_provision(p, total2011, total2012, total2013, total2014, operational_percent)
+    pm_provision_adjustment  = SdpConstant.find(:first, :conditions=>["constant_name = ?", "PM_PROVISION_ADJUSTMENT"])
+    qa_provision_adjustment  = SdpConstant.find(:first, :conditions=>["constant_name = ?", "QA_PROVISION_ADJUSTMENT"])
+    rk_provision_adjustment  = SdpConstant.find(:first, :conditions=>["constant_name = ?", "RK_PROVISION_ADJUSTMENT"])
+    ci_provision_adjustment  = SdpConstant.find(:first, :conditions=>["constant_name = ?", "CI_PROVISION_ADJUSTMENT"])
+    op_provision_adjustment  = SdpConstant.find(:first, :conditions=>["constant_name = ?", "OP_PROVISION_ADJUSTMENT"])
+
+
     factor = 1.25 # 20% of PM (reciprocal)
     case p.title
       when 'Project Management'
-        p.difference = round_to_hour(total2011*factor*0.09) + round_to_hour(total2012*factor*0.12) + round_to_hour(total2013*factor*0.12) + round_to_hour(total2014*factor*0.12) - p.initial + PM_PROVISION_ADJUSTMENT
+        p.difference = round_to_hour(total2011*factor*0.09) + round_to_hour(total2012*factor*0.12) + round_to_hour(total2013*factor*0.12) + round_to_hour(total2014*factor*0.12) - p.initial + pm_provision_adjustment.constant_value
       when 'Risks'
-        p.difference = round_to_hour(total2011*factor*0.04) + round_to_hour(total2012*factor*0.02) + round_to_hour(total2013*factor*0.02) + round_to_hour(total2014*factor*0.02) - p.initial + RK_PROVISION_ADJUSTMENT
+        p.difference = round_to_hour(total2011*factor*0.04) + round_to_hour(total2012*factor*0.02) + round_to_hour(total2013*factor*0.02) + round_to_hour(total2014*factor*0.02) - p.initial + rk_provision_adjustment.constant_value
       when 'Operational Management'
-        p.difference = operational_percent - p.initial      + OP_PROVISION_ADJUSTMENT
+        p.difference = operational_percent - p.initial      + op_provision_adjustment.constant_value
       when '(OLD) Quality Assurance'
         p.difference = 0
       when 'Quality Assurance'
-        p.difference = round_to_hour(total2011*factor*0.02) + round_to_hour(total2012*factor*0.01) + round_to_hour(total2013*factor*0.01) + round_to_hour(total2014*factor*0.01)  - p.initial+ QA_PROVISION_ADJUSTMENT
+        p.difference = round_to_hour(total2011*factor*0.02) + round_to_hour(total2012*factor*0.01) + round_to_hour(total2013*factor*0.01) + round_to_hour(total2014*factor*0.01)  - p.initial+ qa_provision_adjustment.constant_value
       when 'Continuous Improvement'
-        p.difference = round_to_hour((total2011+total2012+total2013+total2014)*factor*0.05) - p.initial  + CI_PROVISION_ADJUSTMENT
+        p.difference = round_to_hour((total2011+total2012+total2013+total2014)*factor*0.05) - p.initial  + ci_provision_adjustment.constant_value
       else
         p.difference = 0
     end
