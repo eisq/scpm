@@ -1,0 +1,118 @@
+<%=
+@xml.instruct! :xml, :version=>"1.0", :encoding=>"UTF-8"
+@xml.Workbook({
+  'xmlns'      => "urn:schemas-microsoft-com:office:spreadsheet",
+  'xmlns:o'    => "urn:schemas-microsoft-com:office:office",
+  'xmlns:x'    => "urn:schemas-microsoft-com:office:excel",
+  'xmlns:html' => "http://www.w3.org/TR/REC-html40",
+  'xmlns:ss'   => "urn:schemas-microsoft-com:office:spreadsheet"
+  }) do
+
+
+@xml.Styles do
+  @xml.Style 'ss:ID' => 'Default', 'ss:Name' => 'Normal' do
+    @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
+    @xml.Borders
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Interior
+    @xml.NumberFormat
+    @xml.Protection 
+  end
+  @xml.Style 'ss:ID' => 's62', 'ss:Name' => 'Header' do
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#000000', 'ss:Bold'=>"1"
+    @xml.Interior 'ss:Color'=>"#99CCFF", 'ss:Pattern'=>'Solid'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 's75', 'ss:Name' => 'Closed' do
+    @xml.Font 'ss:Color'=>'#C5BE97', 'ss:Italic' => '1'
+  end
+  @xml.Style 'ss:ID' => 's1024', 'ss:Name' => 'Classic' do
+    @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+    @xml.Interior
+    @xml.NumberFormat
+    @xml.Protection 
+  end
+end
+  
+  # DEVIATION
+  @xml.Worksheet 'ss:Name' => 'Infos' do
+    @xml.Table do
+
+      # Columns width
+      for i in 0..3 do
+        @xml.Column nil, {'ss:Width' => 150}
+      end
+
+      # Header 1
+      @xml.Row 'ss:StyleID' => 's62' do
+        @xml.Cell do
+          @xml.Data "KPIs project customization M3", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Header 2
+      @xml.Row 'ss:StyleID' => 's62' do
+        @xml.Cell do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Header 3
+      @xml.Row 'ss:StyleID' => 's62' do
+        @xml.Cell do
+          @xml.Data "Deliverables", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell do
+          @xml.Data "Deliverables status", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell do
+          @xml.Data "Explanations", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Rows
+      for deliverable in @exportCustomization
+        style = {'ss:StyleID' => 's1024'}
+        @xml.Row(style) do
+          @xml.Cell do
+            @xml.Data deliverable.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data deliverable.status, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data deliverable.justification, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+        end #End row
+      end #End for
+
+    end #End xml.table
+  end #End xml.worksheet
+
+end 
+
+%>

@@ -29,7 +29,6 @@ class DeviationSpidersController < ApplicationController
 	    	end
 
 	    	# If spider consolidated
-
 	    	if (@last_spider) and (@last_spider.deviation_spider_consolidations.count > 0)
 	    		generate_spider_history(@milestone)
 	    	end
@@ -57,6 +56,65 @@ class DeviationSpidersController < ApplicationController
 	    else
 	    	redirect_to :controller=>:projects, :action=>:show, :id=>@project.id
 	    end
+	end
+
+	# --------
+	# EXPORT
+	# --------
+	def export_customization
+		project_id = params[:project_id]
+		project = Project.find(:first, :conditions => ["id = ?", project_id])
+		if project
+			begin
+				@xml = Builder::XmlMarkup.new(:indent => 1) #Builder::XmlMarkup.new(:target => $stdout, :indent => 1)
+
+				deviation_spider_reference_last = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order_by "version_number")
+				# DeliverablesSettings
+				deviationSpiderSettings = DeviationSpiderSettings.find(:all, :conditions => ["deviation_spider_reference_id = ?", deviation_spider_reference_last])
+
+				@exportCustomization = Struct.new(:name, :status, :explanation)
+				@exportCustomization.name = project.name
+				@exportCustomization.status = get_customization_deliverable_status(deviationSpiderSettings.answer_1, deviationSpiderSettings.answer_2, deviationSpiderSettings.answer_3)
+				@exportCustomization.justification = deviationSpiderSettings.justification
+
+				filename = spider.milestone.project.name+"_GPP_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
+
+				headers['Content-Type']         = "application/vnd.ms-excel"
+		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
+		        headers['Cache-Control']        = ''
+		        render "export.erb", :layout=>false
+	        rescue Exception => e
+	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+	        end
+		end
+	end
+
+	def get_customization_deliverable_status(answer_1, answer_2, answer_3)
+		status = ""
+		case answer_1
+		when "Yes"
+			status = "Project plans to use referential template to produce the deliverable"
+		when "No"
+			case answer_2
+			when "No"
+				status = "Project doesn't plan to produce deliverable without justification"
+			when "Yes"
+				case answer_3
+				when "Deliverable N/A"
+					status = "Deliverable not applicable to the project"
+				when "Another template is used"
+					status = "Project plans to use a different template from the referential one to produce the deliverable"
+				else
+					status = ""
+				end
+			else
+				status = ""
+			end
+		else
+			status = ""
+		end
+
+		return status
 	end
 
 	def consolidate_interface

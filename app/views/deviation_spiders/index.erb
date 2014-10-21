@@ -91,7 +91,7 @@ $( document ).ready(function() {
 
 <%
 	projectName = ""
-	if( @project.project_id != nil)
+	if(@project.project_id != nil)
 		projectName += @project.project.name
 	end
 	projectName += " > "+@project.name
@@ -204,11 +204,11 @@ $( document ).ready(function() {
 	</tr>
 	<tr>
 		<td>Customization: </td>
-		<td><input type="button" value="Export" onclick="export_customization('<%= @last_spider.id.to_s %>');" /></td>
+		<td><%= button_to "Export", {:action => "export_customization", :project_id => @milestone.project.id} %></td>
 	</tr>
 	<tr>
 		<td>Result of GPP adherence: </td>
-		<td><input type="button" value="Export" onclick="export_adherence('<%= @last_spider.id.to_s %>');" /></td>
+		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
 	</tr>
 </table>
 
