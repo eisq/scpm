@@ -3,6 +3,7 @@ class DeviationSpidersController < ApplicationController
 	layout "spider"
 
 	Conso_deliverable 	= Struct.new(:deliverable, :consolidations)
+	ExportCustomization = Struct.new(:name, :status, :justification)
 	# 
 	# INTERFACES
 	# 
@@ -68,21 +69,23 @@ class DeviationSpidersController < ApplicationController
 			begin
 				@xml = Builder::XmlMarkup.new(:indent => 1) #Builder::XmlMarkup.new(:target => $stdout, :indent => 1)
 
-				deviation_spider_reference_last = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order_by "version_number")
-				# DeliverablesSettings
-				deviationSpiderSettings = DeviationSpiderSettings.find(:all, :conditions => ["deviation_spider_reference_id = ?", deviation_spider_reference_last])
+				deviation_spider_reference_last = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number")
+				@exportCustomizations = Array.new
+				# DeliverablesSettings: for each deliverable setting
+				deviationSpiderSettings = DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ?", deviation_spider_reference_last]).each do |devia_settings|
+					exportCustomization = ExportCustomization.new
+					exportCustomization.name = devia_settings.deliverable_name
+					exportCustomization.status = get_customization_deliverable_status(devia_settings.answer_1, devia_settings.answer_2, devia_settings.answer_3)
+					exportCustomization.justification = devia_settings.justification
+					@exportCustomizations << exportCustomization
+				end
 
-				@exportCustomization = Struct.new(:name, :status, :explanation)
-				@exportCustomization.name = project.name
-				@exportCustomization.status = get_customization_deliverable_status(deviationSpiderSettings.answer_1, deviationSpiderSettings.answer_2, deviationSpiderSettings.answer_3)
-				@exportCustomization.justification = deviationSpiderSettings.justification
-
-				filename = spider.milestone.project.name+"_GPP_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
+				filename = project.name+"_GPP_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
 
 				headers['Content-Type']         = "application/vnd.ms-excel"
 		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
 		        headers['Cache-Control']        = ''
-		        render "export.erb", :layout=>false
+		        render "custo.erb", :layout=>false
 	        rescue Exception => e
 	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
 	        end
