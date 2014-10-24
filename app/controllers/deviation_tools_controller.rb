@@ -226,25 +226,61 @@ class DeviationToolsController < ApplicationController
     question = DeviationQuestion.find(params[:question][:id])
     question.update_attributes(params[:question])
 
-    lifecycle_ids = nil
-    #lifecycle_ids = params[:lifecycle_ids]
+    lifecycle_ids = params[:lifecycle_ids]
     if lifecycle_ids
       lifecycle_ids.each do |lifecycle_id|
-        new_deviation_question_lifecycle = DeviationQuestionLifecycle.new
-        new_deviation_question_lifecycle.deviation_question_id = question.id
-        new_deviation_question_lifecycle.lifecycle_id = lifecycle_id
-        new_deviation_question_lifecycle.save
+        questionlifecycle = DeviationQuestionLifecycle.find(:first, :conditions=>["deviation_question_id = ? and lifecycle_id = ?", question.id, lifecycle_id])
+        if !questionlifecycle
+          new_deviation_question_lifecycle = DeviationQuestionLifecycle.new
+          new_deviation_question_lifecycle.deviation_question_id = question.id
+          new_deviation_question_lifecycle.lifecycle_id = lifecycle_id
+          new_deviation_question_lifecycle.save
+        end
       end
-    end
 
-    milestone_name_ids = nil
-    #milestone_name_ids = params[:milestone_name_ids]
+      #Delete non-checked lifecycles
+      to_remove = 1
+      DeviationQuestionLifecycle.find(:all, :conditions=>["deviation_question_id = ?", question.id]).each do |q|
+        lifecycle_ids.each do |lifecycle_id_to_remove|
+          if lifecycle_id_to_remove.to_s == q.lifecycle_id.to_s
+            to_remove = 0
+          end
+        end
+
+        if to_remove == 1
+          q.delete
+        else
+          to_remove = 1
+        end
+      end
+    end    
+
+    milestone_name_ids = params[:milestone_name_ids]
     if milestone_name_ids
       milestone_name_ids.each do |milestone_name_id|
-        new_deviation_question_milestone_name = DeviationQuestionMilestoneName.new
-        new_deviation_question_milestone_name.deviation_question_id = question.id
-        new_deviation_question_milestone_name.milestone_name_id = milestone_name_id
-        new_deviation_question_milestone_name.save
+        questionmilestone = DeviationQuestionMilestoneName.find(:first, :conditions=>["deviation_question_id = ? and milestone_name_id = ?", question.id, milestone_name_id])
+        if !questionmilestone
+          new_deviation_question_milestone_name = DeviationQuestionMilestoneName.new
+          new_deviation_question_milestone_name.deviation_question_id = question.id
+          new_deviation_question_milestone_name.milestone_name_id = milestone_name_id
+          new_deviation_question_milestone_name.save
+        end
+      end
+
+      #Delete non-checked milestones
+      to_remove = 1
+      DeviationQuestionMilestoneName.find(:all, :conditions=>["deviation_question_id = ?", question.id]).each do |q|
+        milestone_name_ids.each do |milestone_id_to_remove|
+          if milestone_id_to_remove.to_s == q.milestone_name_id.to_s
+            to_remove = 0
+          end
+        end
+
+        if to_remove == 1
+          q.delete
+        else
+          to_remove = 1
+        end
       end
     end
 
