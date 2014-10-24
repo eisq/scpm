@@ -59,6 +59,10 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
+	def index_export_all
+
+	end
+
 	# --------
 	# EXPORT
 	# --------
@@ -90,6 +94,10 @@ class DeviationSpidersController < ApplicationController
 	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
 	        end
 		end
+	end
+
+	def export_customization_all
+
 	end
 
 	def get_customization_deliverable_status(answer_1, answer_2, answer_3)
