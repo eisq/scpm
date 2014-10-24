@@ -1,1 +1,23 @@
-back to tools
+<%
+projects_id = Array.new
+if @projects
+	@projects.each do |project|
+		projects_id << project.id
+	end
+end
+%>
+
+<%= link_to('Back to tools',{:controller=>'tools', :action=>'index'}) %>
+
+<h2>Filters</h2>
+
+
+
+<h2>Exports</h2>
+<table><tr>
+	<td>Customization: </td>
+	<td><%= button_to "Export all selected", {:action => "export_customization_all", :projects_id => projects_id, :filter => "filter_test"} %></td>
+</tr><tr>
+	<td>Deviation: </td>
+	<td><%= button_to "Export all selected", {:action => "export_deviation_all", :projects_id => projects_id, :filter => "filter_test"} %></td>
+</tr></table>

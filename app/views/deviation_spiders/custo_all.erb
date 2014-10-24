@@ -56,91 +56,107 @@
       @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
     end
   end
+  @xml.Style 'ss:ID' => 'borderright', 'ss:Name' => 'BorderRight' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
   @xml.Style 'ss:ID' => 'bordertop', 'ss:Name' => 'BorderTop' do
     @xml.Font 'ss:FontName' => 'Verdana'
     @xml.Borders do
       @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
     end
   end
+  @xml.Style 'ss:ID' => 'borderbottom', 'ss:Name' => 'BorderBottom' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'bordertopbottom', 'ss:Name' => 'BorderTopBottom' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'bordertopbottomright', 'ss:Name' => 'BorderTopBottomRight' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"0", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'borderfull', 'ss:Name' => 'BorderFull' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
 end
   
-  # DEVIATION
+  # Custo_all
   @xml.Worksheet 'ss:Name' => 'Customization export' do
     @xml.Table do
 
       # Columns width
-      for i in 0..2 do
-        @xml.Column nil, {'ss:Width' => 150}
-      end
-
-      # Header 1
-      @xml.Row 'ss:StyleID' => 'Default' do
-        @xml.Cell do
-          @xml.Data "KPIs project customization M3", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+      for i in 0..((@projects.count*2)+6) do
+        if i == 0
+          @xml.Column nil, {'ss:Width' => 200}
+        else
+          if (((i%2) != 0) and (i<(@projects.count*2)+1))
+            @xml.Column nil, {'ss:Width' => 50}
+          else
+            @xml.Column nil, {'ss:Width' => 150}
+          end
         end
       end
 
-      # Header 2
-      @xml.Row 'ss:StyleID' => 'Default' do
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-      end
-
-      # Header 3
+      # Row 1
       @xml.Row do
-        @xml.Cell 'ss:StyleID' => 's75' do
-          @xml.Data "Deliverables", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell 'ss:StyleID' => 's75' do
-          @xml.Data "Deliverables status", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell 'ss:StyleID' => 's75' do
-          @xml.Data "Explanations", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-      end
 
-      # Rows
-      for deliverable in @exportCustomizations
-        @xml.Row do
-          @xml.Cell 'ss:StyleID' => 'borderleft' do
-            @xml.Data deliverable.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        i = 0
+        @projects.each do |project|
+          if i==0
+            @xml.Cell 'ss:StyleID' => 'borderfull' do
+              @xml.Data "Project Name", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
-          @xml.Cell do
-            @xml.Data deliverable.status, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-          end
-          @xml.Cell do
-            @xml.Data deliverable.justification, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-          end
-          @xml.Cell 'ss:StyleID' => 'borderleft' do
+
+          @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
             @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
-        end #End row
-      end #End for
+          @xml.Cell 'ss:StyleID' => 'bordertopbottomright' do
+            @xml.Data project.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          i = i+1
+        end
 
-      # Last row
-      @xml.Row do
-        @xml.Cell 'ss:StyleID' => 'bordertop' do
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
+          @xml.Data "OVERALL", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
           @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 'bordertop' do
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
           @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 'bordertop' do
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
           @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertopbottomright' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+
       end
 
     end #End xml.table

@@ -223,7 +223,7 @@ class DeviationToolsController < ApplicationController
   end
 
   def update_question
-    question = DeviationQuestion.find(params[:question][:id])
+    question = DeviationQuestion.find(params[:id])
     question.update_attributes(params[:question])
 
     lifecycle_ids = params[:lifecycle_ids]
