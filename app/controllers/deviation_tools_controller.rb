@@ -223,10 +223,10 @@ class DeviationToolsController < ApplicationController
   end
 
   def update_question
-    question = DeviationQuestion.find(params[:id])
+    question = DeviationQuestion.find(params[:question][:id])
     question.update_attributes(params[:question])
 
-    lifecycle_ids = params[:lifecycle_ids]
+    #lifecycle_ids = params[:lifecycle_ids]
     if lifecycle_ids
       lifecycle_ids.each do |lifecycle_id|
         new_deviation_question_lifecycle = DeviationQuestionLifecycle.new
@@ -236,7 +236,7 @@ class DeviationToolsController < ApplicationController
       end
     end
 
-    milestone_name_ids = params[:milestone_name_ids]
+    #milestone_name_ids = params[:milestone_name_ids]
     if milestone_name_ids
       milestone_name_ids.each do |milestone_name_id|
         new_deviation_question_milestone_name = DeviationQuestionMilestoneName.new
