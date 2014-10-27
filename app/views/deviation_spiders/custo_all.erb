@@ -120,7 +120,6 @@ end
 
       # Row 1
       @xml.Row do
-
         i = 0
         @projects.each do |project|
           if i==0
@@ -156,7 +155,6 @@ end
         @xml.Cell 'ss:StyleID' => 'bordertopbottomright' do
           @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-
       end
 
     end #End xml.table

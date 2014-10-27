@@ -16,12 +16,16 @@ class DeviationSpider < ActiveRecord::Base
 	def init_spider_data
 		spider_parameters = self.get_parameters
 
-		spider_parameters.deliverables.each do |deliverable|
-			add_deliverable(deliverable, spider_parameters.activities)
+		if spider_parameters and spider_parameters.deliverables.count > 0
+			spider_parameters.deliverables.each do |deliverable|
+				add_deliverable(deliverable, spider_parameters.activities)
+			end
 		end
-
-		get_deliverables_added_by_hand_in_previous_milestones.each do |deliverable|
-			add_deliverable(deliverable, spider_parameters.activities)
+		deliverables_added_by_hand = self.get_deliverables_added_by_hand_in_previous_milestones
+		if deliverables_added_by_hand and deliverables_added_by_hand.count > 0
+			deliverables_added_by_hand.each do |deliverable|
+				add_deliverable(deliverable, spider_parameters.activities)
+			end
 		end
 	end
 
@@ -35,31 +39,34 @@ class DeviationSpider < ActiveRecord::Base
 		end		
 		new_spider_deliverable.save
 
-		activities.each do |activity|
-			questions = DeviationQuestion.find(:all, 
-			    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
-			    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
-			                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"],
-			            :group=>"deviation_questions.id")
-
-			questions.each do |question|
-				new_deviation_spider_values = DeviationSpiderValue.new
-				new_deviation_spider_values.deviation_question_id = question.id
-				new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
-				if new_spider_deliverable.not_done
-					new_deviation_spider_values.answer = false
-				else
-					if init_answers
-						# TODO TODO TODO TODO
-						# TODO : Init anwsers with previous spider deliverable.
-						# Not sure if we need to do it. Wait for the requirements
-					else
-						new_deviation_spider_values.answer = nil
+		if activities and activities.count > 0
+			activities.each do |activity|
+				questions = DeviationQuestion.find(:all, 
+				    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
+				    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
+				                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
+				            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"],
+				            :group=>"deviation_questions.id")
+				if questions and questions.count > 0
+					questions.each do |question|
+						new_deviation_spider_values = DeviationSpiderValue.new
+						new_deviation_spider_values.deviation_question_id = question.id
+						new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
+						if new_spider_deliverable.not_done
+							new_deviation_spider_values.answer = false
+						else
+							if init_answers
+								# TODO TODO TODO TODO
+								# TODO : Init anwsers with previous spider deliverable.
+								# Not sure if we need to do it. Wait for the requirements
+							else
+								new_deviation_spider_values.answer = nil
+							end
+						end
+						new_deviation_spider_values.answer_reference = question.answer_reference
+						new_deviation_spider_values.save
 					end
 				end
-				new_deviation_spider_values.answer_reference = question.answer_reference
-				new_deviation_spider_values.save
 			end
 		end
 	end
@@ -75,16 +82,14 @@ class DeviationSpider < ActiveRecord::Base
 		deviation_spider_reference = self.milestone.project.get_current_deviation_spider_reference
 		if deviation_spider_reference
 			deviation_spider_reference.deviation_spider_settings.each do |setting|
-				activity_parameter = DeviationActivity.find(:first, :conditions => ["name LIKE ?","%#{setting.activity_name}%"])
+				activity_parameter = DeviationActivity.find(:first, :conditions => ["name LIKE ?","%#{setting.activity_name}%"])	
 				if !activities.include? activity_parameter
 					activities << activity_parameter
 				end 		
 
-				deliverable_parameter = DeviationDeliverable.find(:first, 
-				                                                  :conditions => ["name LIKE ?","%#{setting.deliverable_name}%"])
-
+				deliverable_parameter = DeviationDeliverable.find(:first, :conditions => ["name LIKE ?","%#{setting.deliverable_name}%"])
 				if !deliverables.include? deliverable_parameter
-					activities << deliverable_parameter
+					deliverables << deliverable_parameter
 				end 
 			end
 		else
@@ -144,10 +149,10 @@ class DeviationSpider < ActiveRecord::Base
 				end
 			end
 		end
-
 	end
 
 	# Return a list of deliverables are not be completed on the previous milestone.
+	# This requirement is not needed anymore.
 	def get_deliverables_not_completed
 		deliverables_availables = Array.new
 
