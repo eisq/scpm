@@ -316,11 +316,11 @@ class DeviationSpidersController < ApplicationController
 
 		@deviation_project = nil
 		if @milestone
-			@deviation_spider 				= DeviationSpider.new
-			@deviation_spider.milestone_id 	= milestone_id
+			@deviation_spider = DeviationSpider.new
+			@deviation_spider.milestone_id = milestone_id
 			@deviation_spider.save
 			@deviation_spider.init_spider_data
-			redirect_to :action=>:create_spider_select_deliverables, :deviation_spider_id=>@deviation_spider.id
+			redirect_to :action =>:index, :milestone_id => milestone_id
 		else
 			redirect_to :controller=>:projects, :action=>:index
 		end
@@ -474,6 +474,7 @@ class DeviationSpidersController < ApplicationController
 		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", spider.id, meta_activity_id], 
 		:order => "deviation_activities.name , deviation_deliverables.name, deviation_questions.question_text")
 
+		#Search in the list of all deliverables for a milestone, if there is one which is not present in the current spider.
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
 		@deliverables_to_add = DeviationDeliverable.find(:all, 
 		                      :joins=>["JOIN deviation_questions ON deviation_questions.deviation_deliverable_id = deviation_deliverables.id", 
@@ -481,6 +482,7 @@ class DeviationSpidersController < ApplicationController
 		                      	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 		                      	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"], 
 		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ? and deviation_deliverables.is_active = 1", deliverable_ids, spider.milestone.project.lifecycle_object.id, "%#{spider.milestone.name}%"]).map { |d| [d.name, d.id]}
+		@deliverables_to_add.uniq
 	end
 
 	def check_meta_activities(spider_id, meta_activities)

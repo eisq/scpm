@@ -74,7 +74,7 @@ function set_value_buttons(value_id, answer)
 
 // Open
 $( document ).ready(function() {
-	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0  %>
+	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0 and @questions.count > 0 %>
 		show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Deliverable chart at <%= @last_spider.milestone.name %>");
 		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Activity chart at <%= @last_spider.milestone.name %>");
 	<% end %>
@@ -106,15 +106,6 @@ $( document ).ready(function() {
 <% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
 	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 	<br /><br/><br/>
-
-	<% if @deliverables_to_add.count > 0 %>
-		<% form_tag(:action=>'add_spider_deliverable') do %>
-		  Deliverables :
-		  <%= hidden_field_tag('deviation_spider_id', @last_spider.id) %>
-		  <%= select_tag ("deviation_deliverable_id", options_for_select(@deliverables_to_add))  %>
-		  <%= submit_tag('Add to spider') %>
-		<% end %>
-	<% end %>
 
 	<% table_activity = nil %>
 	<% table_deliverable = nil %>
@@ -175,12 +166,18 @@ $( document ).ready(function() {
 		</tr>
 	<% end %>
 	</table>
-
-	<br/>
-	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-	<br/><br/><br/>
+	<br/><br/><br/><br/>
 
 	<h2>Actions</h2>
+	<% if @deliverables_to_add.count > 0 %>
+		<% form_tag(:action=>'add_spider_deliverable') do %>
+		  Deliverables not evaluated:
+		  <%= hidden_field_tag('deviation_spider_id', @last_spider.id) %>
+		  <%= select_tag ("deviation_deliverable_id", options_for_select(@deliverables_to_add))  %>
+		  <%= submit_tag('Add to spider') %>
+		<% end %>
+	<% end %>
+	<br/>
 	<%= form_tag :action=>'update_file_link' %>
 		Delivery file link: <%= text_field_tag('file_link', @last_spider.file_link, {:size=>30}) %>
 	    <%= hidden_field_tag('deviation_id', @last_spider.id) %>
