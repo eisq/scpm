@@ -154,7 +154,8 @@ class DeviationToolsController < ApplicationController
       end
     end
 
-    @deliverables = DeviationDeliverable.find(:all, :joins => ["JOIN deviation_activity_deliverables ON deviation_activity_deliverables.deviation_deliverable_id = deviation_deliverables.id"], :conditions => ["is_active = 1 and deviation_activity_deliverables.deviation_activity_id = ?", @activity_index_select]).map {|d| [d.name, d.id]}
+    deliverables = DeviationDeliverable.find(:all, :joins => ["JOIN deviation_activity_deliverables ON deviation_activity_deliverables.deviation_deliverable_id = deviation_deliverables.id"], :conditions => ["is_active = 1 and deviation_activity_deliverables.deviation_activity_id = ?", @activity_index_select]).map {|d| [d.name, d.id]}
+    @deliverables = deliverables & deliverables
     if params[:deliverable_id] != nil
       @deliverable_index_select = params[:deliverable_id]
     else

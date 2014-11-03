@@ -82,15 +82,18 @@ class DeviationSpider < ActiveRecord::Base
 		deviation_spider_reference = self.milestone.project.get_current_deviation_spider_reference
 		if deviation_spider_reference
 			deviation_spider_reference.deviation_spider_settings.each do |setting|
-				activity_parameter = DeviationActivity.find(:first, :conditions => ["name LIKE ?","%#{setting.activity_name}%"])	
-				if !activities.include? activity_parameter
-					activities << activity_parameter
-				end 		
 
+				activity_parameter = DeviationActivity.find(:first, :conditions => ["name LIKE ?","%#{setting.activity_name}%"])
 				deliverable_parameter = DeviationDeliverable.find(:first, :conditions => ["name LIKE ?","%#{setting.deliverable_name}%"])
-				if !deliverables.include? deliverable_parameter
-					deliverables << deliverable_parameter
-				end 
+				if activity_parameter and deliverable_parameter
+					if !activities.include? activity_parameter
+						activities << activity_parameter
+					end 		
+
+					if !deliverables.include? deliverable_parameter
+						deliverables << deliverable_parameter
+					end
+				end
 			end
 		else
 			deliverables = DeviationDeliverable.find(:all,

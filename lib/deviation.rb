@@ -62,7 +62,7 @@ module Deviation
         activity = activity_temp
       end
       #We are in a row deliverable
-      if (into_deliverables==true and sheet_row[CELL_0] and sheet_row[CELL_1])
+      if (into_deliverables==true and sheet_row[CELL_1])
         if sheet_row[CELL_0] != "Objective"
           row_hash = Hash.new
           row_hash[CELL_ACTIVITY_LABEL]               = activity

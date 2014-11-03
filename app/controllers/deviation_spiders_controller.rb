@@ -476,20 +476,13 @@ class DeviationSpidersController < ApplicationController
 
 		#Search in the list of all deliverables for a milestone, if there is one which is not present in the current spider.
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
-		@deliverables_to_add = DeviationDeliverable.find(:all, 
+		deliverables_to_add = DeviationDeliverable.find(:all, 
 		                      :joins=>["JOIN deviation_questions ON deviation_questions.deviation_deliverable_id = deviation_deliverables.id", 
 		                      	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 		                      	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 		                      	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"], 
 		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ? and deviation_deliverables.is_active = 1", deliverable_ids, spider.milestone.project.lifecycle_object.id, "%#{spider.milestone.name}%"]).map { |d| [d.name, d.id]}
-		@deliverables_to_add.each do |devias|
-			@deliverables_to_add.each do |devia|
-				if devias.id == devia.id
-					@deliverables_to_add.delete(devia)
-				end
-				@deliverables_to_add << devia
-			end
-		end
+		@deliverables_to_add = deliverables_to_add & deliverables_to_add
 	end
 
 	def check_meta_activities(spider_id, meta_activities)
