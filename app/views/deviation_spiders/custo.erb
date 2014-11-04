@@ -69,7 +69,7 @@ end
     @xml.Table do
 
       # Columns width
-      for i in 0..2 do
+      for i in 0..3 do
         @xml.Column nil, {'ss:Width' => 150}
       end
 
@@ -78,29 +78,16 @@ end
         @xml.Cell do
           @xml.Data "KPIs project customization M3", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
       end
 
       # Header 2
-      @xml.Row 'ss:StyleID' => 'Default' do
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell do
-          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-      end
+      @xml.Row 'ss:StyleID' => 'Default'
 
       # Header 3
       @xml.Row do
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Activities", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
         @xml.Cell 'ss:StyleID' => 's75' do
           @xml.Data "Deliverables", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
@@ -116,6 +103,9 @@ end
       for deliverable in @exportCustomizations
         @xml.Row do
           @xml.Cell 'ss:StyleID' => 'borderleft' do
+            @xml.Data deliverable.activity, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
             @xml.Data deliverable.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
@@ -132,6 +122,9 @@ end
 
       # Last row
       @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
         @xml.Cell 'ss:StyleID' => 'bordertop' do
           @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end

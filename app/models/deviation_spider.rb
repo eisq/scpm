@@ -49,9 +49,8 @@ class DeviationSpider < ActiveRecord::Base
 				            :group=>"deviation_questions.id")
 				if questions and questions.count > 0
 					questions.each do |question|
-
 						deviation_spider_setting = DeviationSpiderSetting.find(:first, :conditions=>["deliverable_name LIKE ? and activity_name LIKE ?", "%#{deliverable.name}%", "%#{activity.name}%"])
-						if deviation_spider_setting and deviation_spider_setting.answer_1 != "No"
+						if (deviation_spider_setting and (deviation_spider_setting.answer_1 != "No" or (deviation_spider_setting.answer_2 == "Yes" and deviation_spider_setting.answer_3 == "Another template is used")))
 							new_deviation_spider_values = DeviationSpiderValue.new
 							new_deviation_spider_values.deviation_question_id = question.id
 							new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id

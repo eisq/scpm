@@ -3,7 +3,7 @@ class DeviationSpidersController < ApplicationController
 	layout "spider"
 
 	Conso_deliverable 	= Struct.new(:deliverable, :consolidations)
-	ExportCustomization = Struct.new(:name, :status, :justification)
+	ExportCustomization = Struct.new(:activity, :name, :status, :justification)
 	# 
 	# INTERFACES
 	# 
@@ -72,13 +72,14 @@ class DeviationSpidersController < ApplicationController
 		project = Project.find(:first, :conditions => ["id = ?", project_id])
 		if project
 			begin
-				@xml = Builder::XmlMarkup.new(:indent => 1) #Builder::XmlMarkup.new(:target => $stdout, :indent => 1)
+				@xml = Builder::XmlMarkup.new(:indent => 1)
 
 				deviation_spider_reference_last = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number")
 				@exportCustomizations = Array.new
 				# DeliverablesSettings: for each deliverable setting
 				deviationSpiderSettings = DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ?", deviation_spider_reference_last]).each do |devia_settings|
 					exportCustomization = ExportCustomization.new
+					exportCustomization.activity = devia_settings.activity_name
 					exportCustomization.name = devia_settings.deliverable_name
 					exportCustomization.status = get_customization_deliverable_status(devia_settings.answer_1, devia_settings.answer_2, devia_settings.answer_3)
 					exportCustomization.justification = devia_settings.justification
@@ -134,7 +135,7 @@ class DeviationSpidersController < ApplicationController
 				status = "Project doesn't plan to produce deliverable without justification"
 			when "Yes"
 				case answer_3
-				when "Deliverable N/A"
+				when "Deliverable N.A"
 					status = "Deliverable not applicable to the project"
 				when "Another template is used"
 					status = "Project plans to use a different template from the referential one to produce the deliverable"
