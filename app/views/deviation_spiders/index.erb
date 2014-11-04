@@ -175,6 +175,7 @@ $( document ).ready(function() {
 	<%= form_tag :action=>'update_file_link' %>
 		Delivery file link: <%= text_field_tag('file_link', @last_spider.file_link, {:size=>30}) %>
 	    <%= hidden_field_tag('deviation_id', @last_spider.id) %>
+	    <%= hidden_field_tag('redirect', 'index') %>
 	    <%= submit_tag "Save" %>
 	</form>
 
@@ -201,7 +202,7 @@ $( document ).ready(function() {
 		<td>Result of GPP adherence: </td>
 		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
 	</tr>
-</table>
+	</table>
 
 	<br/><br/>
 	<h2>Charts</h2>

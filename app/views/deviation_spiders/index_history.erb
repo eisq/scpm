@@ -30,6 +30,16 @@ $( document ).ready(function() {
 
 <div><%= link_to "Go to spider", {:action => "index", :milestone_id => @last_spider.milestone_id } %></div>
 
+<%
+	projectName = ""
+	if(@project.project_id != nil)
+		projectName += @project.project.name
+	end
+	projectName += " > "+@project.name
+%>
+
+<h3>Project : <%= projectName %> - Milestone : <%= @milestone.name %></h3>
+
 <h2>Current spider</h2>
 
 <div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
@@ -96,17 +106,20 @@ $( document ).ready(function() {
 </table>
 
 
+<br/><br/><br/><br/>
+
+<h2>Actions</h2>
+<%= form_tag :action=>'update_file_link' %>
+	Delivery file link: <%= text_field_tag('file_link', @last_spider.file_link, {:size=>30}) %>
+    <%= hidden_field_tag('deviation_id', @last_spider.id) %>
+    <%= hidden_field_tag('redirect', 'index_history') %>
+    <%= submit_tag "Save" %>
+</form>
+
+<p><%= button_to "Delete consolidated spider", {:action => "delete_consolidated_spider", :deviation_spider_id => @last_spider.id} %></p>
+
 <br/>
-	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
-	<br/><br/>
-
-	<h2>Actions</h2>
-	Delivery file link: <%= @last_spider.file_link %>
-
-	<p><%= button_to "Delete consolidated spider", {:action => "delete_consolidated_spider", :deviation_spider_id => @last_spider.id} %></p>
-
-	<br/>
-	<h2>Charts actions </h2>
+<h2>Export</h2>
 	<table>
 	<tr>
 		<td>Deliverables chart: </td>
@@ -114,7 +127,19 @@ $( document ).ready(function() {
 	</tr>
 		<td>Activities chart: </td>
 		<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
-	</tr></table>
+	</tr>
+	<tr>
+		<td>Customization: </td>
+		<td><%= button_to "Export", {:action => "export_customization", :project_id => @milestone.project.id} %></td>
+	</tr>
+	<tr>
+		<td>Result of GPP adherence: </td>
+		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
+	</tr>
+	</table>
+
+<br/><br/>
+<h2>Charts</h2>
 
 <div class="deviation_spider_chart" id="deviation_spider_chart_deliverable"></div>
 <div class="deviation_spider_chart" id="deviation_spider_chart_activity"></div>

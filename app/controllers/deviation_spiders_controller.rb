@@ -24,14 +24,12 @@ class DeviationSpidersController < ApplicationController
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
 
 	    	# If spider currently edited
-	    	if (@last_spider) and (@last_spider.deviation_spider_consolidations.count == 0)
-		    	generate_current_table(@last_spider, @meta_activity_id)
-		    	check_meta_activities(@last_spider.id, @meta_activities)
-	    	end
-
-	    	# If spider consolidated
-	    	if (@last_spider) and (@last_spider.deviation_spider_consolidations.count > 0)
-	    		generate_spider_history(@milestone)
+	    	if (@last_spider)
+	    		if @last_spider.deviation_spider_consolidations.count == 0
+			    	generate_current_table(@last_spider, @meta_activity_id)
+			    	check_meta_activities(@last_spider.id, @meta_activities)
+		    	end
+		    	generate_spider_history(@milestone)
 	    	end
 	    else
 	    	redirect_to :controller=>:projects, :action=>:show, :id=>@project.id
@@ -45,14 +43,14 @@ class DeviationSpidersController < ApplicationController
 	    	@meta_activity = DeviationMetaActivity.find(:first)
 	    	@meta_activity_id = @meta_activity.id
 	    else
-	    	@meta_activity = DeviationMetaActivity.find(:first, :conditions=>["id = ?", meta_activity_id])
+	    	@meta_activity = DeviationMetaActivity.find(:first, :conditions=>["id = ?", @meta_activity_id])
 	    end
 	    @meta_activities = DeviationMetaActivity.all.map { |ma| [ma.name, ma.id] }
 
 	    if deviation_spider_id
 	   		@last_spider = DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
-		    milestone = Milestone.find(:first, :conditions=>["id = ?", @last_spider.milestone_id])
-		    @project = Project.find(:first, :conditions=>["id = ?", milestone.project_id])
+		    @milestone = Milestone.find(:first, :conditions=>["id = ?", @last_spider.milestone_id])
+		    @project = Project.find(:first, :conditions=>["id = ?", @milestone.project_id])
 			generate_current_table(@last_spider,@meta_activity_id)
 	    else
 	    	redirect_to :controller=>:projects, :action=>:show, :id=>@project.id
@@ -388,13 +386,19 @@ class DeviationSpidersController < ApplicationController
 		deviation_spider_id = file_link = nil
 		deviation_spider_id = params[:deviation_id]
 		file_link 			= params[:file_link]
+		redirect 			= params[:redirect]
 		deviation_spider 	= DeviationSpider.find(:last, :conditions=>["id = ?", deviation_spider_id], :order=>"id")
 
 		if file_link != nil and deviation_spider != nil and file_link != ""
 			deviation_spider.file_link = file_link
 			deviation_spider.save
 		end
-		redirect_to :action=>:index, :milestone_id=>deviation_spider.milestone_id
+
+		if redirect and redirect == "index_history"
+			redirect_to :action=>:index_history, :deviation_spider_id=>deviation_spider.id
+		else
+			redirect_to :action=>:index, :milestone_id=>deviation_spider.milestone_id
+		end
 	end
 
 	def delete_spider_deliverable
