@@ -49,22 +49,20 @@ class DeviationSpider < ActiveRecord::Base
 				            :group=>"deviation_questions.id")
 				if questions and questions.count > 0
 					questions.each do |question|
-						new_deviation_spider_values = DeviationSpiderValue.new
-						new_deviation_spider_values.deviation_question_id = question.id
-						new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
-						if new_spider_deliverable.not_done
-							new_deviation_spider_values.answer = false
-						else
-							if init_answers
-								# TODO TODO TODO TODO
-								# TODO : Init anwsers with previous spider deliverable.
-								# Not sure if we need to do it. Wait for the requirements
+
+						deviation_spider_setting = DeviationSpiderSetting.find(:first, :conditions=>["deliverable_name LIKE ? and activity_name LIKE ?", "%#{deliverable.name}%", "%#{activity.name}%"])
+						if deviation_spider_setting and deviation_spider_setting.answer_1 != "No"
+							new_deviation_spider_values = DeviationSpiderValue.new
+							new_deviation_spider_values.deviation_question_id = question.id
+							new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
+							if new_spider_deliverable.not_done
+								new_deviation_spider_values.answer = false
 							else
 								new_deviation_spider_values.answer = nil
 							end
+							new_deviation_spider_values.answer_reference = question.answer_reference
+							new_deviation_spider_values.save
 						end
-						new_deviation_spider_values.answer_reference = question.answer_reference
-						new_deviation_spider_values.save
 					end
 				end
 			end
