@@ -39,6 +39,8 @@ class DeviationSpider < ActiveRecord::Base
 		end		
 		new_spider_deliverable.save
 
+		project_id = self.milestone.project_id
+
 		if activities and activities.count > 0
 			activities.each do |activity|
 				questions = DeviationQuestion.find(:all, 
@@ -49,18 +51,19 @@ class DeviationSpider < ActiveRecord::Base
 				            :group=>"deviation_questions.id")
 				if questions and questions.count > 0
 					questions.each do |question|
-						deviation_spider_setting = DeviationSpiderSetting.find(:first, :conditions=>["deliverable_name LIKE ? and activity_name LIKE ?", "%#{deliverable.name}%", "%#{activity.name}%"])
-						if (deviation_spider_setting and (deviation_spider_setting.answer_1 != "No" or (deviation_spider_setting.answer_1 == "No" and deviation_spider_setting.answer_2 == "Yes" and deviation_spider_setting.answer_3 == "Another template is used")))
-							new_deviation_spider_values = DeviationSpiderValue.new
-							new_deviation_spider_values.deviation_question_id = question.id
-							new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
-							if new_spider_deliverable.not_done
-								new_deviation_spider_values.answer = false
-							else
-								new_deviation_spider_values.answer = nil
+						DeviationSpiderSetting.find(:all, :conditions=>["deliverable_name LIKE ? and activity_name LIKE ?", "%#{deliverable.name}%", "%#{activity.name}%"]).each do |setting|
+							if (setting and setting.deviation_spider_reference.project_id == project_id and (setting.answer_1 != "No" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
+								new_deviation_spider_values = DeviationSpiderValue.new
+								new_deviation_spider_values.deviation_question_id = question.id
+								new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
+								if new_spider_deliverable.not_done
+									new_deviation_spider_values.answer = false
+								else
+									new_deviation_spider_values.answer = nil
+								end
+								new_deviation_spider_values.answer_reference = question.answer_reference
+								new_deviation_spider_values.save
 							end
-							new_deviation_spider_values.answer_reference = question.answer_reference
-							new_deviation_spider_values.save
 						end
 					end
 				end
