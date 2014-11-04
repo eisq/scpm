@@ -40,6 +40,7 @@ class DeviationSpider < ActiveRecord::Base
 		new_spider_deliverable.save
 
 		project_id = self.milestone.project_id
+		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
 
 		if activities and activities.count > 0
 			activities.each do |activity|
@@ -51,8 +52,8 @@ class DeviationSpider < ActiveRecord::Base
 				            :group=>"deviation_questions.id")
 				if questions and questions.count > 0
 					questions.each do |question|
-						DeviationSpiderSetting.find(:all, :conditions=>["deliverable_name LIKE ? and activity_name LIKE ?", "%#{deliverable.name}%", "%#{activity.name}%"], :order => "deviation_spider_reference_id desc").each do |setting|
-							if (setting and setting.deviation_spider_reference.project_id == project_id and (setting.answer_1 != "No" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
+						DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+							if (setting and (setting.answer_1 != "No" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
 								new_deviation_spider_values = DeviationSpiderValue.new
 								new_deviation_spider_values.deviation_question_id = question.id
 								new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
@@ -63,7 +64,6 @@ class DeviationSpider < ActiveRecord::Base
 								end
 								new_deviation_spider_values.answer_reference = question.answer_reference
 								new_deviation_spider_values.save
-								break
 							end
 						end
 					end
