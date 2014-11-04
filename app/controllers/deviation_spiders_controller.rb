@@ -4,6 +4,8 @@ class DeviationSpidersController < ApplicationController
 
 	Conso_deliverable 	= Struct.new(:deliverable, :consolidations)
 	ExportCustomization = Struct.new(:activity, :name, :status, :justification)
+	SPIDER_CONSO_AQ = 1
+	SPIDER_CONSO_COUNTER = 2
 	# 
 	# INTERFACES
 	# 
@@ -158,7 +160,6 @@ class DeviationSpidersController < ApplicationController
 	    end
 
 	    if deviation_spider_id
-
 			# General data
 	    	@deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
 	    	@activities 		= @deviation_spider.get_parameters.activities
@@ -170,22 +171,8 @@ class DeviationSpidersController < ApplicationController
 	    	end
 	    	@score_list = [0,1,2,3]
 
-	    	# Create consolidations if this is not already done
-	    	if @deviation_spider.deviation_spider_consolidations.count == 0
-		    	@activities.each do |activity|
-		    		@deliverables.each do |deliverable|
-		    			new_deviation_spider_consolidation = DeviationSpiderConsolidation.new
-		    			new_deviation_spider_consolidation.deviation_spider_id = deviation_spider_id
-		    			new_deviation_spider_consolidation.deviation_activity_id = activity.id
-		    			new_deviation_spider_consolidation.deviation_deliverable_id = deliverable.id
-		    			new_deviation_spider_consolidation.save
-		    		end
-		    	end
-		    end
-
 	    	# Parameters used to create the <table>
 			@deviation_spider_consolidations_array = Array.new
-
 			# Generate the data to show
 			@deliverables.each do |deliverable|
 				conso_deliverable = Conso_deliverable.new
@@ -201,6 +188,61 @@ class DeviationSpidersController < ApplicationController
 			end
 	    else
 	    	redirect_to :controller=>:projects, :action=>:index
+	    end
+	end
+
+	def consolidate_validation
+		deviation_spider_id = params[:deviation_spider_id]
+		@deviation_spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
+		@project = @deviation_spider.milestone.project
+	end
+
+	def consolidate
+		deviation_spider_id = params[:deviation_spider_id]
+		counterChoice = params[:counterChoice]
+
+		if deviation_spider_id
+			# General data
+	    	deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+	    	activities 			= deviation_spider.get_parameters.activities
+	    	deliverables 		= Array.new
+	    	deviation_spider.deviation_spider_deliverables.all(
+	    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"], 
+	    	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
+	    			deliverables << spider_deliverable.deviation_deliverable
+	    	end
+
+	    	# Create consolidations if this is not already done
+	    	if deviation_spider.deviation_spider_consolidations.count == 0
+		    	activities.each do |activity|
+		    		deliverables.each do |deliverable|
+		    			new_deviation_spider_consolidation = DeviationSpiderConsolidation.new
+		    			new_deviation_spider_consolidation.deviation_spider_id = deviation_spider_id
+		    			new_deviation_spider_consolidation.deviation_activity_id = activity.id
+		    			new_deviation_spider_consolidation.deviation_deliverable_id = deliverable.id
+		    			new_deviation_spider_consolidation.save
+		    		end
+		    	end
+		    end
+
+		     # Increment the spider counter of the project
+		    project = deviation_spider.milestone.project
+		    
+		    if((project) && (counterChoice.to_i == SPIDER_CONSO_COUNTER.to_i))
+		     	deviation_spider.impact_count = true;
+			    deviation_spider.save
+
+			    # Insert in history_counter
+			    streamRef = Stream.find_with_workstream(project.workstream)
+			    streamRef.set_spider_history_counter(current_user,deviation_spider)
+
+			    # Increment counter
+			    project.spider_count = project.spider_count + 1
+			    project.save
+		    end
+		    redirect_to :controller=>:projects, :action=>:show, :id=>project.id
+	    else
+	    	redirect_to :action=>:consolidate_validation, :deviation_spider_id => deviation_spider_id, :error => 1
 	    end
 	end
 

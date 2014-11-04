@@ -1,0 +1,59 @@
+<!-- List -->
+	<h3>You are reporting on this project: </h3>
+
+	<!-- CHOICE 1 -->
+	<script type="text/javascript">
+	    $(document).ready(function (){
+			$("#form_choice_1").click(function() {
+				$(this).submit();
+			});
+			$("#form_choice_2").click(function() {
+				$(this).submit();
+			});
+		});
+	</script>
+
+	<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @project.id} %></div>
+
+	<% if params[:error] %>
+		<br/><br/>
+		<strong><span style='color:red;'> Error during the consolidation. </span></strong>
+		<br/><br/>
+	<% end %>
+
+	<% form_tag({:action => "consolidate"}, :method => "post", :id => 'form_choice_1') do -%>
+		<%= hidden_field_tag('list_choice', 1) %>
+		<%= hidden_field_tag('deviation_spider_id', @deviation_spider.id) %>
+
+		<div class="spider_list_choice" id="choice1" >
+			<div class="spider_list_choice_text" >
+					<%= my_simple_format("From a request belonging to one of these WP:
+						WP1.1: Quality Control
+						WP1.2: Quality Assurance
+						WP1.4: Agility Assurance
+						WP1.5: SQR Activities
+						WP1.6.2: Project Setting-up") %>
+			</div>
+			<img class="spider_list_choice_img" src="/images/right.png">
+		</div>
+	<% end %>
+
+	<!-- CHOICE 2 -->
+	<% form_tag({:action => "consolidate"}, :method => "post", :id => 'form_choice_2') do -%>
+		<%= hidden_field_tag('list_choice', 2) %>
+		<%= hidden_field_tag('deviation_spider_id', @spider_id) %>
+
+		<div  class="spider_list_choice" id="choice2">
+		<% choice_2_text = '<div class="spider_list_choice_text" >' %>
+		<% if @project.get_last_spider_increment %>
+			<% choice_2_text += my_simple_format("During a \"Standard Support\" activity and you <strong>want to</strong> increment the Spider counter.
+				Last Spider counter update for this project: " + @project.get_last_spider_increment.to_s + " (<span class=\"descr\">" + time_ago_in_words(@project.get_last_spider_increment) + "</span>)") %>
+		<% else %>
+			<% choice_2_text +=  my_simple_format('During a "Standard Support" activity and you <strong>want to</strong> increment the Spider counter.') %> 
+		<% end %>
+		<% choice_2_text +='</div><img class="spider_list_choice_img" src="/images/right.png">' %>
+		<%= choice_2_text %>
+
+		</div>
+	<% end %>
+	<br />

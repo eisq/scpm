@@ -179,7 +179,7 @@ $( document ).ready(function() {
 	    <%= submit_tag "Save" %>
 	</form>
 
-	<p><%= button_to "Consolidate", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></p>
+	<p><%= button_to "Consolidation process", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></p>
 
 	<p><%= button_to "Delete spider", {:action => "delete_current_spider", :deviation_spider_id => @last_spider.id} %></p>
 

@@ -71,7 +71,6 @@ $( document ).ready(function() {
 		<tr class="deviation_spider_tr_deliverable">
 			<td></td>
 			<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
-			<td></td>
 			<td colspan="2">
 				<% deliverable_not_done_class = "deliverable_not_done" %>
 				<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
@@ -100,7 +99,6 @@ $( document ).ready(function() {
 			<input disabled <%= yes_class %> id="button_yes_<%= q.id.to_s %>" type="button" value="Yes" onclick="set_question('<%= q.id.to_s %>', true);" />
 			<input disabled <%= no_class %>  id="button_no_<%= q.id.to_s %>"  type="button" value="No" onclick="set_question('<%= q.id.to_s %>', false);" />
 		</td>
-		<td><%= check_box_tag(:answer_reference, true, q.answer_reference, {:disabled => true}) %></td>
 	</tr>
 <% end %>
 </table>

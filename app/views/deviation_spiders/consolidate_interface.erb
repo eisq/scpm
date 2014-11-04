@@ -31,6 +31,9 @@ $( document ).ready(function() {
 });
 </SCRIPT>
 
+<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id} %></div>
+<br/>
+
 <table>
 <% i = 0 %>
 <% table_deliverable = nil %>
@@ -64,4 +67,4 @@ $( document ).ready(function() {
 
 </table>
 
-<div><%= button_to "Close", {:action => "index", :milestone_id => @deviation_spider.milestone_id } %></div>
+<div><%= button_to "Finalise consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id } %></div>
