@@ -209,10 +209,12 @@ class DeviationSpidersController < ApplicationController
 	def update_score
 		score = params[:score]
 		conso_id = params[:conso_id]
-		consolidation = @consolidations.find(:first, :conditions => ["id = ?", conso.conso_id])
+		consolidation = consolidations.find {|conso| conso.conso_id == conso_id}
 
-		if consolidation and score
-			@consolidations.consolidation.score = score
+		if consolidation
+			if score
+				@consolidations.consolidation.score = score
+			end
 		end
 
 		render(:nothing=>true)
@@ -221,10 +223,12 @@ class DeviationSpidersController < ApplicationController
 	def update_justification
 		justification = params[:justification]
 		conso_id = params[:conso_id]
-		consolidation = @consolidations.find(:first, :conditions => ["id = ?", conso.conso_id])
+		consolidation = @consolidations.find {|conso| conso.conso_id == conso_id}
 
-		if consolidation and justification
-			@consolidations.consolidation.justification = justification
+		if consolidation
+			if justification
+				@consolidations.consolidation.justification = justification
+			end
 		end
 
 		render(:nothing=>true)

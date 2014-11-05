@@ -4,7 +4,7 @@ function change_score(conso_id, value)
 	$.ajax({
 		type: "POST",
 		url: "/deviation_spiders/update_score",
- 		data: {conso_id: consolidation.conso_id, score: value}
+ 		data: {conso_id: conso_id, score: value}
 	})
 	.done(function( msg ) {
 	})
@@ -18,6 +18,7 @@ $( document ).ready(function() {
 	$(".conso_tf").focusout(function() {
 		$.ajax({
 			type: "POST",
+			url: "/deviation_spiders/update_justification",
 			url: "/deviation_spiders/update_justification",
 	 		data: {conso_id: $(this).attr('id'), justification: $(this).val()}
 		})
@@ -53,28 +54,32 @@ $( document ).ready(function() {
 	</tr>
 
 	<% @deliverables.each do |deliverable| %>
-	<% consolidation_temp = @consolidations.find {|conso_temp| conso_temp.deliverable == deliverable} %>
+	<% consolidation_temp = @consolidations.select {|conso_temp| conso_temp.deliverable == deliverable} %>
 		<tr>
 			<td>
 				<%= deliverable.name %>
 			</td>
 			<% activities.each do |activity| %>
 				<% if consolidation_temp %>
-					<% consolidation = consolidation_temp.find {activity} %>
+					<% consolidation = consolidation_temp.find {|conso| conso.activity == activity} %>
 					<% if consolidation %>
-						<td>
 						<% if @editable %>
+							<td>
 								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
 							</td>
 							<td>
 								<%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.conso_id}", :class => "conso_tf") %>
+							</td>
 						<% else %>
+							<td>
 								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
 							</td>
 							<td>
 								<%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.conso_id}", :class => "conso_tf", :disabled => true) %>
+							</td>
 						<% end %>
-						</td>
+					<% else %>
+						<td colspan=2></td>
 					<% end %>
 				<% end %>
 			<% end %>
