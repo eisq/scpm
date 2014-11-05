@@ -2,8 +2,8 @@ require 'spreadsheet'
 class DeviationSpidersController < ApplicationController
 	layout "spider"
 
-	Conso_deliverable 	= Struct.new(:deliverable, :consolidations)
 	ExportCustomization = Struct.new(:activity, :name, :status, :justification)
+	Consolidation = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification)
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
 	# 
@@ -69,8 +69,8 @@ class DeviationSpidersController < ApplicationController
 	# --------
 	def export_customization
 		project_id = params[:project_id]
-		project = Project.find(:first, :conditions => ["id = ?", project_id])
-		if project
+		@project = Project.find(:first, :conditions => ["id = ?", project_id])
+		if @project
 			begin
 				@xml = Builder::XmlMarkup.new(:indent => 1)
 
@@ -86,7 +86,7 @@ class DeviationSpidersController < ApplicationController
 					@exportCustomizations << exportCustomization
 				end
 
-				filename = project.name+"_GPP_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
+				filename = @project.name+"_GPP_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
 
 				headers['Content-Type']         = "application/vnd.ms-excel"
 		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
@@ -160,45 +160,86 @@ class DeviationSpidersController < ApplicationController
 	    end
 
 	    if deviation_spider_id
-			# General data
+	    	@score_list = [0,1,2,3]
 	    	@deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
-	    	@activities 		= @deviation_spider.get_parameters.activities
+	    	@all_meta_activities = DeviationMetaActivity.find(:all)
+	    	@all_activities 	= DeviationActivity.find(:all)
 	    	@deliverables 		= Array.new
 	    	@deviation_spider.deviation_spider_deliverables.all(
 	    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"], 
 	    	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
 	    			@deliverables << spider_deliverable.deviation_deliverable
 	    	end
-	    	@score_list = [0,1,2,3]
-
-	    	# Parameters used to create the <table>
-			@deviation_spider_consolidations_array = Array.new
-			# Generate the data to show
-			@deliverables.each do |deliverable|
-				conso_deliverable = Conso_deliverable.new
-				conso_deliverable.deliverable = deliverable
-				conso_deliverable.consolidations = Array.new
-
-				deviation_spider_consolidations = @deviation_spider.deviation_spider_consolidations.all(:conditions => ["deviation_deliverable_id = ?", deliverable.id], :order => "deviation_activity_id")
-				deviation_spider_consolidations.each do |consolidation|
-					conso_deliverable.consolidations << consolidation
-				end
-
-				@deviation_spider_consolidations_array << conso_deliverable
-			end
+	    	
+	    	i = 0
+	    	@consolidations = Array.new
+	    	@all_activities.each do |activity|
+	    		@deliverables.each do |deliverable|
+	    			if self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity)
+	    				i = i + 1
+	    				consolidation = Consolidation.new
+	    				consolidation.conso_id = i
+	    				consolidation.spider_id = @deviation_spider.id
+	    				consolidation.deliverable = deliverable
+	    				consolidation.activity = activity
+	    				consolidation.score = "" #here to initialize
+	    				consolidation.justification = "" #here to initialize
+	    				
+	    				@consolidations << consolidation
+	    			end
+	    		end
+	    	end
+	    	@consolidations = @consolidations & @consolidations
 	    else
 	    	redirect_to :controller=>:projects, :action=>:index
 	    end
 	end
 
+	def get_deliverable_activity_applicable(project_id, deliverable, activity)
+		applicable = false
+		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
+		DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+			if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
+				applicable = true
+			end
+		end
+		return applicable					
+	end
+
+	def update_score
+		score = params[:score]
+		conso_id = params[:conso_id]
+		consolidation = @consolidations.find(:first, :conditions => ["id = ?", conso.conso_id])
+
+		if consolidation and score
+			@consolidations.consolidation.score = score
+		end
+
+		render(:nothing=>true)
+	end
+
+	def update_justification
+		justification = params[:justification]
+		conso_id = params[:conso_id]
+		consolidation = @consolidations.find(:first, :conditions => ["id = ?", conso.conso_id])
+
+		if consolidation and justification
+			@consolidations.consolidation.justification = justification
+		end
+
+		render(:nothing=>true)
+	end
+
 	def consolidate_validation
 		deviation_spider_id = params[:deviation_spider_id]
+		@consolidations = params[:consolidations]
 		@deviation_spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 		@project = @deviation_spider.milestone.project
 	end
 
 	def consolidate
 		deviation_spider_id = params[:deviation_spider_id]
+		consolidations = params[:consolidations]
 		counterChoice = params[:counterChoice]
 
 		if deviation_spider_id
@@ -220,6 +261,11 @@ class DeviationSpidersController < ApplicationController
 		    			new_deviation_spider_consolidation.deviation_spider_id = deviation_spider_id
 		    			new_deviation_spider_consolidation.deviation_activity_id = activity.id
 		    			new_deviation_spider_consolidation.deviation_deliverable_id = deliverable.id
+
+		    			consolidation = consolidations.find(:first, :conditions => ["spider_id = ? and deliverables.id = ? and activities.id = ?", deviation_spider_id, activity.id, deliverable.id])
+		    			new_deviation_spider_consolidation.score = consolidation.score
+		    			new_deviation_spider_consolidation.justification = consolidation.justification
+
 		    			new_deviation_spider_consolidation.save
 		    		end
 		    	end
@@ -485,28 +531,6 @@ class DeviationSpidersController < ApplicationController
 		else
 			redirect_to :controller=>:projects, :action=>:index
 		end
-	end
-
-	def update_consolidation_score
-		deviation_spider_consolidation_id 		= params[:deviation_spider_consolidation_id]
-		deviation_spider_consolidation_score 	= params[:deviation_spider_consolidation_score]
-		if deviation_spider_consolidation_id and deviation_spider_consolidation_score
-			deviation_spider_consolidation = DeviationSpiderConsolidation.find(:first, :conditions => ["id = ?", deviation_spider_consolidation_id])
-			deviation_spider_consolidation.score = deviation_spider_consolidation_score
-			deviation_spider_consolidation.save
-		end
-		render(:nothing=>true)
-	end
-
-	def update_consolidation_text
-		deviation_spider_consolidation_id 		= params[:deviation_spider_consolidation_id]
-		deviation_spider_consolidation_text 	= params[:deviation_spider_consolidation_text]
-		if deviation_spider_consolidation_id and deviation_spider_consolidation_text
-			deviation_spider_consolidation = DeviationSpiderConsolidation.find(:first, :conditions => ["id = ?", deviation_spider_consolidation_id])
-			deviation_spider_consolidation.justification = deviation_spider_consolidation_text
-			deviation_spider_consolidation.save
-		end
-		render(:nothing=>true)
 	end
 
 	# **

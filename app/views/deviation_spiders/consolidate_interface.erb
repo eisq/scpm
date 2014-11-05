@@ -1,10 +1,10 @@
 <SCRIPT language="Javascript">
-function change_score(consolidation_id, value)
+function change_score(conso_id, value)
 {
 	$.ajax({
 		type: "POST",
-		url: "/deviation_spiders/update_consolidation_score",
- 		data: {deviation_spider_consolidation_id: consolidation_id, deviation_spider_consolidation_score: value}
+		url: "/deviation_spiders/update_score",
+ 		data: {conso_id: consolidation.conso_id, score: value}
 	})
 	.done(function( msg ) {
 	})
@@ -18,8 +18,8 @@ $( document ).ready(function() {
 	$(".conso_tf").focusout(function() {
 		$.ajax({
 			type: "POST",
-			url: "/deviation_spiders/update_consolidation_text",
-	 		data: {deviation_spider_consolidation_id: $(this).attr('id'), deviation_spider_consolidation_text: $(this).val()}
+			url: "/deviation_spiders/update_justification",
+	 		data: {conso_id: $(this).attr('id'), justification: $(this).val()}
 		})
 		.done(function( msg ) {
 		})
@@ -31,40 +31,57 @@ $( document ).ready(function() {
 });
 </SCRIPT>
 
-<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id} %></div>
+<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id, :consolidations => @consolidations} %></div>
 <br/>
 
-<table>
-<% i = 0 %>
-<% table_deliverable = nil %>
-<% @deviation_spider_consolidations_array.each do |deliverable_conso| %>
-	
-	<% if i == 0 %>
+<% form_tag({:action => 'consolidate_validation'}, :deviation_spider_id => @deviation_spider.id, :consolidations => @consolidations) do %>
+
+<% @all_meta_activities.each do |meta_activity| %>
+<% activities = Array.new %>
+	<h3><%= meta_activity.name %></h3>
+	<table border=1><tr>
+
+	<td></td>
+	<% @all_activities.each do |activity| %>
+		<% if activity.deviation_meta_activity == meta_activity %>
+		<% activities << activity %>
+			<td colspan=2>
+			<bold><%= activity.name %></bold>
+			</td>
+		<% end %>
+	<% end %>
+	</tr>
+
+	<% @deliverables.each do |deliverable| %>
+	<% consolidation_temp = @consolidations.find {|conso_temp| conso_temp.deliverable == deliverable} %>
 		<tr>
-			<td>Deliverables</td>
-			<% deliverable_conso.consolidations.each do |consolidation| %>
-				<td colspan="2"><%= consolidation.deviation_activity.name %></td>
+			<td>
+				<%= deliverable.name %>
+			</td>
+			<% activities.each do |activity| %>
+				<% if consolidation_temp %>
+					<% consolidation = consolidation_temp.find {activity} %>
+					<% if consolidation %>
+						<td>
+						<% if @editable %>
+								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
+							</td>
+							<td>
+								<%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.conso_id}", :class => "conso_tf") %>
+						<% else %>
+								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
+							</td>
+							<td>
+								<%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.conso_id}", :class => "conso_tf", :disabled => true) %>
+						<% end %>
+						</td>
+					<% end %>
+				<% end %>
 			<% end %>
 		</tr>
 	<% end %>
-
-	<tr>
-		<td><%= deliverable_conso.deliverable.name %></td>
-		<% deliverable_conso.consolidations.each do |consolidation| %>
-			<% if @editable %>
-				<td><%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.id.to_s}, this.value);"}) %></td>
-				<td><%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.id}", :class => "conso_tf") %></td>
-			<% else %>
-				<td><%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.id.to_s}, this.value);", :disabled => true}) %></td>
-				<td><%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.id}", :class => "conso_tf", :disabled => true) %></td>
-			<% end %>
-			
-		<% end %>
-	<tr>
-
-	<% i = i + 1 %>
+	</table>
 <% end %>
-
-</table>
-
-<div><%= button_to "Finalise consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id } %></div>
+<br/><br/>
+<%= submit_tag('Finalise consolidation') %>
+<% end %>

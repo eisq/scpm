@@ -24,6 +24,7 @@
 	<% form_tag({:action => "consolidate"}, :method => "post", :id => 'form_choice_1') do -%>
 		<%= hidden_field_tag('list_choice', 1) %>
 		<%= hidden_field_tag('deviation_spider_id', @deviation_spider.id) %>
+		<%= hidden_filed_tag('consolidations', @consolidations) %>
 
 		<div class="spider_list_choice" id="choice1" >
 			<div class="spider_list_choice_text" >
@@ -41,7 +42,8 @@
 	<!-- CHOICE 2 -->
 	<% form_tag({:action => "consolidate"}, :method => "post", :id => 'form_choice_2') do -%>
 		<%= hidden_field_tag('list_choice', 2) %>
-		<%= hidden_field_tag('deviation_spider_id', @spider_id) %>
+		<%= hidden_field_tag('deviation_spider_id', @deviation_spider.id) %>
+		<%= hidden_filed_tag('consolidations', @consolidations) %>
 
 		<div  class="spider_list_choice" id="choice2">
 		<% choice_2_text = '<div class="spider_list_choice_text" >' %>

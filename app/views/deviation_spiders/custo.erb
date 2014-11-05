@@ -76,7 +76,7 @@ end
       # Header 1
       @xml.Row 'ss:StyleID' => 'Default' do
         @xml.Cell do
-          @xml.Data "KPIs project customization M3", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data @project.name.to_s + " KPIs project customization M3", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
 
