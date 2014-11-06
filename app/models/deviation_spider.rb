@@ -48,7 +48,7 @@ class DeviationSpider < ActiveRecord::Base
 				    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 				    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 				                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-				            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"],
+				            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, self.milestone.name],
 				            :group=>"deviation_questions.id")
 				if questions and questions.count > 0
 					questions.each do |question|
