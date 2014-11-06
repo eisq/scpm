@@ -34,8 +34,6 @@ $( document ).ready(function() {
 <div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id, :consolidations => @consolidations} %></div>
 <br/>
 
-<% form_tag({:action => 'consolidate_validation'}, :deviation_spider_id => @deviation_spider.id, :consolidations => @consolidations) do %>
-
 <% @all_meta_activities.each do |meta_activity| %>
 <% activities = Array.new %>
 	<h3><%= meta_activity.name %></h3>
@@ -87,5 +85,5 @@ $( document ).ready(function() {
 	</table>
 <% end %>
 <br/><br/>
-<%= submit_tag('Finalise consolidation') %>
-<% end %>
+
+<%= button_to "Finalize consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>

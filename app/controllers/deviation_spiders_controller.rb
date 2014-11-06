@@ -171,19 +171,26 @@ class DeviationSpidersController < ApplicationController
 	    			@deliverables << spider_deliverable.deviation_deliverable
 	    	end
 	    	
+	    	#If we already have a temp conso, delete it before create a new one
+			check_conso_temps = DeviationSpiderConsolidationTemp.find(:all, :conditions => ["deviation_spider_id = ?", @deviation_spider.id])
+			if check_conso_temps.count > 0
+				check_conso_temps.each do |conso_to_delete|
+					conso_to_delete.delete
+				end
+			end
+
 	    	@consolidations = Array.new
 	    	@all_activities.each do |activity|
 	    		@deliverables.each do |deliverable|
 	    			if self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity)
-
-	    				#Consolidation in a temp table for manipulations before the real consolidation
-	    				@consolidation_temp = DeviationSpiderConsolidationTemp.new
-	    				@consolidation_temp.deviation_spider_id = @deviation_spider.id
-	    				@consolidation_temp.deviation_deliverable_id = deliverable.id
-	    				@consolidation_temp.deviation_activity_id = activity.id
-	    				@consolidation_temp.score = "" #here to initialize
-	    				@consolidation_temp.justification = "" #here to initialize
-	    				@consolidation_temp.save
+						#Consolidation in a temp table for manipulations before the real consolidation
+	    				consolidation_temp = DeviationSpiderConsolidationTemp.new
+	    				consolidation_temp.deviation_spider_id = @deviation_spider.id
+	    				consolidation_temp.deviation_deliverable_id = deliverable.id
+	    				consolidation_temp.deviation_activity_id = activity.id
+	    				consolidation_temp.score = "" #here to initialize
+	    				consolidation_temp.justification = "" #here to initialize
+	    				consolidation_temp.save
 
 	    				consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
 
@@ -240,19 +247,17 @@ class DeviationSpidersController < ApplicationController
 
 	def consolidate_validation
 		deviation_spider_id = params[:deviation_spider_id]
-		@consolidations = params[:consolidations]
 		@deviation_spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 		@project = @deviation_spider.milestone.project
 	end
 
 	def consolidate
 		deviation_spider_id = params[:deviation_spider_id]
-		consolidations = params[:consolidations]
-		counterChoice = params[:counterChoice]
+		list_choice = params[:list_choice]
 
 		if deviation_spider_id
 			# General data
-	    	deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+			deviation_spider 	= DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 	    	activities 			= deviation_spider.get_parameters.activities
 	    	deliverables 		= Array.new
 	    	deviation_spider.deviation_spider_deliverables.all(
@@ -265,16 +270,20 @@ class DeviationSpidersController < ApplicationController
 	    	if deviation_spider.deviation_spider_consolidations.count == 0
 		    	activities.each do |activity|
 		    		deliverables.each do |deliverable|
-		    			new_deviation_spider_consolidation = DeviationSpiderConsolidation.new
-		    			new_deviation_spider_consolidation.deviation_spider_id = deviation_spider_id
-		    			new_deviation_spider_consolidation.deviation_activity_id = activity.id
-		    			new_deviation_spider_consolidation.deviation_deliverable_id = deliverable.id
+	    				if self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity)
+	    					consolidation_temp = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ?", deviation_spider_id])
+	    					if consolidation_temp
+				    			new_deviation_spider_consolidation = DeviationSpiderConsolidation.new
+				    			new_deviation_spider_consolidation.deviation_spider_id = deviation_spider_id
+				    			new_deviation_spider_consolidation.deviation_activity_id = activity.id
+				    			new_deviation_spider_consolidation.deviation_deliverable_id = deliverable.id
+				    			new_deviation_spider_consolidation.score = consolidation_temp.score
+				    			new_deviation_spider_consolidation.justification = consolidation_temp.justification
+				    			new_deviation_spider_consolidation.save
 
-		    			consolidation = consolidations.find(:first, :conditions => ["spider_id = ? and deliverables.id = ? and activities.id = ?", deviation_spider_id, activity.id, deliverable.id])
-		    			new_deviation_spider_consolidation.score = consolidation.score
-		    			new_deviation_spider_consolidation.justification = consolidation.justification
-
-		    			new_deviation_spider_consolidation.save
+				    			consolidation_temp.delete
+				    		end
+			    		end
 		    		end
 		    	end
 		    end
@@ -282,7 +291,7 @@ class DeviationSpidersController < ApplicationController
 		     # Increment the spider counter of the project
 		    project = deviation_spider.milestone.project
 		    
-		    if((project) && (counterChoice.to_i == SPIDER_CONSO_COUNTER.to_i))
+		    if((project) && (list_choice.to_i == SPIDER_CONSO_COUNTER.to_i))
 		     	deviation_spider.impact_count = true;
 			    deviation_spider.save
 
