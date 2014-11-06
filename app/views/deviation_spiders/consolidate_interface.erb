@@ -1,10 +1,11 @@
+
 <SCRIPT language="Javascript">
-function change_score(conso_id, value)
+function change_score(consolidation_temp_id, value)
 {
 	$.ajax({
 		type: "POST",
 		url: "/deviation_spiders/update_score",
- 		data: {conso_id: conso_id, score: value}
+ 		data: {deviation_spider_consolidation_temp_id: consolidation_temp_id, deviation_spider_consolidation_temp_score: value}
 	})
 	.done(function( msg ) {
 	})
@@ -13,14 +14,12 @@ function change_score(conso_id, value)
 		alert("Error");
 	})
 }
-
 $( document ).ready(function() {
 	$(".conso_tf").focusout(function() {
 		$.ajax({
 			type: "POST",
 			url: "/deviation_spiders/update_justification",
-			url: "/deviation_spiders/update_justification",
-	 		data: {conso_id: $(this).attr('id'), justification: $(this).val()}
+	 		data: {deviation_spider_consolidation_temp_id: $(this).attr('id'), deviation_spider_consolidation_temp_justification: $(this).val()}
 		})
 		.done(function( msg ) {
 		})
