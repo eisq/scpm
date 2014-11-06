@@ -7,7 +7,7 @@ class DeviationSpider < ActiveRecord::Base
 	belongs_to 	:milestone
 
 
-	Spider_parameters = Struct.new(:deliverables, :activities)
+	Spider_parameters = Struct.new(:deliverables, :activities, :psu_imported)
 	Chart 			  = Struct.new(:meta_activity_name, :titles, :points, :points_ref)
 
 	# ***
@@ -18,18 +18,18 @@ class DeviationSpider < ActiveRecord::Base
 
 		if spider_parameters and spider_parameters.deliverables.count > 0
 			spider_parameters.deliverables.each do |deliverable|
-				add_deliverable(deliverable, spider_parameters.activities)
+				add_deliverable(deliverable, spider_parameters.activities, spider_parameters.psu_imported)
 			end
 		end
 		deliverables_added_by_hand = self.get_deliverables_added_by_hand_in_previous_milestones
 		if deliverables_added_by_hand and deliverables_added_by_hand.count > 0
 			deliverables_added_by_hand.each do |deliverable|
-				add_deliverable(deliverable, spider_parameters.activities)
+				add_deliverable(deliverable, spider_parameters.activities, spider_parameters.psu_imported)
 			end
 		end
 	end
 
-	def add_deliverable(deliverable, activities, is_added_by_hand=false, init_answers=false)
+	def add_deliverable(deliverable, activities, psu_imported, is_added_by_hand=false, init_answers=false)
 		new_spider_deliverable = DeviationSpiderDeliverable.new
 		new_spider_deliverable.deviation_spider_id = self.id
 		new_spider_deliverable.deviation_deliverable_id = deliverable.id
@@ -52,8 +52,23 @@ class DeviationSpider < ActiveRecord::Base
 				            :group=>"deviation_questions.id")
 				if questions and questions.count > 0
 					questions.each do |question|
-						DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
-							if (setting and (setting.answer_1 != "No" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
+						if question.is_active
+							if psu_imported
+								DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+									if (setting and ((setting.answer_1 != "No" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) or (is_added_by_hand)))
+										new_deviation_spider_values = DeviationSpiderValue.new
+										new_deviation_spider_values.deviation_question_id = question.id
+										new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
+										if new_spider_deliverable.not_done
+											new_deviation_spider_values.answer = false
+										else
+											new_deviation_spider_values.answer = nil
+										end
+										new_deviation_spider_values.answer_reference = question.answer_reference
+										new_deviation_spider_values.save
+									end
+								end
+							else
 								new_deviation_spider_values = DeviationSpiderValue.new
 								new_deviation_spider_values.deviation_question_id = question.id
 								new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
@@ -78,6 +93,7 @@ class DeviationSpider < ActiveRecord::Base
 	def get_parameters
 		activities 		= Array.new
 		deliverables 	= Array.new
+		psu_imported 	= false
 
 		# Check PSU
 		deviation_spider_reference = self.milestone.project.get_current_deviation_spider_reference
@@ -94,6 +110,7 @@ class DeviationSpider < ActiveRecord::Base
 					if !deliverables.include? deliverable_parameter
 						deliverables << deliverable_parameter
 					end
+					psu_imported = true
 				end
 			end
 		else
@@ -114,10 +131,11 @@ class DeviationSpider < ActiveRecord::Base
 			                   	:group => "deviation_questions.deviation_activity_id")
 		end
 
-		return_paramaters 				= Spider_parameters.new
-		return_paramaters.activities 	= activities
-		return_paramaters.deliverables  = deliverables
-		return return_paramaters
+		return_parameters 				= Spider_parameters.new
+		return_parameters.activities 	= activities
+		return_parameters.deliverables  = deliverables
+		return_parameters.psu_imported  = psu_imported
+		return return_parameters
 	end
 
 

@@ -8,9 +8,9 @@ function setShowIgnore(object) {
 <% if @milestone_index == nil or @milestone_index < 5 %>
 	<p>
 	<%= form_tag({:action => 'import_deviation', :project_id => @project.id}, :multipart => true) %>
-	    <label for="upload_file">Import deviation file</label>
+	    <label for="upload_file">Import PSU File</label>
 	    <%= file_field 'upload', 'datafile' %>
-	    <%= submit_tag "Upload" %>
+	    <%= submit_tag "Import" %>
 	</form>
 	</p>
 <% end %>

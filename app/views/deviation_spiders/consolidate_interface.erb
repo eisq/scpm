@@ -31,8 +31,12 @@ $( document ).ready(function() {
 });
 </SCRIPT>
 
-<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id, :consolidations => @consolidations} %></div>
-<br/>
+<% if @editable %>
+	<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id} %></div>
+	<br/>
+<% else %>
+	<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @deviation_spider.milestone.project_id} %></div><br/>
+<% end %>
 
 <% @all_meta_activities.each do |meta_activity| %>
 <% activities = Array.new %>
@@ -86,4 +90,4 @@ $( document ).ready(function() {
 <% end %>
 <br/><br/>
 
-<%= button_to "Finalize consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
+<%= button_to "Consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>

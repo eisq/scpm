@@ -67,7 +67,7 @@ class DeviationSpidersController < ApplicationController
 	# --------
 	# EXPORT
 	# --------
-	def export_customization
+	def export_customization_excel
 		project_id = params[:project_id]
 		@project = Project.find(:first, :conditions => ["id = ?", project_id])
 		if @project
@@ -164,6 +164,7 @@ class DeviationSpidersController < ApplicationController
 	    	@deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
 	    	@all_meta_activities = DeviationMetaActivity.find(:all)
 	    	@all_activities 	= DeviationActivity.find(:all)
+	    	parameters = @deviation_spider.get_parameters
 	    	@deliverables 		= Array.new
 	    	@deviation_spider.deviation_spider_deliverables.all(
 	    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"], 
@@ -171,18 +172,20 @@ class DeviationSpidersController < ApplicationController
 	    			@deliverables << spider_deliverable.deviation_deliverable
 	    	end
 	    	
-	    	#If we already have a temp conso, delete it before create a new one
-			check_conso_temps = DeviationSpiderConsolidationTemp.find(:all, :conditions => ["deviation_spider_id = ?", @deviation_spider.id])
-			if check_conso_temps.count > 0
-				check_conso_temps.each do |conso_to_delete|
-					conso_to_delete.delete
+	    	if @editable
+		    	#If we already have a temp conso, delete it before create a new one
+				check_conso_temps = DeviationSpiderConsolidationTemp.find(:all, :conditions => ["deviation_spider_id = ?", @deviation_spider.id])
+				if check_conso_temps.count > 0
+					check_conso_temps.each do |conso_to_delete|
+						conso_to_delete.delete
+					end
 				end
 			end
 
 	    	@consolidations = Array.new
 	    	@all_activities.each do |activity|
 	    		@deliverables.each do |deliverable|
-	    			if self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity)
+	    			if self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, parameters.psu_imported)
 						#Consolidation in a temp table for manipulations before the real consolidation
 	    				consolidation_temp = DeviationSpiderConsolidationTemp.new
 	    				consolidation_temp.deviation_spider_id = @deviation_spider.id
@@ -190,9 +193,14 @@ class DeviationSpidersController < ApplicationController
 	    				consolidation_temp.deviation_activity_id = activity.id
 	    				consolidation_temp.score = "" #here to initialize
 	    				consolidation_temp.justification = "" #here to initialize
-	    				consolidation_temp.save
 
-	    				consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
+	    				if @editable
+	    					consolidation_temp.save
+	    					consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
+	    				else
+	    					#We consult the tab consolidation instead of the temporary one
+	    					consolidation_saved = DeviationSpiderConsolidation.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
+	    				end
 
 	    				consolidation = Consolidation.new
 	    				consolidation.conso_id = consolidation_saved.id
@@ -212,11 +220,18 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def get_deliverable_activity_applicable(project_id, deliverable, activity)
+	def get_deliverable_activity_applicable(project_id, deliverable, activity, psu_imported=true)
 		applicable = false
-		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
-		DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
-			if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
+		if psu_imported
+			last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
+			DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+				if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
+					applicable = true
+				end
+			end
+		else
+			existing_question = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id])
+			if existing_question.count > 0
 				applicable = true
 			end
 		end
@@ -441,7 +456,7 @@ class DeviationSpidersController < ApplicationController
 				deviation_deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
 				if deviation_deliverable
 					deviation_spider_parameters = @deviation_spider.get_parameters
-					@deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities)
+					@deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities, deviation_spider_parameters.psu_imported)
 				end
 			end
 			render(:nothing=>true)
@@ -524,8 +539,8 @@ class DeviationSpidersController < ApplicationController
 		if deviation_spider_id and deviation_deliverable_id
 			deviation_deliverable 		= DeviationDeliverable.find(:first, :conditions => ["id = ?", deviation_deliverable_id])
 			deviation_spider 			= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
-			deviation_spider_parameters = deviation_spider.get_parameters
-			deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities, true)
+			parameters 					= deviation_spider.get_parameters
+			deviation_spider.add_deliverable(deviation_deliverable, parameters.activities, parameters.psu_imported, true)
 			redirect_to :action=>:index, :milestone_id=>deviation_spider.milestone_id
 		else
 			redirect_to :controller=>:projects, :action=>:index
@@ -584,7 +599,7 @@ class DeviationSpidersController < ApplicationController
 
 			if questions_nil_count > 0
 				meta_activity_array = Array.new
-				meta_activity_array << meta_activity[0]+" [Not completed]"
+				meta_activity_array << meta_activity[0]+" [Not filled in]"
 				meta_activity_array << meta_activity[1]
 				new_meta_activities_array << meta_activity_array
 			else 

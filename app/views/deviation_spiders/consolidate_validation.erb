@@ -1,6 +1,4 @@
 <!-- List -->
-	<h3>You are reporting on this project: </h3>
-
 	<!-- CHOICE 1 -->
 	<script type="text/javascript">
 	    $(document).ready(function (){
@@ -15,6 +13,8 @@
 
 	<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @project.id} %></div>
 
+	<h3>You are working on this project: <u><%= @project.name %></u></h3>
+
 	<% if params[:error] %>
 		<br/><br/>
 		<strong><span style='color:red;'> Error during the consolidation. </span></strong>
@@ -27,7 +27,7 @@
 
 		<div class="spider_list_choice" id="choice1" >
 			<div class="spider_list_choice_text" >
-					<%= my_simple_format("From a request belonging to one of these WP:
+					<%= my_simple_format("With a request belonging to one of these WP:
 						WP1.1: Quality Control
 						WP1.2: Quality Assurance
 						WP1.4: Agility Assurance
@@ -46,7 +46,7 @@
 		<div  class="spider_list_choice" id="choice2">
 		<% choice_2_text = '<div class="spider_list_choice_text" >' %>
 		<% if @project.get_last_spider_increment %>
-			<% choice_2_text += my_simple_format("During a \"Standard Support\" activity and you <strong>want to</strong> increment the Spider counter.
+			<% choice_2_text += my_simple_format("In a Standard Support mode and you want to increment the Spider counter.
 				Last Spider counter update for this project: " + @project.get_last_spider_increment.to_s + " (<span class=\"descr\">" + time_ago_in_words(@project.get_last_spider_increment) + "</span>)") %>
 		<% else %>
 			<% choice_2_text +=  my_simple_format('During a "Standard Support" activity and you <strong>want to</strong> increment the Spider counter.') %> 

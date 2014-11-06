@@ -36,7 +36,7 @@ function set_question(question_id, checked)
 		};
 		<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0  %>
 			show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Deliverable chart at <%= @last_spider.milestone.name %>");
-			show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Activity chart at <%= @last_spider.milestone.name %>");
+			show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Macro-Objective at <%= @last_spider.milestone.name %>");
 		<% end %>
 	})
 	.fail(function() 
@@ -76,7 +76,7 @@ function set_value_buttons(value_id, answer)
 $( document ).ready(function() {
 	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0 and @questions.count > 0 %>
 		show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Deliverable chart at <%= @last_spider.milestone.name %>");
-		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Activity chart at <%= @last_spider.milestone.name %>");
+		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Macro-Objective chart at <%= @last_spider.milestone.name %>");
 	<% end %>
 });
 
@@ -101,7 +101,7 @@ $( document ).ready(function() {
 <% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
 <% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
-	<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
+	<div style="float:left;">Operational Macro-Objective : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 	<br /><br/><br/>
 
 	<% table_activity = nil %>
@@ -133,7 +133,7 @@ $( document ).ready(function() {
 					<% deliverable_not_done_class = "deliverable_not_done" %>
 					<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
 
-					<%= button_to "Not done without admissible justification", {:action => "set_false_for_spider_deliverable", :meta_activity_id => @meta_activity_id, :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :id => "button_all_not_done_"+ q.id.to_s, :class => deliverable_not_done_class %> 
+					<%= button_to "Deliverable will not be done", {:action => "set_false_for_spider_deliverable", :meta_activity_id => @meta_activity_id, :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all Macro-Objectives to NO ?", :method => :post, :id => "button_all_not_done_"+ q.id.to_s, :class => deliverable_not_done_class %> 
 				</td>
 			</tr>
 			<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
@@ -191,16 +191,19 @@ $( document ).ready(function() {
 		<td>Deliverables chart: </td>
 		<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
 	</tr>
-		<td>Activities chart: </td>
+		<td>Macro-Objectives chart: </td>
 		<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
 	</tr>
 	<tr>
 		<td>Customization: </td>
-		<td><%= button_to "Export", {:action => "export_customization", :project_id => @milestone.project.id} %></td>
+		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
+		<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>
+		<td>To be added to M3/G2 Quality Slide</td>
 	</tr>
 	<tr>
 		<td>Result of GPP adherence: </td>
 		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
+		<td>To be added to M3/G2 Quality Slide</td>
 	</tr>
 	</table>
 

@@ -20,7 +20,7 @@ function generate_url(action_name) {
 // Open
 $( document ).ready(function() {
 	show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Deliverable chart");
-	show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Activity chart");
+	show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Macro-Objective chart");
 });
 </SCRIPT>
 
@@ -42,7 +42,7 @@ $( document ).ready(function() {
 
 <h2>Current spider</h2>
 
-<div style="float:left;">Meta Activity : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
+<div style="float:left;">Operational Macro-Objective : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 <br/><br/><br/>
 
 <% table_activity = nil %>
@@ -75,7 +75,7 @@ $( document ).ready(function() {
 				<% deliverable_not_done_class = "deliverable_not_done" %>
 				<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
 
-				<%= button_to "Not done without admissible justification", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all activities to NO ?", :method => :post, :class => deliverable_not_done_class, :disabled => true %> 
+				<%= button_to "Deliverable will not be done", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure the deliverable will not be done (Will set all Macro-Objectives question into NO)", :method => :post, :class => deliverable_not_done_class, :disabled => true %> 
 			</td>
 		</tr>
 		<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
@@ -113,8 +113,8 @@ $( document ).ready(function() {
     <%= hidden_field_tag('redirect', 'index_history') %>
     <%= submit_tag "Save" %>
 </form>
-
-<p><%= button_to "Delete consolidated spider", {:action => "delete_consolidated_spider", :deviation_spider_id => @last_spider.id} %></p>
+<p><%= button_to "Show deviation", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => false} %></p>
+<p><%= button_to "Delete Consolidated Spider & Deviation", {:action => "delete_consolidated_spider", :deviation_spider_id => @last_spider.id} %></p>
 
 <br/>
 <h2>Export</h2>
@@ -123,12 +123,12 @@ $( document ).ready(function() {
 		<td>Deliverables chart: </td>
 		<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
 	</tr>
-		<td>Activities chart: </td>
+		<td>Macro-Objectives chart: </td>
 		<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
 	</tr>
 	<tr>
 		<td>Customization: </td>
-		<td><%= button_to "Export", {:action => "export_customization", :project_id => @milestone.project.id} %></td>
+		<td><%= button_to "Export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
 	</tr>
 	<tr>
 		<td>Result of GPP adherence: </td>
