@@ -84,8 +84,8 @@ class DeviationSpider < ActiveRecord::Base
 		if deviation_spider_reference
 			deviation_spider_reference.deviation_spider_settings.each do |setting|
 
-				activity_parameter = DeviationActivity.find(:first, :conditions => ["name LIKE ?","%#{setting.activity_name}%"])
-				deliverable_parameter = DeviationDeliverable.find(:first, :conditions => ["name LIKE ?","%#{setting.deliverable_name}%"])
+				activity_parameter = DeviationActivity.find(:first, :conditions => ["name = ?", setting.activity_name])
+				deliverable_parameter = DeviationDeliverable.find(:first, :conditions => ["name = ?", setting.deliverable_name])
 				if activity_parameter and deliverable_parameter
 					if !activities.include? activity_parameter
 						activities << activity_parameter
@@ -102,7 +102,7 @@ class DeviationSpider < ActiveRecord::Base
 			                   	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"],
+			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", self.milestone.project.lifecycle_object.id, self.milestone.name],
 			                   	:group => "deviation_questions.deviation_deliverable_id")
 
 			activities = DeviationActivity.find(:all,
@@ -110,7 +110,7 @@ class DeviationSpider < ActiveRecord::Base
 			                   	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ?", self.milestone.project.lifecycle_object.id, "%#{self.milestone.name}%"],
+			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", self.milestone.project.lifecycle_object.id, self.milestone.name],
 			                   	:group => "deviation_questions.deviation_activity_id")
 		end
 
@@ -145,7 +145,7 @@ class DeviationSpider < ActiveRecord::Base
 				last_spider.deviation_spider_deliverables.each do |spider_deliverable|
 					if spider_deliverable.is_added_by_hand and !deviation_deliverables.include? spider_deliverable.deviation_deliverable
 
-						questions_count = DeviationQuestion.count(:joins=>["deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id"], :conditions=>["deviation_questions.deviation_deliverable_id = ? and milestone_names.title LIKE ?", spider_deliverable.deviation_deliverable.id, "%#{self.milestone.name}%"])
+						questions_count = DeviationQuestion.count(:joins=>["deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id"], :conditions=>["deviation_questions.deviation_deliverable_id = ? and milestone_names.title = ?", spider_deliverable.deviation_deliverable.id, self.milestone.name])
 						if questions_count > 0
 							deliverables_found << spider_deliverable.spider_deliverable
 						end
