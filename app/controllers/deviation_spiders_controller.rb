@@ -239,7 +239,7 @@ class DeviationSpidersController < ApplicationController
 
 	def existing_question_activity_deliverable(deliverable_id, activity_id)
 		applicable = false
-		existing_question = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id])
+		existing_question = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable_id, activity_id])
 		if existing_question.count > 0
 			applicable = true
 		end
