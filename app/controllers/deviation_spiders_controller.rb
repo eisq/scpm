@@ -185,8 +185,9 @@ class DeviationSpidersController < ApplicationController
 	    	@consolidations = Array.new
 	    	@all_activities.each do |activity|
 	    		@deliverables.each do |deliverable|
-	    			deviation_deliverable = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider_id, deliverable.id, true])
-	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, parameters.psu_imported) or deviation_deliverable)
+	    			deviation_deliverable_added_by_hand = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider_id, deliverable.id, true])
+	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id)
+	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
 						#Consolidation in a temp table for manipulations before the real consolidation
 	    				consolidation_temp = DeviationSpiderConsolidationTemp.new
 	    				consolidation_temp.deviation_spider_id = @deviation_spider.id
@@ -231,12 +232,18 @@ class DeviationSpidersController < ApplicationController
 				end
 			end
 		else
-			existing_question = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id])
-			if existing_question.count > 0
-				applicable = true
-			end
+			applicable = self.existing_question_activity_deliverable(deliverable.id, activity.id)
 		end
 		return applicable					
+	end
+
+	def existing_question_activity_deliverable(deliverable_id, activity_id)
+		applicable = false
+		existing_question = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id])
+		if existing_question.count > 0
+			applicable = true
+		end
+		return applicable
 	end
 
 	def update_score
@@ -579,14 +586,37 @@ class DeviationSpidersController < ApplicationController
 		:order => "deviation_activities.name , deviation_deliverables.name, deviation_questions.question_text")
 
 		#Search in the list of all deliverables for a milestone, if there is one which is not present in the current spider.
+		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
+		deliverable_ids.each do |deliv|
+			if !supposed_to_be_added(last_reference.id, deliv.id)
+				deliverable_ids.slice!(deliv)
+			end
+		end
+
 		deliverables_to_add = DeviationDeliverable.find(:all, 
 		                      :joins=>["JOIN deviation_questions ON deviation_questions.deviation_deliverable_id = deviation_deliverables.id", 
 		                      	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 		                      	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 		                      	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"], 
-		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ? and deviation_deliverables.is_active = 1", deliverable_ids, spider.milestone.project.lifecycle_object.id, "%#{spider.milestone.name}%"]).map { |d| [d.name, d.id]}
+		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and deviation_deliverables.is_active = 1", deliverable_ids, spider.milestone.project.lifecycle_object.id, spider.milestone.name]).map { |d| [d.name, d.id]}
 		@deliverables_to_add = deliverables_to_add & deliverables_to_add
+	end
+
+	def supposed_to_be_added(last_reference_id, deliverable_id)
+		to_add = false
+		if last_reference_id and deliverable_id
+			deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
+			if deliverable
+				settings = DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
+				settings.each do |setting|
+					if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+						to_add = true
+					end
+				end
+			end
+		end
+		return to_add
 	end
 
 	def check_meta_activities(spider_id, meta_activities)

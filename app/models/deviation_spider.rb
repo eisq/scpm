@@ -108,8 +108,10 @@ class DeviationSpider < ActiveRecord::Base
 						activities << activity_parameter
 					end 		
 
-					if !deliverables.include? deliverable_parameter
-						deliverables << deliverable_parameter
+					if setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")
+						if !deliverables.include? deliverable_parameter
+							deliverables << deliverable_parameter
+						end
 					end
 					psu_imported = true
 				end
