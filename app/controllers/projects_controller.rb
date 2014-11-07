@@ -1,4 +1,5 @@
 require 'builder'
+require 'lib/deviation.rb'
 
 include ActionView::Helpers::DateHelper # just for time_ago_in_words...
 
@@ -360,6 +361,52 @@ class ProjectsController < ApplicationController
     redirect_to :action=>:show, :id=>status.project_id
   end
 
+  # import deviation file, provided by PSU, it will manage spider axes and questions
+  def import_deviation
+    project_id = params[:project_id]
+    project = Project.find(:all, :conditions=>["project_id=?", project_id])
+    if project
+      file = params[:upload]
+      file_name =  file['datafile'].original_filename
+      file_ext  = File.extname(file_name)
+      if (file_ext == ".xls")
+        psu_file_hash = Deviation.import(file)
+
+        # Save psu reference
+        deviation_spider_reference = DeviationSpiderReference.new
+        deviation_spider_reference.version_number = 1
+        DeviationSpiderReference.find(:all, :conditions=>["project_id=?", project_id], :order=>"version_number asc").each do |devia|
+          deviation_spider_reference.version_number = devia.version_number + 1
+        end
+        deviation_spider_reference.project_id = project_id
+        deviation_spider_reference.created_at = DateTime.now
+        deviation_spider_reference.updated_at = DateTime.now
+        deviation_spider_reference.save
+
+        # Save psu settings
+        psu_file_hash.each do |psu|
+          deviation_spider_setting = DeviationSpiderSetting.new
+          deviation_spider_setting.deviation_spider_reference_id  = deviation_spider_reference.id
+          deviation_spider_setting.activity_name                  = psu["activity"]
+          deviation_spider_setting.deliverable_name               = psu["deliverable"]
+          deviation_spider_setting.answer_1                       = psu["methodology_template"]
+          deviation_spider_setting.answer_2                       = psu["is_justified"]
+          deviation_spider_setting.answer_3                       = psu["other_template"]
+          deviation_spider_setting.justification                  = psu["justification"]
+          deviation_spider_setting.created_at                     = DateTime.now
+          deviation_spider_setting.updated_at                     = DateTime.now
+          deviation_spider_setting.save
+        end
+
+        redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"1"
+      else
+        redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
+      end
+    else
+      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"2"
+    end
+  end
+
   # check request and suggest projects
   def import
     @import = []
@@ -388,12 +435,12 @@ class ProjectsController < ApplicationController
           parent = Project.find(:first, :conditions=>"name='#{r.project_name}'")
           if not parent
             # create parent
-            parent_id = Project.create(:project_id=>nil, :name=>r.project_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first).id
+            parent_id = Project.create(:project_id=>nil, :name=>r.project_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider=>true).id
           else
             parent_id = parent.id
           end
           #create wp
-          p = Project.create(:project_id=>parent_id, :name=>r.workpackage_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first)
+          p = Project.create(:project_id=>parent_id, :name=>r.workpackage_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider=>true)
           if r.project.requests.size == 1 # if that was the only request move all statuts and actions, etc.. to new project
             @text << "<u>#{r.project.full_name}</u>: #{r.workpackage_name} (new) != #{r.project.name} (old) => creating and moving ALL<br/>"
             r.project.move_all(p)
@@ -441,7 +488,7 @@ class ProjectsController < ApplicationController
 
     project = Project.find_by_name(project_name)
     if not project
-      project = Project.create(:name=>project_name)
+      project = Project.create(:name=>project_name, :deviation_spider=>true)
       project.workstream = request.workstream
       lifecycle_name = request.lifecycle_name_for_request_type()
       lifecycle = nil
@@ -458,7 +505,7 @@ class ProjectsController < ApplicationController
 
     wp = Project.find_by_name(workpackage_name, :conditions=>["project_id=?",project.id])
     if not wp
-      wp = Project.create(:name=>workpackage_name)
+      wp = Project.create(:name=>workpackage_name, :deviation_spider=>true)
       wp.workstream = request.workstream
       wp.brn        = brn
       wp.project_id = project.id
@@ -863,6 +910,7 @@ class ProjectsController < ApplicationController
       new_project.create_sibling(project)
       new_project.lifecycle = lifecycle_id
       new_project.lifecycle_object = lifecycle
+      new_project.deviation_spider = true
       new_project.save
 
       project.is_running = 0
@@ -1036,6 +1084,35 @@ class ProjectsController < ApplicationController
       redirect_to :action=>:milestones_edit, :id=>project_id, :warning=>"Milestone can't be deleted while it has data. Delete all milestone data to be able to delete the milestone."
     end
   end
+
+  def spider_configuration
+    project_id = params[:project_id]
+    @status_import = params[:status_import]
+    @project = Project.find(:first, :conditions => ["id = ?", project_id])
+    @milestone_index = @project.get_current_milestone_index
+
+    @last_import_date = "N/A"
+    @last_import = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
+
+    if @last_import
+      @last_import_date = @last_import.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+    end
+  end
+
+  def update_spider_configuration
+    project_id = params[:project_id]
+    deviation_spider = params[:deviation_spider]
+    if project_id and deviation_spider
+      @project = Project.find(:first, :conditions => ["id = ?", project_id])
+      @project.deviation_spider = deviation_spider
+      @project.save
+    end
+    if project_id
+      redirect_to :action=>:spider_configuration, :project_id=>project_id
+    else
+      redirect_to :action=>:index
+    end
+  end
   # - 
 
 private
@@ -1145,6 +1222,5 @@ private
     end
     @risks
   end
-
 end
 

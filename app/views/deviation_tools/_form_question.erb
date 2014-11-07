@@ -1,0 +1,29 @@
+<%= hidden_field :question, :id %>
+<%= hidden_field :question, :deviation_deliverable_id %>
+<%= hidden_field :question, :deviation_activity_id %>
+
+<p><%= label_tag 'Question' %>
+<%= text_field :question, :question_text %> </p>
+
+<!--
+<p><%= label_tag 'Answer reference' %>
+<%= radio_button :question, :answer_reference, true %> Yes
+<%= radio_button :question, :answer_reference, false %> No
+-->
+
+<p><%= label_tag 'Is active' %>
+<%= radio_button :question, :is_active, true %> Yes
+<%= radio_button :question, :is_active, false %> No
+
+
+
+<h3>Lifecycle</h3>
+<% for lifecycle in @lifecycles %>
+	<%= check_box_tag('lifecycle_ids[]', lifecycle.id, @question.has_lifecycle?(lifecycle.id)) %><%= "#{lifecycle.name}" %><br/>
+<% end %>
+
+<h3>Milestone Name</h3>
+<% for milestone_name in @milestone_names %>
+	<%= check_box_tag('milestone_name_ids[]', milestone_name.id, @question.has_milestone_name?(milestone_name.id)) %><%= "#{milestone_name.title}" %><br/>
+<% end %>
+</p>

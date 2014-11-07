@@ -15,6 +15,7 @@
   <!--<script src="/javascripts/chat.js" type="text/javascript"></script>-->
   <script src="/javascripts/raphael-min.js" type="text/javascript"></script>
   <script src="/javascripts/sort_table.js" type="text/javascript"></script>
+  <script src="/javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="robots" content="all">
 </head>
@@ -65,7 +66,6 @@
     	<li><%= link_to('CHECK QS/Spiders Counters', {:controller=>'tools', :action=>'show_counter_history'}) %></li>
     	<li><%= link_to('CHECK QS/Spiders Counters without RMT', {:controller=>'tools', :action=>'show_counter_history_without_rmt'}) %></li>
       <li><%= link_to('CHECK KPI', {:controller=>'tools', :action=>'kpi_check'}) %></li>
-
 		</ul>
     </li>
     <li><%= link_to('WS Reporting', {:controller=>'workstreams', :action=>'index'}, {:class=>menu_style('workstreams','*')}) %>
@@ -131,6 +131,12 @@
         <li><%= link_to('Manage Axes',        				{:controller=>'pm_type_axes', :action=>'index'}) %></li>
         <li><%= link_to('Manage Questions',        		{:controller=>'lifecycle_questions', :action=>'index'}) %></li>
         <li><%= link_to('Manage Questions References',{:controller=>'question_references', :action=>'index'}) %></li>
+        <li class="hsep">Deviation Spiders</li>
+        <li><%= link_to('Manage Operational Activities',{:controller=>'deviation_tools', :action=>'index_meta_activity'}) %></li>
+        <li><%= link_to('Manage Macro-Objective',{:controller=>'deviation_tools', :action=>'index_activity'}) %></li>
+        <li><%= link_to('Manage Deliverables',{:controller=>'deviation_tools', :action=>'index_deliverable'}) %></li>
+        <li><%= link_to('Manage Questions',{:controller=>'deviation_tools', :action=>'index_question'}) %></li>
+        <li><%= link_to('Custo/Devia export',{:controller=>'deviation_spiders', :action=>'index_export_all'}) %></li>
       </ul>
     </li>
 		<% end %>
