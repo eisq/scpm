@@ -1,0 +1,10 @@
+<p>
+	<span><b><%= consts.constant_name %></span></b> = <span><%= consts.constant_value %></span><span>&nbsp;</span>
+	<span class="constant_comment"><%= consts.constant_comment %></span>
+	- <%= link_to("Edit",{:controller=>:sdp_constants,:action=>:edit, :id=>consts.id}, {:class=>'btnlnk'}) %>
+		<% if consts.constant_name == "WP_LEADERS_DAYS_PER_MONTH" %>
+		<br><br>
+	     <span>-----</span>
+	   <% end %>
+</p>
+

@@ -258,6 +258,7 @@ ActiveRecord::Schema.define(:version => 20141015142600) do
     t.boolean  "validity",      :default => false
   end
 
+<<<<<<< HEAD
   create_table "deviation_activities", :force => true do |t|
     t.string   "name"
     t.boolean  "is_active",                  :default => true
@@ -385,6 +386,8 @@ ActiveRecord::Schema.define(:version => 20141015142600) do
     t.string   "file_link"
   end
 
+=======
+>>>>>>> 7654844c146c36e04e0f497c8801f02c47312692
   create_table "generic_risk_questions", :force => true do |t|
     t.text     "question"
     t.datetime "created_at"
@@ -701,7 +704,7 @@ ActiveRecord::Schema.define(:version => 20141015142600) do
     t.string   "brn"
     t.string   "workstream"
     t.integer  "project_id"
-    t.integer  "last_status",      :default => 0
+    t.integer  "last_status",    :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "supervisor_id"
@@ -710,22 +713,25 @@ ActiveRecord::Schema.define(:version => 20141015142600) do
     t.string   "bpl"
     t.string   "ispl"
     t.datetime "read_date"
-    t.integer  "lifecycle",        :default => 0
+    t.integer  "lifecycle",      :default => 0
     t.string   "pm_deputy"
     t.string   "ispm"
     t.integer  "lifecycle_id"
-    t.integer  "qs_count",         :default => 0
-    t.integer  "spider_count",     :default => 0
-    t.boolean  "is_running",       :default => true
+    t.integer  "qs_count",       :default => 0
+    t.integer  "spider_count",   :default => 0
+    t.boolean  "is_running",     :default => true
     t.integer  "qr_qwr_id"
     t.string   "dwr"
-    t.boolean  "is_qr_qwr",        :default => false
+    t.boolean  "is_qr_qwr",      :default => false
     t.integer  "suite_tag_id"
     t.string   "project_code"
-    t.integer  "sales_revenue",    :default => 0
-    t.integer  "sibling_id"
+    t.integer  "sales_revenue",  :default => 0
     t.integer  "tbp_project_id"
+<<<<<<< HEAD
     t.boolean  "deviation_spider", :default => false
+=======
+    t.integer  "sibling_id"
+>>>>>>> 7654844c146c36e04e0f497c8801f02c47312692
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
@@ -937,6 +943,14 @@ ActiveRecord::Schema.define(:version => 20141015142600) do
     t.float    "balancei"
     t.float    "balancer"
     t.float    "balancea"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sdp_constants", :force => true do |t|
+    t.string   "constant_name"
+    t.float    "constant_value"
+    t.string   "constant_comment"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

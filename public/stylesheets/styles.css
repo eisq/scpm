@@ -735,3 +735,8 @@ table.sortable td    {
 .new_milestone_count_class{
   display: none;
 }
+.constant_comment {
+	
+	color: #009966;
+	font-style: italic;
+}
