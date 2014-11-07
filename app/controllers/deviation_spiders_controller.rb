@@ -185,7 +185,8 @@ class DeviationSpidersController < ApplicationController
 	    	@consolidations = Array.new
 	    	@all_activities.each do |activity|
 	    		@deliverables.each do |deliverable|
-	    			if self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, parameters.psu_imported)
+	    			deviation_deliverable = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider_id, deliverable.id, true])
+	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, parameters.psu_imported) or deviation_deliverable)
 						#Consolidation in a temp table for manipulations before the real consolidation
 	    				consolidation_temp = DeviationSpiderConsolidationTemp.new
 	    				consolidation_temp.deviation_spider_id = @deviation_spider.id
