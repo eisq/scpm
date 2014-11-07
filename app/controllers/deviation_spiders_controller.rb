@@ -273,7 +273,7 @@ class DeviationSpidersController < ApplicationController
 		if deviation_spider_id
 			# General data
 			deviation_spider 	= DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
-	    	activities 			= deviation_spider.get_parameters.activities
+			parameters 			= deviation_spider.get_parameters
 	    	deliverables 		= Array.new
 	    	deviation_spider.deviation_spider_deliverables.all(
 	    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"], 
@@ -283,9 +283,9 @@ class DeviationSpidersController < ApplicationController
 
 	    	# Create consolidations if this is not already done
 	    	if deviation_spider.deviation_spider_consolidations.count == 0
-		    	activities.each do |activity|
+		    	parameters.activities.each do |activity|
 		    		deliverables.each do |deliverable|
-	    				if self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity)
+	    				if self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity, parameters.psu_imported)
 	    					consolidation_temp = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ?", deviation_spider_id])
 	    					if consolidation_temp
 				    			new_deviation_spider_consolidation = DeviationSpiderConsolidation.new

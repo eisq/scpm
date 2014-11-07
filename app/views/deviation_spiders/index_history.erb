@@ -128,11 +128,14 @@ $( document ).ready(function() {
 	</tr>
 	<tr>
 		<td>Customization: </td>
-		<td><%= button_to "Export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
+		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
+		<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>
+		<td>To be added to M3/G2 Quality Slide</td>
 	</tr>
 	<tr>
 		<td>Result of GPP adherence: </td>
 		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
+		<td colspan=2>To be added to M3/G2 Quality Slide</td>
 	</tr>
 	</table>
 

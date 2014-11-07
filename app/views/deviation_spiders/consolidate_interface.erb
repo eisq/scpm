@@ -90,4 +90,6 @@ $( document ).ready(function() {
 <% end %>
 <br/><br/>
 
+<% if @editable %>
 <%= button_to "Consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
+<% end %>

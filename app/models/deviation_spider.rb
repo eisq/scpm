@@ -54,19 +54,33 @@ class DeviationSpider < ActiveRecord::Base
 					questions.each do |question|
 						if question.is_active
 							if psu_imported
-								DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
-									if (setting and ((setting.answer_1 != "No" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) or (is_added_by_hand)))
-										new_deviation_spider_values = DeviationSpiderValue.new
-										new_deviation_spider_values.deviation_question_id = question.id
-										new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
-										if new_spider_deliverable.not_done
-											new_deviation_spider_values.answer = false
-										else
-											new_deviation_spider_values.answer = nil
+								settings = DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+								if settings.count > 0
+									settings.each do |setting|
+										if (setting.answer_1 != "No" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+											new_deviation_spider_values = DeviationSpiderValue.new
+											new_deviation_spider_values.deviation_question_id = question.id
+											new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
+											if new_spider_deliverable.not_done
+												new_deviation_spider_values.answer = false
+											else
+												new_deviation_spider_values.answer = nil
+											end
+											new_deviation_spider_values.answer_reference = question.answer_reference
+											new_deviation_spider_values.save
 										end
-										new_deviation_spider_values.answer_reference = question.answer_reference
-										new_deviation_spider_values.save
 									end
+								elsif is_added_by_hand
+									new_deviation_spider_values = DeviationSpiderValue.new
+									new_deviation_spider_values.deviation_question_id = question.id
+									new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
+									if new_spider_deliverable.not_done
+										new_deviation_spider_values.answer = false
+									else
+										new_deviation_spider_values.answer = nil
+									end
+									new_deviation_spider_values.answer_reference = question.answer_reference
+									new_deviation_spider_values.save
 								end
 							else
 								new_deviation_spider_values = DeviationSpiderValue.new

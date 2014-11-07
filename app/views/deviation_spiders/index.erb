@@ -133,6 +133,7 @@ $( document ).ready(function() {
 					<% deliverable_not_done_class = "deliverable_not_done" %>
 					<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
 
+
 					<%= button_to "Deliverable will not be done", {:action => "set_false_for_spider_deliverable", :meta_activity_id => @meta_activity_id, :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all Macro-Objectives to NO ?", :method => :post, :id => "button_all_not_done_"+ q.id.to_s, :class => deliverable_not_done_class %> 
 				</td>
 			</tr>
@@ -203,7 +204,7 @@ $( document ).ready(function() {
 	<tr>
 		<td>Result of GPP adherence: </td>
 		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
-		<td>To be added to M3/G2 Quality Slide</td>
+		<td colspan=2>To be added to M3/G2 Quality Slide</td>
 	</tr>
 	</table>
 

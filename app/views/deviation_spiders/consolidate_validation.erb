@@ -49,7 +49,7 @@
 			<% choice_2_text += my_simple_format("In a Standard Support mode and you want to increment the Spider counter.
 				Last Spider counter update for this project: " + @project.get_last_spider_increment.to_s + " (<span class=\"descr\">" + time_ago_in_words(@project.get_last_spider_increment) + "</span>)") %>
 		<% else %>
-			<% choice_2_text +=  my_simple_format('During a "Standard Support" activity and you <strong>want to</strong> increment the Spider counter.') %> 
+			<% choice_2_text +=  my_simple_format('In a Standard Support mode and you want to increment the Spider counter.') %> 
 		<% end %>
 		<% choice_2_text +='</div><img class="spider_list_choice_img" src="/images/right.png">' %>
 		<%= choice_2_text %>
