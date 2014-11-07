@@ -599,7 +599,7 @@ class DeviationSpidersController < ApplicationController
 		                      	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 		                      	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 		                      	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"], 
-		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and deviation_deliverables.is_active = 1", deliverable_ids, spider.milestone.project.lifecycle_object.id, spider.milestone.name]).map { |d| [d.name, d.id]}
+		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title LIKE ? and deviation_deliverables.is_active = 1", deliverable_ids, spider.milestone.project.lifecycle_object.id, "%#{spider.milestone.name]}%").map { |d| [d.name, d.id]}
 		@deliverables_to_add = deliverables_to_add & deliverables_to_add
 	end
 
