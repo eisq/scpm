@@ -1,0 +1,95 @@
+
+<SCRIPT language="Javascript">
+function change_score(consolidation_temp_id, value)
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/update_score",
+ 		data: {deviation_spider_consolidation_temp_id: consolidation_temp_id, deviation_spider_consolidation_temp_score: value}
+	})
+	.done(function( msg ) {
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+$( document ).ready(function() {
+	$(".conso_tf").focusout(function() {
+		$.ajax({
+			type: "POST",
+			url: "/deviation_spiders/update_justification",
+	 		data: {deviation_spider_consolidation_temp_id: $(this).attr('id'), deviation_spider_consolidation_temp_justification: $(this).val()}
+		})
+		.done(function( msg ) {
+		})
+		.fail(function() 
+		{ 
+			alert("Error");
+		})
+	});
+});
+</SCRIPT>
+
+<% if @editable %>
+	<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id} %></div>
+	<br/>
+<% else %>
+	<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @deviation_spider.milestone.project_id} %></div><br/>
+<% end %>
+
+<% @all_meta_activities.each do |meta_activity| %>
+<% activities = Array.new %>
+	<h3><%= meta_activity.name %></h3>
+	<table border=1><tr>
+
+	<td></td>
+	<% @all_activities.each do |activity| %>
+		<% if activity.deviation_meta_activity == meta_activity %>
+		<% activities << activity %>
+			<td colspan=2>
+			<bold><%= activity.name %></bold>
+			</td>
+		<% end %>
+	<% end %>
+	</tr>
+
+	<% @deliverables.each do |deliverable| %>
+	<% consolidation_temp = @consolidations.select {|conso_temp| conso_temp.deliverable == deliverable} %>
+		<tr>
+			<td>
+				<%= deliverable.name %>
+			</td>
+			<% activities.each do |activity| %>
+				<% if consolidation_temp %>
+					<% consolidation = consolidation_temp.find {|conso| conso.activity == activity} %>
+					<% if consolidation %>
+						<% if @editable %>
+							<td>
+								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
+							</td>
+							<td>
+								<%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.conso_id}", :class => "conso_tf") %>
+							</td>
+						<% else %>
+							<td>
+								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
+							</td>
+							<td>
+								<%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.conso_id}", :class => "conso_tf", :disabled => true) %>
+							</td>
+						<% end %>
+					<% else %>
+						<td colspan=2></td>
+					<% end %>
+				<% end %>
+			<% end %>
+		</tr>
+	<% end %>
+	</table>
+<% end %>
+<br/><br/>
+
+<% if @editable %>
+<%= button_to "Consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
+<% end %>

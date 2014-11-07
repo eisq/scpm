@@ -1,0 +1,7 @@
+<%= button_to "Macro-Objectives", {:action => "index_activity" }, :method => :post %>
+
+<% form_for @activity, :url=>{:action=>'create_activity'} do |f| -%>
+  <%= render(:partial => "form_activity") %>
+  <p><label>&nbsp;</label>
+  <%= submit_tag 'Create' %></p>
+<% end -%>

@@ -7,7 +7,11 @@
 	<% milestone_name_id = MilestoneName.first(:conditions => ["title= ?", milestone.name]) %>
 
 	<% if ((milestone_name_id!= nil) and (milestone.is_eligible_for_spider?) and (milestone.name[0..1]!='QG')) and milestone.is_virtual == false %>
-		<%= link_to image_tag('spider_icon.png'), :controller=>'spiders', :action=>'project_spider', :project_id=>milestone.project_id, :milestone_id=>milestone, :create_spider=>0, :editable=>editable %>
+		<% if @project.deviation_spider %>
+      <%= link_to image_tag('spider_icon.png'), :controller=>'deviation_spiders', :action=>'index', :milestone_id=>milestone %>
+    <% else %>
+      <%= link_to image_tag('spider_icon.png'), :controller=>'spiders', :action=>'project_spider', :project_id=>milestone.project_id, :milestone_id=>milestone, :create_spider=>0, :editable=>editable %>
+    <% end %>
 	<% end %>
   </div>
   <div class="milestone_comments status<%=milestone.status%>">
