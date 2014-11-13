@@ -20,16 +20,16 @@
 }
 .deviation_spider_deliverable_chart{
 	right: 0px;
-	top: 100px;
-	width : 500px;
+	top: 80px;
+	width : 520px;
 	height : 240px;
 	margin: 0 auto;
 	position: fixed;
 }
 .deviation_spider_activity_chart{
 	right: 0px;
-	top: 330px;
-	width : 500px;
+	top: 320px;
+	width : 520px;
 	height : 240px;
 	margin: 0 auto;
 	position: fixed;
