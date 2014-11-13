@@ -577,7 +577,6 @@ class DeviationSpidersController < ApplicationController
 	# INTERNAL
 	# **
 	def generate_current_table(spider, meta_activity_id)
-		Rails.logger.info("blablabla")
 		@questions = DeviationSpiderValue.find(:all, 
 		:joins => ["JOIN deviation_spider_deliverables ON deviation_spider_deliverables.id = deviation_spider_values.deviation_spider_deliverable_id",
 		"JOIN deviation_questions ON deviation_questions.id = deviation_spider_values.deviation_question_id",
@@ -590,10 +589,14 @@ class DeviationSpidersController < ApplicationController
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
 		deliverable_ids_cleaned = Array.new
-		
+
 		deliverable_ids.each do |deliv|
-			if supposed_to_be_added(last_reference.id, deliv.id)
-				deliverable_ids_cleaned << deliv
+			if last_reference
+				if supposed_to_be_added(last_reference.id, deliv.id)
+					deliverable_ids_cleaned << deliv
+				end
+			else
+				deliverable_ids_cleaned = deliverable_ids
 			end
 		end
 

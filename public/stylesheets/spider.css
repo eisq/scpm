@@ -9,7 +9,6 @@
 	float: right;
 	right: 0px;
 	top: 180px;
-	position: fixed;
 /*	min-width: 300px;*/
 /*	max-width: 600px;*/ 
 	width : 600px;
@@ -19,12 +18,21 @@
 	margin: 0 auto;
 	display: none;
 }
-.deviation_spider_chart{
+.deviation_spider_deliverable_chart{
 	right: 0px;
-	top: 180px;
-	width : 600px;
-	height : 400px;
+	top: 100px;
+	width : 500px;
+	height : 230px;
 	margin: 0 auto;
+	position: fixed;
+}
+.deviation_spider_activity_chart{
+	right: 0px;
+	top: 330px;
+	width : 500px;
+	height : 230px;
+	margin: 0 auto;
+	position: fixed;
 }
 .deviation_spider_export_chart{
 	right: 0px;
