@@ -577,6 +577,7 @@ class DeviationSpidersController < ApplicationController
 	# INTERNAL
 	# **
 	def generate_current_table(spider, meta_activity_id)
+		Rails.logger.info("blablabla")
 		@questions = DeviationSpiderValue.find(:all, 
 		:joins => ["JOIN deviation_spider_deliverables ON deviation_spider_deliverables.id = deviation_spider_values.deviation_spider_deliverable_id",
 		"JOIN deviation_questions ON deviation_questions.id = deviation_spider_values.deviation_question_id",
@@ -588,9 +589,11 @@ class DeviationSpidersController < ApplicationController
 		#Search in the list of all deliverables for a milestone, if there is one which is not present in the current spider.
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
+		deliverable_ids_cleaned = Array.new
+		
 		deliverable_ids.each do |deliv|
-			if !supposed_to_be_added(last_reference.id, deliv.id)
-				deliverable_ids.slice!(deliv)
+			if supposed_to_be_added(last_reference.id, deliv.id)
+				deliverable_ids_cleaned << deliv
 			end
 		end
 
@@ -599,7 +602,7 @@ class DeviationSpidersController < ApplicationController
 		                      	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 		                      	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 		                      	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"], 
-		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and deviation_deliverables.is_active = 1", deliverable_ids, spider.milestone.project.lifecycle_object.id, spider.milestone.name]).map { |d| [d.name, d.id]}
+		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and deviation_deliverables.is_active = 1", deliverable_ids_cleaned, spider.milestone.project.lifecycle_object.id, spider.milestone.name]).map { |d| [d.name, d.id]}
 		@deliverables_to_add = deliverables_to_add & deliverables_to_add
 	end
 

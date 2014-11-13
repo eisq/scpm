@@ -56,7 +56,7 @@ class DeviationSpider < ActiveRecord::Base
 							settings = DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 							if settings.count > 0
 								settings.each do |setting|
-									if (setting.answer_1 != "No" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+									if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
 										new_deviation_spider_values = DeviationSpiderValue.new
 										new_deviation_spider_values.deviation_question_id = question.id
 										new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id

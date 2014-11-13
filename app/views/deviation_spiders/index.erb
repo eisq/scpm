@@ -118,7 +118,6 @@ $( document ).ready(function() {
 				<td></td>
 				<td></td>
 				<td></td>
-				<td></td>
 			</tr>
 			<% table_activity 		= q.deviation_question.deviation_activity_id %>
 			<% table_deliverable	= nil %>
@@ -127,15 +126,16 @@ $( document ).ready(function() {
 		<!-- DELIVERABLE  -->
 		<% if table_deliverable == nil or table_deliverable != q.deviation_spider_deliverable.deviation_deliverable_id %>
 			<tr class="deviation_spider_tr_deliverable">
-				<td></td>
-				<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
-				<td colspan="2">
+				<td width="300"><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
+				<td>
 					<% deliverable_not_done_class = "deliverable_not_done" %>
 					<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
 
 
 					<%= button_to "Deliverable will not be done", {:action => "set_false_for_spider_deliverable", :meta_activity_id => @meta_activity_id, :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all Macro-Objectives to NO ?", :method => :post, :id => "button_all_not_done_"+ q.id.to_s, :class => deliverable_not_done_class %> 
 				</td>
+				<td></td>
+				<td></td>
 			</tr>
 			<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
 		<% end %>
@@ -143,9 +143,9 @@ $( document ).ready(function() {
 		<!-- QUESTION -->
 		<tr>
 			<td></td>
+			<td><%= q.deviation_question.question_text %></td>
 			<td></td>
-			<td width="400"><%= q.deviation_question.question_text %></td>
-			<td>  
+			<td width="150">  
 				<% yes_class = 'class="answer_button"' %>
 				<% no_class = 'class="answer_button"' %>
 				<% if q.answer %>
