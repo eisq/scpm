@@ -24,65 +24,70 @@ class DeviationSpider < ActiveRecord::Base
 		deliverables_added_by_hand = self.get_deliverables_added_by_hand_in_previous_milestones
 		if deliverables_added_by_hand and deliverables_added_by_hand.count > 0
 			deliverables_added_by_hand.each do |deliverable|
-				add_deliverable(deliverable, spider_parameters.activities, spider_parameters.psu_imported)
+				if deliverable.id == 1
+					raise "on est dans le init by hand"
+				end
+				add_deliverable(deliverable, spider_parameters.activities, spider_parameters.psu_imported, true, false)
 			end
 		end
 	end
 
 	def add_deliverable(deliverable, activities, psu_imported, is_added_by_hand=false, init_answers=false)
-		new_spider_deliverable = DeviationSpiderDeliverable.new
-		new_spider_deliverable.deviation_spider_id = self.id
-		new_spider_deliverable.deviation_deliverable_id = deliverable.id
-		new_spider_deliverable.is_added_by_hand = is_added_by_hand
-		if deliverable_not_done?(deliverable.id)
-			new_spider_deliverable.not_done = true
-		end		
-		new_spider_deliverable.save
+		#check if we didn't already recorded this deliverable for this spider
+		spider_deliverable_already_recorded = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ?", self.id, deliverable.id])
+		if !spider_deliverable_already_recorded
+			new_spider_deliverable = DeviationSpiderDeliverable.new
+			new_spider_deliverable.deviation_spider_id = self.id
+			new_spider_deliverable.deviation_deliverable_id = deliverable.id
+			new_spider_deliverable.is_added_by_hand = is_added_by_hand
+			if deliverable_not_done?(deliverable.id)
+				new_spider_deliverable.not_done = true
+			end		
+			new_spider_deliverable.save
+		end
 
 		project_id = self.milestone.project_id
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
 
 		if activities and activities.count > 0
 			activities.each do |activity|
-				questions = DeviationQuestion.find(:all, 
-				    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
-				    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
-				                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-				            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, self.milestone.name],
-				            :group=>"deviation_questions.id")
-				if questions and questions.count > 0
-					questions.each do |question|
-						if question.is_active
-							settings = DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
-							if settings.count > 0
-								settings.each do |setting|
-									if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
-										new_deviation_spider_values = DeviationSpiderValue.new
-										new_deviation_spider_values.deviation_question_id = question.id
-										new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
-										if new_spider_deliverable.not_done
-											new_deviation_spider_values.answer = false
-										else
-											new_deviation_spider_values.answer = nil
-										end
-										new_deviation_spider_values.answer_reference = question.answer_reference
-										new_deviation_spider_values.save
+				to_add = false
+				setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+				if setting
+					if (is_added_by_hand or setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+						to_add = true
+					end
+				elsif !psu_imported
+					to_add = true
+				end
+
+				if to_add
+					questions = DeviationQuestion.find(:all, 
+					    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
+					    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
+					                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
+					            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, self.milestone.name],
+					            :group=>"deviation_questions.id")
+					if questions and questions.count > 0
+						questions.each do |question|
+							if question.is_active
+								question_already_recorded = DeviationSpiderValue.find(:first, :conditions=>["deviation_spider_deliverable_id = ? and deviation_question_id = ?", deliverable.id, question.id])
+								if !question_already_recorded
+									new_deviation_spider_values = DeviationSpiderValue.new
+									new_deviation_spider_values.deviation_question_id = question.id
+									new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
+									if new_spider_deliverable.not_done
+										new_deviation_spider_values.answer = false
+									else
+										new_deviation_spider_values.answer = nil
 									end
+									new_deviation_spider_values.answer_reference = question.answer_reference
+									new_deviation_spider_values.save
 								end
-							elsif is_added_by_hand or !psu_imported
-								new_deviation_spider_values = DeviationSpiderValue.new
-								new_deviation_spider_values.deviation_question_id = question.id
-								new_deviation_spider_values.deviation_spider_deliverable_id = new_spider_deliverable.id
-								if new_spider_deliverable.not_done
-									new_deviation_spider_values.answer = false
-								else
-									new_deviation_spider_values.answer = nil
-								end
-								new_deviation_spider_values.answer_reference = question.answer_reference
-								new_deviation_spider_values.save
 							end
 						end
 					end
+					to_add = false
 				end
 			end
 		end

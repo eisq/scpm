@@ -548,7 +548,7 @@ class DeviationSpidersController < ApplicationController
 			deviation_deliverable 		= DeviationDeliverable.find(:first, :conditions => ["id = ?", deviation_deliverable_id])
 			deviation_spider 			= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
 			parameters 					= deviation_spider.get_parameters
-			deviation_spider.add_deliverable(deviation_deliverable, parameters.activities, parameters.psu_imported, true)
+			deviation_spider.add_deliverable(deviation_deliverable, parameters.activities, parameters.psu_imported, true, false)
 			redirect_to :action=>:index, :milestone_id=>deviation_spider.milestone_id
 		else
 			redirect_to :controller=>:projects, :action=>:index
@@ -590,6 +590,7 @@ class DeviationSpidersController < ApplicationController
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
 		deliverable_ids_cleaned = Array.new
 
+		#in deliverable_ids, we have all referenced deliverables, even if in the setting we say that we don't want it.
 		deliverable_ids.each do |deliv|
 			if last_reference
 				if supposed_to_be_added(last_reference.id, deliv.id)
@@ -609,6 +610,7 @@ class DeviationSpidersController < ApplicationController
 		@deliverables_to_add = deliverables_to_add & deliverables_to_add
 	end
 
+	#check if in the seetings we said that it shall be added
 	def supposed_to_be_added(last_reference_id, deliverable_id)
 		to_add = false
 		if last_reference_id and deliverable_id

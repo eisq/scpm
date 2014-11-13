@@ -52,30 +52,24 @@ $( document ).ready(function() {
 	<!-- ACTIVITY -->
 	<% if table_activity == nil or table_activity != q.deviation_question.deviation_activity_id %>
 		<% if table_activity != nil %>
-			</table><br />
-		<% end %>
-		<table class="deviation_spider_table">
-		<tr class="deviation_spider_tr_activity">
-			<td><%= q.deviation_question.deviation_activity.name %></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<% table_activity 		= q.deviation_question.deviation_activity_id %>
-		<% table_deliverable	= nil %>
+				</table><br />
+			<% end %>
+			<table class="deviation_spider_table">
+			<tr class="deviation_spider_tr_activity">
+				<td colspan="3"><%= q.deviation_question.deviation_activity.name %></td>
+			</tr>
+			<% table_activity 		= q.deviation_question.deviation_activity_id %>
+			<% table_deliverable	= nil %>
 	<% end %>
 
 	<!-- DELIVERABLE  -->
 	<% if table_deliverable == nil or table_deliverable != q.deviation_spider_deliverable.deviation_deliverable_id %>
 		<tr class="deviation_spider_tr_deliverable">
-			<td></td>
-			<td><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
-			<td colspan=2>
+			<td width="200"><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
+			<td colspan="2">
 				<% deliverable_not_done_class = "deliverable_not_done" %>
 				<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
-
-				<%= button_to "Deliverable will not be done", {:action => "set_false_for_spider_deliverable", :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure the deliverable will not be done (Will set all Macro-Objectives question into NO)", :method => :post, :class => deliverable_not_done_class, :disabled => true %> 
+				<%= button_to "Deliverable will not be done", {:action => "set_false_for_spider_deliverable", :meta_activity_id => @meta_activity_id, :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all Macro-Objectives to NO ?", :method => :post, :id => "button_all_not_done_"+ q.id.to_s, :class => deliverable_not_done_class %> 
 			</td>
 		</tr>
 		<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
@@ -83,23 +77,20 @@ $( document ).ready(function() {
 
 	<!-- QUESTION -->
 	<tr>
-		<td></td>
-		<td></td>
-		<td width="400"><%= q.deviation_question.question_text %></td>
-		<td>  
-			<% yes_class = 'class="answer_button"' %>
-			<% no_class = 'class="answer_button"' %>
-			<% if q.answer %>
-				<% yes_class = 'class="answer_button_select"' %>
-			<% end %>
-			<% if !q.answer and q.answer != nil %>
-				<% no_class = 'class="answer_button_select"' %>
-			<% end %>
-
-			<input disabled <%= yes_class %> id="button_yes_<%= q.id.to_s %>" type="button" value="Yes" onclick="set_question('<%= q.id.to_s %>', true);" />
-			<input disabled <%= no_class %>  id="button_no_<%= q.id.to_s %>"  type="button" value="No" onclick="set_question('<%= q.id.to_s %>', false);" />
-		</td>
-	</tr>
+			<td colspan="2"> - <%= q.deviation_question.question_text %></td>
+			<td width="110">  
+				<% yes_class = 'class="answer_button"' %>
+				<% no_class = 'class="answer_button"' %>
+				<% if q.answer %>
+					<% yes_class = 'class="answer_button_select"' %>
+				<% end %>
+				<% if !q.answer and q.answer != nil %>
+					<% no_class = 'class="answer_button_select"' %>
+				<% end %>
+				<input disabled <%= yes_class %> id="button_yes_<%= q.id.to_s %>" type="button" value="Yes" onclick="set_question('<%= q.id.to_s %>', true);" />
+				<input disabled <%= no_class %>  id="button_no_<%= q.id.to_s %>"  type="button" value="No" onclick="set_question('<%= q.id.to_s %>', false);" />
+			</td>
+		</tr>
 <% end %>
 </table>
 
@@ -118,30 +109,27 @@ $( document ).ready(function() {
 
 <br/>
 <h2>Export</h2>
-	<table>
-	<tr>
-		<td>Deliverables chart: </td>
-		<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
-	</tr>
-		<td>Macro-Objectives chart: </td>
-		<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
-	</tr>
-	<tr>
-		<td>Customization: </td>
-		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
-		<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>
-		<td>To be added to M3/G2 Quality Slide</td>
-	</tr>
-	<tr>
-		<td>Result of GPP adherence: </td>
-		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
-		<td colspan=2>To be added to M3/G2 Quality Slide</td>
-	</tr>
-	</table>
+<table>
+<tr>
+	<td>Deliverables chart: </td>
+	<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
+</tr>
+	<td>Macro-Objectives chart: </td>
+	<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
+</tr>
+<tr>
+	<td>Customization: </td>
+	<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
+	<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>
+	<td>To be added to M3/G2 Quality Slide</td>
+</tr>
+<tr>
+	<td>Result of GPP adherence: </td>
+	<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
+	<td colspan=2>To be added to M3/G2 Quality Slide</td>
+</tr>
+</table>
 
-<br/><br/>
-<h2>Charts</h2>
-
-<div class="deviation_spider_chart" id="deviation_spider_chart_deliverable"></div>
-<div class="deviation_spider_chart" id="deviation_spider_chart_activity"></div>
+<div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>
+<div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
 <div class="deviation_spider_export_chart" id="export_chart"></div>
