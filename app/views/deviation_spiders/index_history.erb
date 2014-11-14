@@ -111,11 +111,12 @@ $( document ).ready(function() {
 <h2>Export</h2>
 <table>
 <tr>
-	<td>Deliverables chart: </td>
-	<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
-</tr>
 	<td>Macro-Objectives chart: </td>
 	<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
+</tr>
+	<td>Deliverables chart: </td>
+	<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
+	<td colspan=2>To be added in Backup Slides</td>
 </tr>
 <tr>
 	<td>Customization: </td>
@@ -130,6 +131,6 @@ $( document ).ready(function() {
 </tr>
 </table>
 
-<div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>
 <div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
+<div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>
 <div class="deviation_spider_export_chart" id="export_chart"></div>

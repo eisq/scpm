@@ -590,15 +590,15 @@ class DeviationSpidersController < ApplicationController
 		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
 		deliverable_ids_cleaned = Array.new
 
-		#in deliverable_ids, we have all referenced deliverables, even if in the setting we say that we don't want it.
-		deliverable_ids.each do |deliv|
-			if last_reference
-				if supposed_to_be_added(last_reference.id, deliv.id)
+		if last_reference
+			#in deliverable_ids, we have all referenced deliverables, even if in the setting we say that we don't want it.
+			deliverable_ids.each do |deliv|
+				if supposed_to_be_added(spider.id, last_reference.id, deliv)
 					deliverable_ids_cleaned << deliv
 				end
-			else
-				deliverable_ids_cleaned = deliverable_ids
 			end
+		else
+			deliverable_ids_cleaned = deliverable_ids
 		end
 
 		deliverables_to_add = DeviationDeliverable.find(:all, 
@@ -611,19 +611,26 @@ class DeviationSpidersController < ApplicationController
 	end
 
 	#check if in the seetings we said that it shall be added
-	def supposed_to_be_added(last_reference_id, deliverable_id)
+	def supposed_to_be_added(spider_id, last_reference_id, deliverable_id)
 		to_add = false
-		if last_reference_id and deliverable_id
-			deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
-			if deliverable
-				settings = DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
-				settings.each do |setting|
-					if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
-						to_add = true
+		deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
+		spider_deliverable = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ?", spider_id, deliverable_id])
+		settings = DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
+		if settings
+			settings.each do |setting|
+				if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+					to_add = true
+					if deliverable_id == 46
+						raise "log1"
 					end
 				end
 			end
 		end
+
+		if spider_deliverable.is_added_by_hand
+			to_add = true
+		end
+
 		return to_add
 	end
 

@@ -24,9 +24,6 @@ class DeviationSpider < ActiveRecord::Base
 		deliverables_added_by_hand = self.get_deliverables_added_by_hand_in_previous_milestones
 		if deliverables_added_by_hand and deliverables_added_by_hand.count > 0
 			deliverables_added_by_hand.each do |deliverable|
-				if deliverable.id == 1
-					raise "on est dans le init by hand"
-				end
 				add_deliverable(deliverable, spider_parameters.activities, spider_parameters.psu_imported, true, false)
 			end
 		end
@@ -34,8 +31,8 @@ class DeviationSpider < ActiveRecord::Base
 
 	def add_deliverable(deliverable, activities, psu_imported, is_added_by_hand=false, init_answers=false)
 		#check if we didn't already recorded this deliverable for this spider
-		spider_deliverable_already_recorded = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ?", self.id, deliverable.id])
-		if !spider_deliverable_already_recorded
+		new_spider_deliverable = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ?", self.id, deliverable.id])
+		if !new_spider_deliverable
 			new_spider_deliverable = DeviationSpiderDeliverable.new
 			new_spider_deliverable.deviation_spider_id = self.id
 			new_spider_deliverable.deviation_deliverable_id = deliverable.id
@@ -43,6 +40,10 @@ class DeviationSpider < ActiveRecord::Base
 			if deliverable_not_done?(deliverable.id)
 				new_spider_deliverable.not_done = true
 			end		
+			new_spider_deliverable.save
+			new_spider_deliverable_id = new_spider_deliverable.id
+		else
+			new_spider_deliverable.is_added_by_hand = is_added_by_hand
 			new_spider_deliverable.save
 		end
 
@@ -54,7 +55,7 @@ class DeviationSpider < ActiveRecord::Base
 				to_add = false
 				setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 				if setting
-					if (is_added_by_hand or setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+					if (new_spider_deliverable.is_added_by_hand or setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
 						to_add = true
 					end
 				elsif !psu_imported
@@ -148,7 +149,7 @@ class DeviationSpider < ActiveRecord::Base
 
 
 	# ***
-	# GET DELIVERABLES FROM PREVIOUS DATA
+	# GET DELIVERABLES FROM PREVIOUS SPIDER
 	# ***
 	def get_deliverables_added_by_hand_in_previous_milestones
 		deliverables_found = Array.new
@@ -170,16 +171,41 @@ class DeviationSpider < ActiveRecord::Base
 			if last_spider != nil
 				last_spider.deviation_spider_deliverables.each do |spider_deliverable|
 					if spider_deliverable.is_added_by_hand and !deviation_deliverables.include? spider_deliverable.deviation_deliverable
-
-						questions_count = DeviationQuestion.count(:joins=>["deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id"], :conditions=>["deviation_questions.deviation_deliverable_id = ? and milestone_names.title = ?", spider_deliverable.deviation_deliverable.id, self.milestone.name])
-						if questions_count > 0
-							deliverables_found << spider_deliverable.spider_deliverable
-						end
+						deliverables_found << spider_deliverable.deviation_deliverable
 					end
 				end
 			end
 		end
+		return deliverables_found
 	end
+
+	#def get_deliverables_added_by_hand_in_previous_milestones
+	#	deliverables_found = Array.new
+#
+	#	deviation_deliverables = Array.new
+	#	self.deviation_spider_deliverables.each do |spider_deliverable|
+	#		deviation_deliverables << spider_deliverable.deviation_deliverable
+	#	end
+
+		# Get milestone index
+	#	project_milestones = get_project_milestones_with_spider()
+	#	self_index = get_spider_milestone_index()
+
+		# Search for each last spider consolidated for each previous milestone if we have deviation_deliverable added by hand and with questions availables for the milestone of our current spider
+	#	for i in 0..self_index
+	#		project_milestone = project_milestones[i]
+	#		last_spider = DeviationSpider.find(:last, :joins=>["JOIN deviation_spider_consolidations ON deviation_spiders.id  = deviation_spider_consolidations.deviation_spider_id"], :conditions =>["milestone_id = ?", project_milestone.id] )
+
+	#		if last_spider != nil
+	#			last_spider.deviation_spider_deliverables.each do |spider_deliverable|
+	#				if spider_deliverable.is_added_by_hand and !deviation_deliverables.include? spider_deliverable.deviation_deliverable
+	#					deliverables_found << spider_deliverable.deviation_deliverable
+	#				end
+	#			end
+	#		end
+	#	end
+	#	return deliverables_found
+	#end
 
 	# Return a list of deliverables are not be completed on the previous milestone.
 	# This requirement is not needed anymore.
