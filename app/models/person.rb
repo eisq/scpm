@@ -320,7 +320,7 @@ class Person < ActiveRecord::Base
     allTickets = CiProject.find(:all, :conditions=>["assigned_to=?", self.rmt_user])
     # CiProject.late_css(p.sqli_validation_date) -> get if late for this date
     late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
-    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date < Now()) or (airbus_validation_date_review < Now()) or (deployment_date < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
+    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date < Now()) or (airbus_validation_date < Now()) or (deployment_date < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
     lateObjective  = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date_objective < Now()) or (airbus_validation_date_objective < Now()) or (deployment_date_objective < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_objective desc")
     assignedNotKickoff = CiProject.find(:all, :conditions=>["kick_off_date IS NULL and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
     returnHash = {}
