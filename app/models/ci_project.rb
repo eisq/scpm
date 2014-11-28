@@ -461,32 +461,32 @@
 	end
 	
 	def sqli_delay
-    	return nil if !self.sqli_validation_date_objective
+    	return nil if !self.sqli_validation_date_objective or !self.sqli_validation_date
     	return self.sqli_validation_date - self.sqli_validation_date_objective
 	end
 	
 	def sqli_delay_new
-    	return nil if !self.sqli_validation_date_objective
+    	return nil if !self.sqli_validation_date_objective or !self.sqli_validation_date
     	return self.sqli_validation_date - self.sqli_validation_date_objective
 	end
 	
 	def airbus_delay
-    	return nil if !self.airbus_validation_date_objective
-    	return self.airbus_validation_date_review - self.airbus_validation_date_objective
+    	return nil if !self.airbus_validation_date_objective or !self.airbus_validation_date
+    	return self.airbus_validation_date - self.airbus_validation_date_objective
 	end
 	
 	def airbus_delay_new
-    	return nil if !self.airbus_validation_date_objective
+    	return nil if !self.airbus_validation_date_objective or !self.airbus_validation_date
     	return self.airbus_validation_date - self.airbus_validation_date_objective
 	end
 	
 	def deployment_delay
-    	return nil if !self.deployment_date_objective
+    	return nil if !self.deployment_date_objective or !self.deployment_date
     	return self.deployment_date - self.deployment_date_objective
 	end
 	
 	def deployment_delay_new
-    	return nil if !self.deployment_date_objective
+    	return nil if !self.deployment_date_objective or !self.deployment_date
     	return self.deployment_date - self.deployment_date_objective
 	end
 	
