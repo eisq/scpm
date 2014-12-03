@@ -179,34 +179,6 @@ class DeviationSpider < ActiveRecord::Base
 		return deliverables_found
 	end
 
-	#def get_deliverables_added_by_hand_in_previous_milestones
-	#	deliverables_found = Array.new
-#
-	#	deviation_deliverables = Array.new
-	#	self.deviation_spider_deliverables.each do |spider_deliverable|
-	#		deviation_deliverables << spider_deliverable.deviation_deliverable
-	#	end
-
-		# Get milestone index
-	#	project_milestones = get_project_milestones_with_spider()
-	#	self_index = get_spider_milestone_index()
-
-		# Search for each last spider consolidated for each previous milestone if we have deviation_deliverable added by hand and with questions availables for the milestone of our current spider
-	#	for i in 0..self_index
-	#		project_milestone = project_milestones[i]
-	#		last_spider = DeviationSpider.find(:last, :joins=>["JOIN deviation_spider_consolidations ON deviation_spiders.id  = deviation_spider_consolidations.deviation_spider_id"], :conditions =>["milestone_id = ?", project_milestone.id] )
-
-	#		if last_spider != nil
-	#			last_spider.deviation_spider_deliverables.each do |spider_deliverable|
-	#				if spider_deliverable.is_added_by_hand and !deviation_deliverables.include? spider_deliverable.deviation_deliverable
-	#					deliverables_found << spider_deliverable.deviation_deliverable
-	#				end
-	#			end
-	#		end
-	#	end
-	#	return deliverables_found
-	#end
-
 	# Return a list of deliverables are not be completed on the previous milestone.
 	# This requirement is not needed anymore.
 	def get_deliverables_not_completed
