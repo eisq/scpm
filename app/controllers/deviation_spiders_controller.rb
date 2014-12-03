@@ -453,23 +453,23 @@ class DeviationSpidersController < ApplicationController
 		end
 	end
 
-	def set_spider_deliverables
-		deliverable_ids = params[:deliverables]
-		deviation_spider_id = params[:deviation_spider_id]
-
-		if deviation_spider_id
-	   		@deviation_spider = DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
-			
-			deliverable_ids.each do |deliverable_id|
-				deviation_deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
-				if deviation_deliverable
-					deviation_spider_parameters = @deviation_spider.get_parameters
-					@deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities, deviation_spider_parameters.psu_imported)
-				end
-			end
-			render(:nothing=>true)
-		end
-	end
+	#def set_spider_deliverables
+	#	deliverable_ids = params[:deliverables]
+	#	deviation_spider_id = params[:deviation_spider_id]
+	#
+	#	if deviation_spider_id
+	#   		@deviation_spider = DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+	#		
+	#		deliverable_ids.each do |deliverable_id|
+	#			deviation_deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
+	#			if deviation_deliverable
+	#				deviation_spider_parameters = @deviation_spider.get_parameters
+	#				@deviation_spider.add_deliverable(deviation_deliverable, deviation_spider_parameters.activities, deviation_spider_parameters.psu_imported)
+	#			end
+	#		end
+	#		render(:nothing=>true)
+	#	end
+	#end
 
 	def update_question
 		deviation_spider_value_id = params[:deviation_spider_value_id]
@@ -548,7 +548,8 @@ class DeviationSpidersController < ApplicationController
 			deviation_deliverable 		= DeviationDeliverable.find(:first, :conditions => ["id = ?", deviation_deliverable_id])
 			deviation_spider 			= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
 			parameters 					= deviation_spider.get_parameters
-			deviation_spider.add_deliverable(deviation_deliverable, parameters.activities, parameters.psu_imported, true, false)
+			questions = deviation_spider.get_questions
+			deviation_spider.add_deliverable(questions, deviation_deliverable, parameters.activities, parameters.psu_imported, true, false)
 			redirect_to :action=>:index, :milestone_id=>deviation_spider.milestone_id
 		else
 			redirect_to :controller=>:projects, :action=>:index

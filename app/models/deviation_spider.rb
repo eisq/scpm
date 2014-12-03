@@ -15,21 +15,32 @@ class DeviationSpider < ActiveRecord::Base
 	# ***
 	def init_spider_data
 		spider_parameters = self.get_parameters
+		questions = self.get_questions
 
 		if spider_parameters and spider_parameters.deliverables.count > 0
 			spider_parameters.deliverables.each do |deliverable|
-				add_deliverable(deliverable, spider_parameters.activities, spider_parameters.psu_imported)
+				add_deliverable(questions, deliverable, spider_parameters.activities, spider_parameters.psu_imported)
 			end
 		end
 		deliverables_added_by_hand = self.get_deliverables_added_by_hand_in_previous_milestones
 		if deliverables_added_by_hand and deliverables_added_by_hand.count > 0
 			deliverables_added_by_hand.each do |deliverable|
-				add_deliverable(deliverable, spider_parameters.activities, spider_parameters.psu_imported, true, false)
+				add_deliverable(questions, deliverable, spider_parameters.activities, spider_parameters.psu_imported, true, false)
 			end
 		end
 	end
 
-	def add_deliverable(deliverable, activities, psu_imported, is_added_by_hand=false, init_answers=false)
+	def get_questions
+		questions = DeviationQuestion.find(:all, 
+					    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
+					    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
+					                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
+					            :conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", self.milestone.project.lifecycle_object.id, self.milestone.name],
+					            :group=>"deviation_questions.id")
+		return questions
+	end
+
+	def add_deliverable(questions, deliverable, activities, psu_imported, is_added_by_hand=false, init_answers=false)
 		#check if we didn't already recorded this deliverable for this spider
 		new_spider_deliverable = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ?", self.id, deliverable.id])
 		if !new_spider_deliverable
@@ -58,20 +69,14 @@ class DeviationSpider < ActiveRecord::Base
 					if (new_spider_deliverable.is_added_by_hand or setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
 						to_add = true
 					end
-				elsif !psu_imported
+				elsif !setting and !psu_imported
 					to_add = true
 				end
 
 				if to_add
-					questions = DeviationQuestion.find(:all, 
-					    		:joins => ["JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
-					    			"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
-					                "JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-					            :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", deliverable.id, activity.id, self.milestone.project.lifecycle_object.id, self.milestone.name],
-					            :group=>"deviation_questions.id")
 					if questions and questions.count > 0
 						questions.each do |question|
-							if question.is_active
+							if question.is_active and question.deviation_activity_id == activity.id and question.deviation_deliverable_id == deliverable.id
 								question_already_recorded = DeviationSpiderValue.find(:first, :conditions=>["deviation_spider_deliverable_id = ? and deviation_question_id = ?", deliverable.id, question.id])
 								if !question_already_recorded
 									new_deviation_spider_values = DeviationSpiderValue.new
