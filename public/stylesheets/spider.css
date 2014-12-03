@@ -9,7 +9,6 @@
 	float: right;
 	right: 0px;
 	top: 180px;
-	position: fixed;
 /*	min-width: 300px;*/
 /*	max-width: 600px;*/ 
 	width : 600px;
@@ -19,12 +18,21 @@
 	margin: 0 auto;
 	display: none;
 }
-.deviation_spider_chart{
+.deviation_spider_deliverable_chart{
 	right: 0px;
-	top: 180px;
-	width : 600px;
-	height : 400px;
+	top: 320px;
+	width : 520px;
+	height : 240px;
 	margin: 0 auto;
+	position: fixed;
+}
+.deviation_spider_activity_chart{
+	right: 0px;
+	top: 80px;
+	width : 520px;
+	height : 240px;
+	margin: 0 auto;
+	position: fixed;
 }
 .deviation_spider_export_chart{
 	right: 0px;
@@ -90,14 +98,14 @@
 
 .deliverable_not_done
 {
-	width: 230px;
+	width: 225px;
   	border: 1px solid #900;
   	font-weight: bold;
   	border-radius: 5px;
 }
 .deliverable_not_done_select
 {
-	width: 230px;
+	width: 225px;
   	color: #FFF;
   	background-color: #900;
   	border: 1px solid #900;
@@ -124,6 +132,7 @@
 .deviation_spider_table {
   	border-collapse: collapse;
 	border: 1px solid red;
+	width: 800px;
 }
 .deviation_spider_tr_activity {
 	background-color:red;
