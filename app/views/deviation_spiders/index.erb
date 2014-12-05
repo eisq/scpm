@@ -192,11 +192,11 @@ $( document ).ready(function() {
 		<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>
 		<td>To be added to M3/G2 Quality Slide</td>
 	</tr>
-	<tr>
+	<!-- <tr>
 		<td>Result of GPP adherence: </td>
 		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
 		<td colspan=2>To be added to M3/G2 Quality Slide</td>
-	</tr>
+	</tr> -->
 	</table>
 
 	<div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
