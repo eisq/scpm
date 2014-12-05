@@ -621,9 +621,6 @@ class DeviationSpidersController < ApplicationController
 			settings.each do |setting|
 				if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
 					to_add = true
-					if deliverable_id == 46
-						raise "log1"
-					end
 				end
 			end
 		end
