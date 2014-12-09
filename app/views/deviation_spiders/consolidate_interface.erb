@@ -41,13 +41,14 @@ $( document ).ready(function() {
 <% @all_meta_activities.each do |meta_activity| %>
 <% activities = Array.new %>
 	<h3><%= meta_activity.name %></h3>
-	<table border=1><tr>
+	<table class="consolidation_table">
 
+	<tr class="consolidation_tr_activity">
 	<td></td>
 	<% @all_activities.each do |activity| %>
 		<% if activity.deviation_meta_activity == meta_activity %>
 		<% activities << activity %>
-			<td colspan=2>
+			<td colspan=2 class="consolidation_td_activity">
 			<bold><%= activity.name %></bold>
 			</td>
 		<% end %>
@@ -55,9 +56,10 @@ $( document ).ready(function() {
 	</tr>
 
 	<% @deliverables.each do |deliverable| %>
+	<% deliverable_applicable = true %>
 	<% consolidation_temp = @consolidations.select {|conso_temp| conso_temp.deliverable == deliverable} %>
-		<tr>
-			<td>
+		<tr class="consolidation_tr_deliverable">
+			<td class="consolidation_td_deliverable">
 				<%= deliverable.name %>
 			</td>
 			<% activities.each do |activity| %>
@@ -65,22 +67,22 @@ $( document ).ready(function() {
 					<% consolidation = consolidation_temp.find {|conso| conso.activity == activity} %>
 					<% if consolidation %>
 						<% if @editable %>
-							<td>
+							<td class="consolidation_td_deliverable_left">
 								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
 							</td>
-							<td>
-								<%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.conso_id}", :class => "conso_tf") %>
+							<td class="consolidation_td_deliverable_right">
+								<%= text_area('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf"}) %>
 							</td>
 						<% else %>
-							<td>
+							<td class="consolidation_td_deliverable_left">
 								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
 							</td>
-							<td>
-								<%= text_field_tag('justification_tf', consolidation.justification, :id=>"#{consolidation.conso_id}", :class => "conso_tf", :disabled => true) %>
+							<td class="consolidation_td_deliverable_right">
+								<%= text_area('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf", :disabled=>true}) %>
 							</td>
 						<% end %>
 					<% else %>
-						<td colspan=2></td>
+						<td colspan=2 class="consolidation_td_deliverable"></td>
 					<% end %>
 				<% end %>
 			<% end %>

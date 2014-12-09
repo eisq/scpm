@@ -169,7 +169,6 @@ class DeviationSpidersController < ApplicationController
 	    	@deviation_spider.deviation_spider_deliverables.all(
 	    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"], 
 	    	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
-	    			@deliverables << spider_deliverable.deviation_deliverable
 	    	end
 	    	
 	    	if @editable
@@ -258,10 +257,10 @@ class DeviationSpidersController < ApplicationController
 	end
 
 	def update_justification
-		deviation_spider_consolidation_temp_id 		= params[:deviation_spider_consolidation_temp_id]
+		deviation_spider_consolidation_temp_id 				= params[:deviation_spider_consolidation_temp_id]
 		deviation_spider_consolidation_temp_justification 	= params[:deviation_spider_consolidation_temp_justification]
 		if deviation_spider_consolidation_temp_id and deviation_spider_consolidation_temp_justification
-			deviation_spider_consolidation_temp = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["id = ?", deviation_spider_consolidation_temp_id])
+			deviation_spider_consolidation_temp 			= DeviationSpiderConsolidationTemp.find(:first, :conditions => ["id = ?", deviation_spider_consolidation_temp_id])
 			deviation_spider_consolidation_temp.justification = deviation_spider_consolidation_temp_justification
 			deviation_spider_consolidation_temp.save
 		end
@@ -548,7 +547,7 @@ class DeviationSpidersController < ApplicationController
 			deviation_deliverable 		= DeviationDeliverable.find(:first, :conditions => ["id = ?", deviation_deliverable_id])
 			deviation_spider 			= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
 			parameters 					= deviation_spider.get_parameters
-			questions = deviation_spider.get_questions
+			questions 					= deviation_spider.get_questions
 			deviation_spider.add_deliverable(questions, deviation_deliverable, parameters.activities, parameters.psu_imported, true, false)
 			redirect_to :action=>:index, :milestone_id=>deviation_spider.milestone_id
 		else
@@ -587,8 +586,8 @@ class DeviationSpidersController < ApplicationController
 		:order => "deviation_activities.name , deviation_deliverables.name, deviation_questions.question_text")
 
 		#Search in the list of all deliverables for a milestone, if there is one which is not present in the current spider.
-		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
-		deliverable_ids = spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
+		last_reference 			= DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
+		deliverable_ids 		= spider.deviation_spider_deliverables.map {|d| d.deviation_deliverable_id }
 		deliverable_ids_cleaned = Array.new
 
 		if last_reference
@@ -613,10 +612,10 @@ class DeviationSpidersController < ApplicationController
 
 	#check if in the seetings we said that it shall be added
 	def supposed_to_be_added(spider_id, last_reference_id, deliverable_id)
-		to_add = false
-		deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
-		spider_deliverable = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ?", spider_id, deliverable_id])
-		settings = DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
+		to_add 				= false
+		deliverable 		= DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
+		spider_deliverable 	= DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ?", spider_id, deliverable_id])
+		settings 			= DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
 		if settings
 			settings.each do |setting|
 				if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))

@@ -100,7 +100,7 @@ $( document ).ready(function() {
 <% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
 <% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
-	<div style="float:left;">Operational Macro-Objective : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
+	<div style="float:left;">Operational Activities : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 	<br /><br/><br/>
 
 	<% table_activity = nil %>

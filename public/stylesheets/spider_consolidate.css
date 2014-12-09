@@ -1,0 +1,31 @@
+.consolidation_table {
+  	border-collapse: collapse;
+	border: 1px solid blue;
+	width: 800px;
+}
+.consolidation_tr_activity {
+	border: 1px solid blue;
+}
+.consolidation_td_activity {
+	border: 1px solid blue;
+	background-color:#8B8DC8;
+	color: white;
+}
+.consolidation_tr_deliverable {
+	border: 1px solid blue;
+}
+.consolidation_td_deliverable {
+	border: 1px solid blue;
+}
+.consolidation_td_deliverable_left {
+	border-top: 1px solid blue;
+	border-bottom: 1px solid blue;
+	border-left: 1px solid blue;
+	background-color:#CCCDFA;
+}
+.consolidation_td_deliverable_right {
+	border-top: 1px solid blue;
+	border-bottom: 1px solid blue;
+	border-right: 1px solid blue;
+	background-color:#CCCDFA;
+}

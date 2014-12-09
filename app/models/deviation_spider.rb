@@ -47,16 +47,12 @@ class DeviationSpider < ActiveRecord::Base
 			new_spider_deliverable = DeviationSpiderDeliverable.new
 			new_spider_deliverable.deviation_spider_id = self.id
 			new_spider_deliverable.deviation_deliverable_id = deliverable.id
-			new_spider_deliverable.is_added_by_hand = is_added_by_hand
 			if deliverable_not_done?(deliverable.id)
 				new_spider_deliverable.not_done = true
-			end		
-			new_spider_deliverable.save
-			new_spider_deliverable_id = new_spider_deliverable.id
-		else
-			new_spider_deliverable.is_added_by_hand = is_added_by_hand
-			new_spider_deliverable.save
+			end
 		end
+		new_spider_deliverable.is_added_by_hand = is_added_by_hand
+		new_spider_deliverable.save
 
 		project_id = self.milestone.project_id
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
@@ -69,7 +65,7 @@ class DeviationSpider < ActiveRecord::Base
 					if (new_spider_deliverable.is_added_by_hand or setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
 						to_add = true
 					end
-				elsif !setting and !psu_imported
+				elsif !psu_imported or new_spider_deliverable.is_added_by_hand
 					to_add = true
 				end
 
