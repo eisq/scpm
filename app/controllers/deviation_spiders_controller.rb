@@ -171,16 +171,6 @@ class DeviationSpidersController < ApplicationController
 	    	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
 	    		@deliverables << spider_deliverable.deviation_deliverable
 	    	end
-	    	
-	    	if @editable
-		    	#If we already have a temp conso, delete it before create a new one
-				check_conso_temps = DeviationSpiderConsolidationTemp.find(:all, :conditions => ["deviation_spider_id = ?", @deviation_spider.id])
-				if check_conso_temps.count > 0
-					check_conso_temps.each do |conso_to_delete|
-						conso_to_delete.delete
-					end
-				end
-			end
 
 	    	@consolidations = Array.new
 	    	@all_activities.each do |activity|
@@ -188,18 +178,19 @@ class DeviationSpidersController < ApplicationController
 	    			deviation_deliverable_added_by_hand = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider_id, deliverable.id, true])
 	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id)
 	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
-						#Consolidation in a temp table for manipulations before the real consolidation
-	    				consolidation_temp = DeviationSpiderConsolidationTemp.new
-	    				consolidation_temp.deviation_spider_id = @deviation_spider.id
-	    				consolidation_temp.deviation_deliverable_id = deliverable.id
-	    				consolidation_temp.deviation_activity_id = activity.id
-	    				consolidation_temp.score = "" #here to initialize
-	    				consolidation_temp.justification = "" #here to initialize
+						consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
+						if !consolidation_saved and @editable
+							#Consolidation in a temp table for manipulations before the real consolidation
+		    				consolidation_temp = DeviationSpiderConsolidationTemp.new
+		    				consolidation_temp.deviation_spider_id = @deviation_spider.id
+		    				consolidation_temp.deviation_deliverable_id = deliverable.id
+		    				consolidation_temp.deviation_activity_id = activity.id
+		    				consolidation_temp.score = "" #here to initialize
+		    				consolidation_temp.justification = "" #here to initialize
 
-	    				if @editable
-	    					consolidation_temp.save
-	    					consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
-	    				else
+		    				consolidation_temp.save
+	    					consolidation_saved = consolidation_temp
+						elsif !consolidation_saved and !@editable
 	    					#We consult the tab consolidation instead of the temporary one
 	    					consolidation_saved = DeviationSpiderConsolidation.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
 	    				end

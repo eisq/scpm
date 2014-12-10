@@ -83,19 +83,19 @@ $( document ).ready(function() {
 									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
 								</td>
 								<td class="consolidation_td_deliverable_right">
-									<%= text_area('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf"}) %>
+									<%= text_area('justification_tf', consolidation.justification, :cols=>24, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf") %>
 								</td>
 							<% else %>
 								<td class="consolidation_td_deliverable_left">
 									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
 								</td>
 								<td class="consolidation_td_deliverable_right">
-									<%= text_area('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf", :disabled=>true}) %>
+									<%= text_area('justification_tf', consolidation.justification, {:cols=>24, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf", :disabled=>true}) %>
 								</td>
 							<% end %>
 						<% else %>
 							<td><%= select_tag('choose_score', options_for_select(@score_list, 0), {:onchange=>"change_score('0'}, this.value);", :visible=>false, :disabled => true}) %></td>
-							<td><%= text_area('justification_tf', "", {:cols=>20, :rows=>1, :id=>"0", :class=>"conso_tf", :visible=>false, :disabled => true}) %></td>
+							<td><%= text_field_tag('justification_tf', "", {:cols=>20, :rows=>1, :id=>"0", :class=>"conso_tf", :visible=>false, :disabled => true}) %></td>
 						<% end %>
 					<% end %>
 				<% end %>
