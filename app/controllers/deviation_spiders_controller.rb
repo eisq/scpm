@@ -236,7 +236,7 @@ class DeviationSpidersController < ApplicationController
 		score = 0
 		well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-		if setting.answer_1 == "yes" and well_used
+		if setting.answer_1 == "Yes" and well_used
 			score = 3
 		elsif setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used" and well_used
 			score = 2
@@ -253,7 +253,7 @@ class DeviationSpidersController < ApplicationController
 		justification = ""
 		well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-		if ((setting.answer_1 == "yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
+		if ((setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
 			justification = setting.justification
 		end
 
@@ -265,7 +265,7 @@ class DeviationSpidersController < ApplicationController
 		deviation_deliverable = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and not_done = ?", deviation_spider_id, deliverable.id, 0])
 		deviation_questions = DeviationQuestion.find(:all, :conditions=>["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id]).each do |question|
 			deviation_value = DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ? and deviation_question_id = ?", deviation_deliverable.id, question.id]).each do |value|
-				if value.answer
+				if value.answer == 1
 					well_used = true
 				end
 			end
