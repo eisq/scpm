@@ -238,7 +238,7 @@ class DeviationSpidersController < ApplicationController
 
 		if setting.answer_1 == "yes" and well_used
 			score = 3
-		elsif setting.answer_1 == "No" and setting.answer_2 == "Yes" and answer_3 == "Another template is used" and well_used
+		elsif setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used" and well_used
 			score = 2
 		end
 
@@ -253,7 +253,7 @@ class DeviationSpidersController < ApplicationController
 		justification = ""
 		well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-		if ((setting.answer_1 == "yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and answer_3 == "Another template is used")) and well_used)
+		if ((setting.answer_1 == "yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
 			justification = setting.justification
 		end
 
