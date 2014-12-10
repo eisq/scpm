@@ -44,7 +44,9 @@ $( document ).ready(function() {
 	<table class="consolidation_table">
 
 	<tr class="consolidation_tr_activity">
-	<td></td>
+	<td>
+		<table width=210><tr><td></td></tr></table>
+	</td>
 	<% @all_activities.each do |activity| %>
 		<% if activity.deviation_meta_activity == meta_activity %>
 		<% activities << activity %>
@@ -83,14 +85,14 @@ $( document ).ready(function() {
 									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
 								</td>
 								<td class="consolidation_td_deliverable_right">
-									<%= text_area_tag('justification_tf', consolidation.justification, :cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf") %>
+									<%= text_area_tag('justification_tf', consolidation.justification, :cols=>23, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf") %>
 								</td>
 							<% else %>
 								<td class="consolidation_td_deliverable_left">
 									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
 								</td>
 								<td class="consolidation_td_deliverable_right">
-									<%= text_area_tag('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf", :disabled=>true}) %>
+									<%= text_area_tag('justification_tf', consolidation.justification, {:cols=>23, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf", :disabled=>true}) %>
 								</td>
 							<% end %>
 						<% else %>
