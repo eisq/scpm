@@ -185,8 +185,8 @@ class DeviationSpidersController < ApplicationController
 		    				consolidation_temp.deviation_spider_id = @deviation_spider.id
 		    				consolidation_temp.deviation_deliverable_id = deliverable.id
 		    				consolidation_temp.deviation_activity_id = activity.id
-		    				consolidation_temp.score = "" #here to initialize
-		    				consolidation_temp.justification = "" #here to initialize
+		    				consolidation_temp.score = self.get_score(@deviation_spider.id, deliverable, activity)
+		    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity)
 
 		    				consolidation_temp.save
 	    					consolidation_saved = consolidation_temp
@@ -226,6 +226,52 @@ class DeviationSpidersController < ApplicationController
 			applicable = self.existing_question_activity_deliverable(deliverable.id, activity.id)
 		end
 		return applicable					
+	end
+
+	def get_score(deviation_spider_id, deliverable, activity)
+		spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
+		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
+		setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+
+		score = 0
+		well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+
+		if setting.answer_1 == "yes" and well_used
+			score = 3
+		elsif setting.answer_1 == "No" and setting.answer_2 == "Yes" and answer_3 == "Another template is used" and well_used
+			score = 2
+		end
+
+		return score
+	end
+
+	def get_justification(deviation_spider_id, deliverable, activity)
+		spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
+		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
+		setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+
+		justification = ""
+		well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+
+		if ((setting.answer_1 == "yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and answer_3 == "Another template is used")) and well_used)
+			justification = setting.justification
+		end
+
+		return justification
+	end
+
+	def get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+		well_used = false
+		deviation_deliverable = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and not_done = ?", deviation_spider_id, deliverable.id, 0])
+		deviation_questions = DeviationQuestion.find(:all, :conditions=>["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id]).each do |question|
+			deviation_value = DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ? and deviation_question_id = ?", deviation_deliverable.id, question.id]).each do |value|
+				if value.answer
+					well_used = true
+				end
+			end
+		end
+
+		return well_used
 	end
 
 	def existing_question_activity_deliverable(deliverable_id, activity_id)
