@@ -265,7 +265,7 @@ class DeviationSpidersController < ApplicationController
 		deviation_deliverable = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and not_done = ?", deviation_spider_id, deliverable.id, 0])
 		deviation_questions = DeviationQuestion.find(:all, :conditions=>["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id]).each do |question|
 			deviation_value = DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ? and deviation_question_id = ?", deviation_deliverable.id, question.id]).each do |value|
-				if value.answer == 1
+				if value.answer
 					well_used = true
 				end
 			end
