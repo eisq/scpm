@@ -55,38 +55,53 @@ $( document ).ready(function() {
 	<% end %>
 	</tr>
 
+	<% is_visible = false %>
 	<% @deliverables.each do |deliverable| %>
-	<% deliverable_applicable = true %>
-	<% consolidation_temp = @consolidations.select {|conso_temp| conso_temp.deliverable == deliverable} %>
-		<tr class="consolidation_tr_deliverable">
-			<td class="consolidation_td_deliverable">
-				<%= deliverable.name %>
-			</td>
-			<% activities.each do |activity| %>
-				<% if consolidation_temp %>
-					<% consolidation = consolidation_temp.find {|conso| conso.activity == activity} %>
-					<% if consolidation %>
-						<% if @editable %>
-							<td class="consolidation_td_deliverable_left">
-								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
-							</td>
-							<td class="consolidation_td_deliverable_right">
-								<%= text_area('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf"}) %>
-							</td>
-						<% else %>
-							<td class="consolidation_td_deliverable_left">
-								<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
-							</td>
-							<td class="consolidation_td_deliverable_right">
-								<%= text_area('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf", :disabled=>true}) %>
-							</td>
-						<% end %>
-					<% else %>
-						<td colspan=2 class="consolidation_td_deliverable"></td>
-					<% end %>
+		<% consolidation_temp = @consolidations.select {|conso_temp| conso_temp.deliverable == deliverable} %>
+
+		<% activities.each do |activity| %>
+			<% if consolidation_temp %>
+				<% consolidation = consolidation_temp.find {|conso| conso.activity == activity} %>
+				<% if consolidation %>
+					<% is_visible = true %>
+					<% break %>
 				<% end %>
 			<% end %>
-		</tr>
+		<% end %>
+
+		<% if is_visible == true %>
+			<tr class="consolidation_tr_deliverable">
+				<td class="consolidation_td_deliverable">
+					<%= deliverable.name %>
+				</td>
+				<% activities.each do |activity| %>
+					<% if consolidation_temp %>
+						<% consolidation = consolidation_temp.find {|conso| conso.activity == activity} %>
+						<% if consolidation %>
+							<% if @editable %>
+								<td class="consolidation_td_deliverable_left">
+									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
+								</td>
+								<td class="consolidation_td_deliverable_right">
+									<%= text_area('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf"}) %>
+								</td>
+							<% else %>
+								<td class="consolidation_td_deliverable_left">
+									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
+								</td>
+								<td class="consolidation_td_deliverable_right">
+									<%= text_area('justification_tf', consolidation.justification, {:cols=>20, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf", :disabled=>true}) %>
+								</td>
+							<% end %>
+						<% else %>
+							<td><%= select_tag('choose_score', options_for_select(@score_list, 0), {:onchange=>"change_score('0'}, this.value);", :visible=>false, :disabled => true}) %></td>
+							<td><%= text_area('justification_tf', "", {:cols=>20, :rows=>1, :id=>"0", :class=>"conso_tf", :visible=>false, :disabled => true}) %></td>
+						<% end %>
+					<% end %>
+				<% end %>
+			</tr>
+		<% end %>
+		<% is_visible = false %>
 	<% end %>
 	</table>
 <% end %>
