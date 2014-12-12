@@ -371,7 +371,10 @@ class ProjectsController < ApplicationController
         file_name =  file['datafile'].original_filename
         file_ext  = File.extname(file_name)
         if (file_ext == ".xls")
-          psu_file_hash = Deviation.import(file)
+          psu_file_hash = Deviation.import(file, project.lifecycle)
+          if psu_file_hash == "tab_error"
+            redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"4"
+          end
 
           # Save psu reference
           deviation_spider_reference = DeviationSpiderReference.new

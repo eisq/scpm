@@ -21,13 +21,24 @@ module Deviation
   CELL_OTHER_TEMPLATE_LABEL         = "other_template"
   CELL_JUSTIFICATION_LABEL          = "justification"
 
-  def self.import(file)
+  def self.import(file, lifecycle_id)
     # Import excel file
     doc           = Deviation.load_deviation_excel_file(file)
     file_name     = Deviation.get_file_name(file)
-    psu       	  = doc.worksheet "PSU"
-    sheet_rows    = self.parse_excel_content(psu)
-    #on entre dans la bdd les infos du fichier PSU
+
+    if doc.worksheet "PSU_GPP" and lifecycle_id == 10
+      psu = doc.worksheet "PSU_GPP"
+      sheet_rows = self.parse_excel_content(psu)
+    elsif doc.worksheet "PSU_LBIP" and lifecycle_id ==  9
+      psu = doc.worksheet "PSU_LBIP"
+      sheet_rows = self.parse_excel_content(psu)
+    elsif doc.worksheet "PSU_Agile" and lifecycle_id == 8
+      psu = doc.worksheet "PSU_Agile"
+      sheet_rows = self.parse_excel_content(psu)
+    else
+      sheet_rows = "tab_error"
+    end
+
     return sheet_rows
   end
 

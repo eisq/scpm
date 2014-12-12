@@ -23,6 +23,8 @@ function setShowIgnore(object) {
 	<strong><span style='color:red;'> Error, project not found. </span></strong>
 <% elsif @status_import != nil and @status_import != "" and @status_import == "3" %>
 	<strong><span style='color:red;'> Error, file not selected. </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "4" %>
+	<strong><span style='color:red;'> Error, wrong lifecycle. </span></strong>
 <% end %>
 
 <p>Last import : <%= @last_import_date %></p>
