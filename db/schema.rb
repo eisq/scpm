@@ -9,7 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20141015142600) do
+=======
+ActiveRecord::Schema.define(:version => 20141014102300) do
+>>>>>>> 691b569b744130ff6bb375d7b738026d16ded698
 
   create_table "actions", :force => true do |t|
     t.text     "action"
