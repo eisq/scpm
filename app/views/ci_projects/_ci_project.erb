@@ -5,7 +5,7 @@
 	<td><%= p.visibility %></td>
 	<td><%= p.assigned_to %></td>
 	<td><% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%></td>
-	<td><%= p.summary %></td>
+	<td><%=link_to(p.summary, :controller => "ci_projects", :action=>"show", :id=>p.id) %></td>
 	<td><b><%= p.short_stage %></b></td>
 	<% if !p.sqli_validation_date || p.sqli_date_alert == 1 %>
 		<td class="<%=CiProject.late_css(p.sqli_validation_date_objective)%>"><b><%= p.sqli_validation_date_objective %></b></td>
