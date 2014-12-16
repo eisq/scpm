@@ -7,6 +7,20 @@ class UpdateLifecycleQuestions < ActiveRecord::Migration
 		lbip_plus_lifecycle = Lifecycle.find(:first, :conditions => ["name = 'LBIP+'"])
 		light_gpp_lifecycle = Lifecycle.find(:first, :conditions => ["name = 'Light GPP'"])
 
+		if !waterfall_lifecycle
+			waterfall_lifecycle = Lifecycle.new
+			waterfall_lifecycle = "Waterfall"
+			waterfall_lifecycle.is_active = 1
+			waterfall_lifecycle.save
+		end
+
+		if !lbip_plus_lifecycle
+			lbip_plus_lifecycle = Lifecycle.new
+			lbip_plus_lifecycle.name = "LBIP+"
+			lbip_plus_lifecycle.is_active = 1
+			lbip_plus_lifecycle.save
+		end
+
 		waterfall_milestones_id = waterfall_lifecycle.lifecycle_milestones.map {|lm| lm.milestone_name.id }
 		lbip_plus_milestones_id = lbip_plus_lifecycle.lifecycle_milestones.map {|lm| lm.milestone_name.id }
 
