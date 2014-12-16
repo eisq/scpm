@@ -11,6 +11,10 @@ class DeviationSpidersController < ApplicationController
 	# 
 	def index
 	    milestone_id 	 = params[:milestone_id]
+	    empty			 = params[:empty]
+	    if empty
+	    	@empty = "<br/><strong>Please answer all questions before consolidate</strong>"
+	    end
 	    @meta_activity_id = params[:meta_activity_id]
 	    if @meta_activity_id == nil
 	    	@meta_activity = DeviationMetaActivity.find(:first)
@@ -154,14 +158,30 @@ class DeviationSpidersController < ApplicationController
 
 	def consolidate_interface
 	    deviation_spider_id = params[:deviation_spider_id]
-	    @editable = params[:editable]
-	    if @editable == nil
-	    	@editable = false
-	    end
-
 	    if deviation_spider_id
-	    	@score_list = [0,1,2,3]
 	    	@deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+
+	    	redirect = false
+		    DeviationSpiderDeliverable.find(:all, :conditions=>["deviation_spider_id = ?", deviation_spider_id]).each do |deliverable|
+		    	DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ?", deliverable]).each do |value|
+		    		if !value.answer
+		    			redirect = true
+		    			#return
+		    		end
+		    	end
+		    end
+
+		    #return if(redirect)
+		    if redirect
+		    	redirect_to('/deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
+			end
+
+		    @editable = params[:editable]
+		    if @editable == nil
+		    	@editable = false
+		    end
+
+	    	@score_list = [0,1,2,3]
 	    	@all_meta_activities = DeviationMetaActivity.find(:all)
 	    	@all_activities 	= DeviationActivity.find(:all)
 	    	parameters = @deviation_spider.get_parameters

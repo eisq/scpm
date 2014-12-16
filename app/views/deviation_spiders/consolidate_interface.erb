@@ -37,7 +37,17 @@ $( document ).ready(function() {
 <% else %>
 	<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @deviation_spider.milestone.project_id} %></div><br/>
 <% end %>
-
+<table><tr><td>
+0: Deliverable expected - Project did not produce Deliverable without appropriate justification<br/>
+1: Deliverable expected - Project did not produce Deliverable with appropriate justification<br/>
+2: Deliverable expected - Project  produced Deliverable using a different  template from the referential one<br/>
+3: Deliverable expected - Project  produced Deliverable with the expected template<br/>
+</td><td>&nbsp;&nbsp;&nbsp;</td><td>
+0: Deliverable not expected - Project did not produce the deliverable and it was not justified<br/>
+1: Deliverable not expected - Project did not produce the deliverable and it was justified<br/>
+2: Deliverable not expected - Project did not produce the deliverable and it was justified<br/>
+3: Deliverable not expected -  Project did  produce the deliverable using the referential  template<br/>
+</td></tr></table>
 <% @all_meta_activities.each do |meta_activity| %>
 <% activities = Array.new %>
 	<h3><%= meta_activity.name %></h3>
