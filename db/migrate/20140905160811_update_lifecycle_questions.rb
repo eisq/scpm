@@ -9,7 +9,7 @@ class UpdateLifecycleQuestions < ActiveRecord::Migration
 
 		if !waterfall_lifecycle
 			waterfall_lifecycle = Lifecycle.new
-			waterfall_lifecycle = "Waterfall"
+			waterfall_lifecycle.name = "Waterfall"
 			waterfall_lifecycle.is_active = 1
 			waterfall_lifecycle.save
 		end
