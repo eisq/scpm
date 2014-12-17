@@ -59,9 +59,10 @@
         onSuccess: function(response) 
         {
           div_str_response = "milestone_ajax_div_"+project_id;
-          $(div_str_response).innerHTML = response.responseText;
+          result = response.responseText;
+          $(div_str_response).innerHTML = result;
         },
-        onFailure:function(response) 
+        onFailure: function(response) 
         {
           div_str_response = "milestone_ajax_div_"+project_id;
           $(div_str_response).innerHTML = "Loading Error";

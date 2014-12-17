@@ -257,32 +257,38 @@ class DeviationSpidersController < ApplicationController
 	end
 
 	def get_score(deviation_spider_id, deliverable, activity)
+		score = 0
+
 		spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
-		setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+		if last_reference
+			setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 
-		score = 0
-		well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+			well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-		if setting.answer_1 == "Yes" and well_used
-			score = 3
-		elsif setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used" and well_used
-			score = 2
+			if setting and setting.answer_1 == "Yes" and well_used
+				score = 3
+			elsif setting and setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used" and well_used
+				score = 2
+			end
 		end
 
 		return score
 	end
 
 	def get_justification(deviation_spider_id, deliverable, activity)
+		justification = ""
+		
 		spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
-		setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+		if last_reference
+			setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 
-		justification = ""
-		well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+			well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-		if ((setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
-			justification = setting.justification
+			if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
+				justification = setting.justification
+			end
 		end
 
 		return justification
