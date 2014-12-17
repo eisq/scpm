@@ -172,9 +172,9 @@ class DeviationSpidersController < ApplicationController
 	    	redirect = false
 		    DeviationSpiderDeliverable.find(:all, :conditions=>["deviation_spider_id = ?", deviation_spider_id]).each do |deliverable|
 		    	DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ?", deliverable]).each do |value|
-		    		if !value.answer
+		    		#if value.answer != 0 or value.answer != 1
+		    		if value.answer == nil
 		    			redirect = true
-		    			#return
 		    		end
 		    	end
 		    end
