@@ -192,12 +192,14 @@ $( document ).ready(function() {
 		<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
 		<td colspan=2>To be added in Backup Slides</td>
 	</tr>
+	<% if @new_spider_to_show %>
 	<tr>
-		<td>Customization: </td>
+		<td>Bilan Customization assessment: </td>
 		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
 		<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>
 		<td>To be added to M3/G2 Quality Slide</td>
 	</tr>
+	<% end %>
 	<!-- <tr>
 		<td>Result of GPP adherence: </td>
 		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>

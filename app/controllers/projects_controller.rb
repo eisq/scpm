@@ -243,6 +243,14 @@ class ProjectsController < ApplicationController
       @has_sibling = true
     end
     #@checklist_items = TransverseItems.find()
+
+    @new_spider_to_show = false
+    if @project.lifecycle_id == 9
+      @new_spider_to_show = @project.get_before_G5
+    elsif @project.lifecycle_id == 10 or @project.lifecycle_id == 8
+      @new_spider_to_show = @project.get_before_M7
+    end
+
   end
 
   def check_all_milestones

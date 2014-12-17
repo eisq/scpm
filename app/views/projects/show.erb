@@ -190,7 +190,7 @@ function add(id, nb_months, has_requests, has_rights) {
                 <%= link_to_remote('Add to my projects', {:url=>{:controller=>'projects', :action=>'add_to_mine', :id=>@project.id}, :success=>"$('btnaddtomine').fade();"}, {:class=>'btnlnk special', :id=>'btnaddtomine'}) %>
               <% end %>
               <%= link_to('Edit Lifecycle', {:action=>'milestones_edit', :id=>@project.id}, {:class=>'btnlnk'}) %>
-              <% if @project.deviation_spider %>            
+              <% if @project.deviation_spider and @new_spider_to_show %>            
                 <%= link_to('PSU File Import', {:action=>'spider_configuration', :project_id=>@project.id}, {:class=>'btnlnk'}) %>
               <% end %>
 
@@ -199,7 +199,7 @@ function add(id, nb_months, has_requests, has_rights) {
             <br/>
             <% if @project.sibling_id != nil %>
               <b>This project is the sibling of the following project: </b>             
-              <%= link_to(@sibling.name, {:action=>'show', :id=>@project.sibling_id}, {:class=>'btnlnk'}) %>
+              <%= link_to(@project.name, {:action=>'show', :id=>@project.sibling_id}, {:class=>'btnlnk'}) %>
             <br />
             <% end %>
             <% if @sibling != nil %>

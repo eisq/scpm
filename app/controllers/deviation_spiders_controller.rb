@@ -27,6 +27,14 @@ class DeviationSpidersController < ApplicationController
 	    if milestone_id
 		    @milestone 	 = Milestone.find(:first, :conditions=>["id = ?", milestone_id])
 		    @project 	 = Project.find(:first, :conditions=>["id = ?", @milestone.project_id])
+
+		    @new_spider_to_show = false
+		    if @project.lifecycle_id == 9
+		      @new_spider_to_show = @project.get_before_G5
+		    elsif @project.lifecycle_id == 10 or @project.lifecycle_id == 8
+		      @new_spider_to_show = @project.get_before_M7
+		    end
+		    
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
 
 	    	# If spider currently edited
