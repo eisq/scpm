@@ -2,7 +2,7 @@
 
 <li id="p_<%=project.id%>">
   <% if project.projects.size + project.requests.size > 0 %>
-    <%= link_to_function(image_tag('expand.gif'), "$('sub_#{project.id}').toggle();") %>
+    <%= link_to_function(image_tag('expand.gif'), "$('#sub_#{project.id}').toggle();") %>
   <% else %>
     <%= image_tag('dot.gif', :width=>12) %>
   <% end %>
@@ -18,7 +18,7 @@
   <% if current_user.has_role?('Admin') %>
     <%= link_to_remote(image_tag('cut.png'), :url=>{:action=>'cut', :id=>project.id}) %>
     <%= link_to_remote(image_tag('paste.png'), :url=>{:action=>'paste', :id=>project.id}) %>
-    <%= link_to_remote(image_tag('delete.gif'), :url=>{:action=>'destroy', :id=>project.id}, :confirm=>"Sure?", :success=>"$('p_#{project.id}').hide();", :failure=>"alert(request.responseText)") %>
+    <%= link_to_remote(image_tag('delete.gif'), :url=>{:action=>'destroy', :id=>project.id}, :confirm=>"Sure?", :success=>"$('#p_#{project.id}').hide();", :failure=>"alert(request.responseText)") %>
 
     <% if project.is_running %>
       <span class="project_is_running">

@@ -4,16 +4,13 @@ function setShowIgnore(object) {
 }
 </SCRIPT>
 
-<!-- if M7/G5 are not yet done -->
-<% if @milestone_index == nil or @milestone_index < 5 %>
-	<p>
-	<%= form_tag({:action => 'import_deviation', :project_id => @project.id}, :multipart => true) %>
-	    <label for="upload_file">Import PSU File (*.xls)</label>
-	    <%= file_field 'upload', 'datafile' %>
-	    <%= submit_tag "Import" %>
-	</form>
-	</p>
-<% end %>
+<p>
+<%= form_tag({:action => 'import_deviation', :project_id => @project.id}, :multipart => true) %>
+    <label for="upload_file">Import PSU File (*.xls)</label>
+    <%= file_field 'upload', 'datafile' %>
+    <%= submit_tag "Import" %>
+</form>
+</p>
 
 <% if @status_import != nil and @status_import != "" and @status_import == "1" %>
 	<strong><span style='color:green;'> Successful import </span></strong>

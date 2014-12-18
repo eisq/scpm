@@ -540,7 +540,11 @@ class ProjectsController < ApplicationController
     request.project_id = wp.id
     request.save
     project.add_responsible_from_rmt_user(request.assigned_to) if request.assigned_to != ""
-    render(:text=>"saved")
+
+    respond_to do |format|
+      format.js {render(:text=>"saved")}
+    end
+    
   end
 
   def associate
