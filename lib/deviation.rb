@@ -26,6 +26,8 @@ module Deviation
     doc           = Deviation.load_deviation_excel_file(file)
     file_name     = Deviation.get_file_name(file)
 
+    sheet_rows = "tab_error"
+
     if doc.worksheet "PSU_GPP" and lifecycle_id == 10
       psu = doc.worksheet "PSU_GPP"
       sheet_rows = self.parse_excel_content(psu)
@@ -35,8 +37,6 @@ module Deviation
     elsif doc.worksheet "PSU_Agile" and lifecycle_id == 8
       psu = doc.worksheet "PSU_Agile"
       sheet_rows = self.parse_excel_content(psu)
-    else
-      sheet_rows = "tab_error"
     end
 
     return sheet_rows
@@ -89,6 +89,14 @@ module Deviation
         activity_temp = sheet_row[CELL_0]
       end
     end
+
+    content_array.each do |psu|
+      if psu["deliverable"] == "" or !psu["deliverable"] or psu["methodology_template"] == "" or !psu["methodology_template"]
+        content_array = "empty_value"
+        break
+      end
+    end
+
     return content_array
   end
 end

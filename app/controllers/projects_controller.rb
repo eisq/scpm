@@ -382,6 +382,8 @@ class ProjectsController < ApplicationController
           psu_file_hash = Deviation.import(file, project.lifecycle_id)
           if psu_file_hash == "tab_error"
             redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"4"
+          elsif psu_file_hash == "empty_value"
+            redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5"
           else
               # Save psu reference
             deviation_spider_reference = DeviationSpiderReference.new
