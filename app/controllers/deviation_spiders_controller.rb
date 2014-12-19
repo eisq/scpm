@@ -37,7 +37,7 @@ class DeviationSpidersController < ApplicationController
 		    
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
 
-	   		@pie_chart = get_pie_chart(@last_spider.id)
+	   		#@pie_chart = get_pie_chart(@last_spider.id)
 
 	    	# If spider currently edited
 	    	if (@last_spider)
