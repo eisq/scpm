@@ -1,4 +1,6 @@
 require 'json'
+require 'google_chart'
+
 class DeviationSpider < ActiveRecord::Base
   	has_many    :deviation_spider_consolidations
   	has_many    :deviation_spider_deliverables
@@ -405,5 +407,23 @@ class DeviationSpider < ActiveRecord::Base
 			charts << generate_activity_chart(meta_activity)
 		end
 		return charts
+	end
+
+	def generate_pie_chart
+		data = Array.new
+		labels = Array.new
+
+		data = [33, 33, 34]
+		labels = ["test1", "test2", "test3"]
+
+		#chart = GoogleChart::PieChart.new(:data=>data, :labels=>labels, :size=>'695x380', :theme => :thirty7signals)
+		chart = GoogleChart::PieChart.new('320x200', :data=>data) do |pie_chart|
+			pie_chart.data "test", 33
+			pie_chart.data "test2", 33
+			pie_chart.data "test3", 34
+			pie_chart.show_labels = false
+		end
+
+		return chart
 	end
 end

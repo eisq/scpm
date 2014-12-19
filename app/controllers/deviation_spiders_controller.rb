@@ -37,6 +37,8 @@ class DeviationSpidersController < ApplicationController
 		    
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
 
+	   		@pie_chart = get_pie_chart(@last_spider.id)
+
 	    	# If spider currently edited
 	    	if (@last_spider)
 	    		if @last_spider.deviation_spider_consolidations.count == 0
@@ -136,6 +138,10 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
+	def export_customization_pie
+
+	end
+
 	def get_customization_deliverable_status(answer_1, answer_2, answer_3)
 		status = ""
 		case answer_1
@@ -172,14 +178,12 @@ class DeviationSpidersController < ApplicationController
 	    	redirect = false
 		    DeviationSpiderDeliverable.find(:all, :conditions=>["deviation_spider_id = ?", deviation_spider_id]).each do |deliverable|
 		    	DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ?", deliverable]).each do |value|
-		    		#if value.answer != 0 or value.answer != 1
 		    		if value.answer == nil
 		    			redirect = true
 		    		end
 		    	end
 		    end
 
-		    #return if(redirect)
 		    if redirect
 		    	redirect_to('/deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
 			end
@@ -214,7 +218,7 @@ class DeviationSpidersController < ApplicationController
 		    				consolidation_temp.deviation_deliverable_id = deliverable.id
 		    				consolidation_temp.deviation_activity_id = activity.id
 		    				consolidation_temp.score = self.get_score(@deviation_spider.id, deliverable, activity)
-		    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity)
+		    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity, consolidation_temp.score)
 
 		    				consolidation_temp.save
 	    					consolidation_saved = consolidation_temp
@@ -276,18 +280,37 @@ class DeviationSpidersController < ApplicationController
 		return score
 	end
 
-	def get_justification(deviation_spider_id, deliverable, activity)
-		justification = ""
+	def get_justification(deviation_spider_id, deliverable, activity, score)
+		justification = nil
 		
 		spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
-		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
-		if last_reference
-			setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 
-			well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+		if score == 2
+			project_id = spider.milestone.project_id
+			Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
+				spiders = DeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
+					consolidation = DeviationSpiderConsolidation.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", spider.id, deliverable.id, activity.id])
+					if consolidation
+						justification = consolidation.justification
+						break
+					end
+				end
+				if justification
+					break
+				end
+			end
+		end
 
-			if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
-				justification = setting.justification
+		if !justification
+			last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
+			if last_reference
+				setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+
+				well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+
+				if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
+					justification = setting.justification
+				end
 			end
 		end
 
@@ -505,6 +528,16 @@ class DeviationSpidersController < ApplicationController
 
 	    render(:text=>charts.to_json)
 	end
+
+	def get_pie_chart(deviation_spider_id)
+	    if deviation_spider_id
+	    	deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+	    	chart_data = deviation_spider.generate_pie_chart
+	    end
+
+	    return chart_data
+	end
+
 	# 
 	# ACTIONS WITHOUT INTERFACE
 	# 
