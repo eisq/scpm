@@ -320,10 +320,12 @@ class DeviationSpidersController < ApplicationController
 	def get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 		well_used = false
 		deviation_deliverable = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and not_done = ?", deviation_spider_id, deliverable.id, 0])
-		deviation_questions = DeviationQuestion.find(:all, :conditions=>["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id]).each do |question|
-			deviation_value = DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ? and deviation_question_id = ?", deviation_deliverable.id, question.id]).each do |value|
-				if value.answer
-					well_used = true
+		if deviation_deliverable
+			DeviationQuestion.find(:all, :conditions=>["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable.id, activity.id]).each do |question|
+				deviation_value = DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ? and deviation_question_id = ?", deviation_deliverable.id, question.id]).each do |value|
+					if value.answer
+						well_used = true
+					end
 				end
 			end
 		end
@@ -346,6 +348,7 @@ class DeviationSpidersController < ApplicationController
 		if deviation_spider_consolidation_temp_id and deviation_spider_consolidation_temp_score
 			deviation_spider_consolidation_temp = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["id = ?", deviation_spider_consolidation_temp_id])
 			deviation_spider_consolidation_temp.score = deviation_spider_consolidation_temp_score
+			deviation_spider_consolidation_temp.justification = ""
 			deviation_spider_consolidation_temp.save
 		end
 		render(:nothing=>true)

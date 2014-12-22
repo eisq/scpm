@@ -426,4 +426,12 @@ class DeviationSpider < ActiveRecord::Base
 
 		return chart
 	end
+
+	def is_consolidated?
+		result = true
+		temp = DeviationSpiderConsolidationTemp.find(:first, :conditions=>["deviation_spider_id = ?", self.id])
+		if temp
+			result = false
+		end
+	end
 end
