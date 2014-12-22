@@ -1,0 +1,31 @@
+<SCRIPT type="text/javascript">
+function setShowIgnore(object) {
+	window.location.replace("/projects/update_spider_configuration?project_id=<%= @project.id.to_s %>&deviation_spider="+object.value)  
+}
+</SCRIPT>
+
+<p>
+<%= form_tag({:action => 'import_deviation', :project_id => @project.id}, :multipart => true) %>
+    <label for="upload_file">Import PSU File (*.xls)</label>
+    <%= file_field 'upload', 'datafile' %>
+    <%= submit_tag "Import" %>
+</form>
+</p>
+
+<% if @status_import != nil and @status_import != "" and @status_import == "1" %>
+	<strong><span style='color:green;'> Successful import </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "0" %>
+	<strong><span style='color:red;'> Wrong file format, please upload .xls file only </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "2" %>
+	<strong><span style='color:red;'> Error, project not found. </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "3" %>
+	<strong><span style='color:red;'> Error, file not selected. </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "4" %>
+	<strong><span style='color:red;'> Error, wrong lifecycle. </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "5" %>
+	<strong><span style='color:red;'> Error, a value is empty in this PSU file. </span></strong>
+<% end %>
+
+<p>Last import : <%= @last_import_date %></p>
+
+<p><%= link_to("Back to project", {:action=>"show", :id=>@project.id}, :class=>"btnlnk") %></p>

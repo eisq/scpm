@@ -4,7 +4,8 @@ class Milestone < ActiveRecord::Base
   belongs_to  :project
   has_many    :checklist_items, :dependent=>:destroy
   has_many    :spiders
-  
+  has_many    :deviation_spiders
+
   def date
     return self.actual_milestone_date if self.actual_milestone_date and self.actual_milestone_date!=""
     self.milestone_date

@@ -205,8 +205,8 @@ class MilestonesController < ApplicationController
   end
 
   def ajax_milestone
-    project = Project.find(params[:project_id])
-    render(:partial=>'milestones/milestone', :collection=>project.sorted_milestones, :locals=>{:editable=> true})
+    @project = Project.find(params[:project_id])
+    render(:partial=>'milestones/milestone', :collection=>@project.sorted_milestones, :locals=>{:editable=> true})
   end
 
 private

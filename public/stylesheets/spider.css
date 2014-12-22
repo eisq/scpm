@@ -9,12 +9,35 @@
 	float: right;
 	right: 0px;
 	top: 180px;
-	position: fixed;
 /*	min-width: 300px;*/
 /*	max-width: 600px;*/ 
 	width : 600px;
 /*	min-height: 200px;*/
 	/*max-height: 400px;*/ 
+	height : 400px;
+	margin: 0 auto;
+	display: none;
+}
+.deviation_spider_deliverable_chart{
+	right: 0px;
+	top: 320px;
+	width : 520px;
+	height : 240px;
+	margin: 0 auto;
+	position: fixed;
+}
+.deviation_spider_activity_chart{
+	right: 0px;
+	top: 80px;
+	width : 520px;
+	height : 240px;
+	margin: 0 auto;
+	position: fixed;
+}
+.deviation_spider_export_chart{
+	right: 0px;
+	top: 180px;
+	width : 600px;
 	height : 400px;
 	margin: 0 auto;
 	display: none;
@@ -51,4 +74,71 @@
 .green_cell
 {
 	background-color: #8DC600;
+}
+
+
+/* DEVIATION */
+.answer_button
+{
+	width: 50px;
+  	border: 1px solid #900;
+  	font-weight: bold;
+  	border-radius: 5px;
+}
+
+.answer_button_select
+{
+	width: 50px;
+  	color: #FFF;
+  	background-color: #900;
+  	border: 1px solid #900;
+  	font-weight: bold;
+  	border-radius: 5px;
+}
+
+.deliverable_not_done
+{
+	width: 225px;
+  	border: 1px solid #900;
+  	font-weight: bold;
+  	border-radius: 5px;
+}
+.deliverable_not_done_select
+{
+	width: 225px;
+  	color: #FFF;
+  	background-color: #900;
+  	border: 1px solid #900;
+  	font-weight: bold;
+  	border-radius: 5px;
+}
+
+.answer_button:hover, .deliverable_not_done:hover 
+{
+  	color: #FFF;
+  	background: #FC9;
+  	cursor: pointer;
+  	border-color: #F00 #C30 #C30 #F00;
+}
+
+.answer_button_select:hover, .deliverable_not_done_select:hover 
+{
+  	color: #FFF;
+  	background: #FC9;
+  	cursor: pointer;
+  	border-color: #F00 #C30 #C30 #F00;
+}
+
+.deviation_spider_table {
+  	border-collapse: collapse;
+	border: 1px solid red;
+	width: 800px;
+}
+.deviation_spider_tr_activity {
+	background-color:red;
+	color: white;
+}
+.deviation_spider_tr_deliverable {
+	background-color:#FF8080;
+	color: white;
 }

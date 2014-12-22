@@ -9,7 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140929160800) do
+<<<<<<< HEAD
+ActiveRecord::Schema.define(:version => 20141015142600) do
+=======
+ActiveRecord::Schema.define(:version => 20141014102300) do
+>>>>>>> 691b569b744130ff6bb375d7b738026d16ded698
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -266,11 +270,16 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.integer  "deviation_meta_activity_id"
   end
 
+  create_table "deviation_activity_deliverables", :force => true do |t|
+    t.integer  "deviation_activity_id"
+    t.integer  "deviation_deliverable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "deviation_deliverables", :force => true do |t|
-    t.integer  "lifecycle_id"
-    t.integer  "milestone_name_id"
     t.string   "name"
-    t.boolean  "is_active",         :default => true
+    t.boolean  "is_active",  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -278,6 +287,21 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
   create_table "deviation_meta_activities", :force => true do |t|
     t.string   "name"
     t.boolean  "is_active",  :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "meta_index"
+  end
+
+  create_table "deviation_question_lifecycles", :force => true do |t|
+    t.integer  "deviation_question_id"
+    t.integer  "lifecycle_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_question_milestone_names", :force => true do |t|
+    t.integer  "deviation_question_id"
+    t.integer  "milestone_name_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -297,6 +321,16 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.integer  "deviation_activity_id"
     t.integer  "yes_counter"
     t.integer  "no_counter"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deviation_spider_consolidation_temps", :force => true do |t|
+    t.integer  "deviation_spider_id"
+    t.integer  "deviation_deliverable_id"
+    t.integer  "deviation_activity_id"
+    t.string   "score"
+    t.string   "justification"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -325,6 +359,8 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.integer  "deviation_deliverable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "not_done",                 :default => false
+    t.boolean  "is_added_by_hand",         :default => false
   end
 
   create_table "deviation_spider_references", :force => true do |t|
@@ -335,7 +371,7 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
   end
 
   create_table "deviation_spider_settings", :force => true do |t|
-    t.integer  "devia_spider_reference_id"
+    t.integer  "deviation_spider_reference_id"
     t.string   "deliverable_name"
     t.string   "activity_name"
     t.string   "answer_1"
@@ -350,6 +386,7 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.integer  "deviation_spider_deliverable_id"
     t.integer  "deviation_question_id"
     t.boolean  "answer"
+    t.boolean  "answer_reference"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -359,6 +396,7 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.boolean  "impact_count", :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "file_link"
   end
 
   create_table "generic_risk_questions", :force => true do |t|
@@ -701,8 +739,7 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.integer  "sales_revenue",    :default => 0
     t.integer  "sibling_id"
     t.integer  "tbp_project_id"
-    t.boolean  "deviation_spider", :default => true
-  end
+    t.boolean  "deviation_spider", :default => false
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
 
@@ -913,6 +950,14 @@ ActiveRecord::Schema.define(:version => 20140929160800) do
     t.float    "balancei"
     t.float    "balancer"
     t.float    "balancea"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sdp_constants", :force => true do |t|
+    t.string   "constant_name"
+    t.float    "constant_value"
+    t.string   "constant_comment"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

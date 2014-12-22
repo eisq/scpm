@@ -39,6 +39,7 @@ class Project < ActiveRecord::Base
   has_many    :wl_lines, :dependent => :nullify
   has_many    :presales, :dependent => :nullify
   has_many    :presale_ignore_projects, :dependent => :nullify
+  has_many    :deviation_spider_references
 
   def planning
     planning = Planning.find(:first, :conditions=>["project_id=#{self.id}"])
@@ -788,6 +789,26 @@ class Project < ActiveRecord::Base
     date
   end
 
+  def get_before_G5
+    before = true
+    self.milestones.each { |m|
+      if (m.name != "G0" and m.name != "G1" and m.name != "QG HLR" and m.name != "G2" and m.name != "G3" and m.name != "G4" and m.name != "QG BRD" and m.name != "QG ARD" and m.name != "G5" and m.done != 0 and m.is_virtual != 1)
+        before = false
+      end
+    }
+    return before
+  end
+
+  def get_before_M7
+    before = true
+    self.milestones.each { |m|
+      if (m.name != "M1" and m.name != "QG HLR" and m.name != "M3" and m.name != "QG BRD" and m.name != "QG ARD" and m.name != "M5" and m.name != "M7" and m.name != "M5/M7" and m.done != 0 and m.is_virtual != 1)
+        before = false
+      end
+    }
+    return before
+  end
+
   def suggested_status
     rv = 1
     self.risks.each { |r|
@@ -1039,6 +1060,10 @@ class Project < ActiveRecord::Base
     end
   end
   
+  def get_current_deviation_spider_reference
+    return DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", self.id], :order => "version_number desc")
+  end
+
 private
 
   def excel(a,b)

@@ -1,0 +1,10 @@
+<h2>Edit an SDP Constant</h2>
+<br />
+<div>
+<%= error_messages_for :constant_sdp %>
+<% form_for @constant_sdp, :url=>{:action=>'update', :id=>@constant_sdp.id} do |f| -%>
+  <%= render(:partial => f) %>
+  <p><label>&nbsp;</label>
+  <%= submit_tag 'Update' %></p>
+<% end -%>
+</div>
