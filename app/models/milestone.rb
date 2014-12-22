@@ -233,11 +233,19 @@ class Milestone < ActiveRecord::Base
 
   def has_spider_no_consolidated?
     result = false
-    self.spiders.each do |s|
-      if !s.is_consolidated?
+    if self.project.deviation_spider != 0
+      deviation_spider = DeviationSpider.find(:first, :conditions=>["milestone_id = ?", self.id])
+      if deviation_spider and !deviation_spider.is_consolidated?
         result = true
       end
+    else
+      self.spiders.each do |s|
+        if !s.is_consolidated?
+          result = true
+        end
+      end
     end
+
     return result;
   end
 
