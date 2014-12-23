@@ -9,11 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(:version => 20141015142600) do
-=======
-ActiveRecord::Schema.define(:version => 20141014102300) do
->>>>>>> 691b569b744130ff6bb375d7b738026d16ded698
+ActiveRecord::Schema.define(:version => 20141209183000) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -214,8 +210,8 @@ ActiveRecord::Schema.define(:version => 20141014102300) do
     t.string   "request_origin"
     t.string   "issue_history"
     t.integer  "strategic",                        :default => 0
-    t.string   "report"
-    t.string   "previous_report"
+    t.text     "report"
+    t.text     "previous_report"
     t.integer  "sqli_validation_done",             :default => 0
     t.integer  "airbus_validation_done",           :default => 0
     t.integer  "deployment_done",                  :default => 0
@@ -330,7 +326,7 @@ ActiveRecord::Schema.define(:version => 20141014102300) do
     t.integer  "deviation_deliverable_id"
     t.integer  "deviation_activity_id"
     t.string   "score"
-    t.string   "justification"
+    t.string   "justification",            :limit => 1000
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -740,6 +736,7 @@ ActiveRecord::Schema.define(:version => 20141014102300) do
     t.integer  "sibling_id"
     t.integer  "tbp_project_id"
     t.boolean  "deviation_spider", :default => false
+  end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
 

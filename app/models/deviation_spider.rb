@@ -428,10 +428,10 @@ class DeviationSpider < ActiveRecord::Base
 	end
 
 	def is_consolidated?
-		result = true
+		result = false
 		temp = DeviationSpiderConsolidationTemp.find(:first, :conditions=>["deviation_spider_id = ?", self.id])
 		if temp
-			result = false
+			result = true
 		end
 	end
 end
