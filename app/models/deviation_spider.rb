@@ -422,20 +422,37 @@ class DeviationSpider < ActiveRecord::Base
 	end
 
 	def generate_pie_chart
-		data = Array.new
-		labels = Array.new
+		standard = 0
+		customization = 0
+		deviation = 0
+		total_number = 0
 
-		data = [33, 33, 34]
-		labels = ["test1", "test2", "test3"]
+		reference = DeviationSpiderReference.find(:last, :conditions=>["project_id = ?", self.milestone.project_id], :order=>"version_number")
+		if reference
+			DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference]).each do |setting|
+				if setting.answer_1 == "Yes" or 
+					standard = standard + 1
+				elsif 
+					customization = customization + 1
+				else
+					deviation = deviation + 1
+				end
+				total_number = total_number + 1
+			end
 
-		#chart = GoogleChart::PieChart.new(:data=>data, :labels=>labels, :size=>'695x380', :theme => :thirty7signals)
-		chart = GoogleChart::PieChart.new('320x200', :data=>data) do |pie_chart|
-			pie_chart.data "test", 33
-			pie_chart.data "test2", 33
-			pie_chart.data "test3", 34
-			pie_chart.show_labels = false
+			standard = (standard / total_number) * 100
+			customization = (customization / total_number) * 100
+			deviation = (deviation / total_number) * 100
+		else
+			standard = 100
 		end
 
+		chart = GoogleChart::PieChart.new('500x220', "Result of GPP adherence") do |pie_chart|
+			pie_chart.data "Deviation " + deviation.to_s + "%", deviation
+			pie_chart.data "Customization " + customization.to_s + "%", customization
+			pie_chart.data "Standard " + standard.to_s + "%", standard
+			#pie_chart.show_labels = false
+		end
 		return chart
 	end
 

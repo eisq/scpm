@@ -37,7 +37,7 @@ class DeviationSpidersController < ApplicationController
 		    
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
 
-	   		#@pie_chart = get_pie_chart(@last_spider.id)
+	   		@pie_chart = get_pie_chart(@last_spider.id).to_url
 
 	    	# If spider currently edited
 	    	if (@last_spider)
@@ -138,8 +138,9 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def export_customization_pie
-
+	def export_customization_pie(chart)
+		chart.getImageURI()
+		render(:nothing=>true)
 	end
 
 	def get_customization_deliverable_status(answer_1, answer_2, answer_3)
@@ -533,10 +534,8 @@ class DeviationSpidersController < ApplicationController
 	end
 
 	def get_pie_chart(deviation_spider_id)
-	    if deviation_spider_id
-	    	deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
-	    	chart_data = deviation_spider.generate_pie_chart
-	    end
+    	deviation_spider = DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+    	chart_data = deviation_spider.generate_pie_chart
 
 	    return chart_data
 	end

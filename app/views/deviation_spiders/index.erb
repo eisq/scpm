@@ -72,6 +72,13 @@ function set_value_buttons(value_id, answer)
 	}
 }
 
+function get_pie_img()
+{
+	var chart = "<%= @meta_activity_id %>"
+	var imgUri = chart.getImageURI();
+	window.open(imgUri);
+}
+
 // Open
 $( document ).ready(function() {
 	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0 and @questions.count > 0 %>
@@ -196,9 +203,15 @@ $( document ).ready(function() {
 	<tr>
 		<td>Bilan Customization assessment: </td>
 		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
-		<!--<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>-->
+		<!--<td><%= button_to "Pie export", {:action => "export_customization_pie", :chart => @pie_chart} %></td>-->
+		<!--<td><input type="button" value="Pie export" onclick="get_pie_img();" /></td>-->
 		<td>To be added to M3/G2 Quality Slide</td>
 	</tr>
+	<tr>
+		<td>Pie export: </td>
+		<td colspan=3><%= image_tag(@pie_chart) if @pie_chart%></td>
+	</tr>
+
 	<% end %>
 	<!-- <tr>
 		<td>Result of GPP adherence: </td>
