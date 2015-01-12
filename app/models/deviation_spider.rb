@@ -291,49 +291,55 @@ class DeviationSpider < ActiveRecord::Base
 		], 
 		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", self.id, meta_activity_id], 
 		:order => "deviation_deliverables.id")
-		meta_activity_name = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id]).name
 
 		chart = Chart.new
-		chart.meta_activity_name = meta_activity_name
-		chart.titles 		= Array.new
-		chart.points 		= Array.new
-		chart.points_ref 	= Array.new
-		current_deliverable 	= nil
-		current_yes_count		= 0.0
-		current_question_count 	= 0.0
 
-		chart_questions.each do |question|
+		if chart_questions
 
-			# Deliverable
-			if (current_deliverable == nil) or (current_deliverable.id != question.deviation_spider_deliverable.deviation_deliverable.id)
-				if current_deliverable != nil
-					chart.titles 	 << current_deliverable.name
-					chart.points 	 << (current_yes_count / current_question_count)
-					chart.points_ref << 1.0
+			meta_activity_name = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id]).name
+
+			chart.meta_activity_name = meta_activity_name
+			chart.titles 		= Array.new
+			chart.points 		= Array.new
+			chart.points_ref 	= Array.new
+			current_deliverable 	= nil
+			current_yes_count		= 0.0
+			current_question_count 	= 0.0
+
+			chart_questions.each do |question|
+
+				# Deliverable
+				if (current_deliverable == nil) or (current_deliverable.id != question.deviation_spider_deliverable.deviation_deliverable.id)
+					if current_deliverable != nil
+						chart.titles 	 << current_deliverable.name
+						chart.points 	 << (current_yes_count / current_question_count)
+						chart.points_ref << 1.0
+					end
+
+					current_deliverable = question.deviation_spider_deliverable.deviation_deliverable
+					current_yes_count		= 0
+					current_question_count 	= 0
 				end
 
-				current_deliverable = question.deviation_spider_deliverable.deviation_deliverable
-				current_yes_count		= 0
-				current_question_count 	= 0
+				# Question
+				if question.answer == true
+					current_yes_count = current_yes_count + 1.0
+				end
+				current_question_count = current_question_count + 1.0
 			end
 
-			# Question
-			if question.answer == true
-				current_yes_count = current_yes_count + 1.0
+			if current_deliverable
+				chart.titles 	 << current_deliverable.name
+				chart.points 	 << (current_yes_count / current_question_count)
+				chart.points_ref << 1.0
+
+				if chart.titles.count <= 2
+					chart.titles << ""
+					chart.points << 0.0
+					chart.points_ref << 0.0
+				end
 			end
-			current_question_count = current_question_count + 1.0
 		end
-
-		chart.titles 	 << current_deliverable.name
-		chart.points 	 << (current_yes_count / current_question_count)
-		chart.points_ref << 1.0
-
-		if chart.titles.count <= 2
-			chart.titles << ""
-			chart.points << 0.0
-			chart.points_ref << 0.0
-		end
-
 		return chart
 	end
 
@@ -344,49 +350,55 @@ class DeviationSpider < ActiveRecord::Base
 		"JOIN deviation_activities ON deviation_activities.id = deviation_questions.deviation_activity_id"], 
 		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", self.id, meta_activity_id], 
 		:order => "deviation_activities.id")
-		meta_activity_name = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id]).name
 
 		chart = Chart.new
-		chart.titles 		= Array.new
-		chart.points 		= Array.new
-		chart.points_ref 	= Array.new
-		chart.meta_activity_name = meta_activity_name
-		current_activity 	= nil
-		current_yes_count		= 0.0
-		current_question_count 	= 0.0
 
-		chart_questions.each do |question|
+		if chart_questions
 
-			# Activities
-			if (current_activity == nil) or (current_activity.id != question.deviation_question.deviation_activity_id)
-				if current_activity != nil
-					chart.titles 	 << current_activity.name
-					chart.points 	 << (current_yes_count / current_question_count)
-					chart.points_ref << 1.0
+			meta_activity_name = DeviationMetaActivity.find(:first, :conditions => ["id = ?", meta_activity_id]).name
+
+			chart.titles 		= Array.new
+			chart.points 		= Array.new
+			chart.points_ref 	= Array.new
+			chart.meta_activity_name = meta_activity_name
+			current_activity 	= nil
+			current_yes_count		= 0.0
+			current_question_count 	= 0.0
+
+			chart_questions.each do |question|
+
+				# Activities
+				if (current_activity == nil) or (current_activity.id != question.deviation_question.deviation_activity_id)
+					if current_activity != nil
+						chart.titles 	 << current_activity.name
+						chart.points 	 << (current_yes_count / current_question_count)
+						chart.points_ref << 1.0
+					end
+
+					current_activity = question.deviation_question.deviation_activity
+					current_yes_count		= 0.0
+					current_question_count 	= 0.0
 				end
 
-				current_activity = question.deviation_question.deviation_activity
-				current_yes_count		= 0.0
-				current_question_count 	= 0.0
+				# Question
+				if question.answer == true
+					current_yes_count = current_yes_count + 1.0
+				end
+				current_question_count = current_question_count + 1.0
 			end
 
-			# Question
-			if question.answer == true
-				current_yes_count = current_yes_count + 1.0
+			if current_activity
+				chart.titles 	 << current_activity.name
+				chart.points 	 << (current_yes_count / current_question_count)
+				chart.points_ref << 1.0
+
+				if chart.titles.count <= 2
+					chart.titles << ""
+					chart.points << 0.0
+					chart.points_ref << 0.0
+				end
 			end
-			current_question_count = current_question_count + 1.0
 		end
-		
-		chart.titles 	 << current_activity.name
-		chart.points 	 << (current_yes_count / current_question_count)
-		chart.points_ref << 1.0
-
-		if chart.titles.count <= 2
-			chart.titles << ""
-			chart.points << 0.0
-			chart.points_ref << 0.0
-		end
-
 		return chart
 	end
 
