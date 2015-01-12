@@ -430,12 +430,12 @@ class DeviationSpider < ActiveRecord::Base
 		reference = DeviationSpiderReference.find(:last, :conditions=>["project_id = ?", self.milestone.project_id], :order=>"version_number")
 		if reference
 			DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference]).each do |setting|
-				if setting.answer_1 == "Yes" or 
+				if setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Deliverable N.A")
 					standard = standard + 1
-				elsif 
-					customization = customization + 1
-				else
+				elsif setting.answer_1 == "No"
 					deviation = deviation + 1
+				else
+					customization = customization + 1
 				end
 				total_number = total_number + 1
 			end
