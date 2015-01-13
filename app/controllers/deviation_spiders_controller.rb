@@ -37,7 +37,7 @@ class DeviationSpidersController < ApplicationController
 		    
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
 	   		if @last_spider
-	   			@pie_chart = get_pie_chart(@last_spider.id).to_url
+	   			@pie_chart = @last_spider.generate_pie_chart.to_url
 	   		end
 
 	    	# If spider currently edited
@@ -534,10 +534,8 @@ class DeviationSpidersController < ApplicationController
 	    render(:text=>charts.to_json)
 	end
 
-	def get_pie_chart(deviation_spider_id)
-    	deviation_spider = DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
+	def get_pie_chart(deviation_spider)
     	chart_data = deviation_spider.generate_pie_chart
-
 	    return chart_data
 	end
 

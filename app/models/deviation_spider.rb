@@ -429,30 +429,35 @@ class DeviationSpider < ActiveRecord::Base
 
 		reference = DeviationSpiderReference.find(:last, :conditions=>["project_id = ?", self.milestone.project_id], :order=>"version_number")
 		if reference
-			DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference]).each do |setting|
-				if setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Deliverable N.A")
-					standard = standard + 1
-				elsif setting.answer_1 == "No"
-					deviation = deviation + 1
-				else
-					customization = customization + 1
+			settings = DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference])
+			if settings.count > 0
+				settings.each do |setting|
+					if setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Deliverable N.A")
+						standard = standard + 1
+					elsif setting.answer_1 == "No"
+						deviation = deviation + 1
+					else
+						customization = customization + 1
+					end
+					total_number = total_number + 1
 				end
-				total_number = total_number + 1
-			end
 
-			standard = (standard / total_number) * 100
-			customization = (customization / total_number) * 100
-			deviation = (deviation / total_number) * 100
+				standard = standard.to_f / total_number.to_f * 100
+				customization = customization.to_f / total_number.to_f * 100
+				deviation = deviation.to_f / total_number.to_f * 100
+			else
+				standard = 100
+			end
 		else
 			standard = 100
 		end
 
 		chart = GoogleChart::PieChart.new('500x220', "Result of GPP adherence") do |pie_chart|
-			pie_chart.data "Deviation " + deviation.to_s + "%", deviation
-			pie_chart.data "Customization " + customization.to_s + "%", customization
-			pie_chart.data "Standard " + standard.to_s + "%", standard
-			#pie_chart.show_labels = false
+			pie_chart.data "Forecast deviation " + deviation.round.to_s + "%", deviation, "0101DF"
+			pie_chart.data "Forecast customization " + customization.round.to_s + "%", customization, "5858FA"
+			pie_chart.data "Standard " + standard.round.to_s + "%", standard, "A9A9F5"
 		end
+
 		return chart
 	end
 
