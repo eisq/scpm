@@ -62,7 +62,7 @@ class ToolsController < ApplicationController
   end
 
   def test_email
-    Mailer.deliver_mail(APP_CONFIG['test_email_address'])
+    Mailer::deliver_mail('rbaillard@sqli.com')
   end
 
   def sdp_import
