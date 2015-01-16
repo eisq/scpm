@@ -66,6 +66,7 @@ class ToolsController < ApplicationController
   end
 
   def sdp_import
+
     body = render_to_string(:action=>'sdp_index', :layout=>false) + render_to_string(:action=>'sdp_index_by_type', :layout=>false)
     Mailer::deliver_mail('rbaillard@sqli.com','[BAM] SDP import vierge',"<b>SDP has been updated by #{current_user.name}</b><br/><br/>"+'body')
     Mailer::deliver_mail('rbaillard@sqli.com','[BAM] SDP import',"<b>SDP has been updated by #{current_user.name}</b><br/><br/>"+body)
