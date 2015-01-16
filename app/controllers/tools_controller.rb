@@ -69,9 +69,6 @@ class ToolsController < ApplicationController
   end
 
   def do_sdp_upload
-    body = render_to_string(:action=>'sdp_index', :layout=>false) + render_to_string(:action=>'sdp_index_by_type', :layout=>false)
-      Mailer::deliver_mail(APP_CONFIG['sdp_import_email_destination'],APP_CONFIG['sdp_import_email_object'],"<b>SDP has been updated by #{current_user.name}</b><br/><br/>"+body)
-      
     post = params[:upload]
     conf = params[:conf]
     project = params[:project]
