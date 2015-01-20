@@ -62,7 +62,7 @@ class ToolsController < ApplicationController
   end
 
   def test_email
-    Mailer.mail(APP_CONFIG['test_email_address']).deliver
+    Mailer::deliver_mail(APP_CONFIG['test_email_address'])
   end
 
   def sdp_import
