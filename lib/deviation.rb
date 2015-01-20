@@ -91,7 +91,7 @@ module Deviation
     end
 
     content_array.each do |psu|
-      if psu["deliverable"] == "" or !psu["deliverable"] or psu["methodology_template"] == "" or !psu["methodology_template"]
+      if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL]
         content_array = "empty_value"
         break
       end

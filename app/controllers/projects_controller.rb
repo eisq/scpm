@@ -248,7 +248,7 @@ class ProjectsController < ApplicationController
     if @project.lifecycle_id == 9
       @new_spider_to_show = @project.get_before_G5
     elsif @project.lifecycle_id == 10 or @project.lifecycle_id == 8
-      @new_spider_to_show = @project.get_before_M7
+      @new_spider_to_show = @project.get_before_M5
     end
 
   end
@@ -931,7 +931,9 @@ class ProjectsController < ApplicationController
       new_project.create_sibling(project)
       new_project.lifecycle = lifecycle_id
       new_project.lifecycle_object = lifecycle
-      new_project.deviation_spider = true
+      if lifecycle_id != "7"
+        new_project.deviation_spider = true
+      end
       new_project.save
 
       project.is_running = 0

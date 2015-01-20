@@ -72,6 +72,13 @@ function set_value_buttons(value_id, answer)
 	}
 }
 
+function get_pie_img()
+{
+	var chart = "<%= @meta_activity_id %>"
+	var imgUri = chart.getImageURI();
+	window.open(imgUri);
+}
+
 // Open
 $( document ).ready(function() {
 	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0 and @questions.count > 0 %>
@@ -182,30 +189,39 @@ $( document ).ready(function() {
 
 	<br/><br/>
 
-	<h2>Export</h2>
+	<h2>Export Spiders</h2>
 	<table>
 	<tr>
 		<td>Macro-Objectives chart: </td>
 		<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
+		<td>To be added to M3/G2 Quality Slide</td>
 	</tr>
 		<td>Deliverables chart: </td>
 		<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
-		<td colspan=2>To be added in Backup Slides</td>
+		<td>To be added in Backup Slides</td>
 	</tr>
-	<% if @new_spider_to_show %>
-	<tr>
-		<td>Bilan Customization assessment: </td>
-		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
-		<!--<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>-->
-		<td>To be added to M3/G2 Quality Slide</td>
-	</tr>
-	<% end %>
 	<!-- <tr>
 		<td>Result of GPP adherence: </td>
 		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
 		<td colspan=2>To be added to M3/G2 Quality Slide</td>
 	</tr> -->
 	</table>
+	<br/><br/>
+
+	<% if @show_bilan_custo %>
+	<h2>Export Bilan Customization <span style="font-weight:normal; font-size:13px">- To be added to M3/G2 Quality Slide  (Pie+Excel export)</span></h2>
+	<table>
+	<tr>
+		<td colspan=2 style="border:1px outset black;"><%= image_tag(@pie_chart) if @pie_chart%></td>
+	</tr>
+	<tr>
+		<td>Bilan Customization assessment: </td>
+		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
+		<!--<td><%= button_to "Pie export", {:action => "export_customization_pie", :chart => @pie_chart} %></td>-->
+		<!--<td><input type="button" value="Pie export" onclick="get_pie_img();" /></td>-->
+	</tr>
+	</table>
+	<% end %>
 
 	<div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
 	<div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>

@@ -21,7 +21,7 @@ function setShowIgnore(object) {
 <% elsif @status_import != nil and @status_import != "" and @status_import == "3" %>
 	<strong><span style='color:red;'> Error, file not selected. </span></strong>
 <% elsif @status_import != nil and @status_import != "" and @status_import == "4" %>
-	<strong><span style='color:red;'> Error, wrong lifecycle. </span></strong>
+	<strong><span style='color:red;'> Error, the file used is based on the wrong lifecycle for this project. </span></strong>
 <% elsif @status_import != nil and @status_import != "" and @status_import == "5" %>
 	<strong><span style='color:red;'> Error, a value is empty in this PSU file. </span></strong>
 <% end %>

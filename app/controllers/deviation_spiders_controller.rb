@@ -28,16 +28,12 @@ class DeviationSpidersController < ApplicationController
 		    @milestone 	 = Milestone.find(:first, :conditions=>["id = ?", milestone_id])
 		    @project 	 = Project.find(:first, :conditions=>["id = ?", @milestone.project_id])
 
-		    @new_spider_to_show = false
-		    if @project.lifecycle_id == 9
-		      @new_spider_to_show = @project.get_before_G5
-		    elsif @project.lifecycle_id == 10 or @project.lifecycle_id == 8
-		      @new_spider_to_show = @project.get_before_M7
-		    end
+		    @show_bilan_custo = get_show_bilan_custo(@milestone)
 		    
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
-
-	   		#@pie_chart = get_pie_chart(@last_spider.id)
+	   		if @last_spider
+	   			@pie_chart = @last_spider.generate_pie_chart.to_url
+	   		end
 
 	    	# If spider currently edited
 	    	if (@last_spider)
@@ -138,8 +134,9 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def export_customization_pie
-
+	def export_customization_pie(chart)
+		chart.getImageURI()
+		render(:nothing=>true)
 	end
 
 	def get_customization_deliverable_status(answer_1, answer_2, answer_3)
@@ -532,12 +529,8 @@ class DeviationSpidersController < ApplicationController
 	    render(:text=>charts.to_json)
 	end
 
-	def get_pie_chart(deviation_spider_id)
-	    if deviation_spider_id
-	    	deviation_spider 	= DeviationSpider.find(:first, :conditions => ["id = ?", deviation_spider_id])
-	    	chart_data = deviation_spider.generate_pie_chart
-	    end
-
+	def get_pie_chart(deviation_spider)
+    	chart_data = deviation_spider.generate_pie_chart
 	    return chart_data
 	end
 
@@ -646,6 +639,15 @@ class DeviationSpidersController < ApplicationController
 		else
 			redirect_to :controller=>:projects, :action=>:index
 		end
+	end
+
+
+	def get_show_bilan_custo(milestone)
+		show = false
+		if milestone.name == "M1" or milestone.name == "M3" or milestone.name == "M5" or milestone.name == "M5/M7" or milestone.name == "G0" or milestone.name == "G2" or milestone.name == "G3" or milestone.name == "G4" or milestone.name == "G5" or milestone.name == "M5 Agile"
+			show = true
+		end
+		return show
 	end
 
 	def add_spider_deliverable

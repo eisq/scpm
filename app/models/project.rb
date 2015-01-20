@@ -799,10 +799,10 @@ class Project < ActiveRecord::Base
     return before
   end
 
-  def get_before_M7
+  def get_before_M5
     before = true
     self.milestones.each { |m|
-      if (m.name != "M1" and m.name != "QG HLR" and m.name != "M3" and m.name != "QG BRD" and m.name != "QG ARD" and m.name != "M5" and m.name != "M7" and m.name != "M5/M7" and m.done != 0 and m.is_virtual != 1)
+      if (m.name != "M1" and m.name != "QG HLR" and m.name != "M3" and m.name != "QG BRD" and m.name != "QG ARD" and m.name != "M5" and m.name != "M5/M7" and m.done != 0 and m.is_virtual != 1)
         before = false
       end
     }
