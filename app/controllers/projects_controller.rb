@@ -248,7 +248,7 @@ class ProjectsController < ApplicationController
     if @project.lifecycle_id == 9
       @new_spider_to_show = @project.get_before_G5
     elsif @project.lifecycle_id == 10 or @project.lifecycle_id == 8
-      @new_spider_to_show = @project.get_before_M7
+      @new_spider_to_show = @project.get_before_M5
     end
 
   end
