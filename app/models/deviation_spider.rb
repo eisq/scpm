@@ -451,8 +451,8 @@ class DeviationSpider < ActiveRecord::Base
 		else
 			standard = 100
 		end
-
-		chart = GoogleChart::PieChart.new('500x220', "Result of GPP adherence") do |pie_chart|
+		lifecycle_name = Lifecycle.find(:first, :conditions=>["id = ?", milestone.project.lifecycle]).name
+		chart = GoogleChart::PieChart.new('500x220', "Result of "+ lifecycle_name +" adherence") do |pie_chart|
 			pie_chart.data "Forecast deviation " + deviation.round.to_s + "%", deviation, "0101DF"
 			pie_chart.data "Forecast customization " + customization.round.to_s + "%", customization, "5858FA"
 			pie_chart.data "Standard " + standard.round.to_s + "%", standard, "A9A9F5"
