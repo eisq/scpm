@@ -41,9 +41,6 @@ function add(id, nb_months, has_requests, has_rights) {
     <div id="tabscontent">
       <div id="tabContent1" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="1"? "block" : "none"%>;">
           <div>
-            <div style="float:left;">
-              <%= link_to('Export All Spiders', {:controller=>'spiders', :action=>'project_spider_export', :project_id=>@project.id}, {:class=>'btnlnk'}) %>
-            </div>
             <% if @project.is_qr_qwr %>
               <div style="float:Right;">
                 Remaining QS :            <%= @project.calcul_qs_previsional.to_s %><br />
