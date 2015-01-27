@@ -190,6 +190,7 @@ class ProjectsController < ApplicationController
     lifecycle_default = Lifecycle.get_default
     if lifecycle_default
       @project.lifecycle = lifecycle_default.id
+      @project.lifecycle_id = lifecycle_default.id
       @project.lifecycle_object = lifecycle_default
     end
     # can not set project_id to 0 as we use that to filter projets later... but why...
@@ -904,6 +905,7 @@ class ProjectsController < ApplicationController
       if has_data == false
         # Change lifecycle
         project.lifecycle = lifecycle_id
+        project.lifecycle_id = lifecycle_id
         project.lifecycle_object = lifecycle
         project.save
         # Delete previous milestone
@@ -930,7 +932,9 @@ class ProjectsController < ApplicationController
       new_project   = Project.new
       new_project.create_sibling(project)
       new_project.lifecycle = lifecycle_id
+      new_project.lifecycle_id = lifecycle_id
       new_project.lifecycle_object = lifecycle
+      # Lifecycle is not a Suite lifecycle
       if lifecycle_id != "7"
         new_project.deviation_spider = true
       end
