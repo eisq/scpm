@@ -4,6 +4,7 @@
   <tr><td>Code (TO2955)</td><td><%= text_field :project, :project_code %></td></tr>
   <tr><td>Sales revenue</td><td><%= text_field :project, :sales_revenue %></td></tr>
 <% end %>
+<tr><td>TBP</td><td><%= select(:project, :tbp_project_id, @tbp_projects.map {|l| ["#{APP_CONFIG['tbp_auths'][l.account_index]['name']} - #{l.name}", l.id]}, :include_blank => true) %></td></tr>
 <tr><td>Workstream</td><td>	<%= text_field :project, :workstream %></td></tr>
 <tr><td>BRN</td><td>				<%= text_field :project, :brn %></td></tr>
 <tr><td>Coordinator</td><td><%= text_field :project, :coordinator %></td></tr>
@@ -17,7 +18,6 @@
 <tr><td>DWR</td><td>				<%= text_field :project, :dwr %></td></tr>
 <tr><td>Supervisor</td><td>	<%= select(:project, :supervisor_id, @supervisors.map {|p| [p.name, p.id]}, :include_blank=>true) %></td></tr>
 <% lifecycle_list = Lifecycle.find(:all) %>
-<tr><td>Lifecycle</td><td>	<%= select(:project, :lifecycle_id, lifecycle_list.map {|l| [l.name, l.id]}) %></td></tr>
 <tr><td>Suite</td><td>
 	<% if @suiteTags %>
 		<%= select(:project, :suite_tag_id, @suiteTags.map {|s| [s.name, s.id]}, :include_blank=>true) %>

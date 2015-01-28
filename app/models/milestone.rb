@@ -4,7 +4,8 @@ class Milestone < ActiveRecord::Base
   belongs_to  :project
   has_many    :checklist_items, :dependent=>:destroy
   has_many    :spiders
-  
+  has_many    :deviation_spiders
+
   def date
     return self.actual_milestone_date if self.actual_milestone_date and self.actual_milestone_date!=""
     self.milestone_date
@@ -65,7 +66,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def checklist_to_delete?
-    self.checklist_not_applicable==1
+    self.checklist_not_applicable==1 or self.is_virtual == true
   end
 
   # Deploy checklist items from checklist templates
@@ -185,7 +186,7 @@ class Milestone < ActiveRecord::Base
     elsif self.status == 0
       self.update_attribute('status',-1) if rs.size == 0
     end
-    self.update_attribute('comments', self.comments.gsub("No request",shortnames(rs))) if rs.size > 0 and self.comments
+    # self.update_attribute('comments', self.comments.gsub("No request",shortnames(rs))) if rs.size > 0 and self.comments
 
     # check done
     self.update_attribute('done',1) if self.status == 1 and self.done == 0
@@ -232,12 +233,43 @@ class Milestone < ActiveRecord::Base
 
   def has_spider_no_consolidated?
     result = false
-    self.spiders.each do |s|
-      if !s.is_consolidated?
+    if self.project.deviation_spider and self.project.deviation_spider != 0
+      deviation_spider = DeviationSpider.find(:first, :conditions=>["milestone_id = ?", self.id])
+      if deviation_spider and !deviation_spider.is_consolidated?
         result = true
       end
+    else
+      self.spiders.each do |s|
+        if !s.is_consolidated?
+          result = true
+        end
+      end
     end
-    return result;
+
+    return result
+  end
+
+  def has_data?
+      has_data = false
+      if self.comments != nil and self.comments != ""
+        has_data = true
+      end
+      if self.milestone_date != nil and self.milestone_date != ""
+        has_data = true
+      end
+      if self.actual_milestone_date != nil and self.actual_milestone_date != ""
+        has_data = true
+      end
+      if self.spiders.size > 0
+        has_data = true
+      end
+      if self.done != 0
+        has_data = true
+      end
+      if self.status > 0
+        has_data = true
+      end
+      return has_data
   end
 
 end

@@ -50,6 +50,14 @@ img {
 p {
   line-height: 12px;
   }
+
+.display_inline {
+  display: inline;
+}
+.float_right {
+  float: right;
+}
+
 #title {
   margin: -20px 0 0 0;
   padding: 5px 10px 0px 10px;
@@ -361,6 +369,15 @@ strong {
   color: #AAA;
   font-style: italic;
   }
+
+/* IS RUNNING */
+.project_is_running {
+  font-style: italic;
+}
+.project_is_not_running {
+  background-color: #FAA;
+}
+
 
 /* ACTIONS */
 .action_closed, .action_abandonned {font-style: italic; color: #999;}
@@ -679,6 +696,7 @@ table.sortable td    {
   font-size: 1.4em;
   font-style: italic;
 }
+<<<<<<< HEAD
 /* LESSON LEARNT */
 #filters_bar{
   height : 430px;
@@ -738,3 +756,49 @@ table.sortable td    {
   right:0px;
   top:0px;
 }
+=======
+/* PROJECT MILESTONE EDIT*/
+#milestones_edit_sortable {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 60%;
+}
+#milestones_edit_sortable li { 
+  margin: 0 3px 3px 3px; 
+  padding: 6px; 
+  padding-left: 24px; 
+  font-size: 22px; 
+  height: 32px;
+  width:964px;
+}
+.milestone_edit_list_element {
+
+}
+#milestones_edit_sortable li span { 
+  position: absolute;
+  margin-left: -1.3em; 
+}
+.milestone_edit_form {
+   display:inline;
+   margin:0;
+   padding:0;
+}
+#milestones_edit_menu_bar {
+  width:1000px;
+}
+.milestone_edit_element_is_virtual {
+  padding-left: 10px;
+}
+.milestone_edit_loading {
+  display: none;
+}
+.new_milestone_count_class{
+  display: none;
+}
+.constant_comment {
+	
+	color: #009966;
+	font-style: italic;
+}
+>>>>>>> 3bcd22e14c733f07b181c0def551e704ba295e21

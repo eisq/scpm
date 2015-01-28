@@ -1,0 +1,126 @@
+
+<SCRIPT language="Javascript">
+function change_score(consolidation_temp_id, value)
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/update_score",
+ 		data: {deviation_spider_consolidation_temp_id: consolidation_temp_id, deviation_spider_consolidation_temp_score: value}
+	})
+	.done(function( msg ) {
+		var conso_id = "#" + consolidation_temp_id
+		$(conso_id).val('');
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+$( document ).ready(function() {
+	$(".conso_tf").focusout(function() {
+		$.ajax({
+			type: "POST",
+			url: "/deviation_spiders/update_justification",
+	 		data: {deviation_spider_consolidation_temp_id: $(this).attr('id'), deviation_spider_consolidation_temp_justification: $(this).val()}
+		})
+		.done(function( msg ) {
+		})
+		.fail(function() 
+		{ 
+			alert("Error");
+		})
+	});
+});
+</SCRIPT>
+
+<% if @editable %>
+	<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id} %></div>
+	<br/>
+<% else %>
+	<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @deviation_spider.milestone.project_id} %></div><br/>
+<% end %>
+<table><tr><td>
+0: Deliverable expected - Project did not produce Deliverable without appropriate justification<br/>
+1: Deliverable expected - Project did not produce Deliverable with appropriate justification<br/>
+2: Deliverable expected - Project  produced Deliverable using a different  template from the referential one<br/>
+3: Deliverable expected - Project  produced Deliverable with the expected template<br/>
+</td><td>&nbsp;&nbsp;&nbsp;</td><td>
+0: Deliverable not expected - Project did not produce the deliverable and it was not justified<br/>
+1: Deliverable not expected - Project did not produce the deliverable and it was justified<br/>
+2: Deliverable not expected - Project did not produce the deliverable and it was justified<br/>
+3: Deliverable not expected -  Project did  produce the deliverable using the referential  template<br/>
+</td></tr></table>
+<% @all_meta_activities.each do |meta_activity| %>
+<% activities = Array.new %>
+	<h3><%= meta_activity.name %></h3>
+	<table class="consolidation_table">
+
+	<tr class="consolidation_tr_activity">
+	<td>
+		<table width=210><tr><td></td></tr></table>
+	</td>
+	<% @all_activities.each do |activity| %>
+		<% if activity.deviation_meta_activity == meta_activity %>
+		<% activities << activity %>
+			<td colspan=2 class="consolidation_td_activity">
+			<bold><%= activity.name %></bold>
+			</td>
+		<% end %>
+	<% end %>
+	</tr>
+
+	<% is_visible = false %>
+	<% @deliverables.each do |deliverable| %>
+		<% consolidation_temp = @consolidations.select {|conso_temp| conso_temp.deliverable == deliverable} %>
+
+		<% activities.each do |activity| %>
+			<% if consolidation_temp %>
+				<% consolidation = consolidation_temp.find {|conso| conso.activity == activity} %>
+				<% if consolidation %>
+					<% is_visible = true %>
+					<% break %>
+				<% end %>
+			<% end %>
+		<% end %>
+
+		<% if is_visible == true %>
+			<tr class="consolidation_tr_deliverable">
+				<td class="consolidation_td_deliverable">
+					<%= deliverable.name %>
+				</td>
+				<% activities.each do |activity| %>
+					<% if consolidation_temp %>
+						<% consolidation = consolidation_temp.find {|conso| conso.activity == activity} %>
+						<% if consolidation %>
+							<% if @editable %>
+								<td class="consolidation_td_deliverable_left">
+									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
+								</td>
+								<td class="consolidation_td_deliverable_right">
+									<%= text_area_tag('justification_tf', consolidation.justification, :cols=>21, :rows=>1, :id=>"#{consolidation.conso_id.to_s}", :class=>"conso_tf") %>
+								</td>
+							<% else %>
+								<td class="consolidation_td_deliverable_left">
+									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);", :disabled => true}) %>
+								</td>
+								<td class="consolidation_td_deliverable_right">
+									<%= text_area_tag('justification_tf', consolidation.justification, {:cols=>21, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf", :disabled=>true}) %>
+								</td>
+							<% end %>
+						<% else %>
+							<td><%= select_tag('choose_score', options_for_select(@score_list, 0), {:onchange=>"change_score('0'}, this.value);", :visible=>false, :disabled => true}) %></td>
+							<td><%= text_field_tag('justification_tf', "", {:cols=>20, :rows=>1, :id=>"0", :class=>"conso_tf", :visible=>false, :disabled => true}) %></td>
+						<% end %>
+					<% end %>
+				<% end %>
+			</tr>
+		<% end %>
+		<% is_visible = false %>
+	<% end %>
+	</table>
+<% end %>
+<br/><br/>
+
+<% if @editable %>
+<%= button_to "Consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
+<% end %>

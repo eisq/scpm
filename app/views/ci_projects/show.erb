@@ -2,8 +2,10 @@
 
 <h2>
   <% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%>
-  <%=link_to(p.external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
+  <%=link_to(p.extract_mantis_external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%>
   | <%= p.summary %>
+   &nbsp;&nbsp;<span style="font-weight:normal; font-size:13px"> Last reporting update: 
+   <%= p.last_update %> <%= p.last_update_person %> </span>
 </h2>
 
 <table>
@@ -18,40 +20,84 @@
     <h3>
       <u>Dates</u>
     </h3>
-    <p><b>SQLI validation status:</b> 
+    <p><b>Kick-off date:</b> <%= p.kick_off_date.to_s %></p>
+    <p><b>Launching date:</b> <%= p.launching_date_ddmmyyyy.to_s %></p>
+    <p>&nbsp;</p>
+
+    <p><b>SQLI validation status:</b>
       <% if p.sqli_validation_done == 1 %>
       Done
       <% else %>
       Not done yet
       <% end %>
-    <p><b>SQLI validation date objective:</b> <% if p.sqli_validation_done != 1 %> <span class="<%=CiProject.late_css(p.sqli_validation_date_objective)%>"> <% end %> <%= p.sqli_validation_date_objective.to_s %> <% if p.sqli_validation_done != 1 %></span><% end %></p>
-    <p><b>SQLI validation date:</b> <% if p.sqli_validation_done != 1 %><span class="<%=CiProject.late_css(p.sqli_validation_date)%>"><% end %><%= p.sqli_validation_date.to_s %><% if p.sqli_validation_done != 1 %></span><% end %></p>
+
+    <p><b>SQLI validation date objective:</b><%= p.sqli_validation_date_objective.to_s %></p>
+    <% if ((p.sqli_validation_date == nil) and (p.sqli_validation_date_objective != nil) and (p.sqli_validation_date_objective <= Date.today())) %>
+      <span class="ci_late"><p><b>SQLI validation date:</b></p></span>
+    <% else %>
+      <p><b>SQLI validation date:</b> <%= p.sqli_validation_date.to_s %></p>
+    <% end %>
+    <% if p.sqli_date_alert == 1 %>
+      <span style="color:red;">-> date to be validated</span>
+    <% end %>
     <p>&nbsp;</p>
-    <p><b>Airbus validation status:</b> 
+
+    <p><b>Airbus validation status:</b>
       <% if p.airbus_validation_done == 1 %>
       Done
       <% else %>
       Not done yet
       <% end %>
-    <p><b>Airbus validation date objective:</b> <% if p.airbus_validation_done != 1 %><span class="<%=CiProject.late_css(p.airbus_validation_date_objective)%>"><% end %><%= p.airbus_validation_date_objective.to_s %><% if p.airbus_validation_done != 1 %></span><% end %></p>
-    <p><b>Airbus validation date:</b> <% if p.airbus_validation_done != 1 %><span class="<%=CiProject.late_css(p.airbus_validation_date)%>"><% end %><%= p.airbus_validation_date.to_s %><% if p.airbus_validation_done != 1 %></span><% end %></p>
+
+    <p><b>Airbus validation date objective:</b><%= p.airbus_validation_date_objective.to_s %></p>
+    <% if ((p.airbus_validation_date == nil) and (p.airbus_validation_date_objective != nil) and (p.airbus_validation_date_objective <= Date.today())) %>
+      <span class="ci_late"><p><b>Airbus validation date:</b></p></span>
+    <% else %>
+      <p><b>Airbus validation date:</b><%= p.airbus_validation_date.to_s %></p>
+    <% end %>
+    <% if p.airbus_date_alert == 1 %>
+      <span style="color:red;">-> date to be validated</span>
+    <% end %>
     <p>&nbsp;</p>
-    <p><b>Deployment status:</b> 
+
+    <p><b>Deployment status:</b>
       <% if p.deployment_done == 1 %>
       Done
       <% else %>
       Not done yet
       <% end %>
-    <p><b>Deployment date objective:</b> <% if p.deployment_done != 1 %><span class="<%=CiProject.late_css(p.deployment_date_objective)%>"><% end %><%= p.deployment_date_objective.to_s %><% if p.deployment_done != 1 %></span><% end %></p>
-    <p><b>Deployment date:</b> <% if p.deployment_done != 1 %><span class="<%=CiProject.late_css(p.deployment_date)%>"><% end %><%= p.deployment_date.to_s %><% if p.deployment_done != 1 %></span><% end %></p>
+
+    <p><b>Deployment date objective:</b> <%= p.deployment_date_objective.to_s %></p>
+    <% if ((p.deployment_date == nil) and (p.deployment_date_objective != nil) and (p.deployment_date_objective <= Date.today())) %>
+      <span class="ci_late"><p><b>Deployment date:</b></p></span>
+    <% else %>
+      <p><b>Deployment date:</b> <%= p.deployment_date.to_s %></p>
+    <% end %>
+    <% if p.deployment_date_alert == 1 %>
+      <span style="color:red;">-> date to be validated</span>
+    <% end %>
+
   </td><td width=50>
-  </td><td valign=top>
+  </td><td valign=top width=250>
+  <h3>
+    <u>Phases</u>
+  </h3>
+  <p><b>Current phase:</b> <%= p.current_phase %></p>
+  <p><b>Next phase:</b> <%= p.next_phase %></p>
+  </td><td width=50>
+  </td><td valign=top width=300>
     <h3>
       <u>Information</u>
     </h3>
-    <p><b>Backlog request ID:</b> <%= p.backlog_request_id.to_s %></p>
+    <p><b>Backlog request ID:</b> <%= p.num_req_backlog.to_s %></p>
     <p><b>Assigned to:</b> <%= p.assigned_to %></p>
-    <p><b>SVN delivery folder: </b> <%= p.svn_delivery_folder %></p>
+    <p><b>SQLI Validator:</b> <%= p.sqli_validation_responsible %></p>
+    <p><b>Priority:</b> <%= p.priority %></p>
+    <p><b>SVN delivery folder: </b> <%= p.path_svn %></p>
+    <p><b>CI Objectives 2014:</b></p>
+    <p><%= p.ci_objectives_2014 %></p>
+    <p><b>Description: </b></p>
+    <p><%= p.description %></p>
   </td>
 </tr>
 </table>

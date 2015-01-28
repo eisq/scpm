@@ -1,0 +1,39 @@
+<input type="button" value="Select table" onclick="selectElementContents(document.getElementById('copy_table'));" />
+<table style="border: 1px solid black;" id="copy_table">
+<tr>
+	<th class="cell_border">Req Backlog</th>
+	<th class="cell_border">Priority</th>
+	<th class="cell_border">CCB / Quick Fix</th>
+	<th class="cell_border">Req -- # - CI Name</th>
+	<th class="cell_border">Dependent CI</th>
+	<th class="cell_border">Date Start</th>
+	<th class="cell_border">Current Phase</th>
+	<th class="cell_border">Next Phase</th>
+	<th class="cell_border">Owner</th>
+	<th class="cell_border">Estimated AIRBUS Validation Date</th>
+	<th class="cell_border">Estimated Deployment Date</th>
+	<th class="cell_border">Details</th>		
+</tr>
+
+<% @ci_projects.each do |ci| %>
+	<% style = "" %>
+	<% if ci.strategic == 1%>
+		<% style = "background-color:yellow;" %>
+	<% end %>
+	<tr style="<%= style %>">
+		<td class="cell_border"><%= ci.num_req_backlog %></td>
+		<td class="cell_border"></td>
+		<td class="cell_border"><%= ci.quick_fix %></td>
+		<td class="cell_border"><%= ci.extract_mantis_external_id.to_s%> - <%= ci.summary %></td>
+		<td class="cell_border"></td>
+		<td class="cell_border"><%= ci.launching_date_ddmmyyyy.to_s %></td>
+		<td class="cell_border"><%= ci.report %></td>
+		<td class="cell_border"><%= ci.previous_report %> </td>
+		<td class="cell_border"><%= ci.assigned_to %></td>
+		<td class="cell_border"><%= ci.airbus_validation_date.to_s %></td>
+		<td class="cell_border"><%= ci.deployment %></td>
+		<td class="cell_border"></td>
+	</tr>
+<% end %>
+
+</table>

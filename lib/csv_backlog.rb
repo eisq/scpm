@@ -2,84 +2,31 @@ require 'csv'
 
 class CsvBacklog
 
-  attr_accessor  :internal_id, #Interne
-    :external_id, #ID
-    :type, #Type (new)
-    :stage, #Etape
-    :category, #Catégorie
-    :severity, #Sévérité
-    :reproducibility, #Reproductibilité (new)
-    :summary, #Intitulé
-    :description, #Description
-    :status, #Etat
-    :submission_date, #Soumission
-    :reporter, #Rapporteur
-    :last_update, #Mise à jour
-    :last_update_person, #Personne dernière màj
-    :assigned_to, #Assigné à
-    :priority, #Priorité
-    :visibility, #Visibilité
-    :detection_version, #Version de détection (new)
-    :version_taken_into_account, #Version de prise en compte (new)
-    :status_precision, #Précision sur l'état (new)
-    :resolution_charge, #Charge de résolution
-    :id_duplicate, #Doublon d'ID (new)
-    :steps_to_reproduce, #Etapes pour reproduire (new)
-    :additional_information, #Informations complémentaires
-    :taking_into_account_date, #Date de prise en compte
-    :realisaton_date, #Date de réalisation
-    :realisation_author, #Personne de réalisation
-    :delivery_date, #Date de livraison
-    :reopening_date, #Date de réouverture (new)
-    :detection_phase, #Phase de détection (new)
-    :injection_phase, #Phase d'injection (new)
-    :impact, #Impact (en j/h) (new)
-    :impact_time, #Impact en délai (en j) (new)
-    :typology_of_change, #Typologie du changement (new)
-    :deliverables_updated, #Livrables mis à jour (new)
-    :iteration, #Itération (new)
-    :lot, #Lot (new)
-    :entity, #Entité (new)
-    :team, #Equipe (new)
-    :domain, #Domaine (new)
-    :backlog_request_id, #Num Req Backlog (new)
-    :origin, #Origin
-    :improvement_target_objective, #Output Type
-    :deliverable_list, #Deliverables list
-    :accountable, #Dev Team
-    :deployment, #Deployment
-    :airbus_responsible, #Airbus Responsible
-    :airbus_validation_date, #Airbus validation date
-    :airbus_validation_date_objective, #Airbus validation date objective
-    :airbus_validation_date_review, #Airbus validation Date Review
-    :ci_objectives_2010_2011, #CI Objective 2010/2011 (new)
-    :ci_objectives_2012, #CI Objective 2012 (new)
-    :ci_objectives_2013, #CI Objectives 2013
-    :deployment_date, #Deployment date
-    :deployment_date_objective, #Deployment date objective
-    :specification_date, #Specification date (new)
-    :kick_off_date, #Kick-Off Date
-    :launching_date_ddmmyyyy, #Launching date (dd/mm/yyyy)
-    :sqli_validation_date, #SQLI Validation date
-    :sqli_validation_date_objective, #SQLI Validation date objective
-    :specification_date_objective, #Specification date Objective (new)
-    :sqli_validation_responsible, #SQLI validation Responsible
-    :ci_objectives_2014, #CI Objectives 2014 (new)
-    :linked_req, #Linked Req (new)
-    :quick_fix, #Quick Fix (new)
-    :level_of_impact, #Level of Impact (new)
-    :impacted_mnt_process, #Impacted M&T process (new)
-    :path_backlog, #Path backlog (new)
-    :deliverable_folder, #Path SVN
-    :path_sfs_airbus, #Path SFS Airbus (new)
-    :item_type, #Item Type (new)
-    :verification_date_objective, #Verification Date Objective (new)
-    :verification_date, #Verification Date (new)
-    :request_origin, #Request Origin (new)
-    :issue_history, #Historique du ticket
-    :scope_l2,
-    :sqli_validation_date_review,
-    :deployment_date_review
+  attr_accessor  :id,
+    :linked_req,
+    :requirement,
+    :origin,
+    :description,
+    :output_type,
+    :impacted_mnt_process,
+    :priority,
+    :status,
+    :submission_date,
+    :dev_team,
+    :planned_spec_date,
+    :ticket_or_ci_ref,
+    :planned_verification_date,
+    :level_of_impact,
+    :planned_acceptance_date,
+    :target_qms_version,
+    :planned_deployment_date,
+    :target_perimeter,
+    :spec_date,
+    :verification_date,
+    :acceptance_date,
+    :deployment_date,
+    :quick_fix,
+    :comments
 
   def initialize
   end
@@ -171,10 +118,9 @@ private
     name.gsub!(" ","_")
     name.gsub!("-","_")
     name.gsub!(".","")
+    name.gsub!("&","n")
     name.gsub!(/\d\d\_/,"")
     #name.gsub!(/\_\d\d/ ,"")
-    name = "internal_id" if name == "internal"
-    name = "external_id" if name == "id"
     name
   end
 

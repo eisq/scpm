@@ -1,0 +1,35 @@
+<p><%= label_tag 'Type' %> <%= select(:project, :type, options_for_select(@select_ci_type)) %></p>
+<p><%= label_tag 'Stage' %> <%= select(:project, :stage, options_for_select(@select_stage)) %></p>
+<p><%= label_tag 'Category' %> <%= select(:project, :category, options_for_select(@select_category)) %></p>
+<p><%= label_tag 'Severity' %> <%= select(:project, :severity, options_for_select(@select_severity)) %></p>
+<p><%= label_tag 'Reproductibility' %> <%= select(:project, :reproductibility, options_for_select(@select_reproductibility)) %></p>
+<p style="color:red;"><%= label_tag 'Summary' %> <%= text_area :project, :summary, {:cols=>69, :rows=>1} %></span></p>
+<p style="color:red;"><%= label_tag 'Description' %> <%= text_area :project, :description, {:cols=>69, :rows=>5} %></span></p>
+<p><%= label_tag 'Status' %> <%= select(:project, :status, options_for_select(@select_status)) %></p>
+<p><%= label_tag 'Visibility' %> <%= select(:project, :visibility, options_for_select(@select_visibility)) %></p>
+<p><%= label_tag 'Priority' %> <%= select(:project, :priority, options_for_select(@select_priority)) %></p>
+<!--<p><%= label_tag 'Additional informations' %> <%= text_area :project, :additional_informations, {:cols=>69, :rows=>5} %></p>-->
+<p><%= label_tag 'Entity' %> <%= select(:project, :entity, options_for_select(@select_entity)) %></p>
+<p><%= label_tag 'Domain' %> <%= select(:project, :domain, options_for_select(@select_domain)) %></p>
+<!--<p><%= label_tag 'Backlog ID' %> <%= text_field :project, :num_req_backlog %></p>-->
+<p><%= label_tag 'Origin' %> <%= select(:project, :origin, options_for_select(@select_origin)) %></p>
+<p><%= label_tag 'Deliverables list' %> <%= text_field :project, :deliverables_list %></p>
+<p><%= label_tag 'Dev team' %> <%= select(:project, :dev_team, options_for_select(@select_dev_team)) %></p>
+<p style="color:red;"><%= label_tag 'Deployment' %> <%= select(:project, :deployment, options_for_select(@select_deployment)) %></p>
+
+<p><%= label_tag 'Kick-off date' %> <%= text_field :project, :kick_off_date %> (yyyy-mm-dd)</p>
+<p style="color:red;"><%= label_tag 'Launching date' %> <%= text_field :project, :launching_date_ddmmyyyy %> (yyyy-mm-dd)</p>
+<p style="color:red;"><%= label_tag 'SQLI validation responsible' %> <%= text_field :project, :sqli_validation_responsible %></p>
+<p><%= label_tag 'SQLI validation date objective' %> <%= text_field :project, :sqli_validation_date_objective %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'SQLI validation date' %> <%= text_field :project, :sqli_validation_date %> (yyyy-mm-dd)</p>
+
+<p><%= label_tag 'Airbus responsible' %> <%= text_field :project, :airbus_responsible %></p>
+<p><%= label_tag 'Airbus validation date objective' %> <%= text_field :project, :airbus_validation_date_objective %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'Airbus validation date' %> <%= text_field :project, :airbus_validation_date %> (yyyy-mm-dd)</p>
+
+<p><%= label_tag 'Deployment date objective' %> <%= text_field :project, :deployment_date_objective %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'Deployment date' %> <%= text_field :project, :deployment_date %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'Specification date objective' %> <%= text_field :project, :specification_date_objective %> (yyyy-mm-dd)</p>
+<p><%= label_tag 'Specification date' %> <%= text_field :project, :specification_date %> (yyyy-mm-dd)</p>
+
+<p style="color:red;"><%= label_tag 'CI Objectives 2014' %> <%= select(:project, :ci_objectives_2014, options_for_select(@select_ci_objectives_2014)) %></p>

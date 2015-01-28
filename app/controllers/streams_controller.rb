@@ -315,25 +315,48 @@ class StreamsController < ApplicationController
     resultRegex = summaryParam.scan(/\[(.*?)\]/)
     if ((resultRegex.count == 3) && (resultRegex[0].to_s.length > 0) && (resultRegex[1].to_s.length > 0) && (project_name.length > 0))
       
+      # Check if creation of project is in the case 1 condition or case 2 condition
+      lifecycle_selected = nil
+      suite = nil
+      if project_name == resultRegex[1].to_s # Case 2
+        lifecycle_selected = Lifecycle.get_case_two
+        suite = SuiteTag.find(:first, :conditions=>["name LIKE ?", resultRegex[0].to_s])
+        Rails.logger.info "CASE 2 "+suite.to_s
+      else # Case 1 or not found
+        lifecycle_selected = Lifecycle.get_case_one
+      end
+      if lifecycle_selected == nil
+        lifecycle_selected = Lifecycle.first
+      end
+
       summary           = "[" + resultRegex[0].to_s + "][" + resultRegex[1].to_s + "]["+resultRegex[2].to_s+"]"
       workpackage_name  = get_workpackage_name_from_summary(summary, project_name)
       brn               = summary.split(/\[([^\]]*)\]/)[5]
       
       project = Project.find_by_name(project_name)
       if not project
-        project = Project.create(:name=>project_name)
+        project = Project.create(:name=>project_name, :deviation_spider=>true)
         project.workstream        = workstream.name
-        project.lifecycle_object  = Lifecycle.first
+        project.lifecycle_object  = lifecycle_selected
+        project.Lifecycle_id = lifecycle_selected.id
+        if suite != nil
+          project.suite_tag = suite
+        end
+        project.deviation_spider = true
         project.save
       end
 
       wp = Project.find_by_name(workpackage_name, :conditions=>["project_id=?",project.id])
       if not wp
-        wp = Project.create(:name=>workpackage_name)
+        wp = Project.create(:name=>workpackage_name, :deviation_spider=>true)
         wp.workstream       = workstream.name
         wp.brn              = brn
-        wp.lifecycle_object = Lifecycle.first
+        wp.lifecycle_object = lifecycle_selected
+        wp.lifecycle_id = lifecycle_selected.id
         wp.project_id       = project.id
+        if suite != nil
+          project.suite_tag = suite
+        end
         wp.save
       end
 

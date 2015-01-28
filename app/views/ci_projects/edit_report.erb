@@ -1,4 +1,6 @@
-<h2>Edit CI Reporting</h2>
+<h2>Edit CI Reporting
+	&nbsp;&nbsp;<span style="font-weight:normal; font-size:13px"> Last reporting update: <%= @project.last_update %> <%= @project.last_update_person %> </span>
+</h2>
 
 <% form_for @project, :url=>{:action=>'update_report', :id=>@project.id} do |f| -%>
   <%= render(:partial => "edit_report") %>

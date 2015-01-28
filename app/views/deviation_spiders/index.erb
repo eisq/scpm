@@ -1,0 +1,244 @@
+<SCRIPT language="Javascript">
+
+var chart_deliverable 	= null;
+var chart_activity 		= null;
+// General methods
+function change_meta_activity(meta_activity_id)
+{
+	location.replace(generate_url("index?milestone_id=<%= @milestone.id.to_s %>&meta_activity_id="+meta_activity_id));
+}
+
+function generate_url(action_name) {
+  if(location.toString().indexOf("index") !== -1)
+  {
+	return action_name;
+  }
+  else
+  {
+	return "deviation_spiders/" + action_name;
+  }
+}
+
+// Table methods
+function set_question(question_id, checked)
+{
+	$.ajax({
+		type: "POST",
+		url: "/deviation_spiders/update_question",
+ 		data: {deviation_spider_value_id: question_id, deviation_spider_value_answer: checked}
+	})
+	.done(function( msg ) {
+		set_value_buttons(question_id, checked);
+
+		var spider_values_updated = msg.split(',')
+		for (var i = 0; i < spider_values_updated.length; i++) {
+			set_value_buttons(spider_values_updated[i], checked);
+		};
+		<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0  %>
+			show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Deliverable chart at <%= @last_spider.milestone.name %>");
+			show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Macro-Objective at <%= @last_spider.milestone.name %>");
+		<% end %>
+	})
+	.fail(function() 
+	{ 
+		alert("Error: set_question");
+	})
+}
+
+function set_value_buttons(value_id, answer)
+{
+	var button_all_not_done_id = "#button_all_not_done_"+value_id;
+
+	var button_yes_id = "#button_yes_"+value_id;
+	var button_no_id = "#button_no_"+value_id;
+	if (answer == true) {
+		$(button_all_not_done_id).attr('class', 'deliverable_not_done');
+
+		if ($(button_yes_id).attr('class') == 'answer_button_select') {	
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button');
+		} else {
+			$(button_yes_id).attr('class', 'answer_button_select');
+			$(button_no_id).attr('class', 'answer_button');
+		}
+	} else {
+		if ($(button_no_id).attr('class') == 'answer_button_select') {	
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button');
+		} else {
+			$(button_yes_id).attr('class', 'answer_button');
+			$(button_no_id).attr('class', 'answer_button_select');
+		}
+	}
+}
+
+function get_pie_img()
+{
+	var chart = "<%= @meta_activity_id %>"
+	var imgUri = chart.getImageURI();
+	window.open(imgUri);
+}
+
+// Open
+$( document ).ready(function() {
+	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0 and @questions.count > 0 %>
+		show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Deliverable chart at <%= @last_spider.milestone.name %>");
+		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %>: Macro-Objective chart at <%= @last_spider.milestone.name %>");
+	<% end %>
+});
+
+</SCRIPT>
+<script src="/javascripts/highcharts/deviation_spider_chart.js" type="text/javascript"></script>  
+<script src="/javascripts/highcharts/group_export.js" type="text/javascript"></script>
+
+<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
+<% if @empty %>
+<%= @empty %>
+<% end %>
+<%
+	projectName = ""
+	if(@project.project_id != nil)
+		projectName += @project.project.name
+	end
+	projectName += " > "+@project.name
+%>
+
+<h3>Project : <%= projectName %> - Milestone : <%= @milestone.name %></h3>
+
+<h2>Current spider</h2>
+
+<% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
+	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
+<% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
+	<div style="float:left;">Operational Activities : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
+	<br /><br/><br/>
+
+	<% table_activity = nil %>
+	<% table_deliverable = nil %>
+	<% @questions.each do |q| %>
+		<!-- ACTIVITY -->
+		<% if table_activity == nil or table_activity != q.deviation_question.deviation_activity_id %>
+			<% if table_activity != nil %>
+				</table><br />
+			<% end %>
+			<table class="deviation_spider_table">
+			<tr class="deviation_spider_tr_activity">
+				<td colspan="3"><%= q.deviation_question.deviation_activity.name %></td>
+			</tr>
+			<% table_activity 		= q.deviation_question.deviation_activity_id %>
+			<% table_deliverable	= nil %>
+		<% end %>
+
+		<!-- DELIVERABLE  -->
+		<% if table_deliverable == nil or table_deliverable != q.deviation_spider_deliverable.deviation_deliverable_id %>
+			<tr class="deviation_spider_tr_deliverable">
+				<td width="200"><%= q.deviation_spider_deliverable.deviation_deliverable.name %></td>
+				<td colspan="2">
+					<% deliverable_not_done_class = "deliverable_not_done" %>
+					<% deliverable_not_done_class = "deliverable_not_done_select" if q.deviation_spider_deliverable.not_done %>
+					<%= button_to "Deliverable will not be done", {:action => "set_false_for_spider_deliverable", :meta_activity_id => @meta_activity_id, :deviation_spider_deliverable_id => q.deviation_spider_deliverable_id}, :confirm=>"Are you sure that you want to set all questions in all Macro-Objectives to NO ?", :method => :post, :id => "button_all_not_done_"+ q.id.to_s, :class => deliverable_not_done_class %> 
+				</td>
+			</tr>
+			<% table_deliverable	= q.deviation_spider_deliverable.deviation_deliverable_id %>
+		<% end %>
+
+		<!-- QUESTION -->
+		<tr>
+			<td colspan="2"> - <%= q.deviation_question.question_text %></td>
+			<td width="110">  
+				<% yes_class = 'class="answer_button"' %>
+				<% no_class = 'class="answer_button"' %>
+				<% if q.answer %>
+					<% yes_class = 'class="answer_button_select"' %>
+				<% end %>
+				<% if !q.answer and q.answer != nil %>
+					<% no_class = 'class="answer_button_select"' %>
+				<% end %>
+				<input <%= yes_class %> id="button_yes_<%= q.id.to_s %>" type="button" value="Yes" onclick="set_question('<%= q.id.to_s %>', true);" />
+				<input <%= no_class %>  id="button_no_<%= q.id.to_s %>"  type="button" value="No" onclick="set_question('<%= q.id.to_s %>', false);" />
+			</td>
+		</tr>
+	<% end %>
+	</table>
+	<br/>
+
+	<div style="float:left;">Operational Activities : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
+
+	<br/><br/><br/><br/>
+
+	<h2>Actions</h2>
+	<% if @deliverables_to_add.count > 0 %>
+		<% form_tag(:action=>'add_spider_deliverable') do %>
+		  Deliverables not evaluated:
+		  <%= hidden_field_tag('deviation_spider_id', @last_spider.id) %>
+		  <%= select_tag ("deviation_deliverable_id", options_for_select(@deliverables_to_add))  %>
+		  <%= submit_tag('Add to spider') %>
+		<% end %>
+	<% end %>
+	<br/>
+	<%= form_tag :action=>'update_file_link' %>
+		Delivery file link: <%= text_field_tag('file_link', @last_spider.file_link, {:size=>30}) %>
+	    <%= hidden_field_tag('deviation_id', @last_spider.id) %>
+	    <%= hidden_field_tag('redirect', 'index') %>
+	    <%= submit_tag "Save" %>
+	</form>
+
+	<p><%= button_to "Consolidation process", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => true} %></p>
+
+	<p><%= button_to "Delete spider", {:action => "delete_current_spider", :deviation_spider_id => @last_spider.id} %></p>
+
+	<br/><br/>
+
+	<h2>Export Spiders</h2>
+	<table>
+	<tr>
+		<td>Macro-Objectives chart: </td>
+		<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
+		<td>To be added to M3/G2 Quality Slide</td>
+	</tr>
+		<td>Deliverables chart: </td>
+		<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
+		<td>To be added in Backup Slides</td>
+	</tr>
+	<!-- <tr>
+		<td>Result of GPP adherence: </td>
+		<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
+		<td colspan=2>To be added to M3/G2 Quality Slide</td>
+	</tr> -->
+	</table>
+	<br/><br/>
+
+	<% if @show_bilan_custo %>
+	<h2>Export Bilan Customization <span style="font-weight:normal; font-size:13px">- To be added to M3/G2 Quality Slide  (Pie+Excel export)</span></h2>
+	<table>
+	<tr>
+		<td colspan=2 style="border:1px outset black;"><%= image_tag(@pie_chart) if @pie_chart%></td>
+	</tr>
+	<tr>
+		<td>Bilan Customization assessment: </td>
+		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
+		<!--<td><%= button_to "Pie export", {:action => "export_customization_pie", :chart => @pie_chart} %></td>-->
+		<!--<td><input type="button" value="Pie export" onclick="get_pie_img();" /></td>-->
+	</tr>
+	</table>
+	<% end %>
+
+	<div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
+	<div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>
+	<div class="deviation_spider_export_chart" id="export_chart"></div>
+
+<% end %>
+<br/><br/>
+
+<% if @history and @history.count > 0%>
+<h2>History</h2>
+	<% @history.each { |s|
+		spider_name = "Spider [created the "
+		spider_name << s.created_at.to_s
+		spider_name << "] [Consolidated the "
+		spider_name << s.deviation_spider_consolidations.first().created_at.to_s
+		spider_name << "]"
+	%>
+		<%= link_to spider_name, :action => "index_history", :deviation_spider_id => s.id %><br />
+	<% } %>
+<% end %>

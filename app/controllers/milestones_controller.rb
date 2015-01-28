@@ -141,10 +141,6 @@ class MilestonesController < ApplicationController
 
     # If no date error
     if error == 0
-      # Update parameters
-      if params[:milestone][:project_id]
-        m.project = Project.find(params[:milestone][:project_id])
-      end
 
       if params[:milestone][:name]
         m.name = params[:milestone][:name]
@@ -170,11 +166,11 @@ class MilestonesController < ApplicationController
       m.save true
 
       # Redirect
-      if m.done == 1 and old == 0 and m.is_eligible_for_note?
-        redirect_to "/notes/new?project_id=#{m.project_id}&done=1"
-      else
+      # if m.done == 1 and old == 0 and m.is_eligible_for_note?
+        # redirect_to "/notes/new?project_id=#{m.project_id}&done=1"
+      # else
         redirect_to "/projects/show/#{m.project_id}"
-      end
+      # end
     else
       # Date error
       redirect_to("/milestones/edit?id=#{params[:id]}&date_error="+error.to_s)
@@ -209,8 +205,8 @@ class MilestonesController < ApplicationController
   end
 
   def ajax_milestone
-    project = Project.find(params[:project_id])
-    render(:partial=>'milestones/milestone', :collection=>project.sorted_milestones)
+    @project = Project.find(params[:project_id])
+    render(:partial=>'milestones/milestone', :collection=>@project.sorted_milestones, :locals=>{:editable=> true})
   end
 
 private

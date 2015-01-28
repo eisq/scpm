@@ -53,15 +53,16 @@
     {
       $(div_str).innerHTML = '<%= image_tag "loading.gif", :alt => "Loading", :id => "image_loading" %>';
 
-      new Ajax.Request('/milestones/ajax_milestone', 
+      new Ajax.Request('/milestones/ajax_milestone',
       {
-        parameters: { project_id: project_id },
+        parameters: {project_id: project_id},
         onSuccess: function(response) 
         {
           div_str_response = "milestone_ajax_div_"+project_id;
-          $(div_str_response).innerHTML = response.responseText;
+          result = response.responseText;
+          $(div_str_response).innerHTML = result;
         },
-        onFailure:function(response) 
+        onFailure: function(response) 
         {
           div_str_response = "milestone_ajax_div_"+project_id;
           $(div_str_response).innerHTML = "Loading Error";

@@ -1,0 +1,35 @@
+<SCRIPT language="Javascript">
+
+function change_deliverable(deliverable_id)
+{
+	location.replace("index_question?deliverable_id="+deliverable_id+"&activity_id="+$("#choose_activity").val() );
+}
+function change_activity(activity_id)
+{
+  location.replace("index_question?deliverable_id="+ $("#choose_deliverable").val()+"&activity_id="+activity_id);
+}
+
+function create_new_question() {
+	location.replace("new_question?deliverable_id=" + $("#choose_deliverable").val() + "&activity_id=" + $("#choose_activity").val() );
+}
+
+</SCRIPT>
+
+
+Macro-Objective : <%= select_tag('choose_activity', options_for_select(@activities, @activity_index_select.to_i), {:onchange=>"change_activity(this.value)"}) %>
+Deliverable : <%= select_tag('choose_deliverable', options_for_select(@deliverables, @deliverable_index_select.to_i), {:onchange=>"change_deliverable(this.value)"}) %>
+
+<input type="button", :id="add_question", onclick="create_new_question();" value="New question" />
+<div id="deliverable_list">
+
+<% @questions.each do |q| %>
+  <p>
+    <div style="float: left; width: auto;">
+    <%= q.question_text %> [Is Active : <%= q.is_active %>]
+      &nbsp;
+    </div>    
+    <%= button_to "Detail", {:action => "detail_question", :question_id => q.id }, {:method => :post} %>
+ </p>
+<% end %>
+
+</div>

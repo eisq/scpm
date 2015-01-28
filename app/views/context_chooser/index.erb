@@ -14,14 +14,14 @@
 		<% if (@action_48hr.size > 0) %>
 		<span class="my_actions">My actions updated in the last 48 hours</span>
 		<%= render(:file=>'actions/actions_header') %>
-		<%= render(:partial=>'actions/action', :collection=>@action_48hr) %>
+		<%= render(:partial=>'actions/action', :collection=>@action_48hr, :locals=>{:editable=> true}) %>
 		</table>
 		<% end %>
 		<br />
 		<% if (@actions.size > 0) %>
 		<span class="my_actions">My opened actions</span>
 		<%= render(:file=>'actions/actions_header') %>
-		<%= render(:partial=>'actions/action', :collection=>@actions) %>
+		<%= render(:partial=>'actions/action', :collection=>@actions_accueil, :locals=>{:editable=> true}) %>
 		</table>
 		<% end %>
 	  </div>
@@ -32,6 +32,7 @@
       <li><b>09-Jun-2013</b> Plan de charge par projet</li>
     <% end %>
     <% if(APP_CONFIG['project_name']=='EISQ') %>
+      <li><b>05-September-2014</b> Intégration des modules Lifecycle et CI</li>
       <li><b>08-April-2014</b> Intégration des filtres par suite</li>
       <li><b>09-July-2013</b> Intégration des Lessons_learnt.</li>
       <li><b>09-July-2013</b> Intégration des nouveaux risques.</li>

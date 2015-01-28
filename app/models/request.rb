@@ -774,6 +774,20 @@ class Request < ActiveRecord::Base
     'WP7.2.6 - Expertise Activities for Project: Configuration Management' => ['M3', 'G2', 'pg2', 'g2']
     }
 
+  PHASE_MILESTONES_SPECIFIC = {
+    'WP1.6.6 - QWR QG HLR'      => ['QG HLR']
+  }
+  # Used to the project creation from requests 
+  REQUEST_TYPE_TO_LIFECYCLES = {
+    'No'  => 'Waterfall',
+    'Yes' => 'LBIP+',
+    'Suite' => 'Suite'
+  }
+
+  def lifecycle_name_for_request_type
+    return REQUEST_TYPE_TO_LIFECYCLES[self.request_type.to_s]
+  end
+
   def wp_index(wp, cv)
     rv = Wp_index[wp+(cv=="Yes" ? "CV":"")]
     raise "no workpackage #{wp}" if not rv
@@ -1006,6 +1020,8 @@ class Request < ActiveRecord::Base
   def milestone_names
     if self.milestone != 'N/A'
       PHASE_MILESTONES[self.milestone]
+    elsif self.specific != nil and self.specific != 'No'
+      PHASE_MILESTONES_SPECIFIC[self.specific]
     else
       PHASE_MILESTONES[self.work_package]
     end

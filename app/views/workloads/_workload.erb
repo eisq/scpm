@@ -1,5 +1,5 @@
 <div id="view_alert_sdp">
-    <%= submit_tag "X", :id=>"button_alert_sdp", :type=>'button', :onclick=> "jQuery('#view_alert_sdp').hide();" %><br />   
+    <a href="#" onclick="$('view_alert_sdp').hide({duration:0.3});"><%= image_tag("close.png") %></a>
     <div id="view_alert_sdp_content">
         <h4>SDP Tasks not linked to your workload</h4>
         <ul>
@@ -17,7 +17,7 @@
         <ul>
             <% @requests_to_close.each do |req| %>
               <li>
-                <a href='http://toulouse.sqli.com/EMN/view.php?id=#<%= req.request_id.to_s %>'> 
+                <a href='http://toulouse.sqli.com/EMN/view.php?id=<%= req.request_id.to_s %>'> 
                   <b><%= req.work_package %></b>
                   <%= req.milestone %>
                   <%= req.complexity %>
@@ -94,15 +94,16 @@
     <div id="wmenu" <%if session['wmenu_hidden'].to_s=='true' %>style='display:none;'<% end %>>
     <table width="100%">
     <tr><td valign="top">
-      <% if @sdp_tasks_unlinked.size > 0 || @sdp_tasks_unlinked_req.size > 0 || @requests_to_close.size > 0 %>
-        <%= submit_tag "Alert SDP", :id=>'btn_alert_sdp', :type=>'button', :onclick=>"jQuery('#view_alert_sdp').css('display','block');" , :class=>"btnlnk" %>
-      <% end %>
       <%= link_to_function('Add a line', "wl_add_line(#{@workload.person_id})", :class=>"btnlnk") %>
       <%= link_to('Transfert', {:action=>'transfert'}, {:class=>"btnlnk"}) %>
       <%= link_to('Backup by load', {:action=>'duplicate',:weeks=>@workload.weeks,:wl_weeks=>@workload.wl_weeks,:months=>@workload.months}, {:class=>"btnlnk"}) %>
       <% backup_btn_class = "btnlnk" %>
-      <% backup_btn_class = "btnlnk red" if @holiday_without_backup %>
+      <% backup_btn_class = "btnlnk backup_warning" if @holiday_without_backup %>
       <%= link_to('Backup', {:action=>'backup'}, {:class=>backup_btn_class}) %>
+      <% if @sdp_tasks_unlinked.size > 0 || @sdp_tasks_unlinked_req.size > 0 || @requests_to_close.size > 0 %>
+        <!-- http://www.dougboude.com/blog/1/2008/12/Elementshowhide-anomoly-in-Prototype.cfm -->
+        <a href="#" onclick="$('view_alert_sdp').style.display='block';" class="btnlnk backup_warning">Alert SDP</a>
+      <% end %>
       <% if @suggested_requests.size > 0 %>
       You have <b><%=@suggested_requests.size%></b> suggested requests
       <% end %>
@@ -135,9 +136,7 @@
 
     </td>
     <td align="right">
-
       <%= render(:file=>"workloads/sdp_table", :locals=>{:workload=>@workload}) %>
-
     </td></tr>
     </table>
     </div>
@@ -206,162 +205,162 @@
       <% end %>
     <%  end %>
     <tr>
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <th class="wl_names"></th>
     <% if APP_CONFIG['workloads_display_status_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_consumed_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_diff_between_consumed_and_planned_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <% if APP_CONFIG['workloads_display_total_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <%= render(:partial=>"wl_head", :collection=>@workload.months) %>
     </tr>
 
     <tr>
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <th class="wl_names"></th>
     <% if APP_CONFIG['workloads_display_status_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_consumed_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_diff_between_consumed_and_planned_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <% if APP_CONFIG['workloads_display_total_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <%= render(:partial=>"wl_head", :collection=>@workload.weeks) %>
     </tr>
 
     <tr>
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <th class="wl_names"></th>
     <% if APP_CONFIG['workloads_display_status_column'] %>
-    <th style="min-width:100px;">Status</th>
+    <th class="workload_th" style="min-width:100px;">Status</th>
     <% end %>
-    <th style="min-width:45px;">Init.</th>
+    <th class="workload_th" style="min-width:45px;">Init.</th>
     <% if APP_CONFIG['workloads_display_consumed_column'] %>
-    <th style="min-width:45px;">Cons.</th>
+    <th class="workload_th" style="min-width:45px;">Cons.</th>
     <% end %>
-    <th style="min-width:45px;">Gain</th>
-    <th style="min-width:45px;">Rem.</th>
+    <th class="workload_th" style="min-width:45px;">Gain</th>
+    <th class="workload_th" style="min-width:45px;">Rem.</th>
     <th class="wl_total" style="min-width:45px;">Planned</th>
     <% if APP_CONFIG['workloads_display_diff_between_consumed_and_planned_column'] %>
-    <th style="min-width:45px;">Diff</th>
+    <th class="workload_th" style="min-width:45px;">Diff</th>
     <% end %>
     <% if APP_CONFIG['workloads_display_total_column'] %>
-    <th style="min-width:45px;">Total</th>
+    <th class="workload_th" style="min-width:45px;">Total</th>
     <% end %>
     <%= render(:partial=>"wl_head", :collection=>@workload.days) %>
     </tr>
 
     <tr class="wl_opens">
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <th class="wl_names">Nb of worked days</th>
     <% if APP_CONFIG['workloads_display_status_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_consumed_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_diff_between_consumed_and_planned_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <% if APP_CONFIG['workloads_display_total_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <%= render(:partial=>"wl_head", :collection=>@workload.opens) %>
     </tr>
 
     <tr class="wl_total">
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <th class="wl_names">Total</th>
     <% if APP_CONFIG['workloads_display_status_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_consumed_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_diff_between_consumed_and_planned_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <% if APP_CONFIG['workloads_display_total_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <%= render(:partial=>"wl_ctotal", :collection=>@workload.ctotals) %>
     </tr>
 
     <tr class="wl_total">
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <th class="wl_names">Sums / Percents</th>
     <% if APP_CONFIG['workloads_display_status_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_consumed_column'] %>
     <th id="consumed_total"><%= @workload.sdp_consumed_total %></th>
     <% end %>
-    <th></th>
-    <th><%= @workload.sdp_remaining_total %></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"><%= @workload.sdp_remaining_total %></th>
     <th id="planned_total"><%= @workload.planned_total %></th>
     <% if APP_CONFIG['workloads_display_diff_between_consumed_and_planned_column'] %>
-    <th id="diff_planned_remaining"><%= @workload.planned_total - @workload.sdp_remaining_total %></th>
+    <th class="workload_th" id="diff_planned_remaining"><%= @workload.planned_total - @workload.sdp_remaining_total %></th>
     <% end %>
     <% if APP_CONFIG['workloads_display_total_column'] %>
-    <th id="total"><%= @workload.total %></th>
+    <th class="workload_th" id="total"><%= @workload.total %></th>
     <% end %>
     <%= render(:partial=>"wl_ctotal", :collection=>@workload.percents, :locals=>{:high_limit=>110, :low_limit=>85}) %>
     </tr>
 
     <tr class="wl_total">
-    <th></th>
-    <th></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
     <th class="wl_names">Availability (Sum for the 2 next months)</th>
     <% if APP_CONFIG['workloads_display_status_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
+    <th class="workload_th"></th>
     <% if APP_CONFIG['workloads_display_consumed_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
-    <th></th>
-    <th></th>
-    <th title="Availablity for the 2 next months" id="availability_total"><%= @workload.sum_availability %></th>
+    <th class="workload_th"></th>
+    <th class="workload_th"></th>
+    <th class="workload_th" title="Availablity for the 2 next months" id="availability_total"><%= @workload.sum_availability %></th>
     <% if APP_CONFIG['workloads_display_diff_between_consumed_and_planned_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <% if APP_CONFIG['workloads_display_total_column'] %>
-    <th></th>
+    <th class="workload_th"></th>
     <% end %>
     <% availLocals = {} %>
     <% if APP_CONFIG['workload_show_overload_availability'] %>
@@ -373,6 +372,7 @@
   </thead>
 
   <tbody class="scrollContent">
+    <%= render(:partial=>"forecast_line", :collection=>@workload.forecasted_projects, :as=>:line) %> 
     <%= render(:partial=>"wl_line", :collection=>@workload.displayed_lines) %>
   </tbody>
 

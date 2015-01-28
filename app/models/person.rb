@@ -16,6 +16,7 @@ class Person < ActiveRecord::Base
   include ApplicationHelper # for wlweek
 
   belongs_to :company
+  belongs_to :tbp_collab, :class_name=>'TbpCollab', :foreign_key=>'tbp_collab_id', :primary_key=>'tbp_id'
   belongs_to :cost_profile
   has_many   :person_roles
   has_many   :roles, :through => :person_roles
@@ -50,8 +51,17 @@ class Person < ActiveRecord::Base
   end
 
   def project_lines # lines associated to projects
-    projects = WlLine.find(:all, :conditions=>["person_id=#{self.id} and project_id is not null"])
-    return projects
+    WlLine.find(:all, :conditions=>["person_id=#{self.id} and project_id is not null"])
+  end
+
+  # if the person has at least one planned for a project in the projects ids array
+  def has_workload_for_projects?(project_ids)
+    lines = project_lines.select{ |l|
+      next false if not project_ids.include?(l.project_id.to_s)
+      l.planned_sum > 0
+      }
+    puts "#{name}: #{lines.size}"
+    lines.size > 0
   end
 
   def projects_map
@@ -308,11 +318,11 @@ class Person < ActiveRecord::Base
 
   def get_ciproject_reminder
     allTickets = CiProject.find(:all, :conditions=>["assigned_to=?", self.rmt_user])
-    # CiProject.late_css(p.sqli_validation_date_review) -> get if late for this date
-    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_review desc")
-    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date_review < Now()) or (airbus_validation_date_review < Now()) or (deployment_date_review < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_review desc")
+    # CiProject.late_css(p.sqli_validation_date) -> get if late for this date
+    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
+    late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date < Now()) or (airbus_validation_date < Now()) or (deployment_date < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
     lateObjective  = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date_objective < Now()) or (airbus_validation_date_objective < Now()) or (deployment_date_objective < Now())) and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_objective desc")
-    assignedNotKickoff = CiProject.find(:all, :conditions=>["kick_off_date IS NULL and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date_review desc")
+    assignedNotKickoff = CiProject.find(:all, :conditions=>["kick_off_date IS NULL and assigned_to=?", self.rmt_user], :order=>"sqli_validation_date desc")
     returnHash = {}
     if allTickets.size > 0
       returnHash["all"] = allTickets

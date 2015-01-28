@@ -1,4 +1,6 @@
-<h2>Edit CI</h2>
+<h2>Edit CI : 
+<%= @project.extract_mantis_external_id %> | <%= @project.summary %>
+</h2>
 
 <% form_for @project, :url=>{:action=>'update', :id=>@project.id} do |f| -%>
   <%= render(:partial => f) %>
