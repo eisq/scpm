@@ -2,7 +2,7 @@
 
 <% @rmt_users.each { |resp| %>
 
-<a href='#' onclick="$('#<%=resp.rmt_user%>').toggle();return false;">- <%=resp.name%> (<%=resp.rmt_user%>)</a><br/>
+<a href='#' onclick="$('<%=resp.rmt_user%>').toggle();return false;">- <%=resp.name%> (<%=resp.rmt_user%>)</a><br/>
 <div id='<%=resp.rmt_user%>' style='display:none'>
 <br/>
 Bonjour <%= resp.name %>,<br/>
