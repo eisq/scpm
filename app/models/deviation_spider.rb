@@ -434,7 +434,7 @@ class DeviationSpider < ActiveRecord::Base
 				settings.each do |setting|
 					if setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Deliverable N.A")
 						standard = standard + 1
-					elsif setting.answer_1 == "No"
+					elsif setting.answer_1 == "No" and setting.answer_2 == "No"
 						deviation = deviation + 1
 					else
 						customization = customization + 1
@@ -461,7 +461,7 @@ class DeviationSpider < ActiveRecord::Base
 		return chart
 	end
 
-	def is_consolidated?
+	def is_not_consolidated?
 		result = false
 		temp = DeviationSpiderConsolidationTemp.find(:first, :conditions=>["deviation_spider_id = ?", self.id])
 		if temp

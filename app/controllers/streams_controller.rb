@@ -338,7 +338,7 @@ class StreamsController < ApplicationController
         project = Project.create(:name=>project_name, :deviation_spider=>true)
         project.workstream        = workstream.name
         project.lifecycle_object  = lifecycle_selected
-        project.Lifecycle_id = lifecycle_selected.id
+        project.lifecycle_id = lifecycle_selected.id
         if suite != nil
           project.suite_tag = suite
         end
