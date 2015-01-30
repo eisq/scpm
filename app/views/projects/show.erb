@@ -41,7 +41,7 @@ function add(id, nb_months, has_requests, has_rights) {
     <div id="tabscontent">
       <div id="tabContent1" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="1"? "block" : "none"%>;">
           <div>
-            <% if @project.deviation_spider == 0 %>
+            <% if @project.deviation_spider != true %>
             <div style="float:left;">
               <%= link_to('Export All Spiders', {:controller=>'spiders', :action=>'project_spider_export', :project_id=>@project.id}, {:class=>'btnlnk'}) %>
             </div>
