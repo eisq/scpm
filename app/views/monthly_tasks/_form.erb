@@ -4,7 +4,7 @@
 	function add_new_person() {
 		 new Ajax.Request('/monthly_tasks/add_new_person', 
 	      {
-	        parameters: { id: <%= @monthlyTask.id %>, person_id: $("#new_person").val()},
+	        parameters: { id: <%= @monthlyTask.id %>, person_id: $("new_person").getValue()},
 	        onSuccess: function(response) 
 	        {
 				refresh_people("<%= @monthlyTask.id.to_s %>");

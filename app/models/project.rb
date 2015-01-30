@@ -793,7 +793,9 @@ class Project < ActiveRecord::Base
     before = true
     self.milestones.each { |m|
       if (m.name != "G0" and m.name != "G1" and m.name != "QG HLR" and m.name != "G2" and m.name != "G3" and m.name != "G4" and m.name != "QG BRD" and m.name != "QG ARD" and m.name != "G5" and m.done != 0 and m.is_virtual != 1)
-        before = false
+        if(m.done != 2)
+          before = false
+        end
       end
     }
     return before
@@ -803,7 +805,9 @@ class Project < ActiveRecord::Base
     before = true
     self.milestones.each { |m|
       if (m.name != "M1" and m.name != "QG HLR" and m.name != "M3" and m.name != "QG BRD" and m.name != "QG ARD" and m.name != "M5" and m.name != "M5/M7" and m.done != 0 and m.is_virtual != 1)
-        before = false
+        if(m.done != 2)
+          before = false
+        end
       end
     }
     return before

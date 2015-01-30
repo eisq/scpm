@@ -8,7 +8,8 @@ function change_score(consolidation_temp_id, value)
  		data: {deviation_spider_consolidation_temp_id: consolidation_temp_id, deviation_spider_consolidation_temp_score: value}
 	})
 	.done(function( msg ) {
-		//document.getElementById(consolidation_temp_id}).innerHTML = '';
+		var conso_id = "#" + consolidation_temp_id
+		$(conso_id).val('');
 	})
 	.fail(function() 
 	{ 
@@ -96,7 +97,7 @@ $( document ).ready(function() {
 									<%= select_tag('choose_score', options_for_select(@score_list, consolidation.score.to_i), {:onchange=>"change_score(#{consolidation.conso_id.to_s}, this.value);"}) %>
 								</td>
 								<td class="consolidation_td_deliverable_right">
-									<%= text_area_tag('justification_tf', consolidation.justification, :cols=>21, :rows=>1, :id=>"#{consolidation.conso_id}", :class=>"conso_tf") %>
+									<%= text_area_tag('justification_tf', consolidation.justification, :cols=>21, :rows=>1, :id=>"#{consolidation.conso_id.to_s}", :class=>"conso_tf") %>
 								</td>
 							<% else %>
 								<td class="consolidation_td_deliverable_left">
