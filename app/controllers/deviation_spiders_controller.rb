@@ -192,7 +192,7 @@ class DeviationSpidersController < ApplicationController
 		    end
 
 		    if redirect
-		    	#redirect_to('/deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
+		    	redirect_to('/deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
 			end
 
 		    @editable = params[:editable]

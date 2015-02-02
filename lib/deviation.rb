@@ -62,43 +62,39 @@ module Deviation
     into_deliverables = true
     activity_temp = activity = ""
     # Loop sheet
-    begin
-      sheet.each do |sheet_row|
-        #We are in a row Activity
-        if((into_deliverables==false) and sheet_row[CELL_0] and !sheet_row[CELL_1])
-          activity_temp = sheet_row[CELL_0]
-        end
-        #We are in the row index for deliverables
-        if (into_deliverables==false and sheet_row[CELL_0] and sheet_row[CELL_1] and (sheet_row[CELL_0]=="Objective"))
-          into_deliverables = true
-          activity = activity_temp
-        end
-        #We are in a row deliverable
-        if (into_deliverables==true and sheet_row[CELL_1])
-          if sheet_row[CELL_0] != "Objective"
-            row_hash = Hash.new
-            row_hash[CELL_ACTIVITY_LABEL]               = activity
-            row_hash[CELL_DELIVERABLE_LABEL]            = sheet_row[CELL_1].to_s
-            row_hash[CELL_METHODOLOGY_TEMPLATE_LABEL]   = sheet_row[CELL_2].to_s
-            row_hash[CELL_IS_JUSTIFIED_LABEL]           = sheet_row[CELL_3].to_s
-            row_hash[CELL_OTHER_TEMPLATE_LABEL]         = sheet_row[CELL_4].to_s
-            row_hash[CELL_JUSTIFICATION_LABEL]          = sheet_row[CELL_5].to_s
-            content_array << row_hash
-          end
-        else
-          into_deliverables = false
-          activity_temp = sheet_row[CELL_0]
-        end
+    sheet.each do |sheet_row|
+      #We are in a row Activity
+      if((into_deliverables==false) and sheet_row[CELL_0] and !sheet_row[CELL_1])
+        activity_temp = sheet_row[CELL_0]
       end
+      #We are in the row index for deliverables
+      if (into_deliverables==false and sheet_row[CELL_0] and sheet_row[CELL_1] and (sheet_row[CELL_0]=="Objective"))
+        into_deliverables = true
+        activity = activity_temp
+      end
+      #We are in a row deliverable
+      if (into_deliverables==true and sheet_row[CELL_1])
+        if sheet_row[CELL_0] != "Objective"
+          row_hash = Hash.new
+          row_hash[CELL_ACTIVITY_LABEL]               = activity
+          row_hash[CELL_DELIVERABLE_LABEL]            = sheet_row[CELL_1].to_s
+          row_hash[CELL_METHODOLOGY_TEMPLATE_LABEL]   = sheet_row[CELL_2].to_s
+          row_hash[CELL_IS_JUSTIFIED_LABEL]           = sheet_row[CELL_3].to_s
+          row_hash[CELL_OTHER_TEMPLATE_LABEL]         = sheet_row[CELL_4].to_s
+          row_hash[CELL_JUSTIFICATION_LABEL]          = sheet_row[CELL_5].to_s
+          content_array << row_hash
+        end
+      else
+        into_deliverables = false
+        activity_temp = sheet_row[CELL_0]
+      end
+    end
 
-      content_array.each do |psu|
-        if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL]
-          content_array = "empty_value"
-          break
-        end
+    content_array.each do |psu|
+      if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL]
+        content_array = "empty_value"
+        break
       end
-    rescue Exception => e
-      render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
     end
 
     return content_array

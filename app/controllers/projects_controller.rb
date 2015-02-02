@@ -375,50 +375,54 @@ class ProjectsController < ApplicationController
     project_id = params[:project_id]
     project = Project.find(:first, :conditions=>["id= ?", project_id])
     if project
-      file = params[:upload]
-      if file
-        file_name =  file['datafile'].original_filename
-        file_ext  = File.extname(file_name)
-        if (file_ext == ".xls")
-          psu_file_hash = Deviation.import(file, project.lifecycle_id)
-          if psu_file_hash == "tab_error"
-            redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"4"
-          elsif psu_file_hash == "empty_value"
-            redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5"
+      begin
+        file = params[:upload]
+        if file
+          file_name =  file['datafile'].original_filename
+          file_ext  = File.extname(file_name)
+          if (file_ext == ".xls")
+            psu_file_hash = Deviation.import(file, project.lifecycle_id)
+            if psu_file_hash == "tab_error"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"4"
+            elsif psu_file_hash == "empty_value"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5"
+            else
+                # Save psu reference
+              deviation_spider_reference = DeviationSpiderReference.new
+              deviation_spider_reference.version_number = 1
+              DeviationSpiderReference.find(:all, :conditions=>["project_id = ?", project_id], :order=>"version_number asc").each do |devia|
+                deviation_spider_reference.version_number = devia.version_number + 1
+              end
+              deviation_spider_reference.project_id = project_id
+              deviation_spider_reference.created_at = DateTime.now
+              deviation_spider_reference.updated_at = DateTime.now
+              deviation_spider_reference.save
+
+              # Save psu settings
+              psu_file_hash.each do |psu|
+                deviation_spider_setting = DeviationSpiderSetting.new
+                deviation_spider_setting.deviation_spider_reference_id  = deviation_spider_reference.id
+                deviation_spider_setting.activity_name                  = psu["activity"]
+                deviation_spider_setting.deliverable_name               = psu["deliverable"]
+                deviation_spider_setting.answer_1                       = psu["methodology_template"]
+                deviation_spider_setting.answer_2                       = psu["is_justified"]
+                deviation_spider_setting.answer_3                       = psu["other_template"]
+                deviation_spider_setting.justification                  = psu["justification"]
+                deviation_spider_setting.created_at                     = DateTime.now
+                deviation_spider_setting.updated_at                     = DateTime.now
+                deviation_spider_setting.save
+              end
+
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"1"
+            end
           else
-              # Save psu reference
-            deviation_spider_reference = DeviationSpiderReference.new
-            deviation_spider_reference.version_number = 1
-            DeviationSpiderReference.find(:all, :conditions=>["project_id = ?", project_id], :order=>"version_number asc").each do |devia|
-              deviation_spider_reference.version_number = devia.version_number + 1
-            end
-            deviation_spider_reference.project_id = project_id
-            deviation_spider_reference.created_at = DateTime.now
-            deviation_spider_reference.updated_at = DateTime.now
-            deviation_spider_reference.save
-
-            # Save psu settings
-            psu_file_hash.each do |psu|
-              deviation_spider_setting = DeviationSpiderSetting.new
-              deviation_spider_setting.deviation_spider_reference_id  = deviation_spider_reference.id
-              deviation_spider_setting.activity_name                  = psu["activity"]
-              deviation_spider_setting.deliverable_name               = psu["deliverable"]
-              deviation_spider_setting.answer_1                       = psu["methodology_template"]
-              deviation_spider_setting.answer_2                       = psu["is_justified"]
-              deviation_spider_setting.answer_3                       = psu["other_template"]
-              deviation_spider_setting.justification                  = psu["justification"]
-              deviation_spider_setting.created_at                     = DateTime.now
-              deviation_spider_setting.updated_at                     = DateTime.now
-              deviation_spider_setting.save
-            end
-
-            redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"1"
+            redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
           end
         else
-          redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
+          redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"3"
         end
-      else
-        redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"3"
+      rescue Exception => e
+        redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
       end
     else
       redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"2"
