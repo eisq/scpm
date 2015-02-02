@@ -71,6 +71,9 @@ class DeviationSpidersController < ApplicationController
 		    @milestone = Milestone.find(:first, :conditions=>["id = ?", @last_spider.milestone_id])
 		    @project = Project.find(:first, :conditions=>["id = ?", @milestone.project_id])
 			generate_current_table(@last_spider,@meta_activity_id)
+			if @last_spider
+	   			@pie_chart = @last_spider.generate_pie_chart.to_url
+	   		end
 	    else
 	    	redirect_to :controller=>:projects, :action=>:show, :id=>@project.id
 	    end
@@ -189,7 +192,7 @@ class DeviationSpidersController < ApplicationController
 		    end
 
 		    if redirect
-		    	redirect_to('/deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
+		    	#redirect_to('/deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
 			end
 
 		    @editable = params[:editable]
@@ -212,8 +215,8 @@ class DeviationSpidersController < ApplicationController
 	    	@all_activities.each do |activity|
 	    		@deliverables.each do |deliverable|
 	    			deviation_deliverable_added_by_hand = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider_id, deliverable.id, true])
-	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id)
-	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
+	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, @deviation_spider.milestone)
+	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, @deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
 						consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
 						if !consolidation_saved and @editable
 							#Consolidation in a temp table for manipulations before the real consolidation
@@ -249,17 +252,17 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def get_deliverable_activity_applicable(project_id, deliverable, activity, psu_imported=true)
+	def get_deliverable_activity_applicable(project_id, deliverable, activity, milestone, psu_imported=true)
 		applicable = false
 		if psu_imported
 			last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
 			DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
 				if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
-					applicable = true
+					applicable = self.existing_question_activity_deliverable(deliverable.id, activity.id, milestone)
 				end
 			end
 		else
-			applicable = self.existing_question_activity_deliverable(deliverable.id, activity.id)
+			applicable = self.existing_question_activity_deliverable(deliverable.id, activity.id, milestone)
 		end
 		return applicable					
 	end
@@ -337,11 +340,14 @@ class DeviationSpidersController < ApplicationController
 		return well_used
 	end
 
-	def existing_question_activity_deliverable(deliverable_id, activity_id)
+	def existing_question_activity_deliverable(deliverable_id, activity_id, milestone)
 		applicable = false
-		existing_question = DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ?", deliverable_id, activity_id])
-		if existing_question.count > 0
-			applicable = true
+		milestone_name_id = MilestoneName.find(:first, :conditions=>["title = ?", milestone.name])
+		DeviationQuestion.find(:all, :conditions => ["deviation_deliverable_id = ? and deviation_activity_id = ? and is_active = ?", deliverable_id, activity_id, true]).each do |question|
+			question_milestone = DeviationQuestionMilestoneName.find(:first, :conditions=>["deviation_question_id = ? and milestone_name_id = ?", question.id, milestone_name_id])
+			if question_milestone
+				applicable = true
+			end
 		end
 		return applicable
 	end
