@@ -2,14 +2,14 @@
 
   <div id="welcome_panel">
     <div id="welcome">Welcome <%= current_user.name %> !</div>
-      <% if (@current_actions_from_user.size > 0) %>
+      <% if (@actions.size > 0) %>
         <div id="action_from_welcome">
-          <span onclick="location='/actions'"><%= @current_actions_from_user.size %> current actions in progress</span>
+          <span onclick="location='/actions'"><%= @actions.size %> current actions in progress</span>
         </div>
       <% end %>
   </div>
 
-  <% if (@action_48hr.size > 0 or @actions.size > 0) %>
+  <% if (@action_48hr.size > 0 or @actions_old.size > 0) %>
 	  <div id="last_changes">
 		<% if (@action_48hr.size > 0) %>
 		<span class="my_actions">My actions updated in the last 48 hours</span>
@@ -18,10 +18,10 @@
 		</table>
 		<% end %>
 		<br />
-		<% if (@actions.size > 0) %>
+		<% if (@actions_old.size > 0) %>
 		<span class="my_actions">My opened actions</span>
 		<%= render(:file=>'actions/actions_header') %>
-		<%= render(:partial=>'actions/action', :collection=>@actions_accueil, :locals=>{:editable=> true}) %>
+		<%= render(:partial=>'actions/action', :collection=>@actions_old, :locals=>{:editable=> true}) %>
 		</table>
 		<% end %>
 	  </div>
@@ -32,10 +32,8 @@
       <li><b>09-Jun-2013</b> Plan de charge par projet</li>
     <% end %>
     <% if(APP_CONFIG['project_name']=='EISQ') %>
+      <li><b>22-December-2014</b> Déploiement du module Spiders v2</li>
       <li><b>05-September-2014</b> Intégration des modules Lifecycle et CI</li>
-      <li><b>08-April-2014</b> Intégration des filtres par suite</li>
-      <li><b>09-July-2013</b> Intégration des Lessons_learnt.</li>
-      <li><b>09-July-2013</b> Intégration des nouveaux risques.</li>
     <% end %>
   </ul>
 
