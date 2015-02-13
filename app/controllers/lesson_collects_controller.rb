@@ -286,9 +286,9 @@ class LessonCollectsController < ApplicationController
 
     # Lesson list query
     if (conditions.length > 0)
-      @lessonFiles = LessonCollectFile.find(:all, :joins=>joins_array, :conditions=>conditions, :group => "lesson_collect_files.id")
+      @lessonFiles = LessonCollectFile.find(:all, :joins=>joins_array, :conditions=>conditions, :group => "lesson_collect_files.id", :order => "id desc")
     else
-      @lessonFiles = LessonCollectFile.find(:all)
+      @lessonFiles = LessonCollectFile.find(:all, :order => "id desc")
     end
   end
 

@@ -26,8 +26,10 @@
 <legend>Detail Form</legend>
 <% form_for :@lesson_collect_file, :url=>{:action=>'lesson_collect_file_comment_update'} do |f| -%>
 	
-	<% if current_user.is_cpdp or !@lesson_collect_file.is_archived %>
+	<% if current_user.has_role?("admin") %>
 		Archive:  <%= check_box :lesson_collect_file, :is_archived %><br />
+	<% else %>
+		Archive:  <%= check_box :lesson_collect_file, :is_archived, :disabled => true %><br />
 	<% end %>
 	Comment:<br />
 	<%= hidden_field(:lesson_collect_file, :id) %>
