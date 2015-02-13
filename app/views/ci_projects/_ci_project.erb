@@ -1,10 +1,9 @@
 <tr class="<%= p.css_class %>">
 	<td align="right"><b><%=link_to(p.extract_mantis_external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%></b></td>
-	<td><%= p.order %></td>
+	<td><% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%></td>
 	<td><%= p.status %></td>
 	<td><%= p.visibility %></td>
 	<td><%= p.assigned_to %></td>
-	<td><% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%></td>
 	<td><%=link_to(p.summary, :controller => "ci_projects", :action=>"show", :id=>p.id) %></td>
 	<td><b><%= p.short_stage %></b></td>
 	<% if !p.sqli_validation_date || p.sqli_date_alert == 1 %>
@@ -23,5 +22,10 @@
 		<td class="<%=CiProject.late_css(p.deployment_date)%>"><b><%= p.deployment_date %></b></td>
 	<%end%>
 	<td> <%= p.kick_off_date %> </td>
+	<td><% if p.planning_validated %>
+		Yes
+	<% else %>
+		No
+	<% end %></td>
 	<td><%= link_to(image_tag('edit.gif'), :controller => "ci_projects", :action=>"edit", :id=>p.id)%></td>
 </tr>

@@ -293,6 +293,7 @@ class CiProjectsController < ApplicationController
   def show
     id = params['id']
     @project = CiProject.find(id)
+    @delays = CiProjectDelay.find(:all, :conditions=>["ci_project_id = ?", @project.id], :order => "id desc")
   end
 
   def mantis_export

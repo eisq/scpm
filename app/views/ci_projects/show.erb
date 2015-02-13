@@ -77,19 +77,43 @@
       <span style="color:red;">-> date to be validated</span>
     <% end %>
 
+    <% if p.planning_validated %>
+      <br/>
+      <p><b>Planning validated</b></p>
+    <% end %>
+
   </td><td width=50>
   </td><td valign=top width=250>
-  <h3>
-    <u>Phases</u>
-  </h3>
-  <p><b>Current phase:</b> <%= p.current_phase %></p>
-  <p><b>Next phase:</b> <%= p.next_phase %></p>
-  </td><td width=50>
+    <h3>
+      <u>Phases</u>
+    </h3>
+    <p><b>Current phase:</b> <%= p.current_phase %></p>
+    <p><b>Next phase:</b> <%= p.next_phase %></p>
+    <h3>
+      <u>Delays</u>
+    </h3>
+    <p>
+      <table>
+      <tr>
+        <td>Date</td>
+        <td>Justification</td>
+        <td>Updated at</td>
+      </tr>
+        <% @delays.each do |delay| %>
+        <tr>
+          <td><%= delay.title %></td>
+          <td><%= delay.justification %></td>
+          <td><%= delay.updated_at.to_s %></td>
+        </tr>
+        <% end %>
+      </table>
+    </p>
+  </td>
+  <td width=50>
   </td><td valign=top width=300>
     <h3>
       <u>Information</u>
     </h3>
-    <p><b>Backlog request ID:</b> <%= p.num_req_backlog.to_s %></p>
     <p><b>Assigned to:</b> <%= p.assigned_to %></p>
     <p><b>SQLI Validator:</b> <%= p.sqli_validation_responsible %></p>
     <p><b>Priority:</b> <%= p.priority %></p>
