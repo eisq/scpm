@@ -10,11 +10,11 @@ simple: {
   remaining   : 7,
   revised     : 8,
   gained      : 9,
-  iteration   : 11,
-  collab      : 12,
-  balancei    : 13,
-  balancer    : 14,
-  balancea    : 15
+  iteration   : 12,
+  collab      : 13,
+  balancei    : 14,
+  balancer    : 15,
+  balancea    : 16
 }
 multiple: {
   id          : 0,
