@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150213162400) do
+ActiveRecord::Schema.define(:version => 20150220113300) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -232,6 +232,9 @@ ActiveRecord::Schema.define(:version => 20150213162400) do
     t.text     "current_phase"
     t.text     "next_phase"
     t.boolean  "planning_validated",               :default => false
+    t.string   "justification_airbus_retard"
+    t.string   "justification_sqli_retard"
+    t.string   "justification_deployment_retard"
   end
 
   create_table "companies", :force => true do |t|

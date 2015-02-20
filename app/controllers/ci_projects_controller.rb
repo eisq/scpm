@@ -218,10 +218,7 @@ class CiProjectsController < ApplicationController
 
   def update
     p = CiProject.find(params[:id])
-
-    old_sqli_date = p.sqli_validation_date
-    old_airbus_date = p.airbus_validation_date
-    old_deployment_date = p.deployment_date
+    old_p = CiProject.find(params[:id])
 
     p.update_attributes(params[:project])
 
@@ -237,17 +234,44 @@ class CiProjectsController < ApplicationController
 
     validators = siglum + APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
 
-    if (old_sqli_date != p.sqli_validation_date)
+    #if a date has changed, an alert is raised
+    if (old_p.sqli_validation_date != p.sqli_validation_date)
       p.sqli_date_alert = 1
-      date_validation_mail(validators, p)
+      date_validation_mail(validators, p, p.justification_sqli_retard)
     end
-    if (old_airbus_date != p.airbus_validation_date)
+    if (old_p.airbus_validation_date != p.airbus_validation_date)
       p.airbus_date_alert = 1
-      date_validation_mail(validators, p)
+      date_validation_mail(validators, p, p.justification_airbus_retard)
     end
-    if (old_deployment_date != p.deployment_date)
+    if (old_p.deployment_date != p.deployment_date)
       p.deployment_date_alert = 1
-      date_validation_mail(validators, p)
+      date_validation_mail(validators, p, p.justification_deployment_retard)
+    end
+
+    #if a date is committed, the delay and it's justification is recorded
+    if old_p.airbus_date_alert == 1 and p.airbus_date_alert == 0
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "airbus_validation_date"
+      delay.justification = p.justification_airbus_retard
+      p.justification_airbus_retard = nil
+      delay.save
+    end
+    if old_p.sqli_date_alert == 1 and p.sqli_date_alert == 0
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "sqli_validation_date"
+      delay.justification = p.justification_sqli_retard
+      p.justification_sqli_retard = nil
+      delay.save
+    end
+    if old_p.deployment_date_alert == 1 and p.deployment_date_alert == 0
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "deployment_date"
+      delay.justification = p.justification_deployment_retard
+      p.justification_deployment_retard = nil
+      delay.save
     end
 
     p.save
@@ -325,8 +349,8 @@ class CiProjectsController < ApplicationController
     redirect_to "/ci_projects/mantis_export"
   end
 
-  def date_validation_mail(validators, project)
-      Mailer::deliver_ci_date_change(validators, project)
+  def date_validation_mail(validators, project, justification)
+      Mailer::deliver_ci_date_change(validators, project, justification)
   end
 
   def dashboard

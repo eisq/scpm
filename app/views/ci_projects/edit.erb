@@ -1,3 +1,10 @@
+<SCRIPT language="Javascript">
+function dateChanged(date_title)
+{
+	$(date_title).style.display='table-row';
+}
+</SCRIPT>
+
 <h2>Edit CI : 
 <%= @project.extract_mantis_external_id %> | <%= @project.summary %>
 </h2>

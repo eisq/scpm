@@ -16,7 +16,7 @@
   </td>
 </tr>
 <tr>
-  <td>
+  <td width=250>
     <h3>
       <u>Dates</u>
     </h3>
@@ -82,36 +82,33 @@
       <p><b>Planning validated</b></p>
     <% end %>
 
-  </td><td width=50>
-  </td><td valign=top width=250>
-    <h3>
-      <u>Phases</u>
-    </h3>
-    <p><b>Current phase:</b> <%= p.current_phase %></p>
-    <p><b>Next phase:</b> <%= p.next_phase %></p>
+  </td>
+  <td width=50>
+  </td><td valign=top width=350>
     <h3>
       <u>Delays</u>
     </h3>
-    <p>
-      <table>
+    <% if @delays.count > 0 %>
+      <table class="delays_table">
       <tr>
-        <td>Date</td>
-        <td>Justification</td>
-        <td>Updated at</td>
+        <td class="delays_td"><strong>Date</strong></td>
+        <td class="delays_td"><strong>Justification</strong></td>
+        <td class="delays_td"><strong>Updated at</strong></td>
       </tr>
-        <% @delays.each do |delay| %>
+      <% @delays.each do |delay| %>
         <tr>
-          <td><%= delay.title %></td>
-          <td><%= delay.justification %></td>
-          <td><%= delay.updated_at.to_s %></td>
+          <td class="delays_td"><%= delay.title %></td>
+          <td class="delays_td"><%= delay.justification %></td>
+          <td class="delays_td"><%= delay.updated_at.to_s %></td>
         </tr>
-        <% end %>
+      <% end %>
       </table>
-    </p>
-  </td>
-  <td width=50>
-  </td><td valign=top width=300>
-    <h3>
+    <% else %>
+      No delays recorded on the project.
+    <% end %>
+  </td><td width=50>
+  </td><td valign=top width=250>
+  <h3>
       <u>Information</u>
     </h3>
     <p><b>Assigned to:</b> <%= p.assigned_to %></p>
@@ -122,10 +119,19 @@
     <p><%= p.ci_objectives_2014 %></p>
     <p><b>Description: </b></p>
     <p><%= p.description %></p>
+    
+    
   </td>
 </tr>
 </table>
-<table><tr>
+<table><tr><td valign=top width=310>
+  <h3>
+      <u>Phases</u>
+    </h3>
+    <p><b>Current phase:</b> <%= p.current_phase %></p>
+    <p><b>Next phase:</b> <%= p.next_phase %></p>
+
+  </td>
   <td valign=top>
     <h3>
       <u>CI Follow-up</u>
@@ -135,4 +141,6 @@
     <p><b>Previous reporting:</b></p>
     <p><%= p.previous_report %></p>
   </td>
-</tr></table>
+</tr>
+
+</table>

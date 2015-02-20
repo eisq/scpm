@@ -25,7 +25,8 @@
 	<% else %>
 		<tr><td>SQLI validation date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :sqli_validation_date_objective, :disabled => true %></td></tr>
 	<% end %>
-	<tr><td>SQLI validation date (yyyy-mm-dd)</td><td>				<%= text_field :project, :sqli_validation_date %></td></tr>
+	<tr><td>SQLI validation date (yyyy-mm-dd)</td><td>				<%= text_field :project, :sqli_validation_date, {:onchange => "dateChanged('sqli_justif');"} %></td></tr>
+	<tr id="sqli_justif" class="delay_justif"><td>SQLI delay justification: </td><td><%= text_area :project, :justification_sqli_retard, {:cols=>35, :rows=>2} %></td></tr>
 
 	<%if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
@@ -58,7 +59,8 @@
 	<% else %>
 		<tr><td>Airbus validation date objective (yyyy-mm-dd)</td><td><%= text_field :project, :airbus_validation_date_objective, :disabled => true %></td></tr>
 	<% end %>
-	<tr><td>Airbus validation date (yyyy-mm-dd)</td><td>					<%= text_field :project, :airbus_validation_date %></td></tr>
+	<tr><td>Airbus validation date (yyyy-mm-dd)</td><td>					<%= text_field :project, :airbus_validation_date, :onchange => "dateChanged('airbus_justif');" %></td></tr>
+	<tr id="airbus_justif" class="delay_justif"><td>Airbus delay justification: </td><td><%= text_area :project, :justification_airbus_retard, {:cols=>35, :rows=>2} %></td></tr>
 
 	<%if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
@@ -91,7 +93,8 @@
 	<% else %>
 		<tr><td>Deployment date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :deployment_date_objective, :disabled => true %></td></tr>
 	<% end %>
-	<tr><td>Deployment date (yyyy-mm-dd)</td><td>				<%= text_field :project, :deployment_date %></td></tr>
+	<tr><td>Deployment date (yyyy-mm-dd)</td><td>				<%= text_field :project, :deployment_date, :onchange => "dateChanged('deployment_justif');" %></td></tr>
+	<tr id="deployment_justif" class="delay_justif"><td>Deployment delay justification: </td><td><%= text_area :project, :justification_deployment_retard, {:cols=>35, :rows=>2} %></td></tr>
 	
 	<% if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
