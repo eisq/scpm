@@ -254,6 +254,7 @@ class CiProjectsController < ApplicationController
       delay.ci_project_id = p.id
       delay.title = "airbus_validation_date"
       delay.justification = p.justification_airbus_retard
+      delay.new_date = p.airbus_validation_date
       p.justification_airbus_retard = nil
       delay.save
     end
@@ -262,6 +263,7 @@ class CiProjectsController < ApplicationController
       delay.ci_project_id = p.id
       delay.title = "sqli_validation_date"
       delay.justification = p.justification_sqli_retard
+      delay.new_date = p.sqli_validation_date
       p.justification_sqli_retard = nil
       delay.save
     end
@@ -270,6 +272,7 @@ class CiProjectsController < ApplicationController
       delay.ci_project_id = p.id
       delay.title = "deployment_date"
       delay.justification = p.justification_deployment_retard
+      delay.new_date = p.deployment_date
       p.justification_deployment_retard = nil
       delay.save
     end

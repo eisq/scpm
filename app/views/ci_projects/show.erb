@@ -16,7 +16,7 @@
   </td>
 </tr>
 <tr>
-  <td width=250>
+  <td width=280>
     <h3>
       <u>Dates</u>
     </h3>
@@ -91,15 +91,17 @@
     <% if @delays.count > 0 %>
       <table class="delays_table">
       <tr>
+        <td class="delays_td"><strong>Updated at</strong></td>
+        <td class="delays_td"><strong>Date type</strong></td>
         <td class="delays_td"><strong>Date</strong></td>
         <td class="delays_td"><strong>Justification</strong></td>
-        <td class="delays_td"><strong>Updated at</strong></td>
       </tr>
       <% @delays.each do |delay| %>
         <tr>
-          <td class="delays_td"><%= delay.title %></td>
-          <td class="delays_td"><%= delay.justification %></td>
           <td class="delays_td"><%= delay.updated_at.to_s %></td>
+          <td class="delays_td"><%= delay.title %></td>
+          <td class="delays_td"><%= delay.new_date %></td>
+          <td class="delays_td"><%= delay.justification %></td>
         </tr>
       <% end %>
       </table>
@@ -124,7 +126,7 @@
   </td>
 </tr>
 </table>
-<table><tr><td valign=top width=310>
+<table><tr><td valign=top width=340>
   <h3>
       <u>Phases</u>
     </h3>
