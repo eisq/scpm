@@ -252,7 +252,7 @@ class CiProjectsController < ApplicationController
     if old_p.airbus_date_alert == 1 and p.airbus_date_alert == 0
       delay = CiProjectDelay.new
       delay.ci_project_id = p.id
-      delay.title = "airbus_validation_date"
+      delay.title = "Airbus validation date"
       delay.justification = p.justification_airbus_retard
       delay.new_date = p.airbus_validation_date
       p.justification_airbus_retard = nil
@@ -261,7 +261,7 @@ class CiProjectsController < ApplicationController
     if old_p.sqli_date_alert == 1 and p.sqli_date_alert == 0
       delay = CiProjectDelay.new
       delay.ci_project_id = p.id
-      delay.title = "sqli_validation_date"
+      delay.title = "SQLI validation date"
       delay.justification = p.justification_sqli_retard
       delay.new_date = p.sqli_validation_date
       p.justification_sqli_retard = nil
@@ -270,7 +270,7 @@ class CiProjectsController < ApplicationController
     if old_p.deployment_date_alert == 1 and p.deployment_date_alert == 0
       delay = CiProjectDelay.new
       delay.ci_project_id = p.id
-      delay.title = "deployment_date"
+      delay.title = "Deployment date"
       delay.justification = p.justification_deployment_retard
       delay.new_date = p.deployment_date
       p.justification_deployment_retard = nil

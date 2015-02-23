@@ -19,6 +19,11 @@
   <td width=280>
     <h3>
       <u>Dates</u>
+      <% if p.planning_validated %>
+        (Planning validated)
+      <% else %>
+        (Planning not validated yet)
+      <% end %>
     </h3>
     <p><b>Kick-off date:</b> <%= p.kick_off_date.to_s %></p>
     <p><b>Launching date:</b> <%= p.launching_date_ddmmyyyy.to_s %></p>
@@ -75,11 +80,6 @@
     <% end %>
     <% if p.deployment_date_alert == 1 %>
       <span style="color:red;">-> date to be validated</span>
-    <% end %>
-
-    <% if p.planning_validated %>
-      <br/>
-      <p><b>Planning validated</b></p>
     <% end %>
 
   </td>

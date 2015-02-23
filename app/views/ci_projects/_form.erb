@@ -111,7 +111,7 @@
 		
 		<% if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 			<tr>
-			<td><br/><br/>Is the planning validated by the Kick-off ?</td>
+			<td><br/><br/>Has planning been validated during Kick-off meeting?</td>
 			<td><br/><br/>
 			<% if @project.planning_validated %>
 				<%= radio_button :project, :planning_validated, 1, :checked => true %> Yes
@@ -125,7 +125,7 @@
 		<% else %>
 			<tr>
 			<% if @project.planning_validated == true %>
-				The planning was validated during Kick-off.
+				The planning has been validated during Kick-off.
 			<% end %>
 			</tr>
 		<% end %>
