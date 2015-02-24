@@ -84,7 +84,27 @@
 
   </td>
   <td width=50>
-  </td><td valign=top width=350>
+  </td><td valign=top width=250>
+  <h3>
+      <u>Information</u>
+    </h3>
+    <p><b>Assigned to:</b> <%= p.assigned_to %></p>
+    <p><b>SQLI Validator:</b> <%= p.sqli_validation_responsible %></p>
+    <p><b>Priority:</b> <%= p.priority %></p>
+    <p><b>SVN delivery folder: </b> <%= p.path_svn %></p>
+    <% if p.ci_objectives_2014 != nil %>
+      <p><b>CI Objectives 2014:</b></p>
+      <p><%= p.ci_objectives_2014 %></p>
+    <% elsif p.ci_objectives_2015 != nil %>
+      <p><b>CI Objectives 2015:</b></p>
+      <p><%= p.ci_objectives_2015 %></p>
+    <% end %>
+    <p><b>Description: </b></p>
+    <p><%= p.description %></p>
+    
+    
+  </td><td width=50>
+  </td><td valign=top>
     <h3>
       <u>Delays</u>
     </h3>
@@ -108,21 +128,6 @@
     <% else %>
       No delays recorded on the project.
     <% end %>
-  </td><td width=50>
-  </td><td valign=top width=250>
-  <h3>
-      <u>Information</u>
-    </h3>
-    <p><b>Assigned to:</b> <%= p.assigned_to %></p>
-    <p><b>SQLI Validator:</b> <%= p.sqli_validation_responsible %></p>
-    <p><b>Priority:</b> <%= p.priority %></p>
-    <p><b>SVN delivery folder: </b> <%= p.path_svn %></p>
-    <p><b>CI Objectives 2014:</b></p>
-    <p><%= p.ci_objectives_2014 %></p>
-    <p><b>Description: </b></p>
-    <p><%= p.description %></p>
-    
-    
   </td>
 </tr>
 </table>

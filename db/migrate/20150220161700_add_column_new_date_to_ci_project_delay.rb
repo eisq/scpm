@@ -4,6 +4,6 @@ class AddColumnNewDateToCiProjectDelay < ActiveRecord::Migration
 	end
 
 	def self.down
-		remove_column :ci_projects_delays, :new_date
+		remove_column :ci_project_delays, :new_date
 	end
 end

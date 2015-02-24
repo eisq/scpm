@@ -93,6 +93,7 @@
             formula += invert_date(self.verification_date_objective)
             formula += invert_date(self.verification_date)
             formula += format(self.request_origin)
+            formula += format(self.ci_objectives_2015)
             #formula += format(self.issue_history)
             formula += ";finbug"
             formula += "\n"
@@ -532,6 +533,23 @@
     	0
     	end
 	end
+
+    def self.get_justifications
+        justifications = Array.new
+        justifications << "No justification"
+        justifications << "On hold (other CI dependency)"
+        justifications << "Consideration of validation returns (wrong scope)"
+        justifications << "Consideration of validation returns (not complete)"
+        justifications << "Unavailability of internal CI participant (noticed from the kick-off as participant)"
+        justifications << "Unavailability of internal CI participant (participation not planned at kick-off)"
+        justifications << "Work under estimated"
+        justifications << "Waiting for internal validation (verification)"
+        justifications << "Waiting for external validation (validation)"
+        justifications << "Waiting for Airbus deliverable or information"
+        justifications << "Other (please explain the reason in the reporting)"
+
+        return justifications
+    end
 	
 	def sanitized_status
 	   sanitize(self.css_class)
