@@ -180,9 +180,9 @@
 	<tr><td>Priority</td><td>				<%= @project.priority %> </td></tr>
 	<tr><td>SVN delivery folder</td><td>				<%= text_field :project, :path_svn %></td></tr>
 	<tr>
-		<% if @project.ci_objectives_2014 != nil or @project.ci_objectives_2014 != "" %>
+		<% if @project.ci_objectives_2014 %>
 			<td>CI Objectives 2014</td><td>				<%= @project.ci_objectives_2014 %> </td>
-		<% elsif @project.ci_objectives_2015 != nil %>
+		<% elsif @project.ci_objectives_2015 %>
 			<td>CI Objectives 2015</td><td>				<%= @project.ci_objectives_2015 %> </td>
 		<% end %>
 	</tr>
