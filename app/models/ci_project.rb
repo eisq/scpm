@@ -626,17 +626,17 @@
 
     def self.get_justifications
         justifications = Array.new
-        justifications << "No justification."
-        justifications << "On hold (other CI dependency)."
-        justifications << "Consideration of validation returns (wrong scope)."
-        justifications << "Consideration of validation returns (not complete)."
-        justifications << "Unavailability of internal CI participant (noticed from the kick-off as participant)."
-        justifications << "Unavailability of internal CI participant (participation not planned at kick-off)."
-        justifications << "Work under estimated."
-        justifications << "Waiting for internal validation (verification)."
-        justifications << "Waiting for external validation (validation)."
-        justifications << "Waiting for Airbus deliverable or information."
-        justifications << "Other (please explain the reason in the reporting)."
+        justifications << "No justification"
+        justifications << "On hold (linked to another CI)"
+        justifications << "Validation feed back to be taken into account (wrong scope)"
+        justifications << "Validation feed back to be taken into account (activity scope not fully covered)"
+        justifications << "Internal CI attendee not available (identified as attendee during activity kick-off)"
+        justifications << "Internal CI attendee not available (attendance not planned during activity kick-off)"
+        justifications << "Workload under estimated"
+        justifications << "Waiting for internal validation (verification)"
+        justifications << "Waiting for external validation (validation)"
+        justifications << "Waiting for Airbus deliverable/information"
+        justifications << "Other (please explain the reason in the reporting)"
 
         return justifications
     end
