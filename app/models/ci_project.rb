@@ -534,19 +534,109 @@
     	end
 	end
 
+    def self.get_ci_type
+        ci_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
+        return ci_type
+    end
+
+    def self.get_stage
+        stage = [['Continuous Improvement', 'Continuous Improvement']]
+        return stage
+    end
+
+    def self.get_category
+        category = [['Autres', 'Autres'], ['Bundle', 'Bundle'], ['Methodo Airbus (GPP, LBIP ...)', 'Methodo Airbus (GPP, LBIP ...)'], ['Methodo Airbus (GPP, LBIP...)', 'Methodo Airbus (GPP, LBIP...)'], ['Project', 'Project']]
+        return category
+    end
+
+    def self.get_severity
+        severity = [['minor', 'minor'], ['major', 'major'], ['block', 'block'], ['text', 'text'], ['tweak', 'tweak']]
+        return severity
+    end
+
+    def self.get_reproductibility
+        reproductibility = [['always', 'always'], ['sometimes', 'sometimes'], ['random', 'random'], ['have not tried', 'have not tried'], ['unable to deplicate', 'unable to deplicate'], ['N/A', 'N/A']]
+        return reproductibility
+    end
+
+    def self.get_status
+        status = [['New', 'New']]
+        return status
+    end
+
+    def self.get_visibility
+        visibility = [['Public', 'Public'], ['Internal', 'Internal']]
+        return visibility
+    end
+
+    def self.get_priority
+        priority = [['None', 'None'], ['Low', 'Low'], ['Normal', 'Normal'], ['High', 'High'], ['Urgent', 'Urgent']]
+        return priority
+    end
+
+    def self.issue_origin
+        issue_origin = [['', 0], ['Missing element', 'element_manquant'], ['Vague element', 'element_imprecis'], ['Wrong element', 'element_faux'], ['Modification', 'modification'], ['Improvement', 'amelioration'], ['Environment', 'environnement']]
+        return issue_origin
+    end
+
+    def self.get_lot
+        lot = [['', 0], ['v1.0', 'v1.0'], ['v2.0', 'v2.0']]
+        return lot
+    end
+
+    def self.get_entity
+        entity = [['', 0], ['FuD', 'FuD'], ['PhD', 'PhD'], ['MnT', 'M&T']]
+        return entity
+    end
+
+    def self.get_domain
+        domain = [['', 0], ['EP', 'EP'], ['EV', 'EV'], ['ES', 'ES'], ['EY', 'EY'], ['EZ', 'EZ'], ['EZC', 'EZC'], ['EI', 'EI'], ['EZMC', 'EZMC'], ['EZMB', 'EZMB'], ['EC', 'EC'], ['EG', 'EG']]
+        return domain
+    end
+
+    def self.get_origin
+        origin = [['', 0], ['Airbus Feed back', 'Airbus Feed back'], ['SQLI Feed back', 'SQLI Feed back']]
+        return origin
+    end
+
+    def self.get_dev_team
+        dev_team = [['', 0], ['SQLI', 'SQLI'], ['EZMC', 'EZMC'], ['ICT', 'ICT']]
+        return dev_team
+    end
+
+    def self.get_ci_objectives_2014
+        ci_objectives_2014 = [['', 0], ['Monitor scope management across programme', 'Monitor scope management across programme'], ['Acting on process adherence information', 'Acting on process adherence information'], ['Support E-M&T QMS setting up : Baseline all QMS components and manage them in configuration', 'Support E-M&T QMS setting up : Baseline all QMS components and manage them in configuration'], ['Support E-M&T QMS setting up : Setup Change management process involving appropriate stakeholder', 'Support E-M&T QMS setting up : Setup Change management process involving appropriate stakeholder'], ['Support E-M&T QMS setting up : Support E-M&T processes and method description and deployment', 'Support E-M&T QMS setting up : Support E-M&T processes and method description and deployment'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Support Agile and FastTrack deployment', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Support Agile and FastTrack deployment'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Adapt Quality activities and role to Agile, and FastTrack standards', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Adapt Quality activities and role to Agile, and FastTrack standards'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Deploy HLR principles (so called BD in GPP)', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Deploy HLR principles (so called BD in GPP)'], ['Industrialise 2013 initiatives: Lessons learnt process from collection to reuse', 'Industrialise 2013 initiatives: Lessons learnt process from collection to reuse'], ['Industrialise 2013 initiatives: DW/PLM Quality activity plan setting-up, changes and monitoring', 'Industrialise 2013 initiatives: DW/PLM Quality activity plan setting-up, changes and monitoring'], ['Industrialise 2013 initiatives: Project setting optimisation and defined adjustment criteria', 'Industrialise 2013 initiatives: Project setting optimisation and defined adjustment criteria'], ['Harmonize PLM WoW and setup a PLMQAP', 'Harmonize PLM WoW and setup a PLMQAP'], ['No target objective', 'No target objective']]
+        return ci_objectives_2014
+    end
+
+    def self.get_level_of_impact
+        level_of_impact = [['', 0], ['Very Hight', 'Very Hight '], ['High', ' High '], ['Medium', ' Medium '], ['Low', ' Low '], ['Very low', ' Very Low']]
+        return level_of_impact
+    end
+
+    def self.get_deployment
+        deployment = [['Internal', 'Internal'], ['External', 'External']]
+        return deployment
+    end
+
+    def self.get_ci_objectives_2015
+        ci_objectives_2015 = [['', 0], ['Support E-M&T referential publication and maintenance based on E-M&T processes (Plan, Build, Run and Monitor and Control) and contribute to optimize/rationalize E-M&T referential.', 'Support E-M&T referential publication and maintenance based on E-M&T processes (Plan, Build, Run and Monitor and Control) and contribute to optimize/rationalize E-M&T referential.'], ['Secure EIS of the new quality plan process and associated templates for Suite, and Projects integrating impact on all E-M&T quality activities.', 'Secure EIS of the new quality plan process and associated templates for Suite, and Projects integrating impact on all E-M&T quality activities.'], ['Monitor compliance of the project to their plans and share discrepancies with the Project steering committee.', 'Monitor compliance of the project to their plans and share discrepancies with the Project steering committee.'], ['Capitalize and act on process adherence information.', 'Capitalize and act on process adherence information.'], ['Adapt and deploy a process of lessons learnt based on the use of collaborative tools.', 'Adapt and deploy a process of lessons learnt based on the use of collaborative tools.'], ['Support the deployment of Documentation Centre solution.', 'Support the deployment of Documentation Centre solution.'], ['Secure continuity of service for 2016', 'Secure continuity of service for 2016'], ['No target objective', 'No target objective']]
+        return ci_objectives_2015
+    end
+
     def self.get_justifications
         justifications = Array.new
-        justifications << "No justification"
-        justifications << "On hold (other CI dependency)"
-        justifications << "Consideration of validation returns (wrong scope)"
-        justifications << "Consideration of validation returns (not complete)"
-        justifications << "Unavailability of internal CI participant (noticed from the kick-off as participant)"
+        justifications << "No justification."
+        justifications << "On hold (other CI dependency)."
+        justifications << "Consideration of validation returns (wrong scope)."
+        justifications << "Consideration of validation returns (not complete)."
+        justifications << "Unavailability of internal CI participant (noticed from the kick-off as participant)."
         justifications << "Unavailability of internal CI participant (participation not planned at kick-off)"
-        justifications << "Work under estimated"
-        justifications << "Waiting for internal validation (verification)"
-        justifications << "Waiting for external validation (validation)"
-        justifications << "Waiting for Airbus deliverable or information"
-        justifications << "Other (please explain the reason in the reporting)"
+        justifications << "Work under estimated."
+        justifications << "Waiting for internal validation (verification)."
+        justifications << "Waiting for external validation (validation)."
+        justifications << "Waiting for Airbus deliverable or information."
+        justifications << "Other (please explain the reason in the reporting)."
 
         return justifications
     end

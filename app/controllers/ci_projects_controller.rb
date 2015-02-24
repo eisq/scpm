@@ -19,28 +19,28 @@ class CiProjectsController < ApplicationController
   end
 
   def create_ci
-    @project = CiProject.new()
+    @project = CiProject.new
     @project.submission_date = DateTime.now
     @project.reporter = current_user.rmt_user
 
-    @select_ci_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
-    @select_stage = [['Continuous Improvement', 'Continuous Improvement']]
-    @select_category = [['Autres', 'Autres'], ['Bundle', 'Bundle'], ['Methodo Airbus (GPP, LBIP ...)', 'Methodo Airbus (GPP, LBIP ...)'], ['Methodo Airbus (GPP, LBIP...)', 'Methodo Airbus (GPP, LBIP...)'], ['Project', 'Project']]
-    @select_severity = [['minor', 'minor'], ['major', 'major'], ['block', 'block'], ['text', 'text'], ['tweak', 'tweak']]
-    @select_reproductibility = [['always', 'always'], ['sometimes', 'sometimes'], ['random', 'random'], ['have not tried', 'have not tried'], ['unable to deplicate', 'unable to deplicate'], ['N/A', 'N/A']]
-    @select_status = [['New', 'New']]
-    @select_visibility = [['Public', 'Public'], ['Internal', 'Internal']]
-    @select_priority = [['None', 'None'], ['Low', 'Low'], ['Normal', 'Normal'], ['High', 'High'], ['Urgent', 'Urgent']]
-    #@select_issue_origin = [['', 0], ['Missing element', 'element_manquant'], ['Vague element', 'element_imprecis'], ['Wrong element', 'element_faux'], ['Modification', 'modification'], ['Improvement', 'amelioration'], ['Environment', 'environnement']]
-    #@select_lot = [['', 0], ['v1.0', 'v1.0'], ['v2.0', 'v2.0']]
-    @select_entity = [['', 0], ['FuD', 'FuD'], ['PhD', 'PhD'], ['MnT', 'M&T']]
-    @select_domain = [['', 0], ['EP', 'EP'], ['EV', 'EV'], ['ES', 'ES'], ['EY', 'EY'], ['EZ', 'EZ'], ['EZC', 'EZC'], ['EI', 'EI'], ['EZMC', 'EZMC'], ['EZMB', 'EZMB'], ['EC', 'EC'], ['EG', 'EG']]
-    @select_origin = [['', 0], ['Airbus Feed back', 'Airbus Feed back'], ['SQLI Feed back', 'SQLI Feed back']]
-    @select_dev_team = [['', 0], ['SQLI', 'SQLI'], ['EZMC', 'EZMC'], ['ICT', 'ICT']]
-    #@select_ci_objectives_2014 = [['', 0], ['Monitor scope management across programme', 'Monitor scope management across programme'], ['Acting on process adherence information', 'Acting on process adherence information'], ['Support E-M&T QMS setting up : Baseline all QMS components and manage them in configuration', 'Support E-M&T QMS setting up : Baseline all QMS components and manage them in configuration'], ['Support E-M&T QMS setting up : Setup Change management process involving appropriate stakeholder', 'Support E-M&T QMS setting up : Setup Change management process involving appropriate stakeholder'], ['Support E-M&T QMS setting up : Support E-M&T processes and method description and deployment', 'Support E-M&T QMS setting up : Support E-M&T processes and method description and deployment'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Support Agile and FastTrack deployment', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Support Agile and FastTrack deployment'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Adapt Quality activities and role to Agile, and FastTrack standards', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Adapt Quality activities and role to Agile, and FastTrack standards'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Deploy HLR principles (so called BD in GPP)', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Deploy HLR principles (so called BD in GPP)'], ['Industrialise 2013 initiatives: Lessons learnt process from collection to reuse', 'Industrialise 2013 initiatives: Lessons learnt process from collection to reuse'], ['Industrialise 2013 initiatives: DW/PLM Quality activity plan setting-up, changes and monitoring', 'Industrialise 2013 initiatives: DW/PLM Quality activity plan setting-up, changes and monitoring'], ['Industrialise 2013 initiatives: Project setting optimisation and defined adjustment criteria', 'Industrialise 2013 initiatives: Project setting optimisation and defined adjustment criteria'], ['Harmonize PLM WoW and setup a PLMQAP', 'Harmonize PLM WoW and setup a PLMQAP'], ['No target objective', 'No target objective']]
-    #@select_level_of_impact = [['', 0], ['Very Hight', 'Very Hight '], ['High', ' High '], ['Medium', ' Medium '], ['Low', ' Low '], ['Very low', ' Very Low']]
-    @select_deployment = [['Internal', 'Internal'], ['External', 'External']]
-    @select_ci_objectives_2015 = [['', 0], ['Support E-M&T referential publication and maintenance based on E-M&T processes (Plan, Build, Run and Monitor and Control) and contribute to optimize/rationalize E-M&T referential.', 'Support E-M&T referential publication and maintenance based on E-M&T processes (Plan, Build, Run and Monitor and Control) and contribute to optimize/rationalize E-M&T referential.'], ['Secure EIS of the new quality plan process and associated templates for Suite, and Projects integrating impact on all E-M&T quality activities.', 'Secure EIS of the new quality plan process and associated templates for Suite, and Projects integrating impact on all E-M&T quality activities.'], ['Monitor compliance of the project to their plans and share discrepancies with the Project steering committee.', 'Monitor compliance of the project to their plans and share discrepancies with the Project steering committee.'], ['Capitalize and act on process adherence information.', 'Capitalize and act on process adherence information.'], ['Adapt and deploy a process of lessons learnt based on the use of collaborative tools.', 'Adapt and deploy a process of lessons learnt based on the use of collaborative tools.'], ['Support the deployment of Documentation Centre solution.', 'Support the deployment of Documentation Centre solution.'], ['Secure continuity of service for 2016', 'Secure continuity of service for 2016']]
+    @select_ci_type = CiProject.get_ci_type
+    @select_stage = CiProject.get_stage
+    @select_category = CiProject.get_category
+    @select_severity = CiProject.get_severity
+    @select_reproductibility = CiProject.get_reproductibility
+    @select_status = CiProject.get_status
+    @select_visibility = CiProject.get_visibility
+    @select_priority = CiProject.get_priority
+    #@select_issue_origin = CiProject.get_issue_origin
+    #@select_lot = CiProject.get_lot
+    @select_entity = CiProject.get_entity
+    @select_domain = CiProject.get_domain
+    @select_origin = CiProject.get_origin
+    @select_dev_team = CiProject.get_dev_team
+    #@select_ci_objectives_2014 = CiProject.get_ci_objectives_2014
+    #@select_level_of_impact = CiProject.get_level_of_impact
+    @select_deployment = CiProject.get_deployment
+    @select_ci_objectives_2015 = CiProject.get_ci_objectives_2015
   end
 
   def all
