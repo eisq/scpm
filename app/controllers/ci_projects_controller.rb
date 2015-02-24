@@ -225,6 +225,18 @@ class CiProjectsController < ApplicationController
 
     p.update_attributes(params[:project])
 
+    link = CiProjectLink.new(params[:project_link])
+    if link.title and link.title != "" and link.second_ci_project_id and link.second_ci_project_id != ""
+      CiProject.find(:all).each do |ci_project_temp|
+        if ci_project_temp.extract_mantis_external_id == link.second_ci_project_id
+          link.second_ci_project_id = ci_project_temp.id
+          link.first_ci_project_id = p.id
+          link.save
+        break
+        end
+      end
+    end
+
     validators = siglum = responsible = ""
 
     responsible = p.sqli_validation_responsible
@@ -324,6 +336,7 @@ class CiProjectsController < ApplicationController
     id = params['id']
     @project = CiProject.find(id)
     @delays = CiProjectDelay.find(:all, :conditions=>["ci_project_id = ?", @project.id], :order => "id desc")
+    @links = CiProjectLink.get_links(@project.id)
   end
 
   def mantis_export

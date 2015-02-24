@@ -105,7 +105,6 @@ workload_alerts_email_destination: "addressMail1@sqli.com,addressMail2@sqli.com,
 # CI date to validate mail
 ci_date_to_validate_source: "addressMail1@sqli.com"
 ci_date_to_validate_destination: "addressMail1@sqli.com"
-ci_date_to_validate_object: "CI - date validation"
 
 # Load QS and spiders
 qs_load: 0.375

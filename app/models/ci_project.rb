@@ -127,6 +127,14 @@
         return mantis_external_id.to_i
     end
 
+    def self.extract_mantis_external_id(external_id)
+        mantis_external_id = 0
+        if external_id.length > 7
+            mantis_external_id, temp = external_id.to_s.split(" [")
+        end
+        return mantis_external_id.to_i
+    end
+
     def invert_date(date)
         if date == "" or date == nil
             dateinverted = "null"
@@ -639,6 +647,10 @@
         justifications << "Other (please explain the reason in the reporting)"
 
         return justifications
+    end
+
+    def get_links
+        return CiProjectLink.get_links(self.id)
     end
 	
 	def sanitized_status
