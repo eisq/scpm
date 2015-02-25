@@ -72,7 +72,7 @@ class Mailer < ActionMailer::Base
     @recipients = validators
     @recipients_names = ""
     validators.each { |v|
-      @recipients_names += " v.name "
+      @recipients_names += v.name+", "
     }
     @ciproject, @validators, @justification = ciproject, validators, justification
     @subject    = "[CI " + @ciproject.extract_mantis_external_id.to_s + "] Date validation"
