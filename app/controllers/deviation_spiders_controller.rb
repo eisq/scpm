@@ -89,6 +89,7 @@ class DeviationSpidersController < ApplicationController
 	# --------
 	def export_customization_excel
 		project_id = params[:project_id]
+		@milestone_name = params[:milestone_name]
 		@project = Project.find(:first, :conditions => ["id = ?", project_id])
 		if @project
 			begin
@@ -105,8 +106,8 @@ class DeviationSpidersController < ApplicationController
 					exportCustomization.justification = devia_settings.justification
 					@exportCustomizations << exportCustomization
 				end
-
-				filename = @project.name+"_GPP_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
+				lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
+				filename = @project.name+"_"+lifecycle.name+"_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
 
 				headers['Content-Type']         = "application/vnd.ms-excel"
 		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
