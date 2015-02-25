@@ -11,6 +11,7 @@
 	<td><%= p.assigned_to %></td>
 	<td><%=link_to(p.summary, :action=>"show", :id=>p.id) %></td>
 	<td><b><%= p.short_stage %></b></td>
+	<td> <%= p.kick_off_date %> </td>
 	<% if p.sqli_date_alert == 1 and !p.sqli_validation_date %>
 		<td class="ci_date_not_committed"><b><%= p.sqli_validation_date_objective %></b></td>
 	<% elsif p.sqli_date_alert == 1 and p.sqli_validation_date %>
@@ -41,7 +42,6 @@
 		<td class="<%=CiProject.late_css(p.deployment_date)%>"><b><%= p.deployment_date %></b></td>
 	<% end %>
 
-	<td> <%= p.kick_off_date %> </td>
 	<td><% if p.planning_validated %>
 		Yes
 	<% else %>
