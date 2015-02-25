@@ -101,9 +101,13 @@
     <% end %>
     <p><b>Description: </b></p>
     <p><%= p.description %></p>
+
     <p><b>Dependencies: </b></p>
     <% @links.each do |link| %>
       <p><%= link.title %> <%=link_to(link.second_ci_project_external_id, {:action=>'show', :id=>link.second_ci_project})%></p>
+    <% end %>
+    <% if @links.count < 1 %>
+      <p>No dependencies.</p>
     <% end %>
     
   </td><td width=50>

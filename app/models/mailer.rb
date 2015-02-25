@@ -74,9 +74,8 @@ class Mailer < ActionMailer::Base
     validators.each { |v|
       @recipients_names += " v.name "
     }
-
-    @subject    = "[CI " + @ciproject.extract_mantis_external_id.to_s + "] Date validation"
     @ciproject, @validators, @justification = ciproject, validators, justification
+    @subject    = "[CI " + @ciproject.extract_mantis_external_id.to_s + "] Date validation"
     content_type "text/html; charset=utf-8"
   end
   

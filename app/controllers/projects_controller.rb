@@ -386,6 +386,8 @@ class ProjectsController < ApplicationController
               redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"4"
             elsif psu_file_hash == "empty_value"
               redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5"
+            elsif psu_file_hash == "wrong_value_formula"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"6"
             else
                 # Save psu reference
               deviation_spider_reference = DeviationSpiderReference.new
