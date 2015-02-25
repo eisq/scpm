@@ -1,6 +1,6 @@
-Dear<%= @recipient_names %>, <br/>
+Dear <%= @recipient_names %>, <br/>
 <br/>
-A date has been updated on the CI <%= @ciproject.external_id %> : <a href="http://tls-srv-eisq.sqli.com/ci_projects/show/<%= @ciproject.id %>">http://tls-srv-eisq.sqli.com/ci_projects/show/<%= @ciproject.external_id %></a> <br/>
+A date has been updated on the <a href="http://tls-srv-eisq.sqli.com/ci_projects/show/<%= @ciproject.id %>">CI <%= @ciproject.extract_mantis_external_id.to_s %></a>.<br/>
 <br/>
 The reason logged is:<br/>
 <%= @justification %>.
