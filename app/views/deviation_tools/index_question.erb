@@ -2,15 +2,19 @@
 
 function change_deliverable(deliverable_id)
 {
-	location.replace("index_question?deliverable_id="+deliverable_id+"&activity_id="+$("#choose_activity").val() );
+	var activity = document.getElementById("choose_activity").value;
+	location.replace("index_question?deliverable_id="+deliverable_id+"&activity_id="+activity);
 }
 function change_activity(activity_id)
 {
-  location.replace("index_question?deliverable_id="+ $("#choose_deliverable").val()+"&activity_id="+activity_id);
+	var deliverable = document.getElementById("choose_deliverable").value;
+	location.replace("index_question?deliverable_id="+deliverable+"&activity_id="+activity_id);
 }
 
 function create_new_question() {
-	location.replace("new_question?deliverable_id=" + $("#choose_deliverable").val() + "&activity_id=" + $("#choose_activity").val() );
+	var deliverable = document.getElementById("choose_deliverable").value;
+	var activity = document.getElementById("choose_activity").value;
+	location.replace("new_question?deliverable_id=" + deliverable + "&activity_id=" + activity);
 }
 
 </SCRIPT>

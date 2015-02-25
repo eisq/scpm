@@ -672,6 +672,10 @@ table.sortable td    {
   color:red;
 }
 
+.ci_date_not_committed {
+  color:blue;
+}
+
 /* STREAM */
 #stream_project_creation{
   height: 200px;

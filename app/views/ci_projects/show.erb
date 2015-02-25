@@ -16,9 +16,14 @@
   </td>
 </tr>
 <tr>
-  <td>
+  <td width=280>
     <h3>
       <u>Dates</u>
+      <% if p.planning_validated %>
+        (Planning validated)
+      <% else %>
+        (Planning not validated yet)
+      <% end %>
     </h3>
     <p><b>Kick-off date:</b> <%= p.kick_off_date.to_s %></p>
     <p><b>Launching date:</b> <%= p.launching_date_ddmmyyyy.to_s %></p>
@@ -77,31 +82,70 @@
       <span style="color:red;">-> date to be validated</span>
     <% end %>
 
-  </td><td width=50>
+  </td>
+  <td width=50>
   </td><td valign=top width=250>
   <h3>
-    <u>Phases</u>
-  </h3>
-  <p><b>Current phase:</b> <%= p.current_phase %></p>
-  <p><b>Next phase:</b> <%= p.next_phase %></p>
-  </td><td width=50>
-  </td><td valign=top width=300>
-    <h3>
       <u>Information</u>
     </h3>
-    <p><b>Backlog request ID:</b> <%= p.num_req_backlog.to_s %></p>
     <p><b>Assigned to:</b> <%= p.assigned_to %></p>
     <p><b>SQLI Validator:</b> <%= p.sqli_validation_responsible %></p>
     <p><b>Priority:</b> <%= p.priority %></p>
     <p><b>SVN delivery folder: </b> <%= p.path_svn %></p>
-    <p><b>CI Objectives 2014:</b></p>
-    <p><%= p.ci_objectives_2014 %></p>
+    <% if p.ci_objectives_2014 and p.ci_objectives_2014 != "" %>
+      <p><b>CI Objectives 2014:</b></p>
+      <p><%= p.ci_objectives_2014 %></p>
+    <% elsif p.ci_objectives_2015 %>
+      <p><b>CI Objectives 2015:</b></p>
+      <p><%= p.ci_objectives_2015 %></p>
+    <% end %>
     <p><b>Description: </b></p>
     <p><%= p.description %></p>
+
+    <p><b>Dependencies: </b></p>
+    <% @links.each do |link| %>
+      <p><%= link.title %> <%=link_to(link.second_ci_project_external_id, {:action=>'show', :id=>link.second_ci_project})%></p>
+    <% end %>
+    <% if @links.count < 1 %>
+      <p>No dependencies.</p>
+    <% end %>
+    
+  </td><td width=50>
+  </td><td valign=top>
+    <h3>
+      <u>Delays</u>
+    </h3>
+    <% if @delays.count > 0 %>
+      <table class="delays_table">
+      <tr>
+        <td class="delays_td"><strong>Updated at</strong></td>
+        <td class="delays_td"><strong>Date type</strong></td>
+        <td class="delays_td"><strong>Date</strong></td>
+        <td class="delays_td"><strong>Justification</strong></td>
+      </tr>
+      <% @delays.each do |delay| %>
+        <tr>
+          <td class="delays_td"><%= delay.updated_at.to_s %></td>
+          <td class="delays_td"><%= delay.title %></td>
+          <td class="delays_td"><%= delay.new_date %></td>
+          <td class="delays_td"><%= delay.justification %></td>
+        </tr>
+      <% end %>
+      </table>
+    <% else %>
+      No delays recorded on the project.
+    <% end %>
   </td>
 </tr>
 </table>
-<table><tr>
+<table><tr><td valign=top width=340>
+  <h3>
+      <u>Phases</u>
+    </h3>
+    <p><b>Current phase:</b> <%= p.current_phase %></p>
+    <p><b>Next phase:</b> <%= p.next_phase %></p>
+
+  </td>
   <td valign=top>
     <h3>
       <u>CI Follow-up</u>
@@ -111,4 +155,6 @@
     <p><b>Previous reporting:</b></p>
     <p><%= p.previous_report %></p>
   </td>
-</tr></table>
+</tr>
+
+</table>

@@ -3,45 +3,47 @@ var NUMBER_CHART_PARAMETERS = 4;
 function generate_spider_chart(chartId,chartName,chartData)
 {
 	// Chart generation
-	return new Highcharts.Chart({
+	chart = new Highcharts.Chart({
 	            
 	    chart: {
 	        renderTo: chartId,
 	        polar: true,
 	        type: 'area'
 	    },
-	    
 	    title: {
 	        text: chartName,
 	        x: 0,
+	    	color: '#F91212'
 	    },
-	    
 	    pane: {
 	    	size: '80%'
 	    },
-	    
 	    xAxis: {
 	        categories: chartData.titles,
 	        tickmarkPlacement: 'on',
-	        lineWidth: 0
+	        lineWidth: 0,
+	        labels: {
+	        	style: {
+	        		fontSize: '7px',
+	        		lineHeight: '7'
+	        	}
+	        }
 	    },
-	        
 	    yAxis: {
 	        gridLineInterpolation: 'polygon',
 	        lineWidth: 0,
 			max: 1,
 	        min: 0
 	    },
-	    
 	    tooltip: {
 	    	shared: true,
 	        valuePrefix: ''
 	    },
-	    
 	    legend: {
 	        align: 'right',
 	        verticalAlign: 'top',
 	        y: 100,
+	        x: -30,
 	        layout: 'vertical'
 	    },
 	    credits : {
@@ -63,6 +65,8 @@ function generate_spider_chart(chartId,chartName,chartData)
 	        pointPlacement: 'on'
 	    }]
 	});
+
+	return chart
 }
 
 // Charts objects

@@ -76,7 +76,8 @@ class CsvCi
       :verification_date_objective,
       :verification_date,
       :request_origin,
-      :issue_history
+      :issue_history,
+      :ci_objectives_2015
 
   def initialize
   end

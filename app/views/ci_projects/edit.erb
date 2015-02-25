@@ -1,3 +1,10 @@
+<SCRIPT language="Javascript">
+function dateChanged(date_title)
+{
+	$(date_title).style.display='table-row';
+}
+</SCRIPT>
+
 <h2>Edit CI : 
 <%= @project.extract_mantis_external_id %> | <%= @project.summary %>
 </h2>
@@ -5,5 +12,5 @@
 <% form_for @project, :url=>{:action=>'update', :id=>@project.id} do |f| -%>
   <%= render(:partial => f) %>
   <p><label>&nbsp;</label>
-  <%= submit_tag 'OK' %></p>
+  <%= submit_tag 'Save' %></p>
 <% end -%>

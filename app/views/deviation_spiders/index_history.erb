@@ -110,31 +110,49 @@ $( document ).ready(function() {
 <p><%= button_to "Delete Consolidated Spider & Deviation", {:action => "delete_consolidated_spider", :deviation_spider_id => @last_spider.id} %></p>
 
 <br/>
-<h2>Export</h2>
+<h2>Export Spiders</h2>
 <table>
 <tr>
 	<td>Macro-Objectives chart: </td>
 	<td><input type="button" value="Export all" onclick="export_activities('<%= @last_spider.id.to_s %>');" /></td>
+	<td>To be added to M3/G2 Quality Slide</td>
 </tr>
 	<td>Deliverables chart: </td>
 	<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
-	<td colspan=2>To be added in Backup Slides</td>
+	<td>To be added in Backup Slides</td>
 </tr>
-<tr>
-	<td>Customization: </td>
-	<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
-	<td><%= button_to "Pie export", {:action => "export_customization_pie", :project_id => @milestone.project.id} %></td>
-	<td>To be added to M3/G2 Quality Slide</td>
-</tr>
-<!-- 
-<tr>
+<!-- <tr>
 	<td>Result of GPP adherence: </td>
 	<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
 	<td colspan=2>To be added to M3/G2 Quality Slide</td>
+</tr> -->
+</table>
+<br/><br/>
+
+<h2>Export Bilan Customization <span style="font-weight:normal; font-size:13px">- To be added to M3/G2 Quality Slide  (Pie+Excel export)</span></h2>
+<table>
+<tr>
+	<td colspan=2 style="border:1px outset black;"><%= image_tag(@pie_chart) if @pie_chart%></td>
 </tr>
--->
+<tr>
+	<td>Bilan Customization assessment: </td>
+	<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project.id} %></td>
+</tr>
 </table>
 
 <div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
 <div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>
 <div class="deviation_spider_export_chart" id="export_chart"></div>
+
+<% if @history and @history.count > 0%>
+<h2>History</h2>
+	<% @history.each { |s|
+		spider_name = "Spider [created the "
+		spider_name << s.created_at.to_s
+		spider_name << "] [Consolidated the "
+		spider_name << s.deviation_spider_consolidations.first().created_at.to_s
+		spider_name << "]"
+	%>
+		<%= link_to spider_name, :action => "index_history", :deviation_spider_id => s.id %><br />
+	<% } %>
+<% end %>

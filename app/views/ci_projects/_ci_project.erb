@@ -1,27 +1,51 @@
 <tr class="<%= p.css_class %>">
 	<td align="right"><b><%=link_to(p.extract_mantis_external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%></b></td>
-	<td><%= p.order %></td>
+	<td>
+		<% p.get_links.each do |link| %>
+			<%= link.title %> <%=link_to(link.second_ci_project_external_id, {:action=>'show', :id=>link.second_ci_project})%><br/>
+		<% end %>
+	</td>
+	<td><% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%></td>
 	<td><%= p.status %></td>
 	<td><%= p.visibility %></td>
 	<td><%= p.assigned_to %></td>
-	<td><% if p.strategic==1 %><%=image_tag('danger.gif')%><%end%></td>
-	<td><%=link_to(p.summary, :controller => "ci_projects", :action=>"show", :id=>p.id) %></td>
+	<td><%=link_to(p.summary, :action=>"show", :id=>p.id) %></td>
 	<td><b><%= p.short_stage %></b></td>
-	<% if !p.sqli_validation_date || p.sqli_date_alert == 1 %>
+	<% if p.sqli_date_alert == 1 and !p.sqli_validation_date %>
+		<td class="ci_date_not_committed"><b><%= p.sqli_validation_date_objective %></b></td>
+	<% elsif p.sqli_date_alert == 1 and p.sqli_validation_date %>
+		<td class="ci_date_not_committed"><b><%= p.sqli_validation_date %></b></td>
+	<% elsif !p.sqli_validation_date %>
 		<td class="<%=CiProject.late_css(p.sqli_validation_date_objective)%>"><b><%= p.sqli_validation_date_objective %></b></td>
-	<%else%>
+	<% else %>
 		<td class="<%=CiProject.late_css(p.sqli_validation_date)%>"><b><%= p.sqli_validation_date %></b></td>
-	<%end%>
-	<% if !p.airbus_validation_date || p.airbus_date_alert == 1 %>
+	<% end %>
+
+	<% if p.airbus_date_alert == 1 and !p.airbus_validation_date %>
+		<td class="ci_date_not_committed"><b><%= p.airbus_validation_date_objective %></b></td>
+	<% elsif p.airbus_date_alert == 1 and p.airbus_validation_date %>
+		<td class="ci_date_not_committed"><b><%= p.airbus_validation_date %></b></td>
+	<% elsif !p.airbus_validation_date %>
 		<td class="<%=CiProject.late_css(p.airbus_validation_date_objective)%>"><b><%= p.airbus_validation_date_objective %></b></td>
-	<%else%>
+	<% else %>
 		<td class="<%=CiProject.late_css(p.airbus_validation_date)%>"><b><%= p.airbus_validation_date %></b></td>
-	<%end%>
-	<% if !p.deployment_date || p.deployment_date_alert == 1 %>
+	<% end %>
+
+	<% if p.deployment_date_alert == 1 and !p.deployment_date %>
+		<td class="ci_date_not_committed"><b><%= p.deployment_date_objective %></b></td>
+	<% elsif p.deployment_date_alert == 1 and p.deployment_date %>
+		<td class="ci_date_not_committed"><b><%= p.deployment_date %></b></td>
+	<% elsif !p.deployment_date %>
 		<td class="<%=CiProject.late_css(p.deployment_date_objective)%>"><b><%= p.deployment_date_objective %></b></td>
-	<%else%>
+	<% else %>
 		<td class="<%=CiProject.late_css(p.deployment_date)%>"><b><%= p.deployment_date %></b></td>
-	<%end%>
+	<% end %>
+
 	<td> <%= p.kick_off_date %> </td>
+	<td><% if p.planning_validated %>
+		Yes
+	<% else %>
+		No
+	<% end %></td>
 	<td><%= link_to(image_tag('edit.gif'), :controller => "ci_projects", :action=>"edit", :id=>p.id)%></td>
 </tr>

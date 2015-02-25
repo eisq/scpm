@@ -1,8 +1,13 @@
 <table><tr><td>
 	<table>
   	<tr><td><h4>Dates</h4></td></tr>
-  	<tr><td>Kick-off date (yyyy-mm-dd)</td><td>	<%= text_field :project, :kick_off_date %></td></tr>
-  	<tr><td>Launching date (yyyy-mm-dd)</td><td>	<%= text_field :project, :launching_date_ddmmyyyy %></td></tr>
+  	<% if !@project.planning_validated %>
+	  	<tr><td>Kick-off date (yyyy-mm-dd)</td><td>	<%= text_field :project, :kick_off_date %></td></tr>
+	  	<tr><td>Launching date (yyyy-mm-dd)</td><td>	<%= text_field :project, :launching_date_ddmmyyyy %></td></tr>
+	<% else %>
+		<tr><td>Kick-off date (yyyy-mm-dd)</td><td>	<%= text_field :project, :kick_off_date, :disabled => true %></td></tr>
+	  	<tr><td>Launching date (yyyy-mm-dd)</td><td>	<%= text_field :project, :launching_date_ddmmyyyy, :disabled => true %></td></tr>
+	<% end %>
   	<tr><td>&nbsp;</td><td></td></tr>
 
   	<tr><td>SQLI validation date status</td>
@@ -15,8 +20,20 @@
 		<% end %>
 	</td></tr>
 
-	<tr><td>SQLI validation date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :sqli_validation_date_objective %></td></tr>
-	<tr><td>SQLI validation date (yyyy-mm-dd)</td><td>				<%= text_field :project, :sqli_validation_date %></td></tr>
+	<% if !@project.planning_validated %>
+		<tr><td>SQLI validation date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :sqli_validation_date_objective %></td></tr>
+	<% else %>
+		<tr><td>SQLI validation date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :sqli_validation_date_objective, :disabled => true %></td></tr>
+	<% end %>
+	<tr><td>SQLI validation date (yyyy-mm-dd)</td><td>				<%= text_field :project, :sqli_validation_date, {:onchange => "dateChanged('sqli_justif');"} %></td></tr>
+
+	<% if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) and @project.sqli_date_alert == 1 %>
+		<tr>
+	<% else %>
+		<tr id="sqli_justif" class="delay_justif">
+	<% end %>
+		<td>SQLI delay justification: </td><td><%= select(:project, :justification_sqli_retard, @justifications) %></td>
+	</tr>
 
 	<%if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
@@ -44,8 +61,20 @@
 		<% end %>
 	</td></tr>
 
-	<tr><td>Airbus validation date objective (yyyy-mm-dd)</td><td><%= text_field :project, :airbus_validation_date_objective %></td></tr>
-	<tr><td>Airbus validation date (yyyy-mm-dd)</td><td>					<%= text_field :project, :airbus_validation_date %></td></tr>
+	<% if !@project.planning_validated %>
+		<tr><td>Airbus validation date objective (yyyy-mm-dd)</td><td><%= text_field :project, :airbus_validation_date_objective %></td></tr>
+	<% else %>
+		<tr><td>Airbus validation date objective (yyyy-mm-dd)</td><td><%= text_field :project, :airbus_validation_date_objective, :disabled => true %></td></tr>
+	<% end %>
+	<tr><td>Airbus validation date (yyyy-mm-dd)</td><td>					<%= text_field :project, :airbus_validation_date, :onchange => "dateChanged('airbus_justif');" %></td></tr>
+
+	<% if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) and @project.airbus_date_alert == 1 %>
+		<tr>
+	<% else %>
+		<tr id="airbus_justif" class="delay_justif">
+	<% end %>
+		<td>Airbus delay justification: </td><td><%= select(:project, :justification_airbus_retard, @justifications) %></td>
+	</tr>
 
 	<%if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
@@ -73,8 +102,20 @@
 		<% end %>
 	</td></tr>
 
-	<tr><td>Deployment date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :deployment_date_objective %></td></tr>
-	<tr><td>Deployment date (yyyy-mm-dd)</td><td>				<%= text_field :project, :deployment_date %></td></tr>
+	<% if !@project.planning_validated %>
+		<tr><td>Deployment date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :deployment_date_objective %></td></tr>
+	<% else %>
+		<tr><td>Deployment date objective (yyyy-mm-dd)</td><td>	<%= text_field :project, :deployment_date_objective, :disabled => true %></td></tr>
+	<% end %>
+	<tr><td>Deployment date (yyyy-mm-dd)</td><td>				<%= text_field :project, :deployment_date, :onchange => "dateChanged('deployment_justif');" %></td></tr>
+
+	<% if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) and @project.deployment_date_alert == 1 %>
+		<tr>
+	<% else %>
+		<tr id="deployment_justif" class="delay_justif">
+	<% end %>
+		<td>Deployment delay justification: </td><td><%= select(:project, :justification_deployment_retard, @justifications) %></td>
+	</tr>
 	
 	<% if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
 		<tr><td>
@@ -89,31 +130,58 @@
 		<% end %>
 		</td></tr>
 	<% end %>
+		
+	<% if (current_user.has_role?('CI Manager') or current_user.has_role?('Admin') or current_user.rmt_user == @project.sqli_validation_responsible) %>
+		<tr>
+		<td><br/><br/>Has planning been validated during Kick-off meeting?</td>
+		<td><br/><br/>
+		<% if @project.planning_validated %>
+			<%= radio_button :project, :planning_validated, 1, :checked => true %> Yes
+			<%= radio_button :project, :planning_validated, 0 %> No
+		<% else %>
+			<%= radio_button :project, :planning_validated, 1%> Yes
+			<%= radio_button :project, :planning_validated, 0, :checked => true %> No
+		<% end %>
+		</td>
+		</tr>
+	<% else %>
+		<tr>
+		<% if @project.planning_validated == true %>
+			The planning has been validated during Kick-off.
+		<% end %>
+		</tr>
+	<% end %>
+		
 
 	</table>
-
 </td><td valign="top">
 	<table>
 	<tr><td><h4>Information</h4></td></tr>
 	<tr><td>
 	Strategic</td><td>
 	<% if @project.strategic == 0 %>
-	<%= radio_button :project, :strategic, 1 %> Yes
-	<%= radio_button :project, :strategic, 0, :checked => true %> No
+		<%= radio_button :project, :strategic, 1 %> Yes
+		<%= radio_button :project, :strategic, 0, :checked => true %> No
 	<% else %>
-	<%= radio_button :project, :strategic, 1, :checked => true %> Yes
-	<%= radio_button :project, :strategic, 0 %> No
+		<%= radio_button :project, :strategic, 1, :checked => true %> Yes
+		<%= radio_button :project, :strategic, 0 %> No
 	<% end %>
 	</td></tr>
+
+	<tr>
+		<td>Links </td>
+		<td>Add a link: <%= select(:project_link, :title, options_for_select(CiProjectLink.get_links_title)) %> <%= text_field :project_link, :second_ci_project_id, {:size=>4} %></td>
+		<% @links.each do |link| %>
+			</tr><tr>
+			<td></td><td><%= link.title %> <%=link_to(link.second_ci_project_external_id, {:action=>'show', :id=>link.second_ci_project})%> <%=link_to(image_tag('delete.gif'), {:action=>'delete_link', :id=>link.id, :ci_id => @project.id}) %></td>
+		<% end %>
+	</tr>
+
 	<tr><td>Title </td><td>
 	<%= text_field :project, :summary, {:size=>60} %>
 	</td></tr>
 	<tr><td>Description</td><td>
 	<%= text_area :project, :description, {:cols=>69, :rows=>3} %>
-	</td></tr>
-	<tr><td>Backlog request ID</td><td>	
-		<% if (@project.num_req_backlog == nil) %> None
-		 <% else %> <%= @project.num_req_backlog %> <% end %>
 	</td></tr>
 	<tr><td>Assigned to</td><td>	<%= @project.assigned_to %>
 	</td></tr>
@@ -121,7 +189,13 @@
 	</td></tr>
 	<tr><td>Priority</td><td>				<%= @project.priority %> </td></tr>
 	<tr><td>SVN delivery folder</td><td>				<%= text_field :project, :path_svn %></td></tr>
-	<tr><td>CI Objectives 2014</td><td>				<%= @project.ci_objectives_2014 %> </td></tr>
+	<tr>
+		<% if @project.ci_objectives_2014 and @project.ci_objectives_2014 != "" %>
+			<td>CI Objectives 2014</td><td>				<%= @project.ci_objectives_2014 %> </td>
+		<% elsif @project.ci_objectives_2015 %>
+			<td>CI Objectives 2015</td><td>				<%= @project.ci_objectives_2015 %> </td>
+		<% end %>
+	</tr>
 	<tr><td>Current phase</td><td>
 	<%= text_area :project, :current_phase, {:cols=>69, :rows=>3} %>
 	</td></tr>

@@ -19,27 +19,28 @@ class CiProjectsController < ApplicationController
   end
 
   def create_ci
-    @project = CiProject.new()
+    @project = CiProject.new
     @project.submission_date = DateTime.now
     @project.reporter = current_user.rmt_user
 
-    @select_ci_type = [['Anomaly', 'Anomaly'], ['Evolution', 'Evolution']]
-    @select_stage = [['Continuous Improvement', 'Continuous Improvement']]
-    @select_category = [['Autres', 'Autres'], ['Bundle', 'Bundle'], ['Methodo Airbus (GPP, LBIP ...)', 'Methodo Airbus (GPP, LBIP ...)'], ['Methodo Airbus (GPP, LBIP...)', 'Methodo Airbus (GPP, LBIP...)'], ['Project', 'Project']]
-    @select_severity = [['minor', 'minor'], ['major', 'major'], ['block', 'block'], ['text', 'text'], ['tweak', 'tweak']]
-    @select_reproductibility = [['always', 'always'], ['sometimes', 'sometimes'], ['random', 'random'], ['have not tried', 'have not tried'], ['unable to deplicate', 'unable to deplicate'], ['N/A', 'N/A']]
-    @select_status = [['New', 'New']]
-    @select_visibility = [['Public', 'Public'], ['Internal', 'Internal']]
-    @select_priority = [['None', 'None'], ['Low', 'Low'], ['Normal', 'Normal'], ['High', 'High'], ['Urgent', 'Urgent']]
-    #@select_issue_origin = [['', 0], ['Missing element', 'element_manquant'], ['Vague element', 'element_imprecis'], ['Wrong element', 'element_faux'], ['Modification', 'modification'], ['Improvement', 'amelioration'], ['Environment', 'environnement']]
-    #@select_lot = [['', 0], ['v1.0', 'v1.0'], ['v2.0', 'v2.0']]
-    @select_entity = [['', 0], ['FuD', 'FuD'], ['PhD', 'PhD'], ['MnT', 'M&T']]
-    @select_domain = [['', 0], ['EP', 'EP'], ['EV', 'EV'], ['ES', 'ES'], ['EY', 'EY'], ['EZ', 'EZ'], ['EZC', 'EZC'], ['EI', 'EI'], ['EZMC', 'EZMC'], ['EZMB', 'EZMB'], ['EC', 'EC'], ['EG', 'EG']]
-    @select_origin = [['', 0], ['Airbus Feed back', 'Airbus Feed back'], ['SQLI Feed back', 'SQLI Feed back']]
-    @select_dev_team = [['', 0], ['SQLI', 'SQLI'], ['EZMC', 'EZMC'], ['ICT', 'ICT']]
-    @select_ci_objectives_2014 = [['', 0], ['Monitor scope management across programme', 'Monitor scope management across programme'], ['Acting on process adherence information', 'Acting on process adherence information'], ['Support E-M&T QMS setting up : Baseline all QMS components and manage them in configuration', 'Support E-M&T QMS setting up : Baseline all QMS components and manage them in configuration'], ['Support E-M&T QMS setting up : Setup Change management process involving appropriate stakeholder', 'Support E-M&T QMS setting up : Setup Change management process involving appropriate stakeholder'], ['Support E-M&T QMS setting up : Support E-M&T processes and method description and deployment', 'Support E-M&T QMS setting up : Support E-M&T processes and method description and deployment'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Support Agile and FastTrack deployment', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Support Agile and FastTrack deployment'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Adapt Quality activities and role to Agile, and FastTrack standards', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Adapt Quality activities and role to Agile, and FastTrack standards'], ['Secure convergence to GPP NG and tune its deployment in E-M&T  context : Deploy HLR principles (so called BD in GPP)', 'Secure convergence to GPP NG and tune its deployment in E-M&T  context : Deploy HLR principles (so called BD in GPP)'], ['Industrialise 2013 initiatives: Lessons learnt process from collection to reuse', 'Industrialise 2013 initiatives: Lessons learnt process from collection to reuse'], ['Industrialise 2013 initiatives: DW/PLM Quality activity plan setting-up, changes and monitoring', 'Industrialise 2013 initiatives: DW/PLM Quality activity plan setting-up, changes and monitoring'], ['Industrialise 2013 initiatives: Project setting optimisation and defined adjustment criteria', 'Industrialise 2013 initiatives: Project setting optimisation and defined adjustment criteria'], ['Harmonize PLM WoW and setup a PLMQAP', 'Harmonize PLM WoW and setup a PLMQAP'], ['No target objective', 'No target objective']]
-    #@select_level_of_impact = [['', 0], ['Very Hight', 'Very Hight '], ['High', ' High '], ['Medium', ' Medium '], ['Low', ' Low '], ['Very low', ' Very Low']]
-    @select_deployment = [['Internal', 'Internal'], ['External', 'External']]
+    @select_ci_type = CiProject.get_ci_type
+    @select_stage = CiProject.get_stage
+    @select_category = CiProject.get_category
+    @select_severity = CiProject.get_severity
+    @select_reproductibility = CiProject.get_reproductibility
+    @select_status = CiProject.get_status
+    @select_visibility = CiProject.get_visibility
+    @select_priority = CiProject.get_priority
+    #@select_issue_origin = CiProject.get_issue_origin
+    #@select_lot = CiProject.get_lot
+    @select_entity = CiProject.get_entity
+    @select_domain = CiProject.get_domain
+    @select_origin = CiProject.get_origin
+    @select_dev_team = CiProject.get_dev_team
+    #@select_ci_objectives_2014 = CiProject.get_ci_objectives_2014
+    #@select_level_of_impact = CiProject.get_level_of_impact
+    @select_deployment = CiProject.get_deployment
+    @select_ci_objectives_2015 = CiProject.get_ci_objectives_2015
   end
 
   def all
@@ -158,6 +159,7 @@ class CiProjectsController < ApplicationController
             ci.update_attribute('verification_date', p.verification_date)
             ci.update_attribute('request_origin', p.request_origin)
             ci.update_attribute('issue_history', p.issue_history)
+            ci.update_attribute('ci_objectives_2015', p.ci_objectives_2015)
 
             ci.save
           end
@@ -209,6 +211,8 @@ class CiProjectsController < ApplicationController
     id = params[:id]
     @project = CiProject.find(id)
     @qr_list = Person.find(:all, :conditions=>["is_supervisor = 0 and has_left = 0"], :order=>"name")
+    @justifications = CiProject.get_justifications
+    @links = CiProjectLink.get_links(@project.id)
   end
 
   def edit_report
@@ -218,12 +222,21 @@ class CiProjectsController < ApplicationController
 
   def update
     p = CiProject.find(params[:id])
-
-    old_sqli_date = p.sqli_validation_date
-    old_airbus_date = p.airbus_validation_date
-    old_deployment_date = p.deployment_date
+    old_p = CiProject.find(params[:id])
 
     p.update_attributes(params[:project])
+
+    link = CiProjectLink.new(params[:project_link])
+    if link.title and link.title != "" and link.second_ci_project_id and link.second_ci_project_id != ""
+      CiProject.find(:all).each do |ci_project_temp|
+        if ci_project_temp.extract_mantis_external_id == link.second_ci_project_id
+          link.second_ci_project_id = ci_project_temp.id
+          link.first_ci_project_id = p.id
+          link.save
+        break
+        end
+      end
+    end
 
     validators = siglum = responsible = ""
 
@@ -237,17 +250,47 @@ class CiProjectsController < ApplicationController
 
     validators = siglum + APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
 
-    if (old_sqli_date != p.sqli_validation_date)
+    #if a date has changed, an alert is raised
+    if (old_p.sqli_validation_date != p.sqli_validation_date)
       p.sqli_date_alert = 1
-      date_validation_mail(validators, p)
+      date_validation_mail(validators, p, p.justification_sqli_retard)
     end
-    if (old_airbus_date != p.airbus_validation_date)
+    if (old_p.airbus_validation_date != p.airbus_validation_date)
       p.airbus_date_alert = 1
-      date_validation_mail(validators, p)
+      date_validation_mail(validators, p, p.justification_airbus_retard)
     end
-    if (old_deployment_date != p.deployment_date)
+    if (old_p.deployment_date != p.deployment_date)
       p.deployment_date_alert = 1
-      date_validation_mail(validators, p)
+      date_validation_mail(validators, p, p.justification_deployment_retard)
+    end
+
+    #if a date is committed, the delay and it's justification is recorded
+    if old_p.airbus_date_alert == 1 and p.airbus_date_alert == 0
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "Airbus validation date"
+      delay.justification = p.justification_airbus_retard
+      delay.new_date = p.airbus_validation_date
+      p.justification_airbus_retard = nil
+      delay.save
+    end
+    if old_p.sqli_date_alert == 1 and p.sqli_date_alert == 0
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "SQLI validation date"
+      delay.justification = p.justification_sqli_retard
+      delay.new_date = p.sqli_validation_date
+      p.justification_sqli_retard = nil
+      delay.save
+    end
+    if old_p.deployment_date_alert == 1 and p.deployment_date_alert == 0
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "Deployment date"
+      delay.justification = p.justification_deployment_retard
+      delay.new_date = p.deployment_date
+      p.justification_deployment_retard = nil
+      delay.save
     end
 
     p.save
@@ -293,6 +336,8 @@ class CiProjectsController < ApplicationController
   def show
     id = params['id']
     @project = CiProject.find(id)
+    @delays = CiProjectDelay.find(:all, :conditions=>["ci_project_id = ?", @project.id], :order => "id desc")
+    @links = CiProjectLink.get_links(@project.id)
   end
 
   def mantis_export
@@ -324,12 +369,24 @@ class CiProjectsController < ApplicationController
     redirect_to "/ci_projects/mantis_export"
   end
 
-  def date_validation_mail(validators, project)
-      Mailer::deliver_ci_date_change(validators, project)
+  def date_validation_mail(validators, project, justification)
+      Mailer::deliver_ci_date_change(validators, project, justification)
   end
 
   def dashboard
     @ci_projects = CiProject.find(:all).sort_by {|p| [p.id]}
+  end
+
+  def delete_link
+    id = params['id']
+    ci_id = params['ci_id']
+
+    ci_link = CiProjectLink.find(:first, :conditions=>["id = ?", id])
+    if ci_link
+      ci_link.delete
+    end
+    
+    redirect_to(:action=>'show', :id=>ci_id)
   end
 
 end
