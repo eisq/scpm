@@ -1,6 +1,6 @@
 class CiProjectLink < ActiveRecord::Base
 
-	Link = Struct.new(:second_ci_project, :title, :second_ci_project_external_id)
+	Link = Struct.new(:id, :second_ci_project, :title, :second_ci_project_external_id)
 
 	def self.get_links_title
 		return ["", "Related to", "Dependant on", "Blocks"]
@@ -28,6 +28,7 @@ class CiProjectLink < ActiveRecord::Base
 				second_ci_project = CiProject.find(:first, :conditions=>["id = ?", link.second_ci_project])
 				link.second_ci_project_external_id = CiProject.extract_mantis_external_id(second_ci_project.external_id)
 			end
+			link.id = l.id
 
 			links << link
 	    end

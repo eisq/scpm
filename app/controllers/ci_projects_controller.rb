@@ -212,6 +212,7 @@ class CiProjectsController < ApplicationController
     @project = CiProject.find(id)
     @qr_list = Person.find(:all, :conditions=>["is_supervisor = 0 and has_left = 0"], :order=>"name")
     @justifications = CiProject.get_justifications
+    @links = CiProjectLink.get_links(@project.id)
   end
 
   def edit_report
@@ -374,6 +375,18 @@ class CiProjectsController < ApplicationController
 
   def dashboard
     @ci_projects = CiProject.find(:all).sort_by {|p| [p.id]}
+  end
+
+  def delete_link
+    id = params['id']
+    ci_id = params['ci_id']
+
+    ci_link = CiProjectLink.find(:first, :conditions=>["id = ?", id])
+    if ci_link
+      ci_link.delete
+    end
+    
+    redirect_to(:action=>'show', :id=>ci_id)
   end
 
 end

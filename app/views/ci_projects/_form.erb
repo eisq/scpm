@@ -160,15 +160,23 @@
 	<tr><td>
 	Strategic</td><td>
 	<% if @project.strategic == 0 %>
-	<%= radio_button :project, :strategic, 1 %> Yes
-	<%= radio_button :project, :strategic, 0, :checked => true %> No
+		<%= radio_button :project, :strategic, 1 %> Yes
+		<%= radio_button :project, :strategic, 0, :checked => true %> No
 	<% else %>
-	<%= radio_button :project, :strategic, 1, :checked => true %> Yes
-	<%= radio_button :project, :strategic, 0 %> No
+		<%= radio_button :project, :strategic, 1, :checked => true %> Yes
+		<%= radio_button :project, :strategic, 0 %> No
 	<% end %>
 	</td></tr>
-	<tr><td>Links </td>
-	<td><%= select(:project_link, :title, options_for_select(CiProjectLink.get_links_title)) %> <%= text_field :project_link, :second_ci_project_id, {:size=>4} %></td></tr>
+
+	<tr>
+		<td>Links </td>
+		<td>Add a link: <%= select(:project_link, :title, options_for_select(CiProjectLink.get_links_title)) %> <%= text_field :project_link, :second_ci_project_id, {:size=>4} %></td>
+		<% @links.each do |link| %>
+			</tr><tr>
+			<td></td><td><%= link.title %> <%=link_to(link.second_ci_project_external_id, {:action=>'show', :id=>link.second_ci_project})%> <%=link_to(image_tag('delete.gif'), {:action=>'delete_link', :id=>link.id, :ci_id => @project.id}) %></td>
+		<% end %>
+	</tr>
+
 	<tr><td>Title </td><td>
 	<%= text_field :project, :summary, {:size=>60} %>
 	</td></tr>
