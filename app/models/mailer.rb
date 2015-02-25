@@ -71,7 +71,7 @@ class Mailer < ActionMailer::Base
     @from       = APP_CONFIG['ci_date_to_validate_source']
     @recipients = validators
     @ciproject, @validators, @justification = ciproject, validators, justification
-    @subject    = "CI " + @ciproject.extract_mantis_external_id + " - Date validation"
+    @subject    = "CI " + @ciproject.extract_mantis_external_id.to_s + " - Date validation"
     content_type "text/html; charset=utf-8"
   end
   
