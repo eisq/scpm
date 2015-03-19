@@ -1,7 +1,7 @@
 class CreateSvtDeviationQuestionMilestoneNames < ActiveRecord::Migration
   def self.up
     create_table :svt_deviation_question_milestone_names do |t|
-      t.integer  :deviation_question_id
+      t.integer  :svt_deviation_question_id
       t.integer  :milestone_name_id
       t.timestamps
     end

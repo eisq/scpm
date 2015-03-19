@@ -1,0 +1,165 @@
+<%=
+@xml.instruct! :xml, :version=>"1.0", :encoding=>"UTF-8"
+@xml.Workbook({
+  'xmlns'      => "urn:schemas-microsoft-com:office:spreadsheet",
+  'xmlns:o'    => "urn:schemas-microsoft-com:office:office",
+  'xmlns:x'    => "urn:schemas-microsoft-com:office:excel",
+  'xmlns:html' => "http://www.w3.org/TR/REC-html40",
+  'xmlns:ss'   => "urn:schemas-microsoft-com:office:spreadsheet"
+  }) do
+
+
+@xml.Styles do
+  @xml.Style 'ss:ID' => 'Default', 'ss:Name' => 'Normal' do
+    @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
+    @xml.Borders
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Interior
+    @xml.NumberFormat
+    @xml.Protection 
+  end
+  @xml.Style 'ss:ID' => 's62', 'ss:Name' => 'Header1' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 's75', 'ss:Name' => 'Header2' do
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#FFFFFF', 'ss:Bold'=>"1"
+    @xml.Interior 'ss:Color'=>"#2C5FE1", 'ss:Pattern'=>'Solid'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 's1024', 'ss:Name' => 'Classic' do
+    @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+    @xml.Interior
+    @xml.NumberFormat
+    @xml.Protection 
+  end
+  @xml.Style 'ss:ID' => 'borderleft', 'ss:Name' => 'BorderLeft' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'borderright', 'ss:Name' => 'BorderRight' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'bordertop', 'ss:Name' => 'BorderTop' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'borderbottom', 'ss:Name' => 'BorderBottom' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'bordertopbottom', 'ss:Name' => 'BorderTopBottom' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'bordertopbottomright', 'ss:Name' => 'BorderTopBottomRight' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"0", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'borderfull', 'ss:Name' => 'BorderFull' do
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+end
+  
+  # Custo_all
+  @xml.Worksheet 'ss:Name' => 'Customization export' do
+    @xml.Table do
+
+      # Columns width
+      for i in 0..((@projects.count*2)+6) do
+        if i == 0
+          @xml.Column nil, {'ss:Width' => 200}
+        else
+          if (((i%2) != 0) and (i<(@projects.count*2)+1))
+            @xml.Column nil, {'ss:Width' => 50}
+          else
+            @xml.Column nil, {'ss:Width' => 150}
+          end
+        end
+      end
+
+      # Row 1
+      @xml.Row do
+        i = 0
+        @projects.each do |project|
+          if i==0
+            @xml.Cell 'ss:StyleID' => 'borderfull' do
+              @xml.Data "Project Name", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
+          end
+
+          @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell 'ss:StyleID' => 'bordertopbottomright' do
+            @xml.Data project.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          i = i+1
+        end
+
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
+          @xml.Data "OVERALL", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertopbottom' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertopbottomright' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+    end #End xml.table
+  end #End xml.worksheet
+
+end 
+
+%>

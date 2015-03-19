@@ -1068,6 +1068,10 @@ class Project < ActiveRecord::Base
     return DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", self.id], :order => "version_number desc")
   end
 
+  def get_current_svt_deviation_spider_reference
+    return SvtDeviationSpiderReference.find(:first, :conditions => ["project_id = ?", self.id], :order => "version_number desc")
+  end
+
 private
 
   def excel(a,b)

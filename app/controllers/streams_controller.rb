@@ -342,7 +342,7 @@ class StreamsController < ApplicationController
         if suite != nil
           project.suite_tag = suite
         end
-        project.deviation_spider = true
+        project.deviation_spider_svt = true
         project.save
       end
 

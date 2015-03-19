@@ -1,7 +1,7 @@
 class CreateSvtDeviationSpiderSettings < ActiveRecord::Migration
   def self.up
     create_table :svt_deviation_spider_settings do |t|
-      t.integer :deviation_spider_reference_id
+      t.integer :svt_deviation_spider_reference_id
       t.string :deliverable_name
       t.string :activity_name
       t.string :answer_1

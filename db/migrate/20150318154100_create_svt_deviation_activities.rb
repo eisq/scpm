@@ -3,7 +3,7 @@ class CreateSvtDeviationActivities < ActiveRecord::Migration
     create_table :svt_deviation_activities do |t|
       t.string  :name
       t.boolean :is_active, :default => true
-      t.integer :deviation_meta_activity_id
+      t.integer :svt_deviation_meta_activity_id
       t.timestamps
     end
   end
