@@ -374,7 +374,7 @@ class ProjectsController < ApplicationController
   def import_deviation
     project_id = params[:project_id]
     project = Project.find(:first, :conditions=>["id= ?", project_id])
-    if project
+    if project and project.deviation_spider == 1
       begin
         file = params[:upload]
         if file
@@ -403,6 +403,58 @@ class ProjectsController < ApplicationController
               # Save psu settings
               psu_file_hash.each do |psu|
                 deviation_spider_setting = DeviationSpiderSetting.new
+                deviation_spider_setting.deviation_spider_reference_id  = deviation_spider_reference.id
+                deviation_spider_setting.activity_name                  = psu["activity"]
+                deviation_spider_setting.deliverable_name               = psu["deliverable"]
+                deviation_spider_setting.answer_1                       = psu["methodology_template"]
+                deviation_spider_setting.answer_2                       = psu["is_justified"]
+                deviation_spider_setting.answer_3                       = psu["other_template"]
+                deviation_spider_setting.justification                  = psu["justification"]
+                deviation_spider_setting.created_at                     = DateTime.now
+                deviation_spider_setting.updated_at                     = DateTime.now
+                deviation_spider_setting.save
+              end
+
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"1"
+            end
+          else
+            redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
+          end
+        else
+          redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"3"
+        end
+      rescue Exception => e
+        redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
+      end
+    elsif project and project.deviation_spider_svt == 1
+      begin
+        file = params[:upload]
+        if file
+          file_name =  file['datafile'].original_filename
+          file_ext  = File.extname(file_name)
+          if (file_ext == ".xls")
+            psu_file_hash = DeviationSvt.import(file, project.lifecycle_id)
+            if psu_file_hash == "tab_error"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"4"
+            elsif psu_file_hash == "empty_value"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5"
+            elsif psu_file_hash == "wrong_value_formula"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"6"
+            else
+                # Save psu reference
+              deviation_spider_reference = SvtDeviationSpiderReference.new
+              deviation_spider_reference.version_number = 1
+              SvtDeviationSpiderReference.find(:all, :conditions=>["project_id = ?", project_id], :order=>"version_number asc").each do |devia|
+                deviation_spider_reference.version_number = devia.version_number + 1
+              end
+              deviation_spider_reference.project_id = project_id
+              deviation_spider_reference.created_at = DateTime.now
+              deviation_spider_reference.updated_at = DateTime.now
+              deviation_spider_reference.save
+
+              # Save psu settings
+              psu_file_hash.each do |psu|
+                deviation_spider_setting = SvtDeviationSpiderSetting.new
                 deviation_spider_setting.deviation_spider_reference_id  = deviation_spider_reference.id
                 deviation_spider_setting.activity_name                  = psu["activity"]
                 deviation_spider_setting.deliverable_name               = psu["deliverable"]
@@ -942,7 +994,7 @@ class ProjectsController < ApplicationController
       new_project.lifecycle_object = lifecycle
       # Lifecycle is not a Suite lifecycle
       if lifecycle_id != "7"
-        new_project.deviation_spider = true
+        new_project.deviation_spider_svt = true
       end
       new_project.save
 
@@ -1125,7 +1177,11 @@ class ProjectsController < ApplicationController
     @milestone_index = @project.get_current_milestone_index
 
     @last_import_date = "N/A"
-    @last_import = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
+    if @project.deviation_spider == 1
+      @last_import = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
+    elsif @project.deviation_spider_svt == 1
+      @last_import = SvtDeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
+    end
 
     if @last_import
       @last_import_date = @last_import.updated_at.strftime("%Y-%m-%d %H:%M:%S")
