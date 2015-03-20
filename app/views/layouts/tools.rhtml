@@ -163,6 +163,9 @@
 	<% if current_user.has_role?('Admin') %>
 		<li><%= link_to('Background', {:controller=>'background', :action=>'index'}, {:class=>menu_style('background','index')}) %></li>
 	<% end %>
+  <% if cu.has_role?('Admin') %>
+      <li><%= link_to('Scripts', {:controller=>'tools', :action=>'scripts'}, {:class=>menu_style('scripts','scripts')}) %></li>
+    <% end %>
     </ul>
   </div>
 

@@ -65,6 +65,95 @@ class ToolsController < ApplicationController
     Mailer::deliver_mail(APP_CONFIG['test_email_address'])
   end
 
+  def scripts
+  end
+
+  def execute_from_spider_to_svt
+    i=0
+    DeviationActivity.find(:all).each do |spider|
+      i=i+1
+      svt_to_fill = SvtDeviationActivity.new
+      svt_to_fill.id = spider.id
+      svt_to_fill.name = spider.name
+      svt_to_fill.is_active = spider.is_active
+      svt_to_fill.svt_deviation_meta_activity_id = spider.deviation_meta_activity_id
+      svt_to_fill.save
+    end
+    @number_deviation_activity = i
+
+    i=0
+    DeviationActivityDeliverable.find(:all).each do |spider|
+      i=i+1
+      svt_to_fill = SvtDeviationActivityDeliverable.new
+      svt_to_fill.id = spider.id
+      svt_to_fill.svt_deviation_activity_id = spider.deviation_activity_id
+      svt_to_fill.svt_deviation_deliverable_id = spider.deviation_deliverable_id
+      svt_to_fill.save
+    end
+    @number_deviation_activity_deliverable = i
+
+    i=0
+    DeviationDeliverable.find(:all).each do |spider|
+      i=i+1
+      svt_to_fill = SvtDeviationDeliverable.new
+      svt_to_fill.id = spider.id
+      svt_to_fill.name = spider.name
+      svt_to_fill.is_active = spider.is_active
+      svt_to_fill.save
+    end
+    @number_deviation_deliverable = i
+
+    i=0
+    DeviationMetaActivity.find(:all).each do |spider|
+      i=i+1
+      svt_to_fill = SvtDeviationMetaActivity.new
+      svt_to_fill.id = spider.id
+      svt_to_fill.name = spider.name
+      svt_to_fill.is_active = spider.is_active
+      svt_to_fill.meta_index = spider.meta_index
+      svt_to_fill.save
+    end
+    @number_deviation_meta_activity = i
+
+    i=0
+    DeviationQuestionLifecycle.find(:all).each do |spider|
+      i=i+1
+      svt_to_fill = SvtDeviationQuestionLifecycle.new
+      svt_to_fill.id = spider.id
+      svt_to_fill.svt_deviation_question_id = spider.deviation_question_id
+      svt_to_fill.lifecycle_id = spider.lifecycle_id
+      svt_to_fill.save
+    end
+    @number_deviation_question_lifecycle = i
+
+    i=0
+    DeviationQuestionMilestoneName.find(:all).each do |spider|
+      i=i+1
+      svt_to_fill = SvtDeviationQuestionMilestoneName.new
+      svt_to_fill.id = spider.id
+      svt_to_fill.svt_deviation_question_id = spider.deviation_question_id
+      svt_to_fill.milestone_name_id = spider.milestone_name_id
+      svt_to_fill.save
+    end
+    @number_deviation_question_milestone_name = i
+
+    i=0
+    DeviationQuestion.find(:all).each do |spider|
+      i=i+1
+      svt_to_fill = SvtDeviationQuestion.new
+      svt_to_fill.id = spider.id
+      svt_to_fill.svt_deviation_deliverable_id = spider.deviation_deliverable_id
+      svt_to_fill.svt_deviation_activity_id = spider.deviation_activity_id
+      svt_to_fill.question_text = spider.question_text
+      svt_to_fill.is_active = spider.is_active
+      svt_to_fill.answer_reference = spider.answer_reference
+      svt_to_fill.save
+    end
+    @number_deviation_question = i
+
+    redirect_to '/tools/scripts'
+  end
+
   def sdp_import
   end
 
