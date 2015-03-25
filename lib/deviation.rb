@@ -94,7 +94,7 @@ module Deviation
       if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL]
         content_array = "empty_value"
         break
-      elsif psu[CELL_METHODOLOGY_TEMPLATE_LABEL] =~ /#(.*)/
+      elsif psu[CELL_METHODOLOGY_TEMPLATE_LABEL] =~ /#(.*)/ or psu[CELL_DELIVERABLE_LABEL] =~ /#(.*)/
         content_array = "wrong_value_formula"
       end
     end

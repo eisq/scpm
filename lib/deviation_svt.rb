@@ -15,6 +15,7 @@ module DeviationSvt
   # SHEET CELLS LABEL
   CELL_META_ACTIVITY_LABEL          = "meta_activity"
   CELL_ACTIVITY_LABEL               = "activity"
+  CELL_MACRO_ACTIVITY_LABEL         = "macro_activity"
   CELL_DELIVERABLE_LABEL            = "deliverable"
   CELL_METHODOLOGY_TEMPLATE_LABEL   = "methodology_template"
   CELL_IS_JUSTIFIED_LABEL           = "is_justified"
@@ -68,15 +69,16 @@ module DeviationSvt
         activity_temp = sheet_row[CELL_0]
       end
       #We are in the row index for deliverables
-      if (into_deliverables==false and sheet_row[CELL_0] and sheet_row[CELL_1] and (sheet_row[CELL_0]=="Objective"))
+      if (into_deliverables==false and sheet_row[CELL_0] and sheet_row[CELL_1] and (sheet_row[CELL_0]=="Macro-Activities"))
         into_deliverables = true
         activity = activity_temp
       end
       #We are in a row deliverable
       if (into_deliverables==true and sheet_row[CELL_1])
-        if sheet_row[CELL_0] != "Objective"
+        if sheet_row[CELL_0] != "Macro-Activities"
           row_hash = Hash.new
           row_hash[CELL_ACTIVITY_LABEL]               = activity
+          row_hash[CELL_MACRO_ACTIVITY_LABEL]         = sheet_row[CELL_0].to_s
           row_hash[CELL_DELIVERABLE_LABEL]            = sheet_row[CELL_1].to_s
           row_hash[CELL_METHODOLOGY_TEMPLATE_LABEL]   = sheet_row[CELL_2].to_s
           row_hash[CELL_IS_JUSTIFIED_LABEL]           = sheet_row[CELL_3].to_s
@@ -91,10 +93,10 @@ module DeviationSvt
     end
 
     content_array.each do |psu|
-      if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL]
+      if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL] or !psu[CELL_MACRO_ACTIVITY_LABEL] or psu[CELL_MACRO_ACTIVITY_LABEL]== ""
         content_array = "empty_value"
         break
-      elsif psu[CELL_METHODOLOGY_TEMPLATE_LABEL] =~ /#(.*)/
+      elsif psu[CELL_METHODOLOGY_TEMPLATE_LABEL] =~ /#(.*)/ or psu[CELL_DELIVERABLE_LABEL] =~ /#(.*)/ or psu[CELL_MACRO_ACTIVITY_LABEL] =~ /#(.*)/
         content_array = "wrong_value_formula"
       end
     end

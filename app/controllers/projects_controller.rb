@@ -457,6 +457,7 @@ class ProjectsController < ApplicationController
                 deviation_spider_setting = SvtDeviationSpiderSetting.new
                 deviation_spider_setting.deviation_spider_reference_id  = deviation_spider_reference.id
                 deviation_spider_setting.activity_name                  = psu["activity"]
+                deviation_spider_setting.macro_activity_name            = psu["macro_activity"]
                 deviation_spider_setting.deliverable_name               = psu["deliverable"]
                 deviation_spider_setting.answer_1                       = psu["methodology_template"]
                 deviation_spider_setting.answer_2                       = psu["is_justified"]

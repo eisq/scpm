@@ -432,7 +432,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 			settings = SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ?", reference])
 			if settings.count > 0
 				settings.each do |setting|
-					if setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Deliverable N.A")
+					if setting.answer_1 == "Yes"
 						standard = standard + 1
 					elsif setting.answer_1 == "No" and setting.answer_2 == "No"
 						deviation = deviation + 1
