@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150224161900) do
+ActiveRecord::Schema.define(:version => 20150325155800) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -776,7 +776,7 @@ ActiveRecord::Schema.define(:version => 20150224161900) do
     t.string   "brn"
     t.string   "workstream"
     t.integer  "project_id"
-    t.integer  "last_status",      :default => 0
+    t.integer  "last_status",          :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "supervisor_id"
@@ -785,22 +785,23 @@ ActiveRecord::Schema.define(:version => 20150224161900) do
     t.string   "bpl"
     t.string   "ispl"
     t.datetime "read_date"
-    t.integer  "lifecycle",        :default => 0
+    t.integer  "lifecycle",            :default => 0
     t.string   "pm_deputy"
     t.string   "ispm"
     t.integer  "lifecycle_id"
-    t.integer  "qs_count",         :default => 0
-    t.integer  "spider_count",     :default => 0
-    t.boolean  "is_running",       :default => true
+    t.integer  "qs_count",             :default => 0
+    t.integer  "spider_count",         :default => 0
+    t.boolean  "is_running",           :default => true
     t.integer  "qr_qwr_id"
     t.string   "dwr"
-    t.boolean  "is_qr_qwr",        :default => false
+    t.boolean  "is_qr_qwr",            :default => false
     t.integer  "suite_tag_id"
     t.string   "project_code"
-    t.integer  "sales_revenue",    :default => 0
+    t.integer  "sales_revenue",        :default => 0
     t.integer  "sibling_id"
     t.integer  "tbp_project_id"
-    t.boolean  "deviation_spider", :default => false
+    t.boolean  "deviation_spider",     :default => false
+    t.boolean  "deviation_spider_svt", :default => true
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
@@ -1208,6 +1209,159 @@ ActiveRecord::Schema.define(:version => 20150224161900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_active",  :default => true
+  end
+
+  create_table "svt_deviation_activities", :force => true do |t|
+    t.string   "name"
+    t.boolean  "is_active",                      :default => true
+    t.integer  "svt_deviation_meta_activity_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_activity_deliverables", :force => true do |t|
+    t.integer  "svt_deviation_activity_id"
+    t.integer  "svt_deviation_deliverable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_deliverables", :force => true do |t|
+    t.string   "name"
+    t.boolean  "is_active",  :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_macro_activities", :force => true do |t|
+    t.integer  "svt_activity_id"
+    t.string   "name"
+    t.boolean  "is_active",       :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_macro_activity_deliverables", :force => true do |t|
+    t.integer  "svt_activity_id"
+    t.integer  "svt_deliverable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_meta_activities", :force => true do |t|
+    t.string   "name"
+    t.boolean  "is_active",  :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "meta_index"
+  end
+
+  create_table "svt_deviation_question_lifecycles", :force => true do |t|
+    t.integer  "svt_deviation_question_id"
+    t.integer  "lifecycle_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_question_milestone_names", :force => true do |t|
+    t.integer  "svt_deviation_question_id"
+    t.integer  "milestone_name_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_questions", :force => true do |t|
+    t.integer  "svt_deviation_deliverable_id"
+    t.integer  "svt_deviation_activity_id"
+    t.text     "question_text"
+    t.boolean  "is_active",                    :default => true
+    t.boolean  "answer_reference",             :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_spider_activity_values", :force => true do |t|
+    t.integer  "svt_deviation_spider_id"
+    t.integer  "svt_deviation_activity_id"
+    t.integer  "yes_counter"
+    t.integer  "no_counter"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_spider_consolidation_temps", :force => true do |t|
+    t.integer  "svt_deviation_spider_id"
+    t.integer  "svt_deviation_deliverable_id"
+    t.integer  "svt_deviation_activity_id"
+    t.string   "score"
+    t.string   "justification",                :limit => 1000
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_spider_consolidations", :force => true do |t|
+    t.integer  "svt_deviation_spider_id"
+    t.integer  "svt_deviation_deliverable_id"
+    t.integer  "svt_deviation_activity_id"
+    t.integer  "score"
+    t.text     "justification"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_spider_deliverable_values", :force => true do |t|
+    t.integer  "svt_deviation_spider_id"
+    t.integer  "svt_deviation_deliverable_id"
+    t.integer  "yes_counter"
+    t.integer  "no_counter"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_spider_deliverables", :force => true do |t|
+    t.integer  "svt_deviation_spider_id"
+    t.integer  "svt_deviation_deliverable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "not_done",                     :default => false
+    t.boolean  "is_added_by_hand",             :default => false
+  end
+
+  create_table "svt_deviation_spider_references", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "version_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_spider_settings", :force => true do |t|
+    t.integer  "svt_deviation_spider_reference_id"
+    t.string   "deliverable_name"
+    t.string   "activity_name"
+    t.string   "answer_1"
+    t.string   "answer_2"
+    t.string   "answer_3"
+    t.text     "justification"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "macro_activity_name"
+  end
+
+  create_table "svt_deviation_spider_values", :force => true do |t|
+    t.integer  "svt_deviation_spider_deliverable_id"
+    t.integer  "svt_deviation_question_id"
+    t.boolean  "answer"
+    t.boolean  "answer_reference"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "svt_deviation_spiders", :force => true do |t|
+    t.integer  "milestone_id"
+    t.boolean  "impact_count", :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file_link"
   end
 
   create_table "tags", :force => true do |t|
