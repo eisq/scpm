@@ -440,6 +440,8 @@ class ProjectsController < ApplicationController
               redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5"
             elsif psu_file_hash == "wrong_value_formula"
               redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"6"
+            elsif psu_file_hash == "wrong_psu_file"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"7"
             else
                 # Save psu reference
               deviation_spider_reference = SvtDeviationSpiderReference.new
@@ -512,12 +514,12 @@ class ProjectsController < ApplicationController
           parent = Project.find(:first, :conditions=>"name='#{r.project_name}'")
           if not parent
             # create parent
-            parent_id = Project.create(:project_id=>nil, :name=>r.project_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider=>true).id
+            parent_id = Project.create(:project_id=>nil, :name=>r.project_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider_svt=>true).id
           else
             parent_id = parent.id
           end
           #create wp
-          p = Project.create(:project_id=>parent_id, :name=>r.workpackage_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider=>true)
+          p = Project.create(:project_id=>parent_id, :name=>r.workpackage_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider_svt=>true)
           if r.project.requests.size == 1 # if that was the only request move all statuts and actions, etc.. to new project
             @text << "<u>#{r.project.full_name}</u>: #{r.workpackage_name} (new) != #{r.project.name} (old) => creating and moving ALL<br/>"
             r.project.move_all(p)
@@ -565,7 +567,7 @@ class ProjectsController < ApplicationController
 
     project = Project.find_by_name(project_name)
     if not project
-      project = Project.create(:name=>project_name, :deviation_spider=>true)
+      project = Project.create(:name=>project_name, :deviation_spider_svt=>true)
       project.workstream = request.workstream
       lifecycle_name = request.lifecycle_name_for_request_type()
       lifecycle = nil
@@ -582,7 +584,7 @@ class ProjectsController < ApplicationController
 
     wp = Project.find_by_name(workpackage_name, :conditions=>["project_id=?",project.id])
     if not wp
-      wp = Project.create(:name=>workpackage_name, :deviation_spider=>true)
+      wp = Project.create(:name=>workpackage_name, :deviation_spider_svt=>true)
       wp.workstream = request.workstream
       wp.brn        = brn
       wp.project_id = project.id

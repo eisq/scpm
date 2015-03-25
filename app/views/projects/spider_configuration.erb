@@ -26,6 +26,8 @@ function setShowIgnore(object) {
 	<strong><span style='color:red;'> Error, a value is empty in this PSU file. </span></strong>
 <% elsif @status_import != nil and @status_import != "" and @status_import == "6" %>
 	<strong><span style='color:red;'> Error, there are some formula in your file. </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "7" %>
+	<strong><span style='color:red;'> Error, PSU file version not correct. </span></strong>
 <% end %>
 
 <p>Last import : <%= @last_import_date %></p>

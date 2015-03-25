@@ -15,7 +15,7 @@ function generate_url(action_name) {
   }
   else
   {
-	return "deviation_spiders/" + action_name;
+	return "svt_deviation_spiders/" + action_name;
   }
 }
 
@@ -24,7 +24,7 @@ function set_question(question_id, checked)
 {
 	$.ajax({
 		type: "POST",
-		url: "/deviation_spiders/update_question",
+		url: "/svt_deviation_spiders/update_question",
  		data: {deviation_spider_value_id: question_id, deviation_spider_value_answer: checked}
 	})
 	.done(function( msg ) {
