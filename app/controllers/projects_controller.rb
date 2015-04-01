@@ -374,7 +374,7 @@ class ProjectsController < ApplicationController
   def import_deviation
     project_id = params[:project_id]
     project = Project.find(:first, :conditions=>["id= ?", project_id])
-    if project and project.deviation_spider == 1
+    if project and project.deviation_spider == true
       begin
         file = params[:upload]
         if file
@@ -426,7 +426,7 @@ class ProjectsController < ApplicationController
       rescue Exception => e
         redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
       end
-    elsif project and project.deviation_spider_svt == 1
+    elsif project and project.deviation_spider_svt == true
       begin
         file = params[:upload]
         if file
