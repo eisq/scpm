@@ -14,6 +14,8 @@ function setShowIgnore(object) {
 
 <% if @status_import != nil and @status_import != "" and @status_import == "1" %>
 	<strong><span style='color:green;'> Successful import </span></strong>
+<% elsif @status_import != nil and @status_import != "" and @status_import == "-1" %>
+	<strong><span style='color:red;'> Error during the import, please contact the BAM administrator. </span></strong>
 <% elsif @status_import != nil and @status_import != "" and @status_import == "0" %>
 	<strong><span style='color:red;'> Wrong file format, please upload .xls file only </span></strong>
 <% elsif @status_import != nil and @status_import != "" and @status_import == "2" %>

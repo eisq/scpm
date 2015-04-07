@@ -43,7 +43,7 @@ class SvtDeviationToolsController < ApplicationController
   # Activity
   def index_activity
     @activities = SvtDeviationActivity.find(:all, :order => "name")
-  end
+  end  
 
   def detail_activity
     @meta_activities = SvtDeviationMetaActivity.find(:all, :conditions => ["is_active = 1"], :order => "meta_index").map {|ma| [ma.name, ma.id]}
@@ -101,6 +101,69 @@ class SvtDeviationToolsController < ApplicationController
       activity.destroy
     end
     redirect_to :action=>'index_activity'
+  end
+
+  # Macro Activity
+  def index_macro_activity
+    @macro_activities = SvtDeviationMacroActivity.find(:all, :order => "name")
+  end
+
+  def detail_macro_activity
+    @activities = SvtDeviationActivity.find(:all, :conditions => ["is_active = 1"], :order => "name").map {|a| [a.name, a.id]}
+    @deliverables = SvtDeviationDeliverable.find(:all, :conditions => ["is_active = 1"], :order => "name")
+
+    macro_activity_id = params[:macro_activity_id]
+    if macro_activity_id
+      @macro_activity = SvtDeviationMacroActivity.find(:first, :conditions => ["id = ?", macro_activity_id])
+    else
+    redirect_to :action=>'index_macro_activity'
+    end
+  end
+
+  def new_macro_activity
+    @activities = SvtDeviationActivity.find(:all, :conditions => ["is_active = 1"], :order => "name").map {|a| [a.name, a.id]}
+    @deliverables = SvtDeviationDeliverable.find(:all, :conditions => ["is_active = 1"], :order => "name")
+    @macro_activity = SvtDeviationMacroActivity.new
+  end
+
+  def create_macro_activity
+    macro_activity = SvtDeviationMacroActivity.new(params[:macro_activity])
+    macro_activity.save
+
+    deliverable_ids = params[:deliverable_ids]
+    if deliverable_ids
+      deliverable_ids.each do |deliverable_id|
+        new_macro_activity_deliverable = SvtDeviationMacroActivityDeliverable.new
+        new_macro_activity_deliverable.svt_deviation_deliverable_id = deliverable_id
+        new_macro_activity_deliverable.svt_deviation_macro_activity_id = macro_activity.id
+        new_macro_activity_deliverable.save
+      end
+    end
+    redirect_to :action=>'detail_macro_activity', :macro_activity_id=>macro_activity.id
+  end
+
+  def update_macro_activity
+    macro_activity = SvtDeviationMacroActivity.find(params[:macro_activity][:id])
+    macro_activity.update_attributes(params[:macro_activity])
+    
+    deliverable_ids = params[:deliverable_ids]
+    if deliverable_ids
+      deliverable_ids.each do |deliverable_id|
+        new_macro_activity_deliverable = SvtDeviationMacroActivityDeliverable.new
+        new_macro_activity_deliverable.svt_deviation_deliverable_id = deliverable_id
+        new_macro_activity_deliverable.svt_deviation_macro_activity_id = macro_activity.id
+        new_macro_activity_deliverable.save
+      end
+    end
+    redirect_to :action=>'index_macro_activity'
+  end
+
+  def delete_macro_activity
+    macro_activity = SvtDeviationMacroActivity.find(:first, :conditions=>["id = ?", params[:macro_activity_id]])
+    if macro_activity
+      macro_activity.destroy
+    end
+    redirect_to :action=>'index_macro_activity'
   end
 
   # Meta Activity

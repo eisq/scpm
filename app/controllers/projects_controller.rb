@@ -374,8 +374,8 @@ class ProjectsController < ApplicationController
   def import_deviation
     project_id = params[:project_id]
     project = Project.find(:first, :conditions=>["id= ?", project_id])
-    if project and project.deviation_spider == true
-      begin
+    begin
+      if project and project.deviation_spider == true and project.deviation_spider_svt == false
         file = params[:upload]
         if file
           file_name =  file['datafile'].original_filename
@@ -423,11 +423,7 @@ class ProjectsController < ApplicationController
         else
           redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"3"
         end
-      rescue Exception => e
-        redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
-      end
-    elsif project and project.deviation_spider_svt == true
-      begin
+      elsif project and project.deviation_spider_svt == true
         file = params[:upload]
         if file
           file_name =  file['datafile'].original_filename
@@ -478,11 +474,11 @@ class ProjectsController < ApplicationController
         else
           redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"3"
         end
-      rescue Exception => e
-        redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
+      else
+        redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"2"
       end
-    else
-      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"2"
+    rescue Exception => e
+      redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"-1"
     end
   end
 
