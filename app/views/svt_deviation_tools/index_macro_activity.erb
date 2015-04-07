@@ -8,7 +8,7 @@
 	      		<%= ma.svt_deviation_activity.name if ma.svt_deviation_activity %> - <%= ma.name %> [Is Active : <%= ma.is_active %>]
 	      		&nbsp;
 	    	</div>    
-	    	<%= button_to "Detail", {:action => "detail_macro_activity", :macro_activity_id => a.id }, {:method => :post} %>
+	    	<%= button_to "Detail", {:action => "detail_macro_activity", :macro_activity_id => ma.id }, {:method => :post} %>
 	  	</p>
 	<% end %>
 </div>

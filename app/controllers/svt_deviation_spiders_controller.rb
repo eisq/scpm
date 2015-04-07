@@ -680,7 +680,6 @@ class SvtDeviationSpidersController < ApplicationController
 		last_reference 			= SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
 		deliverable_ids 		= spider.svt_deviation_spider_deliverables.map {|d| d.svt_deviation_deliverable_id }
 		deliverable_ids_cleaned = Array.new
-
 		if last_reference
 			#in deliverable_ids, we have all referenced deliverables, even if in the setting we say that we don't want it.
 			deliverable_ids.each do |deliv|
