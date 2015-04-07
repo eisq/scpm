@@ -60,7 +60,7 @@ $( document ).ready(function() {
 		<table width=210><tr><td></td></tr></table>
 	</td>
 	<% @all_activities.each do |activity| %>
-		<% if activity.deviation_meta_activity == meta_activity %>
+		<% if activity.svt_deviation_meta_activity == meta_activity %>
 		<% activities << activity %>
 			<td colspan=2 class="consolidation_td_activity">
 			<bold><%= activity.name %></bold>

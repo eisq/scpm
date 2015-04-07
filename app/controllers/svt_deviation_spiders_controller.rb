@@ -13,7 +13,7 @@ class SvtDeviationSpidersController < ApplicationController
 	    milestone_id 	 = params[:milestone_id]
 	    empty			 = params[:empty]
 	    if empty
-	    	@empty = "<br/><strong>Please answer all questions before consolidate</strong>"
+	    	@empty = "<br/><strong>Please answer all questions before to consolidate</strong>"
 	    end
 	    @meta_activity_id = params[:meta_activity_id]
 	    if @meta_activity_id == nil
@@ -193,7 +193,7 @@ class SvtDeviationSpidersController < ApplicationController
 		    end
 
 		    if redirect
-		    	redirect_to('/deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
+		    	redirect_to('/svt_deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
 			end
 
 		    @editable = params[:editable]

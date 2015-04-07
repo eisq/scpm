@@ -13,7 +13,7 @@ class DeviationSpidersController < ApplicationController
 	    milestone_id 	 = params[:milestone_id]
 	    empty			 = params[:empty]
 	    if empty
-	    	@empty = "<br/><strong>Please answer all questions before consolidate</strong>"
+	    	@empty = "<br/><strong>Please answer all questions before to consolidate</strong>"
 	    end
 	    @meta_activity_id = params[:meta_activity_id]
 	    if @meta_activity_id == nil
