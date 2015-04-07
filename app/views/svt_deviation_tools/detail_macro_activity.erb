@@ -1,0 +1,8 @@
+<%= button_to "Macro-Activities", {:action => "index_macro_activity" }, :method => :post %>
+<!-- <%= button_to "Delete", {:action => "delete_macro_activity", :macro_activity_id => @macro_activity.id }, :method => :post %> -->
+
+<% form_for @macro_activity, :url=>{:action=>'update_macro_activity'} do |f| -%>
+  <%= render(:partial => "form_macro_activity") %>
+  <p><label>&nbsp;</label>
+  <%= submit_tag 'Update' %></p>
+<% end -%>

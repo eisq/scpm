@@ -1,0 +1,20 @@
+<%= hidden_field :macro_activity, :id %>
+
+<p><%= label_tag 'Macro Objective' %>
+<%= select(:macro_activity, :svt_deviation_activity_id, @activities) %>
+</p>
+
+<p><%= label_tag 'Name' %>
+<%= text_field :macro_activity, :name %> </p>
+
+<p><%= label_tag 'Is active' %>
+<%= radio_button :macro_activity, :is_active, true %> Yes
+<%= radio_button :macro_activity, :is_active, false %> No
+</p>
+
+
+
+<h3>Deliverables</h3>
+<% for deliverable in @deliverables %>
+	<%= check_box_tag('deliverable_ids[]', deliverable.id, @macro_activity.has_deliverable?(deliverable.id)) %><%= "#{deliverable.name}" %><br/>
+<% end %>

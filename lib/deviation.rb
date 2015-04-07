@@ -89,12 +89,11 @@ module Deviation
         activity_temp = sheet_row[CELL_0]
       end
     end
-
     content_array.each do |psu|
-      if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL] or !psu[CELL_MACRO_ACTIVITY_LABEL] or psu[CELL_MACRO_ACTIVITY_LABEL]== ""
+      if psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == ""
         content_array = "empty_value"
         break
-      elsif psu[CELL_METHODOLOGY_TEMPLATE_LABEL] =~ /#(.*)/ or psu[CELL_DELIVERABLE_LABEL] =~ /#(.*)/ or psu[CELL_MACRO_ACTIVITY_LABEL] =~ /#(.*)/
+      elsif psu[CELL_METHODOLOGY_TEMPLATE_LABEL] =~ /#(.*)/ or psu[CELL_DELIVERABLE_LABEL] =~ /#(.*)/
         content_array = "wrong_value_formula"
         break
       elsif psu[CELL_ACTIVITY_LABEL] == "Macro-Activities"

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150325155800) do
+ActiveRecord::Schema.define(:version => 20150403115900) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -1234,16 +1234,16 @@ ActiveRecord::Schema.define(:version => 20150325155800) do
   end
 
   create_table "svt_deviation_macro_activities", :force => true do |t|
-    t.integer  "svt_activity_id"
+    t.integer  "svt_deviation_activity_id"
     t.string   "name"
-    t.boolean  "is_active",       :default => true
+    t.boolean  "is_active",                 :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "svt_deviation_macro_activity_deliverables", :force => true do |t|
-    t.integer  "svt_activity_id"
-    t.integer  "svt_deliverable_id"
+    t.integer  "svt_deviation_macro_activity_id"
+    t.integer  "svt_deviation_deliverable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -93,7 +93,7 @@ module DeviationSvt
     end
 
     content_array.each do |psu|
-      if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL] or !psu[CELL_MACRO_ACTIVITY_LABEL] or psu[CELL_MACRO_ACTIVITY_LABEL]== ""
+      if psu[CELL_DELIVERABLE_LABEL] == "" or !psu[CELL_DELIVERABLE_LABEL] or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or !psu[CELL_METHODOLOGY_TEMPLATE_LABEL]
         content_array = "empty_value"
         break
       elsif psu[CELL_METHODOLOGY_TEMPLATE_LABEL] =~ /#(.*)/ or psu[CELL_DELIVERABLE_LABEL] =~ /#(.*)/ or psu[CELL_MACRO_ACTIVITY_LABEL] =~ /#(.*)/
