@@ -453,7 +453,7 @@ class ProjectsController < ApplicationController
               # Save psu settings
               psu_file_hash.each do |psu|
                 deviation_spider_setting = SvtDeviationSpiderSetting.new
-                deviation_spider_setting.deviation_spider_reference_id  = deviation_spider_reference.id
+                deviation_spider_setting.svt_deviation_spider_reference_id  = deviation_spider_reference.id
                 deviation_spider_setting.activity_name                  = psu["activity"]
                 deviation_spider_setting.macro_activity_name            = psu["macro_activity"]
                 deviation_spider_setting.deliverable_name               = psu["deliverable"]
@@ -1176,9 +1176,9 @@ class ProjectsController < ApplicationController
     @milestone_index = @project.get_current_milestone_index
 
     @last_import_date = "N/A"
-    if @project.deviation_spider == 1
+    if @project.deviation_spider == true
       @last_import = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
-    elsif @project.deviation_spider_svt == 1
+    elsif @project.deviation_spider_svt == true
       @last_import = SvtDeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
     end
 
