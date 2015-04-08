@@ -466,6 +466,24 @@ class ProjectsController < ApplicationController
                 deviation_spider_setting.created_at                     = DateTime.now
                 deviation_spider_setting.updated_at                     = DateTime.now
                 deviation_spider_setting.save
+
+                #if a macro_activity or a deliverable from a row  is not know in the database, it's a flight one and it's saved.
+                #it will be used for the deviation extract.
+                macro_activity_to_add_in_flight_table = deliverable_to_add_in_flight_table = nil
+                macro_activity_to_add_in_flight_table = SvtDeviationMacroActivity.find(:first, :conditions=>["name = ?", psu["macro_activity"]])
+                deliverable_to_add_in_flight_table = SvtDeviationDeliverable.find(:first, :conditions=>["name = ?", psu["deliverable"]])
+                if !macro_activity_to_add_in_flight_table or !deliverable_to_add_in_flight_table
+                  svt_deviation_flight = SvtDeviationMacroActivityDeliverableFlight.new
+                  svt_deviation_flight.svt_deviation_macro_activity_name  = psu["macro_activity"]
+                  svt_deviation_flight.svt_deviation_deliverable_name     = psu["deliverable"]
+                  svt_deviation_flight.svt_deviation_activity_name        = psu["activity"]
+                  svt_deviation_flight.project_id                         = project.id
+                  svt_deviation_flight.answer_1                           = psu["methodology_template"]
+                  svt_deviation_flight.answer_2                           = psu["is_justified"]
+                  svt_deviation_flight.answer_3                           = psu["other_template"]
+                  svt_deviation_flight.justification                      = psu["justification"]
+                  svt_deviation_flight.save
+                end
               end
 
               redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"1"
