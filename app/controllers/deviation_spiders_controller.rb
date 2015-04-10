@@ -715,20 +715,22 @@ class DeviationSpidersController < ApplicationController
 		                      	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 		                      	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 		                      	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"], 
-		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and deviation_deliverables.is_active = 1", deliverable_ids_cleaned, spider.milestone.project.lifecycle_object.id, spider.milestone.name]).map { |d| [d.name, d.id]}
+		                      	:conditions => ["deviation_deliverables.id NOT IN (?) and deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and deviation_deliverables.is_active = ?", deliverable_ids_cleaned, spider.milestone.project.lifecycle_object.id, spider.milestone.name, true]).map { |d| [d.name, d.id]}
 		@deliverables_to_add = deliverables_to_add & deliverables_to_add
 	end
 
 	#check if in the seetings we said that it shall be added
 	def supposed_to_be_added(spider_id, last_reference_id, deliverable_id)
 		to_add 				= false
-		deliverable 		= DeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
-		spider_deliverable 	= DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ?", spider_id, deliverable_id])
-		settings 			= DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
-		if settings
-			settings.each do |setting|
-				if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
-					to_add = true
+		deliverable 		= DeviationDeliverable.find(:first, :conditions => ["id = ? and is_active = ?", deliverable_id, true])
+		if deliverable
+			spider_deliverable 	= DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ?", spider_id, deliverable_id])
+			settings 			= DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
+			if settings
+				settings.each do |setting|
+					if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+						to_add = true
+					end
 				end
 			end
 		end

@@ -696,20 +696,22 @@ class SvtDeviationSpidersController < ApplicationController
 		                      	"JOIN svt_deviation_question_milestone_names ON svt_deviation_question_milestone_names.svt_deviation_question_id = svt_deviation_questions.id",
 		                      	"JOIN milestone_names ON milestone_names.id = svt_deviation_question_milestone_names.milestone_name_id",
 		                      	"JOIN svt_deviation_question_lifecycles ON svt_deviation_question_lifecycles.svt_deviation_question_id = svt_deviation_questions.id"], 
-		                      	:conditions => ["svt_deviation_deliverables.id NOT IN (?) and svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_deliverables.is_active = 1", deliverable_ids_cleaned, spider.milestone.project.lifecycle_object.id, spider.milestone.name]).map { |d| [d.name, d.id]}
+		                      	:conditions => ["svt_deviation_deliverables.id NOT IN (?) and svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_deliverables.is_active = ?", deliverable_ids_cleaned, spider.milestone.project.lifecycle_object.id, spider.milestone.name, true]).map { |d| [d.name, d.id]}
 		@deliverables_to_add = deliverables_to_add & deliverables_to_add
 	end
 
 	#check if in the seetings we said that it shall be added
 	def supposed_to_be_added(spider_id, last_reference_id, deliverable_id)
 		to_add 				= false
-		deliverable 		= SvtDeviationDeliverable.find(:first, :conditions => ["id = ?", deliverable_id])
-		spider_deliverable 	= SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ?", spider_id, deliverable_id])
-		settings 			= SvtDeviationSpiderSetting.find(:all, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
-		if settings
-			settings.each do |setting|
-				if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
-					to_add = true
+		deliverable 		= SvtDeviationDeliverable.find(:first, :conditions => ["id = ? and is_active = ?", deliverable_id, true])
+		if deliverable
+			spider_deliverable 	= SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ?", spider_id, deliverable_id])
+			settings 			= SvtDeviationSpiderSetting.find(:all, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference_id, deliverable.name])
+			if settings
+				settings.each do |setting|
+					if (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+						to_add = true
+					end
 				end
 			end
 		end
