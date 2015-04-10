@@ -110,8 +110,8 @@ class SvtDeviationSpider < ActiveRecord::Base
 		if deviation_spider_reference
 			deviation_spider_reference.svt_deviation_spider_settings.each do |setting|
 
-				activity_parameter = SvtDeviationActivity.find(:first, :conditions => ["name = ?", setting.activity_name])
-				deliverable_parameter = SvtDeviationDeliverable.find(:first, :conditions => ["name = ?", setting.deliverable_name])
+				activity_parameter = SvtDeviationActivity.find(:first, :conditions => ["name = ? and is_active = ?", setting.activity_name, true])
+				deliverable_parameter = SvtDeviationDeliverable.find(:first, :conditions => ["name = ? and is_active = ?", setting.deliverable_name, true])
 				if activity_parameter and deliverable_parameter
 					if !activities.include? activity_parameter
 						activities << activity_parameter
@@ -131,7 +131,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 			                   	"JOIN svt_deviation_question_milestone_names ON svt_deviation_question_milestone_names.svt_deviation_question_id = svt_deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = svt_deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN svt_deviation_question_lifecycles ON svt_deviation_question_lifecycles.svt_deviation_question_id = svt_deviation_questions.id"],
-			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", self.milestone.project.lifecycle_object.id, self.milestone.name],
+			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_deliverables.is_active = ?", self.milestone.project.lifecycle_object.id, self.milestone.name, true],
 			                   	:group => "svt_deviation_questions.svt_deviation_deliverable_id")
 
 			activities = SvtDeviationActivity.find(:all,
@@ -139,7 +139,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 			                   	"JOIN svt_deviation_question_milestone_names ON svt_deviation_question_milestone_names.svt_deviation_question_id = svt_deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = svt_deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN svt_deviation_question_lifecycles ON svt_deviation_question_lifecycles.svt_deviation_question_id = svt_deviation_questions.id"],
-			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", self.milestone.project.lifecycle_object.id, self.milestone.name],
+			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_activities.is_active = ?", self.milestone.project.lifecycle_object.id, self.milestone.name, true],
 			                   	:group => "svt_deviation_questions.svt_deviation_activity_id")
 		end
 
@@ -289,7 +289,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 			"JOIN svt_deviation_questions ON svt_deviation_questions.id = svt_deviation_spider_values.svt_deviation_question_id",
 			"JOIN svt_deviation_activities ON svt_deviation_activities.id = svt_deviation_questions.svt_deviation_activity_id"
 		], 
-		:conditions => ["svt_deviation_spider_deliverables.svt_deviation_spider_id = ? and svt_deviation_activities.svt_deviation_meta_activity_id = ?", self.id, meta_activity_id], 
+		:conditions => ["svt_deviation_spider_deliverables.svt_deviation_spider_id = ? and svt_deviation_activities.svt_deviation_meta_activity_id = ? and svt_deviation_deliverables.is_active = ?", self.id, meta_activity_id, true], 
 		:order => "svt_deviation_deliverables.id")
 
 		chart = Chart.new
@@ -348,7 +348,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 		:joins => ["JOIN svt_deviation_spider_deliverables ON svt_deviation_spider_deliverables.id = svt_deviation_spider_values.svt_deviation_spider_deliverable_id",
 		"JOIN svt_deviation_questions ON svt_deviation_questions.id = svt_deviation_spider_values.svt_deviation_question_id",
 		"JOIN svt_deviation_activities ON svt_deviation_activities.id = svt_deviation_questions.svt_deviation_activity_id"], 
-		:conditions => ["svt_deviation_spider_deliverables.svt_deviation_spider_id = ? and svt_deviation_activities.svt_deviation_meta_activity_id = ?", self.id, meta_activity_id], 
+		:conditions => ["svt_deviation_spider_deliverables.svt_deviation_spider_id = ? and svt_deviation_activities.svt_deviation_meta_activity_id = ? and svt_deviation_activities.is_active = ?", self.id, meta_activity_id, true], 
 		:order => "svt_deviation_activities.id")
 
 		chart = Chart.new

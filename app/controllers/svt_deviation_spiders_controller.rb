@@ -673,7 +673,7 @@ class SvtDeviationSpidersController < ApplicationController
 		"JOIN svt_deviation_questions ON svt_deviation_questions.id = svt_deviation_spider_values.svt_deviation_question_id",
 		"JOIN svt_deviation_activities ON svt_deviation_activities.id = svt_deviation_questions.svt_deviation_activity_id",
 		"JOIN svt_deviation_deliverables ON svt_deviation_deliverables.id = svt_deviation_spider_deliverables.svt_deviation_deliverable_id"], 
-		:conditions => ["svt_deviation_spider_deliverables.svt_deviation_spider_id = ? and svt_deviation_activities.svt_deviation_meta_activity_id = ? and svt_deviation_deliverables.is_active = ?", spider.id, meta_activity_id, true], 
+		:conditions => ["svt_deviation_spider_deliverables.svt_deviation_spider_id = ? and svt_deviation_activities.svt_deviation_meta_activity_id = ? and svt_deviation_deliverables.is_active = ? and svt_deviation_activities.is_active = ? and svt_deviation_questions.is_active = ?", spider.id, meta_activity_id, true, true, true], 
 		:order => "svt_deviation_activities.name , svt_deviation_deliverables.name, svt_deviation_questions.question_text")
 
 		#Search in the list of all deliverables for a milestone, if there is one which is not present in the current spider.
