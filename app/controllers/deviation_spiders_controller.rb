@@ -691,7 +691,7 @@ class DeviationSpidersController < ApplicationController
 		"JOIN deviation_questions ON deviation_questions.id = deviation_spider_values.deviation_question_id",
 		"JOIN deviation_activities ON deviation_activities.id = deviation_questions.deviation_activity_id",
 		"JOIN deviation_deliverables ON deviation_deliverables.id = deviation_spider_deliverables.deviation_deliverable_id"], 
-		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", spider.id, meta_activity_id], 
+		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ? and deviation_deliverables.is_active = ?", spider.id, meta_activity_id, true], 
 		:order => "deviation_activities.name , deviation_deliverables.name, deviation_questions.question_text")
 
 		#Search in the list of all deliverables for a milestone, if there is one which is not present in the current spider.
