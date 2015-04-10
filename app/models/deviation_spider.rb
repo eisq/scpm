@@ -110,8 +110,8 @@ class DeviationSpider < ActiveRecord::Base
 		if deviation_spider_reference
 			deviation_spider_reference.deviation_spider_settings.each do |setting|
 
-				activity_parameter = DeviationActivity.find(:first, :conditions => ["name = ?", setting.activity_name])
-				deliverable_parameter = DeviationDeliverable.find(:first, :conditions => ["name = ?", setting.deliverable_name])
+				activity_parameter = DeviationActivity.find(:first, :conditions => ["name = ? and is_active = ?", setting.activity_name, true])
+				deliverable_parameter = DeviationDeliverable.find(:first, :conditions => ["name = ? and is_active = ?", setting.deliverable_name, true])
 				if activity_parameter and deliverable_parameter
 					if !activities.include? activity_parameter
 						activities << activity_parameter
@@ -131,7 +131,7 @@ class DeviationSpider < ActiveRecord::Base
 			                   	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", self.milestone.project.lifecycle_object.id, self.milestone.name],
+			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and deviation_deliverables.is_active = ?", self.milestone.project.lifecycle_object.id, self.milestone.name, true],
 			                   	:group => "deviation_questions.deviation_deliverable_id")
 
 			activities = DeviationActivity.find(:all,
@@ -139,7 +139,7 @@ class DeviationSpider < ActiveRecord::Base
 			                   	"JOIN deviation_question_milestone_names ON deviation_question_milestone_names.deviation_question_id = deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN deviation_question_lifecycles ON deviation_question_lifecycles.deviation_question_id = deviation_questions.id"],
-			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ?", self.milestone.project.lifecycle_object.id, self.milestone.name],
+			                   	:conditions => ["deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and deviation_activities.is_active = ?", self.milestone.project.lifecycle_object.id, self.milestone.name, true],
 			                   	:group => "deviation_questions.deviation_activity_id")
 		end
 
@@ -289,7 +289,7 @@ class DeviationSpider < ActiveRecord::Base
 			"JOIN deviation_questions ON deviation_questions.id = deviation_spider_values.deviation_question_id",
 			"JOIN deviation_activities ON deviation_activities.id = deviation_questions.deviation_activity_id"
 		], 
-		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", self.id, meta_activity_id], 
+		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ? and deviation_deliverables.is_active = ?", self.id, meta_activity_id, true], 
 		:order => "deviation_deliverables.id")
 
 		chart = Chart.new
@@ -348,7 +348,7 @@ class DeviationSpider < ActiveRecord::Base
 		:joins => ["JOIN deviation_spider_deliverables ON deviation_spider_deliverables.id = deviation_spider_values.deviation_spider_deliverable_id",
 		"JOIN deviation_questions ON deviation_questions.id = deviation_spider_values.deviation_question_id",
 		"JOIN deviation_activities ON deviation_activities.id = deviation_questions.deviation_activity_id"], 
-		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ?", self.id, meta_activity_id], 
+		:conditions => ["deviation_spider_deliverables.deviation_spider_id = ? and deviation_activities.deviation_meta_activity_id = ? and deviation_activities.is_active = ?", self.id, meta_activity_id, true], 
 		:order => "deviation_activities.id")
 
 		chart = Chart.new
