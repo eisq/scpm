@@ -202,12 +202,13 @@ class DeviationSpidersController < ApplicationController
 		    end
 
 	    	@score_list = [0,1,2,3]
-	    	@all_meta_activities = DeviationMetaActivity.find(:all)
-	    	@all_activities 	= DeviationActivity.find(:all)
+	    	@all_meta_activities = DeviationMetaActivity.find(:all, :conditions=>["is_active = ?", true])
+	    	@all_activities 	= DeviationActivity.find(:all, :conditions=>["is_active = ?", true])
 	    	parameters = @deviation_spider.get_parameters
 	    	@deliverables 		= Array.new
 	    	@deviation_spider.deviation_spider_deliverables.all(
-	    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"], 
+	    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"],
+	    	    :conditions => ["deviation_deliverables.is_active = ?", true], 
 	    	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
 	    		@deliverables << spider_deliverable.deviation_deliverable
 	    	end
