@@ -16,6 +16,8 @@ function change_score(consolidation_temp_id, value)
 		alert("Error");
 	})
 }
+
+//Open
 $( document ).ready(function() {
 	$(".conso_tf").focusout(function() {
 		$.ajax({
@@ -39,6 +41,8 @@ $( document ).ready(function() {
 <% else %>
 	<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @deviation_spider.milestone.project_id} %></div><br/>
 <% end %>
+
+<h2>Caption</h2>
 <table><tr><td>
 0: Deliverable expected - Project did not produce Deliverable without appropriate justification<br/>
 1: Deliverable expected - Project did not produce Deliverable with appropriate justification<br/>
@@ -50,6 +54,9 @@ $( document ).ready(function() {
 2: Deliverable not expected - Project did not produce the deliverable and it was justified<br/>
 3: Deliverable not expected -  Project did  produce the deliverable using the referential  template<br/>
 </td></tr></table>
+
+<h2>Deviation table</h2>
+
 <% @all_meta_activities.each do |meta_activity| %>
 <% activities = Array.new %>
 	<h3><%= meta_activity.name %></h3>
@@ -121,6 +128,20 @@ $( document ).ready(function() {
 <% end %>
 <br/><br/>
 
+<h2>Deviation data</h2>
+<table>
+	<tr>
+		<td colspan=2 style="border:1px outset black;"><%= image_tag(@devia_pie_chart) if @devia_pie_chart%></td>
+	</tr>
+	<tr>
+		<td>Bilan Deviation assessment: </td>
+		<td><%= button_to "Excel export", {:action => "export_deviation_excel", :project_id => @deviation_spider.milestone.project.id} %></td>
+	</tr>
+</table>
+
+<br/><br/><br/>
+
+<h2>Consolidation process</h2>
 <% if @editable %>
-<%= button_to "Consolidation", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
+<%= button_to "Consolidate", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
 <% end %>
