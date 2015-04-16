@@ -21,3 +21,7 @@
 .consolidation_td_deliverable_right {
 	background-color:#B5E1B1;
 }
+.pie_update_warning {
+	color: red;
+	visibility: hidden;
+}

@@ -10,6 +10,8 @@ function change_score(consolidation_temp_id, value)
 	.done(function( msg ) {
 		var conso_id = "#" + consolidation_temp_id
 		$(conso_id).val('');
+
+		document.getElementById('pie_update_warning').style.visibility = 'visible';
 	})
 	.fail(function() 
 	{ 
@@ -128,7 +130,11 @@ $( document ).ready(function() {
 <% end %>
 <br/><br/>
 
-<h2>Deviation data</h2>
+<h2>Export Deviation <span style="font-weight:normal; font-size:13px">- To be added to Quality Slide  (Pie+Excel export)</span></h2>
+<div class="pie_update_warning" id="pie_update_warning">
+	The current pie is not up to date, please click on the submit to refresh it.
+	<%= button_to "Refresh pie", {:action => "consolidate_interface", :deviation_spider_id => @deviation_spider.id, :editable => @editable} %>
+</div>
 <table>
 	<tr>
 		<td colspan=2 style="border:1px outset black;"><%= image_tag(@devia_pie_chart) if @devia_pie_chart%></td>
@@ -139,7 +145,7 @@ $( document ).ready(function() {
 	</tr>
 </table>
 
-<br/><br/><br/>
+<br/>
 
 <h2>Consolidation process</h2>
 <% if @editable %>
