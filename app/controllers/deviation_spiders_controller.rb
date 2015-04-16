@@ -119,6 +119,27 @@ class DeviationSpidersController < ApplicationController
 		end
 	end
 
+	def export_deviation_excel
+		project_id = params[:project_id]
+
+		@project = Project.find(:first, :conditions => ["id = ?", project_id])
+		if @project
+			begin
+				@xml = Builder::XmlMarkup.new(:indent => 1)
+
+				lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
+				filename = @project.name+"_"+lifecycle.name+"_DeviationMeasurement_Spiders_v1.0.xls"
+
+				headers['Content-Type']         = "application/vnd.ms-excel"
+		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
+		        headers['Cache-Control']        = ''
+		        render "devia.erb", :layout=>false
+			rescue Exception => e
+	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+	        end
+		end
+	end
+
 	def export_customization_all
 		projects_id = params[:projects_id]
 		filter = params[:filter]
@@ -214,26 +235,38 @@ class DeviationSpidersController < ApplicationController
 	    	end
 
 	    	@consolidations = Array.new
-	    	@all_activities.each do |activity|
-	    		@deliverables.each do |deliverable|
-	    			deviation_deliverable_added_by_hand = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider_id, deliverable.id, true])
-	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, @deviation_spider.milestone)
-	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, @deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
-						consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
-						if !consolidation_saved and @editable
+	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable)
+
+	    	standard = @deviation_spider.get_devia_standard(@consolidations)
+	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(standard).to_url
+	    else
+	    	redirect_to :controller=>:projects, :action=>:index
+	    end
+	end
+
+	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable)
+		consolidations = Array.new
+
+		all_activities.each do |activity|
+	    		deliverables.each do |deliverable|
+	    			deviation_deliverable_added_by_hand = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
+	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
+	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
+						consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
+						if !consolidation_saved and editable
 							#Consolidation in a temp table for manipulations before the real consolidation
 		    				consolidation_temp = DeviationSpiderConsolidationTemp.new
-		    				consolidation_temp.deviation_spider_id = @deviation_spider.id
+		    				consolidation_temp.deviation_spider_id = deviation_spider.id
 		    				consolidation_temp.deviation_deliverable_id = deliverable.id
 		    				consolidation_temp.deviation_activity_id = activity.id
-		    				consolidation_temp.score = self.get_score(@deviation_spider.id, deliverable, activity)
+		    				consolidation_temp.score = self.get_score(deviation_spider.id, deliverable, activity)
 		    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity, consolidation_temp.score)
 
 		    				consolidation_temp.save
 	    					consolidation_saved = consolidation_temp
-						elsif !consolidation_saved and !@editable
+						elsif !consolidation_saved and !editable
 	    					#We consult the tab consolidation instead of the temporary one
-	    					consolidation_saved = DeviationSpiderConsolidation.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
+	    					consolidation_saved = DeviationSpiderConsolidation.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
 	    				end
 
 	    				consolidation = Consolidation.new
@@ -244,14 +277,12 @@ class DeviationSpidersController < ApplicationController
 	    				consolidation.score = consolidation_saved.score
 	    				consolidation.justification = consolidation_saved.justification
 	    				
-	    				@consolidations << consolidation
+	    				consolidations << consolidation
 	    			end
 	    		end
 	    	end
-	    	@consolidations = @consolidations & @consolidations
-	    else
-	    	redirect_to :controller=>:projects, :action=>:index
-	    end
+	    	consolidations = consolidations & consolidations
+	    	return consolidations
 	end
 
 	def get_deliverable_activity_applicable(project_id, deliverable, activity, milestone, psu_imported=true)
@@ -363,6 +394,7 @@ class DeviationSpidersController < ApplicationController
 			deviation_spider_consolidation_temp.justification = ""
 			deviation_spider_consolidation_temp.save
 		end
+		@trololo = 1
 		render(:nothing=>true)
 	end
 
@@ -527,11 +559,6 @@ class DeviationSpidersController < ApplicationController
 	    end
 
 	    render(:text=>charts.to_json)
-	end
-
-	def get_pie_chart(deviation_spider)
-    	chart_data = deviation_spider.generate_pie_chart
-	    return chart_data
 	end
 
 	# 
