@@ -118,7 +118,9 @@ class SvtDeviationSpider < ActiveRecord::Base
 					end 		
 
 					if setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")
-						deliverables << deliverable_parameter
+						if !deliverables.include? deliverable_parameter
+							deliverables << deliverable_parameter
+						end
 					end
 					psu_imported = true
 				end
