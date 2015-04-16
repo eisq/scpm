@@ -208,32 +208,44 @@ class SvtDeviationSpidersController < ApplicationController
 	    	@deliverables 		= Array.new
 	    	@deviation_spider.svt_deviation_spider_deliverables.all(
 	    	    :joins =>["JOIN svt_deviation_deliverables ON svt_deviation_spider_deliverables.svt_deviation_deliverable_id = svt_deviation_deliverables.id"],
-	    	    :conditions => ["svt_deviation_deliverables.is_active = ?", true],
+	    	    :conditions => ["svt_deviation_deliverables.is_active = ?", true], 
 	    	    :order => ["svt_deviation_deliverables.name"]).each do |spider_deliverable|
 	    		@deliverables << spider_deliverable.svt_deviation_deliverable
 	    	end
 
 	    	@consolidations = Array.new
-	    	@all_activities.each do |activity|
-	    		@deliverables.each do |deliverable|
-	    			deviation_deliverable_added_by_hand = SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider_id, deliverable.id, true])
-	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, @deviation_spider.milestone)
-	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, @deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
-						consolidation_saved = SvtDeviationSpiderConsolidationTemp.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
-						if !consolidation_saved and @editable
+	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable)
+
+	    	standard = @deviation_spider.get_devia_standard(@consolidations)
+	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(standard).to_url
+	    else
+	    	redirect_to :controller=>:projects, :action=>:index
+	    end
+	end
+
+	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable)
+		consolidations = Array.new
+
+		all_activities.each do |activity|
+	    		deliverables.each do |deliverable|
+	    			deviation_deliverable_added_by_hand = SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
+	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
+	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
+						consolidation_saved = SvtDeviationSpiderConsolidationTemp.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
+						if !consolidation_saved and editable
 							#Consolidation in a temp table for manipulations before the real consolidation
 		    				consolidation_temp = SvtDeviationSpiderConsolidationTemp.new
-		    				consolidation_temp.svt_deviation_spider_id = @deviation_spider.id
+		    				consolidation_temp.svt_deviation_spider_id = deviation_spider.id
 		    				consolidation_temp.svt_deviation_deliverable_id = deliverable.id
 		    				consolidation_temp.svt_deviation_activity_id = activity.id
-		    				consolidation_temp.score = self.get_score(@deviation_spider.id, deliverable, activity)
+		    				consolidation_temp.score = self.get_score(deviation_spider.id, deliverable, activity)
 		    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity, consolidation_temp.score)
 
 		    				consolidation_temp.save
 	    					consolidation_saved = consolidation_temp
-						elsif !consolidation_saved and !@editable
+						elsif !consolidation_saved and !editable
 	    					#We consult the tab consolidation instead of the temporary one
-	    					consolidation_saved = SvtDeviationSpiderConsolidation.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", @deviation_spider.id, deliverable.id, activity.id])
+	    					consolidation_saved = SvtDeviationSpiderConsolidation.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
 	    				end
 
 	    				consolidation = Consolidation.new
@@ -244,14 +256,12 @@ class SvtDeviationSpidersController < ApplicationController
 	    				consolidation.score = consolidation_saved.score
 	    				consolidation.justification = consolidation_saved.justification
 	    				
-	    				@consolidations << consolidation
+	    				consolidations << consolidation
 	    			end
 	    		end
 	    	end
-	    	@consolidations = @consolidations & @consolidations
-	    else
-	    	redirect_to :controller=>:projects, :action=>:index
-	    end
+	    	consolidations = consolidations & consolidations
+	    	return consolidations
 	end
 
 	def get_deliverable_activity_applicable(project_id, deliverable, activity, milestone, psu_imported=true)

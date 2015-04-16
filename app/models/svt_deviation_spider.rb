@@ -459,6 +459,34 @@ class SvtDeviationSpider < ActiveRecord::Base
 		return chart
 	end
 
+	def generate_devia_pie_chart(standard)
+		deviation = 100-standard
+
+		lifecycle_name = Lifecycle.find(:first, :conditions=>["id = ?", self.milestone.project.lifecycle_id]).name
+
+		chart = GoogleChart::PieChart.new('500x220', "Result of "+ lifecycle_name +" adherence") do |pie_chart|
+			pie_chart.data "Standard " + standard.to_s + "%", standard, "2E2EFE"
+			pie_chart.data "Deviation " + deviation.to_s + "%",  deviation, "DF0101"
+		end
+
+		return chart
+	end
+
+	def get_devia_standard(consolidations)
+		standard_number = 0
+		consolidations.each do |conso|
+			if conso.score == 3 or conso.score == 2
+				deliverable_setting = SvtDeviationSpiderSettings.find(:first, :conditions => ["svt_deliverable_name = ?", conso.deliverable.name])
+				if deliverable_setting and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used")
+					standard_number = standard_number + 1
+				end
+			end
+		end
+
+		standard = standard_number / consolidations.count * 100
+		return standard
+	end
+
 	def is_not_consolidated?
 		result = false
 		temp = SvtDeviationSpiderConsolidationTemp.find(:first, :conditions=>["svt_deviation_spider_id = ?", self.id])
