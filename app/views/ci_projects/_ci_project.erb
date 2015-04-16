@@ -12,7 +12,11 @@
 	<td><%=link_to(p.summary, :action=>"show", :id=>p.id) %></td>
 	<td><b><%= p.short_stage %></b></td>
 	<td> <%= p.kick_off_date %> </td>
-	<% if p.sqli_date_alert == 1 and !p.sqli_validation_date %>
+	<% if p.sqli_validation_done == 1 and !p.sqli_validation_date %>
+		<td><b><%= p.sqli_validation_date_objective %></b></td>
+	<% elsif p.sqli_validation_done == 1 and p.sqli_validation_date %>
+		<td><b><%= p.sqli_validation_date %></b></td>
+	<% elsif p.sqli_date_alert == 1 and !p.sqli_validation_date %>
 		<td class="ci_date_not_committed"><b><%= p.sqli_validation_date_objective %></b></td>
 	<% elsif p.sqli_date_alert == 1 and p.sqli_validation_date %>
 		<td class="ci_date_not_committed"><b><%= p.sqli_validation_date %></b></td>
@@ -22,7 +26,11 @@
 		<td class="<%=CiProject.late_css(p.sqli_validation_date)%>"><b><%= p.sqli_validation_date %></b></td>
 	<% end %>
 
-	<% if p.airbus_date_alert == 1 and !p.airbus_validation_date %>
+	<% if p.airbus_validation_done == 1 and !p.airbus_validation_date %>
+		<td><b><%= p.airbus_validation_date_objective %></b></td>
+	<% elsif p.airbus_validation_done == 1 and p.airbus_validation_date %>
+		<td><b><%= p.airbus_validation_date %></b></td>
+	<% elsif p.airbus_date_alert == 1 and !p.airbus_validation_date %>
 		<td class="ci_date_not_committed"><b><%= p.airbus_validation_date_objective %></b></td>
 	<% elsif p.airbus_date_alert == 1 and p.airbus_validation_date %>
 		<td class="ci_date_not_committed"><b><%= p.airbus_validation_date %></b></td>
@@ -32,7 +40,11 @@
 		<td class="<%=CiProject.late_css(p.airbus_validation_date)%>"><b><%= p.airbus_validation_date %></b></td>
 	<% end %>
 
-	<% if p.deployment_date_alert == 1 and !p.deployment_date %>
+	<% if p.deployment_done == 1 and !p.deployment_date %>
+		<td><b><%= p.deployment_date_objective %></b></td>
+	<% elsif p.deployment_done == 1 and p.deployment_date %>
+		<td><b><%= p.deployment_date %></b></td>
+	<% elsif p.deployment_date_alert == 1 and !p.deployment_date %>
 		<td class="ci_date_not_committed"><b><%= p.deployment_date_objective %></b></td>
 	<% elsif p.deployment_date_alert == 1 and p.deployment_date %>
 		<td class="ci_date_not_committed"><b><%= p.deployment_date %></b></td>

@@ -251,15 +251,15 @@ class CiProjectsController < ApplicationController
     validators = siglum + APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
 
     #if a date has changed, an alert is raised
-    if (old_p.sqli_validation_date != p.sqli_validation_date)
+    if (old_p.sqli_validation_date != p.sqli_validation_date and p.sqli_validation_done != 1)
       p.sqli_date_alert = 1
       date_validation_mail(validators, p, p.justification_sqli_retard)
     end
-    if (old_p.airbus_validation_date != p.airbus_validation_date)
+    if (old_p.airbus_validation_date != p.airbus_validation_date and p.airbus_validation_done != 1)
       p.airbus_date_alert = 1
       date_validation_mail(validators, p, p.justification_airbus_retard)
     end
-    if (old_p.deployment_date != p.deployment_date)
+    if (old_p.deployment_date != p.deployment_date and p.deployment_done != 1)
       p.deployment_date_alert = 1
       date_validation_mail(validators, p, p.justification_deployment_retard)
     end
@@ -291,6 +291,16 @@ class CiProjectsController < ApplicationController
       delay.new_date = p.deployment_date
       p.justification_deployment_retard = nil
       delay.save
+    end
+
+    if p.sqli_validation_done == 1
+      p.sqli_date_alert = 0
+    end
+    if p.airbus_validation_done == 1
+      p.airbus_date_alert = 0
+    end
+    if p.deployment_done == 1
+      p.deployment_date_alert = 0
     end
 
     p.save
