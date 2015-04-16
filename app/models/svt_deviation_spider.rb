@@ -45,6 +45,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 	def add_deliverable(questions, deliverable, activities, psu_imported, is_added_by_hand=false, init_answers=false)
 		#check if we didn't already recorded this deliverable for this spider
 		new_spider_deliverable = SvtDeviationSpiderDeliverable.find(:first, :conditions=>["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ?", self.id, deliverable.id])
+
 		if !new_spider_deliverable
 			new_spider_deliverable = SvtDeviationSpiderDeliverable.new
 			new_spider_deliverable.svt_deviation_spider_id = self.id
@@ -62,10 +63,16 @@ class SvtDeviationSpider < ActiveRecord::Base
 		if activities and activities.count > 0
 			activities.each do |activity|
 				to_add = false
-				setting = SvtDeviationSpiderSetting.find(:first, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
-				if setting
+				setting = SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+				if setting and setting.count == 1
 					if (new_spider_deliverable.is_added_by_hand or setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
 						to_add = true
+					end
+				elsif setting and setting.count > 1
+					setting.each do |sett|
+						if (new_spider_deliverable.is_added_by_hand or sett.answer_1 == "Yes" or (sett.answer_1 == "No" and sett.answer_2 == "Yes" and sett.answer_3 == "Another template is used"))
+							to_add = true
+						end
 					end
 				elsif !psu_imported or new_spider_deliverable.is_added_by_hand
 					to_add = true
@@ -115,7 +122,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 				if activity_parameter and deliverable_parameter
 					if !activities.include? activity_parameter
 						activities << activity_parameter
-					end 		
+					end
 
 					if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 						if !deliverables.include? deliverable_parameter
@@ -477,12 +484,22 @@ class SvtDeviationSpider < ActiveRecord::Base
 
 	def get_devia_standard(consolidations)
 		standard_number = 0
+		duplicate_conso = Array.new
+		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", self.milestone.project_id], :order => "version_number asc")
+
 		consolidations.each do |conso|
 			if conso.score == 3 or conso.score == 2
-				last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", self.milestone.project_id], :order => "version_number asc")
-				deliverable_setting = SvtDeviationSpiderSetting.find(:first, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, conso.deliverable.name])
-				if deliverable_setting and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used")
-					standard_number = standard_number + 1
+				deliverable_setting = SvtDeviationSpiderSetting.find(:all, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, conso.deliverable.name])
+				if deliverable_setting and deliverable_setting.count == 1 and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used") and !duplicate_conso.include?(conso.deliverable.name)
+						standard_number = standard_number + 1
+						duplicate_conso << conso.deliverable.name
+				elsif deliverable_setting and deliverable_setting.count > 1
+					deliverable_setting.each do |sett|
+						if sett.answer_1 == "Yes" or sett.answer_3 == "Another template is used" and !duplicate_conso.include?(conso.deliverable.name)
+							standard_number = standard_number + 1
+							duplicate_conso << conso.deliverable.name
+						end
+					end
 				end
 			end
 		end

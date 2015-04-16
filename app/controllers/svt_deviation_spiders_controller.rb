@@ -213,7 +213,6 @@ class SvtDeviationSpidersController < ApplicationController
 	    		@deliverables << spider_deliverable.svt_deviation_deliverable
 	    	end
 
-	    	@consolidations = Array.new
 	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable)
 
 	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(@consolidations).to_url
@@ -284,14 +283,22 @@ class SvtDeviationSpidersController < ApplicationController
 		spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
 		if last_reference
-			setting = SvtDeviationSpiderSetting.find(:first, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+			setting = SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 
 			well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-			if setting and setting.answer_1 == "Yes" and well_used
+			if setting and setting.count == 1 and setting.answer_1 == "Yes" and well_used
 				score = 3
-			elsif setting and setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used" and well_used
+			elsif setting and setting.count == 1 and setting.answer_3 == "Another template is used" and well_used
 				score = 2
+			elsif setting and setting.count > 1
+				setting.each do |sett|
+					if sett.answer_1 == "Yes" and well_used
+						score = 3
+					elsif sett.answer_3 == "Another template is used" and well_used
+						score = 2
+					end
+				end
 			end
 		end
 
