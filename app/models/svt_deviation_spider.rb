@@ -478,7 +478,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 		standard_number = 0
 		consolidations.each do |conso|
 			if conso.score == 3 or conso.score == 2
-				deliverable_setting = SvtDeviationSpiderSettings.find(:first, :conditions => ["svt_deliverable_name = ?", conso.deliverable.name])
+				deliverable_setting = SvtDeviationSpiderSettings.find(:first, :conditions => ["svt_deliverable_name = ?", conso.svt_deliverable.name])
 				if deliverable_setting and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used")
 					standard_number = standard_number + 1
 				end
