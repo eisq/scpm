@@ -477,7 +477,7 @@ class DeviationSpider < ActiveRecord::Base
 	def get_devia_standard(consolidations)
 		standard_number = 0
 		consolidations.each do |conso|
-			if conso.score == 3 or conso.score == 2
+			if conso.score == "3" or conso.score == "2"
 				deliverable_setting = DeviationSpiderSettings.find(:first, :conditions => ["deliverable_name = ?", conso.deliverable.name])
 				if deliverable_setting and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used")
 					standard_number = standard_number + 1
@@ -485,7 +485,7 @@ class DeviationSpider < ActiveRecord::Base
 			end
 		end
 
-		standard = standard_number / consolidations.count * 100
+		standard = standard_number.to_f / consolidations.count.to_f * 100
 		return standard
 	end
 
