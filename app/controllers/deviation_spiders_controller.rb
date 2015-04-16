@@ -234,11 +234,9 @@ class DeviationSpidersController < ApplicationController
 	    		@deliverables << spider_deliverable.deviation_deliverable
 	    	end
 
-	    	@consolidations = Array.new
 	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable)
 
-	    	standard = @deviation_spider.get_devia_standard(@consolidations)
-	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(standard).to_url
+	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(@consolidations).to_url
 	    else
 	    	redirect_to :controller=>:projects, :action=>:index
 	    end

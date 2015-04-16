@@ -461,14 +461,15 @@ class DeviationSpider < ActiveRecord::Base
 		return chart
 	end
 
-	def generate_devia_pie_chart(standard)
-		deviation = 100-standard
+	def generate_devia_pie_chart(consolidations)
+		standard = get_devia_standard(consolidations)
+		deviation = 100 - standard
 
 		lifecycle_name = Lifecycle.find(:first, :conditions=>["id = ?", self.milestone.project.lifecycle_id]).name
 
 		chart = GoogleChart::PieChart.new('500x220', "Result of "+ lifecycle_name +" adherence") do |pie_chart|
-			pie_chart.data "Standard " + standard.to_s + "%", standard, "2E2EFE"
-			pie_chart.data "Deviation " + deviation.to_s + "%",  deviation, "DF0101"
+			pie_chart.data "Standard " + standard.round.to_s + "%", standard, "2E2EFE"
+			pie_chart.data "Deviation " + deviation.round.to_s + "%",  deviation, "DF0101"
 		end
 
 		return chart
@@ -477,14 +478,13 @@ class DeviationSpider < ActiveRecord::Base
 	def get_devia_standard(consolidations)
 		standard_number = 0
 		consolidations.each do |conso|
-			if conso.score == "3" or conso.score == "2"
-				deliverable_setting = DeviationSpiderSettings.find(:first, :conditions => ["deliverable_name = ?", conso.deliverable.name])
+			if conso.score == 3 or conso.score == 2
+				deliverable_setting = DeviationSpiderSetting.find(:first, :conditions => ["deliverable_name = ?", conso.deliverable.name])
 				if deliverable_setting and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used")
 					standard_number = standard_number + 1
 				end
 			end
 		end
-
 		standard = standard_number.to_f / consolidations.count.to_f * 100
 		return standard
 	end
