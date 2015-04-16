@@ -478,20 +478,15 @@ class SvtDeviationSpider < ActiveRecord::Base
 	def get_devia_standard(consolidations)
 		standard_number = 0
 		consolidations.each do |conso|
-			Rails.logger.info("%%%%%%%%%%%%%% conso name: " + conso.deliverable.name)
 			if conso.score == 3 or conso.score == 2
-				Rails.logger.info("%%%%%%%%%%%%%% conso score: " + conso.score.to_s)
-				deliverable_setting = SvtDeviationSpiderSetting.find(:first, :conditions => ["deliverable_name = ?", conso.deliverable.name])
-				Rails.logger.info("%%%%%%%%%%%%%% answers: " + deliverable_setting.answer_1 + " / " + deliverable_setting.answer_3) if deliverable_setting
+				last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", self.milestone.project_id], :order => "version_number asc")
+				deliverable_setting = SvtDeviationSpiderSetting.find(:first, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, conso.deliverable.name])
 				if deliverable_setting and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used")
 					standard_number = standard_number + 1
 				end
 			end
 		end
 		standard = standard_number.to_f / consolidations.count.to_f * 100
-		Rails.logger.info("%%%%%%%%%%%%%% standard_number: " + standard_number.round.to_s)
-		Rails.logger.info("%%%%%%%%%%%%%% conso count: " + consolidations.count.to_s)
-		Rails.logger.info("%%%%%%%%%%%%%% standard: " + standard.round.to_s)
 		return standard
 	end
 
