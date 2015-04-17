@@ -484,10 +484,11 @@ class SvtDeviationSpider < ActiveRecord::Base
 
 	def get_devia_standard(consolidations)
 		standard_number = 0
-		duplicate_conso = Array.new
+		
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", self.milestone.project_id], :order => "version_number asc")
 
 		consolidations.each do |conso|
+			duplicate_conso = Array.new
 			Rails.logger.info("%%%%%%%%%%%%%%%%% conso livrable name: " + conso.deliverable.name)
 			if conso.score == 3 or conso.score == 2
 				Rails.logger.info("%%%%%%%%%%%%%%%%% score: " + conso.score.to_s)

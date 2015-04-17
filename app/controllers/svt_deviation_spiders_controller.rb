@@ -291,7 +291,7 @@ class SvtDeviationSpidersController < ApplicationController
 		if psu_imported
 			last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
 			SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
-				if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
+				if (setting and (setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"))
 					applicable = self.existing_question_activity_deliverable(deliverable.id, activity.id, milestone)
 				end
 			end
