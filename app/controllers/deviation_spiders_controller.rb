@@ -265,8 +265,8 @@ class DeviationSpidersController < ApplicationController
 
 	def get_deviation_status(deviation_spider, deliverable, activity, score)
 		status = nil
-		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
-		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
+		DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				status = "Deliverable expected \n -- \n"
 				case score
