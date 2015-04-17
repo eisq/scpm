@@ -4,6 +4,7 @@ class SvtDeviationSpidersController < ApplicationController
 
 	ExportCustomization = Struct.new(:activity, :name, :status, :justification)
 	Consolidation = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification)
+	Consolidation_export = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification, :status)
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
 	# 
@@ -208,7 +209,7 @@ class SvtDeviationSpidersController < ApplicationController
 	    		@deliverables << spider_deliverable.svt_deviation_deliverable
 	    	end
 
-	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable)
+	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable, false)
 
 	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(@consolidations).to_url
 	    else
@@ -216,14 +217,14 @@ class SvtDeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable)
+	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable, export)
 		consolidations = Array.new
 
 		all_activities.each do |activity|
 	    		deliverables.each do |deliverable|
 	    			deviation_deliverable_added_by_hand = SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
 	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
-	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
+	    			if (self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
 						consolidation_saved = SvtDeviationSpiderConsolidationTemp.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
 						if !consolidation_saved and editable
 							#Consolidation in a temp table for manipulations before the real consolidation
@@ -241,7 +242,12 @@ class SvtDeviationSpidersController < ApplicationController
 	    					consolidation_saved = SvtDeviationSpiderConsolidation.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
 	    				end
 
-	    				consolidation = Consolidation.new
+	    				if export == false
+		    				consolidation = Consolidation.new
+		    			elsif export == true
+		    				consolidation = Consolidation_export.new
+		    				consolidation.status = "status"
+		    			end
 	    				consolidation.conso_id = consolidation_saved.id
 	    				consolidation.spider_id = consolidation_saved.svt_deviation_spider_id
 	    				consolidation.deliverable = SvtDeviationDeliverable.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_deliverable_id])
@@ -259,7 +265,19 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def export_deviation_excel
 		project_id = params[:project_id]
+		deviation_spider_id = params[:deviation_spider_id]
 		@milestone_name = params[:milestone_name]
+
+		all_activities 	= SvtDeviationActivity.find(:all, :conditions=>["is_active = ?", true])
+		deviation_spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
+    	parameters = deviation_spider.get_parameters
+    	deliverables 		= Array.new
+    	deviation_spider.svt_deviation_spider_deliverables.all(
+    	    :joins =>["JOIN svt_deviation_deliverables ON svt_deviation_spider_deliverables.svt_deviation_deliverable_id = svt_deviation_deliverables.id"],
+    	    :conditions => ["svt_deviation_deliverables.is_active = ?", true], 
+    	    :order => ["svt_deviation_deliverables.name"]).each do |spider_deliverable|
+    		deliverables << spider_deliverable.svt_deviation_deliverable
+    	end
 
 		@project = Project.find(:first, :conditions => ["id = ?", project_id])
 		if @project
@@ -276,7 +294,8 @@ class SvtDeviationSpidersController < ApplicationController
 					@first_milestone_name = "M3"
 				end
 
-				@consolidations = Consolidation.new
+				@consolidations = Consolidation_export.new
+				@consolidations = get_consolidations(deviation_spider, all_activities, deliverables, parameters, true, true)
 
 				headers['Content-Type']         = "application/vnd.ms-excel"
 		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'

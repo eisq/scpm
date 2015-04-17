@@ -4,6 +4,7 @@ class DeviationSpidersController < ApplicationController
 
 	ExportCustomization = Struct.new(:activity, :name, :status, :justification)
 	Consolidation = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification)
+	Consolidation_export = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification, :status)
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
 	# 
@@ -119,27 +120,6 @@ class DeviationSpidersController < ApplicationController
 		end
 	end
 
-	def export_deviation_excel
-		project_id = params[:project_id]
-
-		@project = Project.find(:first, :conditions => ["id = ?", project_id])
-		if @project
-			begin
-				@xml = Builder::XmlMarkup.new(:indent => 1)
-
-				lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
-				filename = @project.name+"_"+lifecycle.name+"_DeviationMeasurement_Spiders_v1.0.xls"
-
-				headers['Content-Type']         = "application/vnd.ms-excel"
-		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
-		        headers['Cache-Control']        = ''
-		        render "devia.erb", :layout=>false
-			rescue Exception => e
-	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
-	        end
-		end
-	end
-
 	def export_customization_all
 		projects_id = params[:projects_id]
 		filter = params[:filter]
@@ -229,7 +209,7 @@ class DeviationSpidersController < ApplicationController
 	    		@deliverables << spider_deliverable.deviation_deliverable
 	    	end
 
-	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable)
+	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable, false)
 
 	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(@consolidations).to_url
 	    else
@@ -237,14 +217,14 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable)
+	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable, export)
 		consolidations = Array.new
 
 		all_activities.each do |activity|
 	    		deliverables.each do |deliverable|
 	    			deviation_deliverable_added_by_hand = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
 	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
-	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
+	    			if (self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
 						consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
 						if !consolidation_saved and editable
 							#Consolidation in a temp table for manipulations before the real consolidation
@@ -262,7 +242,12 @@ class DeviationSpidersController < ApplicationController
 	    					consolidation_saved = DeviationSpiderConsolidation.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
 	    				end
 
-	    				consolidation = Consolidation.new
+	    				if export == false
+		    				consolidation = Consolidation.new
+		    			elsif export == true
+		    				consolidation = Consolidation_export.new
+		    				consolidation.status = "status"
+		    			end
 	    				consolidation.conso_id = consolidation_saved.id
 	    				consolidation.spider_id = consolidation_saved.deviation_spider_id
 	    				consolidation.deliverable = DeviationDeliverable.find(:first, :conditions => ["id = ?", consolidation_saved.deviation_deliverable_id])
@@ -276,6 +261,50 @@ class DeviationSpidersController < ApplicationController
 	    	end
 	    	consolidations = consolidations & consolidations
 	    	return consolidations
+	end
+
+	def export_deviation_excel
+		project_id = params[:project_id]
+		deviation_spider_id = params[:deviation_spider_id]
+		@milestone_name = params[:milestone_name]
+
+		all_activities 	= DeviationActivity.find(:all, :conditions=>["is_active = ?", true])
+		deviation_spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
+    	parameters = deviation_spider.get_parameters
+    	deliverables 		= Array.new
+    	deviation_spider.svt_deviation_spider_deliverables.all(
+    	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"],
+    	    :conditions => ["deviation_deliverables.is_active = ?", true], 
+    	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
+    		deliverables << spider_deliverable.deviation_deliverable
+    	end
+
+		@project = Project.find(:first, :conditions => ["id = ?", project_id])
+		if @project
+			begin
+				@xml = Builder::XmlMarkup.new(:indent => 1)
+
+				@lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
+				filename = @project.name+"_"+@lifecycle.name+"_DeviationMeasurement_Spiders_v1.0.xls"
+
+				@first_milestone_name = ""
+				if @lifecycle.id == 4 or @lifecycle.id == 5 or @lifecycle.id == 6 or @lifecycle.id == 9
+					@first_milestone_name = "G2"
+				else
+					@first_milestone_name = "M3"
+				end
+
+				@consolidations = Consolidation_export.new
+				@consolidations = get_consolidations(deviation_spider, all_activities, deliverables, parameters, true, true)
+
+				headers['Content-Type']         = "application/vnd.ms-excel"
+		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
+		        headers['Cache-Control']        = ''
+		        render "devia.erb", :layout=>false
+			rescue Exception => e
+	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+	        end
+		end
 	end
 
 	def get_deliverable_activity_applicable(project_id, deliverable, activity, milestone, psu_imported=true)

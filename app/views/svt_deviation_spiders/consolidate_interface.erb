@@ -141,7 +141,7 @@ $( document ).ready(function() {
 	</tr>
 	<tr>
 		<td>Bilan Deviation assessment: </td>
-		<td><%= button_to "Excel export", {:action => "export_deviation_excel", :project_id => @deviation_spider.milestone.project.id} %></td>
+		<td><%= button_to "Excel export", {:action => "export_deviation_excel", :project_id => @deviation_spider.milestone.project.id, :milestone_name => @deviation_spider.milestone.name, :deviation_spider_id => @deviation_spider.id} %></td>
 	</tr>
 </table>
 
