@@ -166,11 +166,6 @@ class DeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def export_customization_pie(chart)
-		chart.getImageURI()
-		render(:nothing=>true)
-	end
-
 	def get_customization_deliverable_status(answer_1, answer_2, answer_3)
 		status = ""
 		case answer_1

@@ -490,7 +490,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 		consolidations.each do |conso|
 			if conso.score == 3 or conso.score == 2
 				deliverable_setting = SvtDeviationSpiderSetting.find(:all, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, conso.deliverable.name])
-				if deliverable_setting and deliverable_setting.count == 1 and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used") and !duplicate_conso.include?(conso.deliverable.name)
+				if deliverable_setting and deliverable_setting.count == 1 and (deliverable_setting[0].answer_1 == "Yes" or deliverable_setting[0].answer_3 == "Another template is used") and !duplicate_conso.include?(conso.deliverable.name)
 						standard_number = standard_number + 1
 						duplicate_conso << conso.deliverable.name
 				elsif deliverable_setting and deliverable_setting.count > 1
