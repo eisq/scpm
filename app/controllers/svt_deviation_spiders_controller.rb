@@ -287,9 +287,9 @@ class SvtDeviationSpidersController < ApplicationController
 
 			well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-			if setting and setting.count == 1 and setting.answer_1 == "Yes" and well_used
+			if setting and setting.count == 1 and setting[0].answer_1 == "Yes" and well_used
 				score = 3
-			elsif setting and setting.count == 1 and setting.answer_3 == "Another template is used" and well_used
+			elsif setting and setting.count == 1 and setting[0].answer_3 == "Another template is used" and well_used
 				score = 2
 			elsif setting and setting.count > 1
 				setting.each do |sett|

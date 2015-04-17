@@ -65,12 +65,12 @@ class SvtDeviationSpider < ActiveRecord::Base
 				to_add = false
 				setting = SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 				if setting and setting.count == 1
-					if (new_spider_deliverable.is_added_by_hand or setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used"))
+					if (new_spider_deliverable.is_added_by_hand or setting[0].answer_1 == "Yes" or setting[0].answer_3 == "Another template is used")
 						to_add = true
 					end
 				elsif setting and setting.count > 1
 					setting.each do |sett|
-						if (new_spider_deliverable.is_added_by_hand or sett.answer_1 == "Yes" or (sett.answer_1 == "No" and sett.answer_2 == "Yes" and sett.answer_3 == "Another template is used"))
+						if (new_spider_deliverable.is_added_by_hand or sett.answer_1 == "Yes" or sett.answer_3 == "Another template is used")
 							to_add = true
 						end
 					end
