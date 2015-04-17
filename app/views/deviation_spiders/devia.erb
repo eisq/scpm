@@ -76,7 +76,7 @@ end
       # Header 1
       @xml.Row 'ss:StyleID' => 'Default' do
         @xml.Cell do
-          @xml.Data @project.name.to_s + " project methodology customization KPIs at "+ @milestone_name +" vs. "+ @first_milestone_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data @project.name.to_s + " project methodology deviation KPIs at "+ @milestone_name +" vs. "+ @first_milestone_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
 

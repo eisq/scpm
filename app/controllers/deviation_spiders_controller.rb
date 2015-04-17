@@ -246,7 +246,7 @@ class DeviationSpidersController < ApplicationController
 		    				consolidation = Consolidation.new
 		    			elsif export == true
 		    				consolidation = Consolidation_export.new
-		    				consolidation.status = "status"
+		    				consolidation.status = self.get_status()
 		    			end
 	    				consolidation.conso_id = consolidation_saved.id
 	    				consolidation.spider_id = consolidation_saved.deviation_spider_id
