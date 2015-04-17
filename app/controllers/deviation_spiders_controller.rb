@@ -306,7 +306,7 @@ class DeviationSpidersController < ApplicationController
 		deviation_spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
     	parameters = deviation_spider.get_parameters
     	deliverables 		= Array.new
-    	deviation_spider.svt_deviation_spider_deliverables.all(
+    	deviation_spider.deviation_spider_deliverables.all(
     	    :joins =>["JOIN deviation_deliverables ON deviation_spider_deliverables.deviation_deliverable_id = deviation_deliverables.id"],
     	    :conditions => ["deviation_deliverables.is_active = ?", true], 
     	    :order => ["deviation_deliverables.name"]).each do |spider_deliverable|
