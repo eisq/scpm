@@ -157,7 +157,12 @@ class SvtDeviationSpidersController < ApplicationController
 				@lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
 				filename = @project.name+"_"+@lifecycle.name+"_DeviationMeasurement_Spiders_v1.0.xls"
 
-				@first_milestone = ""
+				@first_milestone_name = ""
+				if @lifecycle.id == 4 or @lifecycle.id == 5 or @lifecycle.id == 6 or @lifecycle.id == 9
+					@first_milestone_name = "G2"
+				else
+					@first_milestone_name = "M3"
+				end
 
 				headers['Content-Type']         = "application/vnd.ms-excel"
 		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'

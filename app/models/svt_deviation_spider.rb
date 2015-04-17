@@ -493,7 +493,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 				if deliverable_setting and deliverable_setting.count == 1 and (deliverable_setting[0].answer_1 == "Yes" or deliverable_setting[0].answer_3 == "Another template is used") and !duplicate_conso.include?(conso.deliverable.name)
 						standard_number = standard_number + 1
 						duplicate_conso << conso.deliverable.name
-				elsif deliverable_setting and deliverable_setting.count > 1
+				elsif deliverable_setting and deliverable_setting.count > 1 and !duplicate_conso.include?(conso.deliverable.name)
 					deliverable_setting.each do |sett|
 						if sett.answer_1 == "Yes" or sett.answer_3 == "Another template is used" and !duplicate_conso.include?(conso.deliverable.name)
 							standard_number = standard_number + 1
