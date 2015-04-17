@@ -154,6 +154,26 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def remove_false
+    SvtDeviationQuestion.find(:all, :conditions=>["is_active = ?", false]).each do |to_delete|
+      to_delete.delete
+    end
+    SvtDeviationDeliverable.find(:all, :conditions=>["is_active = ?", false]).each do |to_delete|
+      to_delete.delete
+    end
+    SvtDeviationActivity.find(:all, :conditions=>["is_active = ?", false]).each do |to_delete|
+      to_delete.delete
+    end
+    SvtDeviationMetaActivity.find(:all, :conditions=>["is_active = ?", false]).each do |to_delete|
+      to_delete.delete
+    end
+    SvtDeviationMacroActivity.find(:all, :conditions=>["is_active = ?", false]).each do |to_delete|
+      to_delete.delete
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
   def sdp_import
   end
 

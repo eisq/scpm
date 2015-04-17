@@ -145,35 +145,6 @@ class SvtDeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def export_deviation_excel
-		project_id = params[:project_id]
-		@milestone_name = params[:milestone_name]
-
-		@project = Project.find(:first, :conditions => ["id = ?", project_id])
-		if @project
-			begin
-				@xml = Builder::XmlMarkup.new(:indent => 1)
-
-				@lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
-				filename = @project.name+"_"+@lifecycle.name+"_DeviationMeasurement_Spiders_v1.0.xls"
-
-				@first_milestone_name = ""
-				if @lifecycle.id == 4 or @lifecycle.id == 5 or @lifecycle.id == 6 or @lifecycle.id == 9
-					@first_milestone_name = "G2"
-				else
-					@first_milestone_name = "M3"
-				end
-
-				headers['Content-Type']         = "application/vnd.ms-excel"
-		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
-		        headers['Cache-Control']        = ''
-		        render "devia.erb", :layout=>false
-			rescue Exception => e
-	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
-	        end
-		end
-	end
-
 	def get_customization_deliverable_status(answer_1, answer_2, answer_3)
 		status = ""
 		case answer_1
@@ -284,6 +255,37 @@ class SvtDeviationSpidersController < ApplicationController
 	    	end
 	    	consolidations = consolidations & consolidations
 	    	return consolidations
+	end
+
+	def export_deviation_excel
+		project_id = params[:project_id]
+		@milestone_name = params[:milestone_name]
+
+		@project = Project.find(:first, :conditions => ["id = ?", project_id])
+		if @project
+			begin
+				@xml = Builder::XmlMarkup.new(:indent => 1)
+
+				@lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
+				filename = @project.name+"_"+@lifecycle.name+"_DeviationMeasurement_Spiders_v1.0.xls"
+
+				@first_milestone_name = ""
+				if @lifecycle.id == 4 or @lifecycle.id == 5 or @lifecycle.id == 6 or @lifecycle.id == 9
+					@first_milestone_name = "G2"
+				else
+					@first_milestone_name = "M3"
+				end
+
+				@consolidations = Consolidation.new
+
+				headers['Content-Type']         = "application/vnd.ms-excel"
+		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
+		        headers['Cache-Control']        = ''
+		        render "devia.erb", :layout=>false
+			rescue Exception => e
+	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+	        end
+		end
 	end
 
 	def get_deliverable_activity_applicable(project_id, deliverable, activity, milestone, psu_imported=true)

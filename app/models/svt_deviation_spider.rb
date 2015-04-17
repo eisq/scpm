@@ -489,11 +489,8 @@ class SvtDeviationSpider < ActiveRecord::Base
 
 		consolidations.each do |conso|
 			duplicate_conso = Array.new
-			Rails.logger.info("%%%%%%%%%%%%%%%%% conso livrable name: " + conso.deliverable.name)
 			if conso.score == 3 or conso.score == 2
-				Rails.logger.info("%%%%%%%%%%%%%%%%% score: " + conso.score.to_s)
 				deliverable_setting = SvtDeviationSpiderSetting.find(:all, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, conso.deliverable.name])
-				Rails.logger.info("%%%%%%%%%%%%%%%%% setting.count: " + deliverable_setting.count.to_s) if deliverable_setting
 				if deliverable_setting and deliverable_setting.count == 1 and (deliverable_setting[0].answer_1 == "Yes" or deliverable_setting[0].answer_3 == "Another template is used") and !duplicate_conso.include?(conso.deliverable.name)
 						standard_number = standard_number + 1
 						duplicate_conso.push(conso.deliverable.name)
@@ -508,9 +505,6 @@ class SvtDeviationSpider < ActiveRecord::Base
 			end
 		end
 		standard = standard_number.to_f / consolidations.count.to_f * 100
-		Rails.logger.info("%%%%%%%%%%%%%%%%% standard_number: " + standard_number.to_s)
-		Rails.logger.info("%%%%%%%%%%%%%%%%% consolidations: " + consolidations.count.to_s)
-		Rails.logger.info("%%%%%%%%%%%%%%%%% standard: " + standard.to_s)
 		return standard
 	end
 
