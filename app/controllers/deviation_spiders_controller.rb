@@ -246,7 +246,7 @@ class DeviationSpidersController < ApplicationController
 		    				consolidation = Consolidation.new
 		    			elsif export == true
 		    				consolidation = Consolidation_export.new
-		    				consolidation.status = self.get_status()
+		    				consolidation.status = get_deviation_status(deviation_spider, deliverable, activity, consolidation_saved.score)
 		    			end
 	    				consolidation.conso_id = consolidation_saved.id
 	    				consolidation.spider_id = consolidation_saved.deviation_spider_id
@@ -261,6 +261,40 @@ class DeviationSpidersController < ApplicationController
 	    	end
 	    	consolidations = consolidations & consolidations
 	    	return consolidations
+	end
+
+	def get_deviation_status(deviation_spider, deliverable, activity, score)
+		status = nil
+		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
+		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
+				status = "Deliverable expected \n -- \n"
+				case score
+				when 0
+					status = status + "Project did not produce Deliverable without appropriate justification"
+				when 1
+					status = status + "Project did not produce Deliverable with appropriate justification"
+				when 2
+					status = status + "Project produced Deliverable using a different template from the referential one"
+				when 3
+					status = status + "Project produced Deliverable with the expected template"
+				end
+			elsif !status and (setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used")
+				status = "Deliverable not expected \n -- \n"
+				case score
+				when 0
+					status = status + "Project did not produce the deliverable and it was not justified"
+				when 1
+					status = status + "Project did not produce the deliverable and it was justified"
+				when 2
+					status = status + "Project did not produce the deliverable and it was justified"
+				when 3
+					status = status + "Project did produce the deliverable using the referential template"
+				end
+			end
+		end
+
+		return status
 	end
 
 	def export_deviation_excel
