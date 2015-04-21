@@ -89,6 +89,12 @@ class DeviationSpidersController < ApplicationController
 	# EXPORT
 	# --------
 	def export_customization_excel
+		@custo_array = Array.new
+		for i in 0..3 do
+			@custo_array[i] = 0
+		end
+		duplicate_custo = Array.new
+
 		project_id = params[:project_id]
 		@milestone_name = params[:milestone_name]
 		@project = Project.find(:first, :conditions => ["id = ?", project_id])
@@ -106,6 +112,11 @@ class DeviationSpidersController < ApplicationController
 					exportCustomization.status = get_customization_deliverable_status(devia_settings.answer_1, devia_settings.answer_2, devia_settings.answer_3)
 					exportCustomization.justification = devia_settings.justification
 					@exportCustomizations << exportCustomization
+
+					if duplicate_custo.include?(exportCustomization.name)
+						@custo_array = get_customization_deliverable_status_array(exportCustomization.status, @custo_array)
+					end
+					duplicate_custo.push(exportCustomization.name)
 				end
 				lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
 				filename = @project.name+"_"+lifecycle.name+"_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
@@ -172,6 +183,20 @@ class DeviationSpidersController < ApplicationController
 		end
 
 		return status
+	end
+
+	def get_customization_deliverable_status_array(status, custo_array)
+		case status
+		when "Project plans to use referential template to produce the deliverable"
+			custo_array[0] = custo_array[0] + 1
+		when "Deliverable not applicable to the project"
+			custo_array[1] = custo_array[1] + 1
+		when "Project plans to use a different template from the referential one to produce the deliverable"
+			custo_array[2] = custo_array[2] + 1
+		when "Project doesn't plan to produce deliverable without justification"
+			custo_array[3] = custo_array[3] + 1
+		end
+		return custo_array
 	end
 
 	def consolidate_interface

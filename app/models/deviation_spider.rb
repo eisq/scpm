@@ -422,26 +422,27 @@ class DeviationSpider < ActiveRecord::Base
 	end
 
 	def generate_pie_chart
-		standard = 0
-		customization = 0
-		deviation = 0
-		total_number = 0
+		standard = customization = deviation = total_number = 0
+		duplicate_custo = Array.new
 
 		reference = DeviationSpiderReference.find(:last, :conditions=>["project_id = ?", self.milestone.project_id], :order=>"version_number")
 		if reference
 			settings = DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference])
 			if settings.count > 0
 				settings.each do |setting|
-					if setting.answer_1 == "Yes"
-						standard = standard + 1
-					elsif setting.answer_1 == "No" and setting.answer_2 == "No"
-						deviation = deviation + 1
-					else
-						customization = customization + 1
+					duplicate_custo, to_be_added = to_be_added_and_update_duplicate(duplicate_custo, setting)
+					if to_be_added
+						if setting.answer_1 == "Yes"
+							standard = standard + 1
+						elsif setting.answer_1 == "No" and setting.answer_2 == "No"
+							deviation = deviation + 1
+						else
+							customization = customization + 1
+						end
+						total_number = total_number + 1
 					end
-					total_number = total_number + 1
 				end
-
+				
 				standard = standard.to_f / total_number.to_f * 100
 				customization = customization.to_f / total_number.to_f * 100
 				deviation = deviation.to_f / total_number.to_f * 100
@@ -459,6 +460,45 @@ class DeviationSpider < ActiveRecord::Base
 		end
 
 		return chart
+	end
+
+	def get_weight(setting)
+		weight = 0
+
+		if setting.answer_1 == "Yes"
+			weight = 4
+		elsif setting.answer_2 == "No"
+			weight = 1
+		elsif setting.answer_3 == "Another template is used"
+			weight = 3
+		else
+			weight = 2
+		end
+
+		return weight
+	end
+
+	def to_be_added_and_update_duplicate(duplicate_custo, setting)
+		val = true
+		weight = get_weight(setting)
+		deliverable_name = setting.deliverable_name
+		duplicate_custo.each do |dup_custo|
+			deliv_name = dup_custo.split(" ")
+			if deliv_name.first == deliverable_name
+				weight_from_duplicate = deliv_name.last.to_i
+				if weight > weight_from_duplicate
+					dup_custo.delete
+				else
+					val = false
+				end
+			end
+		end
+
+		if val
+			duplicate_custo.push(setting.deliverable_name + " " + weight.to_s)
+		end
+
+		return duplicate_custo, val
 	end
 
 	def generate_devia_pie_chart(consolidations)

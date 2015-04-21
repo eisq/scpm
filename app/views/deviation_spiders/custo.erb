@@ -62,6 +62,45 @@
       @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
     end
   end
+  @xml.Style 'ss:ID' => 'Header3bold', 'ss:Name' => 'Header3bold' do
+    @xml.Font  'ss:Bold'=>"1"
+  end
+  @xml.Style 'ss:ID' => 'bordersbold', 'ss:Name' => 'bordersbold' do
+    @xml.Font 'ss:Color'=>'#000000', 'ss:Bold'=>"1"
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'titletable12', 'ss:Name' => 'titletable12' do
+    @xml.Font 'ss:Color'=>'#003399', 'ss:Bold'=>"1"
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'titletable3', 'ss:Name' => 'titletable3' do
+    @xml.Font 'ss:Color'=>'#0066FF', 'ss:Bold'=>"1"
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'titletable4', 'ss:Name' => 'titletable4' do
+    @xml.Font 'ss:Color'=>'#6699FF', 'ss:Bold'=>"1"
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
 end
   
   # DEVIATION
@@ -69,13 +108,15 @@ end
     @xml.Table do
 
       # Columns width
-      for i in 0..3 do
-        @xml.Column nil, {'ss:Width' => 150}
-      end
+      @xml.Column 0, {'ss:Width' => 150}
+      @xml.Column 1, {'ss:Width' => 150}
+      @xml.Column 2, {'ss:Width' => 360}
+      @xml.Column 3, {'ss:Width' => 200}
 
       # Header 1
       @xml.Row 'ss:StyleID' => 'Default' do
-        @xml.Cell do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Header3bold' do
           @xml.Data @project.name.to_s + " KPIs project customization "+@milestone_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
@@ -84,6 +125,52 @@ end
       @xml.Row 'ss:StyleID' => 'Default'
 
       # Header 3
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'titletable12' do
+          @xml.Data "Number of deliverables that the project plans to produce with the referential template", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordersbold' do
+          @xml.Data @custo_array[0], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'titletable12' do
+          @xml.Data "Number of deliverables not applicable to the project", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordersbold' do
+          @xml.Data @custo_array[1], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'titletable3' do
+          @xml.Data "Number of deliverables that the project plans to produce with another template", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordersbold' do
+          @xml.Data @custo_array[2], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'titletable4' do
+          @xml.Data "Number of deliverables that the project does not plan to produce without acceptable justification", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordersbold' do
+          @xml.Data @custo_array[3], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Header 4
+      @xml.Row 'ss:StyleID' => 'Default'
+      @xml.Row 'ss:StyleID' => 'Default'
+
+      # Header 5
       @xml.Row do
         @xml.Cell 'ss:StyleID' => 's75' do
           @xml.Data "Macro-Objectives", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
