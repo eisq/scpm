@@ -37,6 +37,9 @@
       @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
     end
   end
+  @xml.Style 'ss:ID' => 'Header3bold', 'ss:Name' => 'Header3bold' do
+    @xml.Font  'ss:Bold'=>"1"
+  end
   @xml.Style 'ss:ID' => 's1024', 'ss:Name' => 'Classic' do
     @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
     @xml.Font 'ss:FontName' => 'Verdana'
@@ -69,13 +72,15 @@ end
     @xml.Table do
 
       # Columns width
-      for i in 0..3 do
-        @xml.Column nil, {'ss:Width' => 150}
-      end
+      @xml.Column 0, {'ss:Width' => 150}
+      @xml.Column 1, {'ss:Width' => 150}
+      @xml.Column 2, {'ss:Width' => 320}
+      @xml.Column 3, {'ss:Width' => 150}
 
       # Header 1
       @xml.Row 'ss:StyleID' => 'Default' do
-        @xml.Cell do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Header3bold' do
           @xml.Data @project.name.to_s + " project methodology deviation KPIs at "+ @milestone_name +" vs. "+ @first_milestone_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
@@ -84,6 +89,112 @@ end
       @xml.Row 'ss:StyleID' => 'Default'
 
       # Header 3
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "Number of Deliverables that should have been produced and:", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Header3bold' do
+          @xml.Data @status_array[0], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "- not done without appropriate justification", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data @status_array[1], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "- not done with appropriate justification", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data @status_array[2], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "- done with another template than the standard one", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data @status_array[3], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "- done as planned", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data @status_array[4], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "Number of Deliverables that should not have been produced and:", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Header3bold' do
+          @xml.Data @status_array[5], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "- still not done and was not justified", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data @status_array[6], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "- still not done but was justified", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data @status_array[7], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "- finally done but with another template than the standard one", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data @status_array[8], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data "- done with the standard template", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'Default' do
+          @xml.Data @status_array[9], 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Header 4
+      @xml.Row 'ss:StyleID' => 'Default'
+      @xml.Row 'ss:StyleID' => 'Default'
+
+      # Header 5
       @xml.Row do
         @xml.Cell 'ss:StyleID' => 's75' do
           @xml.Data "Macro-Objectives", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'

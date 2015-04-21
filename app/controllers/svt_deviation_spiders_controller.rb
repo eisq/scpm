@@ -219,6 +219,10 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable, export)
 		consolidations = Array.new
+		@status_array = Array.new
+		for i in 0..9 do
+			@status_array[i] = 0
+		end
 
 		all_activities.each do |activity|
 	    		deliverables.each do |deliverable|
@@ -247,6 +251,7 @@ class SvtDeviationSpidersController < ApplicationController
 		    			elsif export == true
 		    				consolidation = Consolidation_export.new
 		    				consolidation.status = get_deviation_status(deviation_spider, deliverable, activity, consolidation_saved.score)
+		    				@status_array = get_deviation_status_total(deviation_spider, deliverable, activity, consolidation_saved.score, @status_array)
 		    			end
 	    				consolidation.conso_id = consolidation_saved.id
 	    				consolidation.spider_id = consolidation_saved.svt_deviation_spider_id
@@ -287,7 +292,7 @@ class SvtDeviationSpidersController < ApplicationController
 				when 1
 					status = status + "Project did not produce the deliverable and it was justified"
 				when 2
-					status = status + "Project did not produce the deliverable and it was justified"
+					status = status + "Project did produce the deliverable using a different template from the referential one"
 				when 3
 					status = status + "Project did produce the deliverable using the referential template"
 				end
@@ -295,6 +300,39 @@ class SvtDeviationSpidersController < ApplicationController
 		end
 
 		return status
+	end
+
+	def get_deviation_status_total(deviation_spider, deliverable, activity, score, status_array)
+		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
+		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
+				status_array[0] = status_array[0] + 1
+				case score
+				when 0
+					status_array[1] = status_array[1] + 1
+				when 1
+					status_array[2] = status_array[2] + 1
+				when 2
+					status_array[3] = status_array[3] + 1
+				when 3
+					status_array[4] = status_array[4] + 1
+				end
+			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
+				status_array[5] = status_array[5] + 1
+				case score
+				when 0
+					status_array[6] = status_array[6] + 1
+				when 1
+					status_array[7] = status_array[7] + 1
+				when 2
+					status_array[8] = status_array[8] + 1
+				when 3
+					status_array[9] = status_array[9] + 1
+				end
+			end
+		end
+
+		return status_array
 	end
 
 	def export_deviation_excel
