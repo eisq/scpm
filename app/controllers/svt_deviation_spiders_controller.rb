@@ -5,6 +5,7 @@ class SvtDeviationSpidersController < ApplicationController
 	ExportCustomization = Struct.new(:activity, :name, :status, :justification)
 	Consolidation = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification)
 	Consolidation_export = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification, :status)
+	Devia_status_saved = Struct.new(:deliverable_id, :status_number)
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
 	# 
@@ -244,11 +245,11 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable, export)
 		consolidations = Array.new
+		devia_status_saved_array = Array.new
 		@status_array = Array.new
 		for i in 0..9 do
 			@status_array[i] = 0
 		end
-		duplicate_devia = Array.new
 
 		all_activities.each do |activity|
 	    		deliverables.each do |deliverable|
@@ -277,9 +278,7 @@ class SvtDeviationSpidersController < ApplicationController
 		    			elsif export == true
 		    				consolidation = Consolidation_export.new
 		    				consolidation.status = get_deviation_status(deviation_spider, deliverable, activity, consolidation_saved.score)
-		    				if !duplicate_devia.include?(consolidation_saved.svt_deviation_deliverable_id)
-		    					@status_array = get_deviation_status_total(deviation_spider, deliverable, activity, consolidation_saved.score, @status_array)
-		    				end
+		    				@status_array, devia_status_saved_array = get_deviation_status_total(deviation_spider, deliverable, consolidation_saved.score, @status_array, devia_status_saved_array)
 		    			end
 	    				consolidation.conso_id = consolidation_saved.id
 	    				consolidation.spider_id = consolidation_saved.svt_deviation_spider_id
@@ -289,8 +288,6 @@ class SvtDeviationSpidersController < ApplicationController
 	    				consolidation.justification = consolidation_saved.justification
 	    				
 	    				consolidations << consolidation
-
-	    				duplicate_devia.push(consolidation_saved.svt_deviation_deliverable_id)
 	    			end
 	    		end
 	    	end
@@ -348,10 +345,14 @@ class SvtDeviationSpidersController < ApplicationController
 		return status
 	end
 
-	def get_deviation_status_total(deviation_spider, deliverable, activity, score, status_array)
+	def get_deviation_status_total(deviation_spider, deliverable, score, status_array, devia_status_saved_array)
 		setting_found = 0
+		devia_status_saved = Devia_status_saved.new
+
+		##ajouter ici la gestion des doublons.
+
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
-		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
 			setting_found = 1
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				status_array[0] = status_array[0] + 1
@@ -394,7 +395,7 @@ class SvtDeviationSpidersController < ApplicationController
 			end
 		end
 
-		return status_array
+		return status_array, devia_status_saved_array
 	end
 
 	def export_deviation_excel
