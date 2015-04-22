@@ -9,8 +9,9 @@ class DeviationSpider < ActiveRecord::Base
 	belongs_to 	:milestone
 
 
-	Spider_parameters = Struct.new(:deliverables, :activities, :psu_imported)
-	Chart 			  = Struct.new(:meta_activity_name, :titles, :points, :points_ref)
+	Spider_parameters 		= Struct.new(:deliverables, :activities, :psu_imported)
+	Chart 			  		= Struct.new(:meta_activity_name, :titles, :points, :points_ref)
+	Setting_to_chart  		= Struct.new(:setting, :weight)
 
 	# ***
 	# SET
@@ -423,24 +424,29 @@ class DeviationSpider < ActiveRecord::Base
 
 	def generate_pie_chart
 		standard = customization = deviation = total_number = 0
-		duplicate_custo = Array.new
+		setting_to_count_array = Array.new
 
-		reference = DeviationSpiderReference.find(:last, :conditions=>["project_id = ?", self.milestone.project_id], :order=>"version_number")
+		reference = SvtDeviationSpiderReference.find(:last, :conditions=>["project_id = ?", self.milestone.project_id], :order=>"version_number")
 		if reference
-			settings = DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference])
+			settings = SvtDeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference])
 			if settings.count > 0
 				settings.each do |setting|
-					duplicate_custo, to_be_added = to_be_added_and_update_duplicate(duplicate_custo, setting)
-					if to_be_added
-						if setting.answer_1 == "Yes"
-							standard = standard + 1
-						elsif setting.answer_1 == "No" and setting.answer_2 == "No"
-							deviation = deviation + 1
-						else
-							customization = customization + 1
-						end
-						total_number = total_number + 1
+					setting_to_count_array = update_setting_to_count_array(setting_to_count_array, setting)
+				end
+
+				setting_to_count_array.each do |setting_to_count|
+					if setting_to_count.setting.answer_1 == "Yes"
+						standard = standard + 1
+					elsif setting_to_count.setting.answer_1 == "No" and setting_to_count.setting.answer_2 == "No"
+						deviation = deviation + 1
+					else
+						customization = customization + 1
 					end
+					total_number = total_number + 1
+				end
+
+				if total_number == 0
+					total_number = 1
 				end
 				
 				standard = standard.to_f / total_number.to_f * 100
@@ -460,45 +466,6 @@ class DeviationSpider < ActiveRecord::Base
 		end
 
 		return chart
-	end
-
-	def get_weight(setting)
-		weight = 0
-
-		if setting.answer_1 == "Yes"
-			weight = 4
-		elsif setting.answer_2 == "No"
-			weight = 1
-		elsif setting.answer_3 == "Another template is used"
-			weight = 3
-		else
-			weight = 2
-		end
-
-		return weight
-	end
-
-	def to_be_added_and_update_duplicate(duplicate_custo, setting)
-		val = true
-		weight = get_weight(setting)
-		deliverable_name = setting.deliverable_name
-		duplicate_custo.each do |dup_custo|
-			deliv_name = dup_custo.split(" ")
-			if deliv_name.first == deliverable_name
-				weight_from_duplicate = deliv_name.last.to_i
-				if weight > weight_from_duplicate
-					dup_custo.delete
-				else
-					val = false
-				end
-			end
-		end
-
-		if val
-			duplicate_custo.push(setting.deliverable_name + " " + weight.to_s)
-		end
-
-		return duplicate_custo, val
 	end
 
 	def generate_devia_pie_chart(consolidations)
@@ -527,6 +494,46 @@ class DeviationSpider < ActiveRecord::Base
 		end
 		standard = standard_number.to_f / consolidations.count.to_f * 100
 		return standard
+	end
+
+	def update_setting_to_count_array(setting_to_count_array, setting)
+		setting_to_count = Setting_to_chart.new
+		val = true
+		setting_to_count.setting = setting
+		setting_to_count.weight = get_weight(setting)
+		deliverable_name = setting.deliverable_name
+		setting_to_count_array.each do |sett|
+			if sett.setting.deliverable_name == deliverable_name
+				weight_from_duplicate = sett.weight
+				if setting_to_count.weight > sett.weight
+					setting_to_count_array.delete(sett)
+				else
+					val = false
+				end
+			end
+		end
+
+		if val
+			setting_to_count_array.push(setting_to_count)
+		end
+
+		return setting_to_count_array
+	end
+
+	def get_weight(setting)
+		weight = 0
+
+		if setting.answer_1 == "Yes"
+			weight = 4
+		elsif setting.answer_2 == "No"
+			weight = 1
+		elsif setting.answer_3 == "Another template is used"
+			weight = 3
+		else
+			weight = 2
+		end
+
+		return weight
 	end
 
 	def is_not_consolidated?

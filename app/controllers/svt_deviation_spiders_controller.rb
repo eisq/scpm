@@ -300,8 +300,10 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def get_deviation_status(deviation_spider, deliverable, activity, score)
 		status = nil
+		setting_found = 0
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
 		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+			setting_found = 1
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				status = "Deliverable expected \n -- \n"
 				case score
@@ -329,12 +331,28 @@ class SvtDeviationSpidersController < ApplicationController
 			end
 		end
 
+		if setting_found = 0
+			status = "Deliverable not expected \n -- \n"
+			case score
+			when 0
+				status = status + "Project did not produce the deliverable and it was not justified"
+			when 1
+				status = status + "Project did not produce the deliverable and it was justified"
+			when 2
+				status = status + "Project did produce the deliverable using a different template from the referential one"
+			when 3
+				status = status + "Project did produce the deliverable using the referential template"
+			end
+		end
+
 		return status
 	end
 
 	def get_deviation_status_total(deviation_spider, deliverable, activity, score, status_array)
+		setting_found = 0
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
 		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+			setting_found = 1
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				status_array[0] = status_array[0] + 1
 				case score
@@ -359,6 +377,20 @@ class SvtDeviationSpidersController < ApplicationController
 				when 3
 					status_array[9] = status_array[9] + 1
 				end
+			end
+		end
+
+		if setting_found == 0
+			status_array[5] = status_array[5] + 1
+			case score
+			when 0
+				status_array[6] = status_array[6] + 1
+			when 1
+				status_array[7] = status_array[7] + 1
+			when 2
+				status_array[8] = status_array[8] + 1
+			when 3
+				status_array[9] = status_array[9] + 1
 			end
 		end
 
