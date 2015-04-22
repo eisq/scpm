@@ -483,16 +483,47 @@ class DeviationSpider < ActiveRecord::Base
 	end
 
 	def get_devia_standard(consolidations)
-		standard_number = 0
+		standard_number = number_of_duplicate = number_of_deliverables = 0
+		duplicate_conso = duplicate_conso_not_set = duplicate_conso_set_no = Array.new
+		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", self.milestone.project_id], :order => "version_number asc")
+
 		consolidations.each do |conso|
+			duplication_to_delete = false
+			as_been_added = false
 			if conso.score == 3 or conso.score == 2
-				deliverable_setting = DeviationSpiderSetting.find(:first, :conditions => ["deliverable_name = ?", conso.deliverable.name])
-				if deliverable_setting and (deliverable_setting.answer_1 == "Yes" or deliverable_setting.answer_3 == "Another template is used")
-					standard_number = standard_number + 1
+				DeviationSpiderSetting.find(:all, :conditions => ["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, conso.deliverable.name]).each do |sett|
+					if sett.answer_1 == "Yes" or sett.answer_3 == "Another template is used"
+						if !duplicate_conso.include?(conso.deliverable.name)
+							standard_number = standard_number + 1
+							duplicate_conso.push(conso.deliverable.name)
+							as_been_added = true
+						else
+							duplication_to_delete = true
+						end
+					else
+						if !duplicate_conso_set_no.include?(conso.deliverable.name)
+							duplicate_conso_set_no.push(conso.deliverable.name)
+						else
+							duplication_to_delete = true
+						end
+					end
+				end
+			else
+				if !duplicate_conso_not_set.include?(conso.deliverable.name)
+					duplicate_conso_not_set.push(conso.deliverable.name)
+				else
+					duplication_to_delete = true
 				end
 			end
+
+			if duplication_to_delete and !as_been_added
+				number_of_duplicate = number_of_duplicate + 1
+			end
 		end
-		standard = standard_number.to_f / consolidations.count.to_f * 100
+		
+		number_of_deliverables = consolidations.count - number_of_duplicate
+		standard = standard_number.to_f / number_of_deliverables.to_f * 100
+
 		return standard
 	end
 

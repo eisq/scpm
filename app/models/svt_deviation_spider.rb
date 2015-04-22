@@ -490,33 +490,47 @@ class SvtDeviationSpider < ActiveRecord::Base
 	end
 
 	def get_devia_standard(consolidations)
-		standard_number = 0
-		setting_to_count_array = Array.new
-		
+		standard_number = number_of_duplicate = number_of_deliverables = 0
+		duplicate_conso = duplicate_conso_not_set = duplicate_conso_set_no = Array.new
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", self.milestone.project_id], :order => "version_number asc")
+
 		consolidations.each do |conso|
+			duplication_to_delete = false
+			as_been_added = false
 			if conso.score == 3 or conso.score == 2
-				deliverable_setting = SvtDeviationSpiderSetting.find(:all, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, conso.deliverable.name]).each do |sett|
-					setting_to_count_array = update_setting_to_count_array(setting_to_count_array, setting)
+				SvtDeviationSpiderSetting.find(:all, :conditions => ["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, conso.deliverable.name]).each do |sett|
+					if sett.answer_1 == "Yes" or sett.answer_3 == "Another template is used"
+						if !duplicate_conso.include?(conso.deliverable.name)
+							standard_number = standard_number + 1
+							duplicate_conso.push(conso.deliverable.name)
+							as_been_added = true
+						else
+							duplication_to_delete = true
+						end
+					else
+						if !duplicate_conso_set_no.include?(conso.deliverable.name)
+							duplicate_conso_set_no.push(conso.deliverable.name)
+						else
+							duplication_to_delete = true
+						end
+					end
 				end
+			else
+				if !duplicate_conso_not_set.include?(conso.deliverable.name)
+					duplicate_conso_not_set.push(conso.deliverable.name)
+				else
+					duplication_to_delete = true
+				end
+			end
+
+			if duplication_to_delete and !as_been_added
+				number_of_duplicate = number_of_duplicate + 1
 			end
 		end
 
-		setting_to_count_array.each do |setting_to_count|
-				#	if deliverable_setting and deliverable_setting.count == 1 and (deliverable_setting[0].answer_1 == "Yes" or deliverable_setting[0].answer_3 == "Another template is used") and !duplicate_conso.include?(conso.deliverable.name)
-				#			standard_number = standard_number + 1
-				#			duplicate_conso.push(conso.deliverable.name)
-				#	elsif deliverable_setting and deliverable_setting.count > 1 and !duplicate_conso.include?(conso.deliverable.name)
-				#		deliverable_setting.each do |sett|
-				#			if sett.answer_1 == "Yes" or sett.answer_3 == "Another template is used" and !duplicate_conso.include?(conso.deliverable.name)
-				#				standard_number = standard_number + 1
-				#				duplicate_conso.push(conso.deliverable.name)
-				#			end
-				#		end
-				#	end
-				end
+		number_of_deliverables = consolidations.count - number_of_duplicate
+		standard = standard_number.to_f / number_of_deliverables.to_f * 100
 
-		standard = standard_number.to_f / consolidations.count.to_f * 100
 		return standard
 	end
 
