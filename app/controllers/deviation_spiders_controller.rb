@@ -114,7 +114,7 @@ class DeviationSpidersController < ApplicationController
 					@exportCustomizations << exportCustomization
 
 					if duplicate_custo.include?(exportCustomization.name)
-						@custo_array = get_customization_deliverable_status_array(exportCustomization.status, @custo_array)
+						#@custo_array = get_customization_deliverable_status_array(exportCustomization.status, @custo_array)
 					end
 					duplicate_custo.push(exportCustomization.name)
 				end
@@ -276,7 +276,7 @@ class DeviationSpidersController < ApplicationController
 		    			elsif export == true
 		    				consolidation = Consolidation_export.new
 		    				consolidation.status = get_deviation_status(deviation_spider, deliverable, activity, consolidation_saved.score)
-		    				@status_array = get_deviation_status_total(deviation_spider, deliverable, activity, consolidation_saved.score, @status_array)
+		    				#@status_array = get_deviation_status_total(deviation_spider, deliverable, activity, consolidation_saved.score, @status_array)
 		    			end
 	    				consolidation.conso_id = consolidation_saved.id
 	    				consolidation.spider_id = consolidation_saved.deviation_spider_id
