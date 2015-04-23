@@ -117,7 +117,7 @@ end
       @xml.Row 'ss:StyleID' => 'Default' do
         @xml.Cell 'ss:StyleID' => 'Default'
         @xml.Cell 'ss:StyleID' => 'Header3bold' do
-          @xml.Data @project.name.to_s + " KPIs project customization "+@milestone_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data @project.name + " KPIs project customization "+@milestone_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
 

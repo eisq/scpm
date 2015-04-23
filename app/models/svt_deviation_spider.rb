@@ -481,7 +481,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 
 		lifecycle_name = Lifecycle.find(:first, :conditions=>["id = ?", self.milestone.project.lifecycle_id]).name
 
-		chart = GoogleChart::PieChart.new('500x220', "Result of "+ lifecycle_name +" adherence") do |pie_chart|
+		chart = GoogleChart::PieChart.new('500x220', "Result of PQP adherence") do |pie_chart|
 			pie_chart.data "Standard " + standard.round.to_s + "%", standard, "2E2EFE"
 			pie_chart.data "Deviation " + deviation.round.to_s + "%",  deviation, "DF0101"
 		end
