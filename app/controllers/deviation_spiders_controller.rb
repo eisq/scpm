@@ -5,6 +5,8 @@ class DeviationSpidersController < ApplicationController
 	ExportCustomization = Struct.new(:activity, :name, :status, :justification)
 	Consolidation = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification)
 	Consolidation_export = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification, :status)
+	Devia_status_saved = Struct.new(:deliverable_id, :status_number)
+	Customization_deliverable_status = Struct.new(:deliverable_name, :status_number)
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
 	# 
@@ -93,7 +95,7 @@ class DeviationSpidersController < ApplicationController
 		for i in 0..3 do
 			@custo_array[i] = 0
 		end
-		duplicate_custo = Array.new
+		customization_status_array = Array.new
 
 		project_id = params[:project_id]
 		@milestone_name = params[:milestone_name]
@@ -112,11 +114,7 @@ class DeviationSpidersController < ApplicationController
 					exportCustomization.status = get_customization_deliverable_status(devia_settings.answer_1, devia_settings.answer_2, devia_settings.answer_3)
 					exportCustomization.justification = devia_settings.justification
 					@exportCustomizations << exportCustomization
-
-					if duplicate_custo.include?(exportCustomization.name)
-						#@custo_array = get_customization_deliverable_status_array(exportCustomization.status, @custo_array)
-					end
-					duplicate_custo.push(exportCustomization.name)
+					@custo_array, customization_status_array = get_customization_deliverable_status_array(devia_settings.deliverable_name, exportCustomization.status, @custo_array, customization_status_array)
 				end
 				lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
 				filename = @project.name+"_"+lifecycle.name+"_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
@@ -185,18 +183,46 @@ class DeviationSpidersController < ApplicationController
 		return status
 	end
 
-	def get_customization_deliverable_status_array(status, custo_array)
+	def get_customization_deliverable_status_array(deliverable_name, status, custo_array, customization_status_array)
+		#:deliverable_name, :status_number
+		customization_deliverable_status = Customization_deliverable_status.new
+		status_number = nil
+		already_added = false
+
 		case status
 		when "Project plans to use referential template to produce the deliverable"
-			custo_array[0] = custo_array[0] + 1
+			status_number = 0
 		when "Deliverable not applicable to the project"
-			custo_array[1] = custo_array[1] + 1
+			status_number = 1
 		when "Project plans to use a different template from the referential one to produce the deliverable"
-			custo_array[2] = custo_array[2] + 1
+			status_number = 2
 		when "Project doesn't plan to produce deliverable without justification"
-			custo_array[3] = custo_array[3] + 1
+			status_number = 3
 		end
-		return custo_array
+
+		if status_number
+			customization_deliverable_status.deliverable_name = deliverable_name
+			customization_deliverable_status.status_number = status_number
+
+			customization_status_array.each do |customization_status|
+				if customization_status.deliverable_name == deliverable_name
+					if status_number < customization_status.status_number
+						customization_status_array.delete(customization_status)
+						customization_status_array.push(customization_deliverable_status)
+						custo_array[customization_status.status_number] = custo_array[customization_status.status_number] - 1
+						custo_array[status_number] = custo_array[status_number] + 1
+					end
+					already_added = true
+				end
+			end
+
+			if !already_added
+				custo_array[status_number] = custo_array[status_number] + 1
+				customization_status_array.push(customization_deliverable_status)
+			end
+		end
+		
+		return custo_array, customization_status_array
 	end
 
 	def consolidate_interface
@@ -244,6 +270,7 @@ class DeviationSpidersController < ApplicationController
 
 	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable, export)
 		consolidations = Array.new
+		devia_status_saved_array = Array.new
 		@status_array = Array.new
 		for i in 0..9 do
 			@status_array[i] = 0
@@ -276,7 +303,7 @@ class DeviationSpidersController < ApplicationController
 		    			elsif export == true
 		    				consolidation = Consolidation_export.new
 		    				consolidation.status = get_deviation_status(deviation_spider, deliverable, activity, consolidation_saved.score)
-		    				#@status_array = get_deviation_status_total(deviation_spider, deliverable, activity, consolidation_saved.score, @status_array)
+		    				@status_array, devia_status_saved_array = get_deviation_status_total(deviation_spider, deliverable, consolidation_saved.score, @status_array, devia_status_saved_array)
 		    			end
 	    				consolidation.conso_id = consolidation_saved.id
 	    				consolidation.spider_id = consolidation_saved.deviation_spider_id
@@ -327,37 +354,117 @@ class DeviationSpidersController < ApplicationController
 		return status
 	end
 
-	def get_deviation_status_total(deviation_spider, deliverable, activity, score, status_array)
+	def get_deviation_status_total(deviation_spider, deliverable, score, status_array, devia_status_saved_array)
+		setting_found = 0
+		status_number = nil
+		#:deliverable_id, :status_number
+		devia_status_saved = Devia_status_saved.new
+
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
-		DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+		DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
+			not_to_add = false
+			setting_found = 1
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				status_array[0] = status_array[0] + 1
 				case score
 				when 0
-					status_array[1] = status_array[1] + 1
+					status_number = 1
 				when 1
-					status_array[2] = status_array[2] + 1
+					status_number = 2
 				when 2
-					status_array[3] = status_array[3] + 1
+					status_number = 3
 				when 3
-					status_array[4] = status_array[4] + 1
+					status_number = 4
 				end
 			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
 				status_array[5] = status_array[5] + 1
 				case score
 				when 0
-					status_array[6] = status_array[6] + 1
+					status_number = 6
 				when 1
-					status_array[7] = status_array[7] + 1
+					status_number = 7
 				when 2
-					status_array[8] = status_array[8] + 1
+					status_number = 8
 				when 3
-					status_array[9] = status_array[9] + 1
+					status_number = 9
+				end
+			end
+
+			if status_number
+				devia_status_saved.deliverable_id = deliverable.id
+				devia_status_saved.status_number = status_number
+
+				devia_status_saved_array.each do |devia_status|
+					if devia_status.deliverable_id == devia_status_saved.deliverable_id
+						if devia_status.status_number < devia_status_saved.status_number
+							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
+							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
+							devia_status_saved_array.delete(devia_status)
+							devia_status_saved_array.push(devia_status_saved)
+						end
+
+						if devia_status.status_number > 5
+							status_array[5] = status_array[5] - 1
+						else
+							status_array[0] = status_array[0] - 1
+						end
+
+						not_to_add = true
+					end
+				end
+
+				if !not_to_add
+					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved_array.push(devia_status_saved)
 				end
 			end
 		end
 
-		return status_array
+		if setting_found == 0
+			not_to_add = false
+			status_array[5] = status_array[5] + 1
+			case score
+			when 0
+				status_number = 6
+			when 1
+				status_number = 7
+			when 2
+				status_number = 8
+			when 3
+				status_number = 9
+			end
+			
+			if status_number
+				devia_status_saved.deliverable_id = deliverable.id
+				devia_status_saved.status_number = status_number
+
+				devia_status_saved_array.each do |devia_status|
+					if devia_status.deliverable_id == devia_status_saved.deliverable_id
+						if devia_status.status_number < devia_status_saved.status_number
+							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
+							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
+							devia_status_saved_array.delete(devia_status)
+							devia_status_saved_array.push(devia_status_saved)
+						end
+
+						if devia_status.status_number > 5
+							status_array[5] = status_array[5] - 1
+						else
+							status_array[0] = status_array[0] - 1
+						end
+						
+						not_to_add = true
+					end
+				end
+
+				if !not_to_add
+					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved_array.push(devia_status_saved)
+				end
+			end
+		end
+
+		return status_array, devia_status_saved_array
 	end
 
 	def export_deviation_excel

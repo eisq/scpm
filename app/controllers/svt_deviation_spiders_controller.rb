@@ -6,6 +6,7 @@ class SvtDeviationSpidersController < ApplicationController
 	Consolidation = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification)
 	Consolidation_export = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification, :status)
 	Devia_status_saved = Struct.new(:deliverable_id, :status_number)
+	Customization_deliverable_status = Struct.new(:deliverable_name, :status_number)
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
 	# 
@@ -94,7 +95,7 @@ class SvtDeviationSpidersController < ApplicationController
 		for i in 0..3 do
 			@custo_array[i] = 0
 		end
-		duplicate_custo = Array.new
+		customization_status_array = Array.new
 
 		project_id = params[:project_id]
 		@milestone_name = params[:milestone_name]
@@ -113,11 +114,7 @@ class SvtDeviationSpidersController < ApplicationController
 					exportCustomization.status = get_customization_deliverable_status(devia_settings.answer_1, devia_settings.answer_2, devia_settings.answer_3)
 					exportCustomization.justification = devia_settings.justification
 					@exportCustomizations << exportCustomization
-
-					if duplicate_custo.include?(exportCustomization.name)
-						#@custo_array = get_customization_deliverable_status_array(exportCustomization.status, @custo_array)
-					end
-					duplicate_custo.push(exportCustomization.name)
+					@custo_array, customization_status_array = get_customization_deliverable_status_array(devia_settings.deliverable_name, exportCustomization.status, @custo_array, customization_status_array)
 				end
 				lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
 				filename = @project.name+"_"+lifecycle.name+"_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
@@ -186,18 +183,46 @@ class SvtDeviationSpidersController < ApplicationController
 		return status
 	end
 
-	def get_customization_deliverable_status_array(status, custo_array)
+	def get_customization_deliverable_status_array(deliverable_name, status, custo_array, customization_status_array)
+		#:deliverable_name, :status_number
+		customization_deliverable_status = Customization_deliverable_status.new
+		status_number = nil
+		already_added = false
+
 		case status
 		when "Project plans to use referential template to produce the deliverable"
-			custo_array[0] = custo_array[0] + 1
+			status_number = 0
 		when "Deliverable not applicable to the project"
-			custo_array[1] = custo_array[1] + 1
+			status_number = 1
 		when "Project plans to use a different template from the referential one to produce the deliverable"
-			custo_array[2] = custo_array[2] + 1
+			status_number = 2
 		when "Project doesn't plan to produce deliverable without justification"
-			custo_array[3] = custo_array[3] + 1
+			status_number = 3
 		end
-		return custo_array
+
+		if status_number
+			customization_deliverable_status.deliverable_name = deliverable_name
+			customization_deliverable_status.status_number = status_number
+
+			customization_status_array.each do |customization_status|
+				if customization_status.deliverable_name == deliverable_name
+					if status_number < customization_status.status_number
+						customization_status_array.delete(customization_status)
+						customization_status_array.push(customization_deliverable_status)
+						custo_array[customization_status.status_number] = custo_array[customization_status.status_number] - 1
+						custo_array[status_number] = custo_array[status_number] + 1
+					end
+					already_added = true
+				end
+			end
+
+			if !already_added
+				custo_array[status_number] = custo_array[status_number] + 1
+				customization_status_array.push(customization_deliverable_status)
+			end
+		end
+		
+		return custo_array, customization_status_array
 	end
 
 	def consolidate_interface
@@ -252,47 +277,47 @@ class SvtDeviationSpidersController < ApplicationController
 		end
 
 		all_activities.each do |activity|
-	    		deliverables.each do |deliverable|
-	    			deviation_deliverable_added_by_hand = SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
-	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
-	    			if (self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
-						consolidation_saved = SvtDeviationSpiderConsolidationTemp.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
-						if !consolidation_saved and editable
-							#Consolidation in a temp table for manipulations before the real consolidation
-		    				consolidation_temp = SvtDeviationSpiderConsolidationTemp.new
-		    				consolidation_temp.svt_deviation_spider_id = deviation_spider.id
-		    				consolidation_temp.svt_deviation_deliverable_id = deliverable.id
-		    				consolidation_temp.svt_deviation_activity_id = activity.id
-		    				consolidation_temp.score = self.get_score(deviation_spider.id, deliverable, activity)
-		    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity, consolidation_temp.score)
+    		deliverables.each do |deliverable|
+    			deviation_deliverable_added_by_hand = SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
+    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
+    			if (self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
+					consolidation_saved = SvtDeviationSpiderConsolidationTemp.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
+					if !consolidation_saved and editable
+						#Consolidation in a temp table for manipulations before the real consolidation
+	    				consolidation_temp = SvtDeviationSpiderConsolidationTemp.new
+	    				consolidation_temp.svt_deviation_spider_id = deviation_spider.id
+	    				consolidation_temp.svt_deviation_deliverable_id = deliverable.id
+	    				consolidation_temp.svt_deviation_activity_id = activity.id
+	    				consolidation_temp.score = self.get_score(deviation_spider.id, deliverable, activity)
+	    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity, consolidation_temp.score)
 
-		    				consolidation_temp.save
-	    					consolidation_saved = consolidation_temp
-						elsif !consolidation_saved and !editable
-	    					#We consult the tab consolidation instead of the temporary one
-	    					consolidation_saved = SvtDeviationSpiderConsolidation.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
-	    				end
+	    				consolidation_temp.save
+    					consolidation_saved = consolidation_temp
+					elsif !consolidation_saved and !editable
+    					#We consult the tab consolidation instead of the temporary one
+    					consolidation_saved = SvtDeviationSpiderConsolidation.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
+    				end
 
-	    				if export == false
-		    				consolidation = Consolidation.new
-		    			elsif export == true
-		    				consolidation = Consolidation_export.new
-		    				consolidation.status = get_deviation_status(deviation_spider, deliverable, activity, consolidation_saved.score)
-		    				#@status_array, devia_status_saved_array = get_deviation_status_total(deviation_spider, deliverable, consolidation_saved.score, @status_array, devia_status_saved_array)
-		    			end
-	    				consolidation.conso_id = consolidation_saved.id
-	    				consolidation.spider_id = consolidation_saved.svt_deviation_spider_id
-	    				consolidation.deliverable = SvtDeviationDeliverable.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_deliverable_id])
-	    				consolidation.activity = SvtDeviationActivity.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_activity_id])
-	    				consolidation.score = consolidation_saved.score
-	    				consolidation.justification = consolidation_saved.justification
-	    				
-	    				consolidations << consolidation
+    				if export == false
+	    				consolidation = Consolidation.new
+	    			elsif export == true
+	    				consolidation = Consolidation_export.new
+	    				consolidation.status = get_deviation_status(deviation_spider, deliverable, activity, consolidation_saved.score)
+	    				@status_array, devia_status_saved_array = get_deviation_status_total(deviation_spider, deliverable, consolidation_saved.score, @status_array, devia_status_saved_array)
 	    			end
-	    		end
-	    	end
-	    	consolidations = consolidations & consolidations
-	    	return consolidations
+    				consolidation.conso_id = consolidation_saved.id
+    				consolidation.spider_id = consolidation_saved.svt_deviation_spider_id
+    				consolidation.deliverable = SvtDeviationDeliverable.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_deliverable_id])
+    				consolidation.activity = SvtDeviationActivity.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_activity_id])
+    				consolidation.score = consolidation_saved.score
+    				consolidation.justification = consolidation_saved.justification
+    				
+    				consolidations << consolidation
+    			end
+    		end
+    	end
+    	consolidations = consolidations & consolidations
+    	return consolidations
 	end
 
 	def get_deviation_status(deviation_spider, deliverable, activity, score)
@@ -347,51 +372,111 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def get_deviation_status_total(deviation_spider, deliverable, score, status_array, devia_status_saved_array)
 		setting_found = 0
+		status_number = nil
+		#:deliverable_id, :status_number
 		devia_status_saved = Devia_status_saved.new
-
-		##ajouter ici la gestion des doublons.
 
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
 		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
+			not_to_add = false
 			setting_found = 1
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				status_array[0] = status_array[0] + 1
 				case score
 				when 0
-					status_array[1] = status_array[1] + 1
+					status_number = 1
 				when 1
-					status_array[2] = status_array[2] + 1
+					status_number = 2
 				when 2
-					status_array[3] = status_array[3] + 1
+					status_number = 3
 				when 3
-					status_array[4] = status_array[4] + 1
+					status_number = 4
 				end
 			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
 				status_array[5] = status_array[5] + 1
 				case score
 				when 0
-					status_array[6] = status_array[6] + 1
+					status_number = 6
 				when 1
-					status_array[7] = status_array[7] + 1
+					status_number = 7
 				when 2
-					status_array[8] = status_array[8] + 1
+					status_number = 8
 				when 3
-					status_array[9] = status_array[9] + 1
+					status_number = 9
+				end
+			end
+
+			if status_number
+				devia_status_saved.deliverable_id = deliverable.id
+				devia_status_saved.status_number = status_number
+
+				devia_status_saved_array.each do |devia_status|
+					if devia_status.deliverable_id == devia_status_saved.deliverable_id
+						if devia_status.status_number < devia_status_saved.status_number
+							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
+							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
+							devia_status_saved_array.delete(devia_status)
+							devia_status_saved_array.push(devia_status_saved)
+						end
+
+						if devia_status.status_number > 5
+							status_array[5] = status_array[5] - 1
+						else
+							status_array[0] = status_array[0] - 1
+						end
+
+						not_to_add = true
+					end
+				end
+
+				if !not_to_add
+					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved_array.push(devia_status_saved)
 				end
 			end
 		end
 
 		if setting_found == 0
+			not_to_add = false
 			status_array[5] = status_array[5] + 1
 			case score
 			when 0
-				status_array[6] = status_array[6] + 1
+				status_number = 6
 			when 1
-				status_array[7] = status_array[7] + 1
+				status_number = 7
 			when 2
-				status_array[8] = status_array[8] + 1
+				status_number = 8
 			when 3
-				status_array[9] = status_array[9] + 1
+				status_number = 9
+			end
+			
+			if status_number
+				devia_status_saved.deliverable_id = deliverable.id
+				devia_status_saved.status_number = status_number
+
+				devia_status_saved_array.each do |devia_status|
+					if devia_status.deliverable_id == devia_status_saved.deliverable_id
+						if devia_status.status_number < devia_status_saved.status_number
+							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
+							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
+							devia_status_saved_array.delete(devia_status)
+							devia_status_saved_array.push(devia_status_saved)
+						end
+
+						if devia_status.status_number > 5
+							status_array[5] = status_array[5] - 1
+						else
+							status_array[0] = status_array[0] - 1
+						end
+						
+						not_to_add = true
+					end
+				end
+
+				if !not_to_add
+					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved_array.push(devia_status_saved)
+				end
 			end
 		end
 
