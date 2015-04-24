@@ -323,7 +323,7 @@ class SvtDeviationSpidersController < ApplicationController
 	def get_deviation_status(deviation_spider, deliverable, activity, score)
 		status = weight = weight_temp = nil
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
-		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
+		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				case score
 				when 0
@@ -439,14 +439,12 @@ class SvtDeviationSpidersController < ApplicationController
 							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
 							devia_status_saved_array.delete(devia_status)
 							devia_status_saved_array.push(devia_status_saved)
+							if devia_status.status_number > 5
+								status_array[5] = status_array[5] - 1
+							else
+								status_array[0] = status_array[0] - 1
+							end
 						end
-
-						if devia_status.status_number > 5
-							status_array[5] = status_array[5] - 1
-						else
-							status_array[0] = status_array[0] - 1
-						end
-
 						not_to_add = true
 					end
 				end
