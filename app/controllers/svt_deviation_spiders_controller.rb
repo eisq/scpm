@@ -431,7 +431,7 @@ class SvtDeviationSpidersController < ApplicationController
 				setting_found = 1
 
 				devia_status_saved_array.each do |devia_status|
-					if devia_status.deliverable_id == deliverable_id
+					if devia_status.deliverable_id == deliverable.id
 						if devia_status.status_number < status_number
 							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
 							status_array[status_number] = status_array[status_number] + 1
