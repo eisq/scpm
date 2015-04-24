@@ -403,7 +403,6 @@ class SvtDeviationSpidersController < ApplicationController
 		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
 			not_to_add = false
 			status_number = nil
-			setting_found = 1
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				case score
 				when 0
@@ -429,16 +428,14 @@ class SvtDeviationSpidersController < ApplicationController
 			end
 
 			if status_number
-				devia_status_saved.deliverable_id = deliverable.id
-				devia_status_saved.status_number = status_number
+				setting_found = 1
 
 				devia_status_saved_array.each do |devia_status|
-					if devia_status.deliverable_id == devia_status_saved.deliverable_id
+					if devia_status.deliverable_id == deliverable_id
 						if devia_status.status_number < status_number
 							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
 							status_array[status_number] = status_array[status_number] + 1
-							devia_status_saved_array.delete(devia_status)
-							devia_status_saved_array.push(devia_status_saved)
+							devia_status_saved_array.devia_status.status_number = status_number
 						end
 						not_to_add = true
 					end
@@ -446,6 +443,8 @@ class SvtDeviationSpidersController < ApplicationController
 
 				if !not_to_add
 					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved.deliverable_id = deliverable.id
+					devia_status_saved.status_number = status_number
 					devia_status_saved_array.push(devia_status_saved)
 				end
 			end
@@ -465,24 +464,23 @@ class SvtDeviationSpidersController < ApplicationController
 			end
 			
 			if status_number
-				devia_status_saved.deliverable_id = deliverable.id
-				devia_status_saved.status_number = status_number
+				setting_found = 1
 
 				devia_status_saved_array.each do |devia_status|
-					if devia_status.deliverable_id == devia_status_saved.deliverable_id
-						if devia_status.status_number < devia_status_saved.status_number
+					if devia_status.deliverable_id == deliverable_id
+						if devia_status.status_number < status_number
 							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
 							status_array[status_number] = status_array[status_number] + 1
-							devia_status_saved_array.delete(devia_status)
-							devia_status_saved_array.push(devia_status_saved)
+							devia_status_saved_array.devia_status.status_number = status_number
 						end
-						
 						not_to_add = true
 					end
 				end
 
 				if !not_to_add
 					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved.deliverable_id = deliverable.id
+					devia_status_saved.status_number = status_number
 					devia_status_saved_array.push(devia_status_saved)
 				end
 			end
