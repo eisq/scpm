@@ -439,12 +439,15 @@ class SvtDeviationSpidersController < ApplicationController
 							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
 							devia_status_saved_array.delete(devia_status)
 							devia_status_saved_array.push(devia_status_saved)
-							if devia_status.status_number > 5
-								status_array[5] = status_array[5] - 1
-							else
-								status_array[0] = status_array[0] - 1
-							end
+
 						end
+
+						if devia_status.status_number < 5
+							status_array[5] = status_array[5] - 1
+						else
+							status_array[0] = status_array[0] - 1
+						end
+
 						not_to_add = true
 					end
 				end
