@@ -316,8 +316,8 @@ class SvtDeviationSpidersController < ApplicationController
     			end
     		end
     	end
-    	@status_array[0] = @status_array[1] + @status_array[2] + @status_array[3] + @status_array[4]
-    	@status_array[5] = @status_array[6] + @status_array[7] + @status_array[8] + @status_array[9]
+    	@status_array[0] = @status_array[6] + @status_array[7] + @status_array[8] + @status_array[9]
+    	@status_array[5] = @status_array[1] + @status_array[2] + @status_array[3] + @status_array[4]
     	consolidations = consolidations & consolidations
     	return consolidations
 	end
@@ -407,17 +407,6 @@ class SvtDeviationSpidersController < ApplicationController
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
 				case score
 				when 0
-					status_number = 1
-				when 1
-					status_number = 2
-				when 2
-					status_number = 3
-				when 3
-					status_number = 4
-				end
-			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
-				case score
-				when 0
 					status_number = 6
 				when 1
 					status_number = 7
@@ -425,6 +414,17 @@ class SvtDeviationSpidersController < ApplicationController
 					status_number = 8
 				when 3
 					status_number = 9
+				end
+			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
+				case score
+				when 0
+					status_number = 1
+				when 1
+					status_number = 2
+				when 2
+					status_number = 3
+				when 3
+					status_number = 4
 				end
 			end
 
@@ -434,13 +434,12 @@ class SvtDeviationSpidersController < ApplicationController
 
 				devia_status_saved_array.each do |devia_status|
 					if devia_status.deliverable_id == devia_status_saved.deliverable_id
-						if devia_status.status_number > devia_status_saved.status_number
+						if devia_status.status_number < status_number
 							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
-							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
+							status_array[status_number] = status_array[status_number] + 1
 							devia_status_saved_array.delete(devia_status)
 							devia_status_saved_array.push(devia_status_saved)
 						end
-
 						not_to_add = true
 					end
 				end
@@ -456,13 +455,13 @@ class SvtDeviationSpidersController < ApplicationController
 			not_to_add = false
 			case score
 			when 0
-				status_number = 6
+				status_number = 1
 			when 1
-				status_number = 7
+				status_number = 2
 			when 2
-				status_number = 8
+				status_number = 3
 			when 3
-				status_number = 9
+				status_number = 4
 			end
 			
 			if status_number
@@ -473,7 +472,7 @@ class SvtDeviationSpidersController < ApplicationController
 					if devia_status.deliverable_id == devia_status_saved.deliverable_id
 						if devia_status.status_number < devia_status_saved.status_number
 							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
-							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
+							status_array[status_number] = status_array[status_number] + 1
 							devia_status_saved_array.delete(devia_status)
 							devia_status_saved_array.push(devia_status_saved)
 						end
