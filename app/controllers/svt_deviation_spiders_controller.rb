@@ -442,9 +442,9 @@ class SvtDeviationSpidersController < ApplicationController
 
 						end
 
-						if devia_status.status_number < 5
+						if (devia_status.status_number > 5) and (status_number < 5)
 							status_array[5] = status_array[5] - 1
-						else
+						elsif (devia_status.status_number < 5) and (status_number > 5)
 							status_array[0] = status_array[0] - 1
 						end
 
