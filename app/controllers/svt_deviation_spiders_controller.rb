@@ -321,50 +321,72 @@ class SvtDeviationSpidersController < ApplicationController
 	end
 
 	def get_deviation_status(deviation_spider, deliverable, activity, score)
-		status = nil
-		setting_found = 0
+		status = weight = weight_temp = nil
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
 		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
-			setting_found = 1
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
-				status = "Deliverable expected \n -- \n"
 				case score
 				when 0
-					status = status + "Project did not produce Deliverable without appropriate justification"
+					weight_temp = 4
 				when 1
-					status = status + "Project did not produce Deliverable with appropriate justification"
+					weight_temp = 5
 				when 2
-					status = status + "Project produced Deliverable using a different template from the referential one"
+					weight_temp = 6
 				when 3
-					status = status + "Project produced Deliverable with the expected template"
+					weight_temp = 7
 				end
-			elsif !status and (setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used")
-				status = "Deliverable not expected \n -- \n"
+			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
 				case score
 				when 0
-					status = status + "Project did not produce the deliverable and it was not justified"
+					weight_temp = 0
 				when 1
-					status = status + "Project did not produce the deliverable and it was justified"
+					weight_temp = 1
 				when 2
-					status = status + "Project did produce the deliverable using a different template from the referential one"
+					weight_temp = 2
 				when 3
-					status = status + "Project did produce the deliverable using the referential template"
+					weight_temp = 3
 				end
+			end
+
+			if weight
+				if weight_temp and (weight_temp > weight)
+					weight = weight_temp
+				end
+			else
+				weight = weight_temp
 			end
 		end
 
-		if setting_found = 0
-			status = "Deliverable not expected \n -- \n"
+		if !weight
 			case score
 			when 0
-				status = status + "Project did not produce the deliverable and it was not justified"
+				weight = 0
 			when 1
-				status = status + "Project did not produce the deliverable and it was justified"
+				weight = 1
 			when 2
-				status = status + "Project did produce the deliverable using a different template from the referential one"
+				weight = 2
 			when 3
-				status = status + "Project did produce the deliverable using the referential template"
+				weight = 3
 			end
+		end
+
+		case weight
+		when 0
+			status = "Deliverable not expected \n -- \n Project did not produce the deliverable and it was not justified"
+		when 1
+			status = "Deliverable not expected \n -- \n Project did not produce the deliverable and it was justified"
+		when 2
+			status = "Deliverable not expected \n -- \n Project did produce the deliverable using a different template from the referential one"
+		when 3
+			status = "Deliverable not expected \n -- \n Project did produce the deliverable using the referential template"
+		when 4
+			status = "Deliverable expected \n -- \n Project did not produce Deliverable without appropriate justification"
+		when 5
+			status = "Deliverable expected \n -- \n Project did not produce Deliverable with appropriate justification"
+		when 6
+			status = "Deliverable expected \n -- \n Project produced Deliverable using a different template from the referential one"
+		when 7
+			status = "Deliverable expected \n -- \n Project produced Deliverable with the expected template"
 		end
 
 		return status
