@@ -435,7 +435,7 @@ class SvtDeviationSpidersController < ApplicationController
 						if devia_status.status_number < status_number
 							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
 							status_array[status_number] = status_array[status_number] + 1
-							devia_status_saved_array.devia_status.status_number = status_number
+							devia_status.status_number = status_number
 						end
 						not_to_add = true
 					end
