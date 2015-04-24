@@ -426,9 +426,9 @@ class DeviationSpider < ActiveRecord::Base
 		standard = customization = deviation = total_number = 0
 		setting_to_count_array = Array.new
 
-		reference = SvtDeviationSpiderReference.find(:last, :conditions=>["project_id = ?", self.milestone.project_id], :order=>"version_number")
+		reference = DeviationSpiderReference.find(:last, :conditions=>["project_id = ?", self.milestone.project_id], :order=>"version_number")
 		if reference
-			settings = SvtDeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference])
+			settings = DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ?", reference])
 			if settings.count > 0
 				settings.each do |setting|
 					setting_to_count_array = update_setting_to_count_array(setting_to_count_array, setting)
