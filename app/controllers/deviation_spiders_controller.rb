@@ -316,6 +316,8 @@ class DeviationSpidersController < ApplicationController
 	    			end
 	    		end
 	    	end
+	    	@status_array[0] = @status_array[6] + @status_array[7] + @status_array[8] + @status_array[9]
+    		@status_array[5] = @status_array[1] + @status_array[2] + @status_array[3] + @status_array[4]
 	    	consolidations = consolidations & consolidations
 	    	return consolidations
 	end
@@ -394,28 +396,14 @@ class DeviationSpidersController < ApplicationController
 
 	def get_deviation_status_total(deviation_spider, deliverable, score, status_array, devia_status_saved_array)
 		setting_found = 0
-		status_number = nil
 		#:deliverable_id, :status_number
 		devia_status_saved = Devia_status_saved.new
 
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
-		DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
+		SvtDeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
 			not_to_add = false
-			setting_found = 1
+			status_number = nil
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
-				status_array[0] = status_array[0] + 1
-				case score
-				when 0
-					status_number = 1
-				when 1
-					status_number = 2
-				when 2
-					status_number = 3
-				when 3
-					status_number = 4
-				end
-			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
-				status_array[5] = status_array[5] + 1
 				case score
 				when 0
 					status_number = 6
@@ -426,33 +414,37 @@ class DeviationSpidersController < ApplicationController
 				when 3
 					status_number = 9
 				end
+			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
+				case score
+				when 0
+					status_number = 1
+				when 1
+					status_number = 2
+				when 2
+					status_number = 3
+				when 3
+					status_number = 4
+				end
 			end
 
 			if status_number
-				devia_status_saved.deliverable_id = deliverable.id
-				devia_status_saved.status_number = status_number
+				setting_found = 1
 
 				devia_status_saved_array.each do |devia_status|
-					if devia_status.deliverable_id == devia_status_saved.deliverable_id
-						if devia_status.status_number < devia_status_saved.status_number
+					if devia_status.deliverable_id == deliverable.id
+						if devia_status.status_number < status_number
 							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
-							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
-							devia_status_saved_array.delete(devia_status)
-							devia_status_saved_array.push(devia_status_saved)
+							status_array[status_number] = status_array[status_number] + 1
+							devia_status.status_number = status_number
 						end
-
-						if devia_status.status_number > 5
-							status_array[5] = status_array[5] - 1
-						else
-							status_array[0] = status_array[0] - 1
-						end
-
 						not_to_add = true
 					end
 				end
 
 				if !not_to_add
 					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved.deliverable_id = deliverable.id
+					devia_status_saved.status_number = status_number
 					devia_status_saved_array.push(devia_status_saved)
 				end
 			end
@@ -460,43 +452,35 @@ class DeviationSpidersController < ApplicationController
 
 		if setting_found == 0
 			not_to_add = false
-			status_array[5] = status_array[5] + 1
 			case score
 			when 0
-				status_number = 6
+				status_number = 1
 			when 1
-				status_number = 7
+				status_number = 2
 			when 2
-				status_number = 8
+				status_number = 3
 			when 3
-				status_number = 9
+				status_number = 4
 			end
 			
 			if status_number
-				devia_status_saved.deliverable_id = deliverable.id
-				devia_status_saved.status_number = status_number
+				setting_found = 1
 
 				devia_status_saved_array.each do |devia_status|
-					if devia_status.deliverable_id == devia_status_saved.deliverable_id
-						if devia_status.status_number < devia_status_saved.status_number
+					if devia_status.deliverable_id == deliverable_id
+						if devia_status.status_number < status_number
 							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
-							status_array[devia_status_saved.status_number] = status_array[devia_status_saved.status_number] + 1
-							devia_status_saved_array.delete(devia_status)
-							devia_status_saved_array.push(devia_status_saved)
+							status_array[status_number] = status_array[status_number] + 1
+							devia_status_saved_array.devia_status.status_number = status_number
 						end
-
-						if devia_status.status_number > 5
-							status_array[5] = status_array[5] - 1
-						else
-							status_array[0] = status_array[0] - 1
-						end
-						
 						not_to_add = true
 					end
 				end
 
 				if !not_to_add
 					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved.deliverable_id = deliverable.id
+					devia_status_saved.status_number = status_number
 					devia_status_saved_array.push(devia_status_saved)
 				end
 			end
