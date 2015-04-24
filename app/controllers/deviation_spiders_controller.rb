@@ -400,7 +400,7 @@ class DeviationSpidersController < ApplicationController
 		devia_status_saved = Devia_status_saved.new
 
 		last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
-		SvtDeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
+		DeviationSpiderSetting.find(:all, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
 			not_to_add = false
 			status_number = nil
 			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
