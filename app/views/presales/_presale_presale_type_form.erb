@@ -8,8 +8,6 @@ $j( document ).ready(function() {
 
 <%= hidden_field(:presale_presale_type, :id, :value=>@presale_presale_type.id) %>
 
-<p>Opportunity Number</p>
-<p><%= text_field :presale_presale_type, :opportunity_number, :class => "presale_type_detail_tf" %></p>
 <p>Statut</p>
 <p><%= select(:presale_presale_type, :status, @status, :size => @status.size ) %></p>
 <p>Complexity</p>
