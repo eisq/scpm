@@ -1,5 +1,6 @@
 <div id='presale_comment_<%=presale_comment.id%>'>
   <div class='presale_comment_date'>
+  	<p><span class="bold">Last update time:</span> <%= time_ago_in_words(presale_comment.updated_at.strftime("%Y-%m-%d %H:%M")) %></p>
 	<%= presale_comment.updated_at.strftime("%Y-%m-%d %H:%M")%> - <%= presale_comment.person.name if presale_comment.person %>
 	<% if edit_mode %>
 		<%=link_to_function('Edit', "edit(#{presale_comment.id});")%>
@@ -10,10 +11,11 @@
 	<table>
 		<tr>
 			<td><%= my_simple_format(presale_comment.comment) %></td>
+			<%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'presale_comment_delete', :presale_comment_id=>presale_comment.id}, :confirm=>"Are you sure?", :success=>"$('presale_comment_#{presale_comment.id}').hide();") %>
 		</tr>
 	</table>
   </div>
-</div>
 
 <br />
+</div>
 

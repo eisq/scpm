@@ -75,7 +75,11 @@
   		<td><%= p.workstream %></td>
   		<td><%= p.pm %></td>
   		<td><%= p.suite_tag.name if p.suite_tag %></td>
-  		<td><%= button_to "Presale",  {:action=>'show_presale', :id=>p.id} %></td>
+      <% if is_type %>
+        <td><%= button_to "Presale",  {:action=>'show_presale', :id=>p.id, :presale_type_id=>@presale_presale_type_id} %></td>
+      <% else %>
+  		  <td><%= button_to "Presale",  {:action=>'show_presale', :id=>p.id} %></td>
+      <% end %>
 
       <% if is_type %>
         

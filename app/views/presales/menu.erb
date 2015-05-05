@@ -20,7 +20,11 @@
 	<% newPresaleTypeIsSelected = "" %>
 	<% newPresaleTypeIsSelected = " selected" if defined? new_presale  %>
 	<div class="presale_btnlnk_action<%= newPresaleTypeIsSelected %>">
-		<%= link_to "New", {:controller => "presales", :action => "show_presale_type_select", :id => @presale.id}, {:class => "presale_btnlnk_content"} %>
+		<% if @presale_type_filtered %>
+			<%= link_to "New for " + @presale_type_filtered.title , {:action => "create_presale_presale_type", :presale_id => @presale.id, :presale_type_id => @presale_type_filtered.id },{:class=>"presale_btnlnk_content"} %>
+		<% else %>
+			<%= link_to "New", {:controller => "presales", :action => "show_presale_type_select", :id => @presale.id}, {:class => "presale_btnlnk_content"} %>
+		<% end %>
 	</div>
 
 	<!-- Presale type -->

@@ -64,6 +64,10 @@ class PresalesController < ApplicationController
 		@project = Project.find(:first, :conditions => ["id = ?", @project_id])
 
 		# Presale
+		presale_type_already_filtered = params[:presale_type_id]
+		if presale_type_already_filtered
+			@presale_type_filtered = PresaleType.find(:first, :conditions=>['id = ?', presale_type_already_filtered])
+		end
 		@presale = Presale.find(:first, :conditions => ["project_id = ?", @project_id])
 		if @project && !@presale
 			@presale = Presale.init_with_project(@project_id)
@@ -194,6 +198,15 @@ class PresalesController < ApplicationController
 			@presale_comment = PresaleComment.new
 			@presale_comment.presale_presale_type = presale_presale_type
 	    end 
+	end
+
+	def presale_comment_delete
+		presale_comment_id = params['presale_comment_id']
+		presale_comment = PresaleComment.find(:first, :conditions =>['id = ?', presale_comment_id])
+		if presale_comment
+			presale_comment.delete
+		end
+	    render(:nothing=>true)
 	end
 
 end
