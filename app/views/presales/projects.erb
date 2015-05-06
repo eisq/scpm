@@ -51,6 +51,8 @@
   <thead>
   	<tr>
       <th>ID</th>
+      <th>Next Milestone</th>
+      <th>Next Milestone date</th>
       <th>Name</th>
       <th>Workstream</th>
       <th>PM</th>
@@ -71,8 +73,15 @@
 
   	<tr>
   		<td><%= p.id %></td>
+      <% if p.get_next_milestone_column_red %>
+        <td align="center" bgcolor="#FFA8A8"><%= p.get_next_milestone %></td>
+        <td align="center" bgcolor="#FFA8A8"><%= p.next_milestone_date %></td>
+      <% else %>
+        <td align="center"><%= p.get_next_milestone %></td>
+        <td align="center"><%= p.next_milestone_date %></td>
+      <% end %>
   		<td><%=link_to(name, :controller=>'projects', :action=>'show', :id=>p.id) %></td>
-  		<td><%= p.workstream %></td>
+  		<td align="center"><%= p.workstream %></td>
   		<td><%= p.pm %></td>
   		<td><%= p.suite_tag.name if p.suite_tag %></td>
       <% if is_type %>

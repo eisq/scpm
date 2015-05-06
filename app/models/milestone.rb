@@ -6,6 +6,21 @@ class Milestone < ActiveRecord::Base
   has_many    :spiders
   has_many    :deviation_spiders
 
+  #case milestone.status
+  #  when -1
+  #    decision = "#no request# "
+  #  when 0
+  #    decision = "#unknown# "
+  #  when 1
+  #    decision = "#GO# "
+  #  when 2
+  #    decision = "#GO w/a# "
+  #  when 3
+  #    decision = "#NO GO# "
+  #  else
+  #    decision = "#NA# "
+  #end
+
   def date
     return self.actual_milestone_date if self.actual_milestone_date and self.actual_milestone_date!=""
     self.milestone_date

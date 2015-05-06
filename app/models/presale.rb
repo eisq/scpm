@@ -50,7 +50,7 @@ class Presale < ActiveRecord::Base
     	return "Unknow"
     end
 
-    def Presale.get_color(priority_raw)
+    def Presale.get_color(priority_raw)get_next_milestone_column_background_color
         case priority_raw
         when PRIORITY_NONE
             return "#FFFFFF"

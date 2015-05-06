@@ -711,6 +711,34 @@ class Project < ActiveRecord::Base
     # milestones.sort_by { |m| [milestone_order(m.name), (m.date ? m.date : Date.today())]}
     milestones.sort_by { |m| m.index_order}
   end
+
+  #returns true if M3 not passed and M3 <= today + 7days
+  def get_next_milestone_column_red
+      background_color = false
+      m_five_done = false
+      m_five = Milestone.find(:all, :conditions => ["project_id = ? and name = ?", self.id, "M5"]).each do |m_fiv|
+        if m_fiv.done > 0
+          m_five_done = true
+        end
+      end
+      if !m_five_done
+        Milestone.find(:all, :conditions=>["project_id = ? and name = ?", self.id, "M3"]).each do |m_trois|
+          if m_trois and m_trois.done == 0
+            if m_trois.actual_milestone_date
+                if m_trois.actual_milestone_date <= Date.today() + 10
+                    background_color = true
+                end
+            elsif !m_trois.actual_milestone_date and m_trois.milestone_date
+                if m_trois.milestone_date <= Date.today() + 10
+                    background_color = true
+                end
+            end
+          end
+        end
+      end
+
+      return background_color
+  end
  
 
   # give a list of corresponding requests PM
