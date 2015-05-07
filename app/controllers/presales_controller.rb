@@ -9,11 +9,17 @@ class PresalesController < ApplicationController
 
 		# Query
 		@presale_presale_type_id = params[:presale_presale_type_id]
-		cond = ""
 		if defined?(@presale_presale_type_id) and @presale_presale_type_id != nil and @presale_presale_type_id.to_i != 0
 			cond = "presale_type_id = #{@presale_presale_type_id}"
+			cond = cond + " and status != 'Buyside Accepted' and status != 'Cancelled'"
+			cond_s = "presale_type_id = #{@presale_presale_type_id}"
+			cond_s = cond_s + " and (status = 'Buyside Accepted' or status = 'Cancelled')"
+		else
+			cond = "status IS NULL or (status != 'Buyside Accepted' and status != 'Cancelled')"
+			cond_s = "status = 'Buyside Accepted' or status = 'Cancelled'"
 		end
 		@opportunities = PresalePresaleType.find(:all, :conditions=>"#{cond}", :order=>'presale_type_id')
+		@opportunities_second_table = PresalePresaleType.find(:all, :conditions=>"#{cond_s}", :order=>'presale_type_id')
 	end
 
 	def projects
@@ -21,6 +27,12 @@ class PresalesController < ApplicationController
 			@show_ignored = false
 		else
 			@show_ignored = true
+		end
+
+		if params[:show_post_m_five] == "true"
+			@show_post_m_five = true
+		else
+			@show_post_m_five = false
 		end
 
 		# Presale Types
@@ -54,6 +66,21 @@ class PresalesController < ApplicationController
 			                         :conditions=>["is_running=1 and projects.project_id IS NOT NULL and milestones.name IN (?) and #{cond}", (APP_CONFIG['presale_milestones_priority_setting_up'] + APP_CONFIG['presale_milestones_priority'])], 
 			                         :group=>'projects.id')
 		end
+
+		if @show_post_m_five
+			@projects.each do |project|
+				if !project.post_m_five
+					@projects.delete(project)
+				end
+			end
+		elsif !@show_post_m_five
+			@projects.each do |project|
+				if project.post_m_five
+					@projects.delete(project)
+				end
+			end
+		end
+			
 	end
 	
 

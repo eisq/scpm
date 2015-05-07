@@ -37,6 +37,20 @@
       <% end %>
     <% end %>
   </div>
+
+  <!-- SHOW POST M5 -->
+  <div style="position:absolute;right:60px;">
+    <% if is_type %>
+      Show post-m5 projects for <%= @presales_types_by_id[@presale_presale_type_id.to_s] %>: 
+      <% if @show_ignored %>
+        <%= radio_button_tag "show post-m5", :false,  false, {:onclick=>"setShowIgnore(this);"} %> No
+        <%= radio_button_tag "show pre-m5", :true, true, {:onclick=>"setShowIgnore(this);"} %> Yes
+      <% else %>
+        <%= radio_button_tag "show pre-m5", :false,  true, {:onclick=>"setShowIgnore(this);"} %> No
+        <%= radio_button_tag "show post-m5", :true, false, {:onclick=>"setShowIgnore(this);"} %> Yes
+      <% end %>
+    <% end %>
+  </div>
 </div>
 
 <!-- TITLE -->

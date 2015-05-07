@@ -739,7 +739,16 @@ class Project < ActiveRecord::Base
 
       return background_color
   end
- 
+
+  def post_m_five
+    post_m_five = false
+    m_five = Milestone.find(:all, :conditions => ["project_id = ? and name = ?", self.id, "M5"]).each do |m_fiv|
+      if m_fiv.done > 0
+        post_m_five = true
+      end
+    end
+    return post_m_five
+  end
 
   # give a list of corresponding requests PM
   def request_pm

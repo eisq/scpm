@@ -21,11 +21,11 @@
 		<th>Next Milestone</th>
 		<th>Next Milestone date</th>
 		<th>Project ID</th>
-		<th>Project Name</th>
+		<th width="380">Project Name</th>
 		<th>Project Workstream</th>
-		<th>Project PM</th>
+		<th width="120">Project PM</th>
 		<th>Project Suite Name</th>
-		<th>Status</th>
+		<th width="110">Status</th>
 		<th></th>
 	</tr>
 </thead>
@@ -57,6 +57,53 @@
 <% end %>
 </tbody>
 </table>
+<br/><br/>
+
+<% if @opportunities_second_table.count > 0 %>
+<div id="priority_milestones"></div>
+<h3>Opportunities Buyside accepted or Cancelled</h3>
+<table id="presales_table_1" class="sortable">
+<thead>
+	<tr>
+		<th>Type</th>
+		<th>Next Milestone</th>
+		<th>Next Milestone date</th>
+		<th>Project ID</th>
+		<th width="380">Project Name</th>
+		<th>Project Workstream</th>
+		<th width="120">Project PM</th>
+		<th>Project Suite Name</th>
+		<th width="110">Status</th>
+		<th></th>
+	</tr>
+</thead>
+<tbody>
+<% @opportunities_second_table.each do |o_s| %>
+	<% name = "" %>
+	<% name += o_s.presale.project.project.name+" > " if o_s.presale.project.project %>
+	<% name += o_s.presale.project.name %>
+
+	<tr>
+		<td><%= o_s.presale_type.title %></td>
+		<% if o_s.presale.project.get_next_milestone_column_red %>
+			<td align="center" bgcolor="#FFA8A8"><%= o_s.presale.next_milestone %></td>
+			<td align="center" bgcolor="#FFA8A8"><%= o_s.presale.next_milestone_date %></td>
+		<% else %>
+			<td align="center"><%= o_s.presale.next_milestone %></td>
+			<td align="center"><%= o_s.presale.next_milestone_date %></td>
+		<% end %>
+		<td><%= o_s.presale.project.id %></td>
+		<td><%=link_to(name, :controller=>'projects', :action=>'show', :id=>o_s.presale.project.id) %></td>
+		<td><%= o_s.presale.project.workstream %></td>
+		<td><%= o_s.presale.project.pm %></td>
+		<td><%= o_s.presale.project.suite_tag.name if o_s.presale.project.suite_tag %></td>
+		<td><%= o_s.status%></td>
+		<td><%= button_to "Edit",  {:action=>'show_presale_by_type', :presale_presale_type=>o_s.id} %></td>
+	</tr>
+<% end %>
+</tbody>
+</table>
+<% end %>
 
 
 <script type="text/javascript">
