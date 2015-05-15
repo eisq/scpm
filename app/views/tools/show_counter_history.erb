@@ -112,10 +112,10 @@ $j(document).ready(function (){
   <tr>
     <td class="line_number"><%= line_count.to_s %></td>
     <td><%= sc.author.name %></td>
-    <td><%= sc.action_date.strftime("%Y-%m-%d %H:%M") %></td>   
-    <% project_name = sc.spider.project.name %>
-    <% if sc.spider.project.project %>
-      <% project_name = sc.spider.project.project.name + " > " + sc.spider.project.name %>
+    <td><%= sc.action_date.strftime("%Y-%m-%d %H:%M") %></td>
+    <% project_name = sc.spider.milestone.project.name %>
+    <% if sc.spider.milestone.project.project %>
+      <% project_name = sc.spider.milestone.project.project.name + " > " + sc.spider.milestone.project.name %>
     <% end %>
     <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.spider.project.id}) %></td>
     <td><%= sc.spider.milestone.to_s %></td>

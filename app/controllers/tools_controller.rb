@@ -174,6 +174,14 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def fill_project_id
+    DeviationSpider.find(:all, :conditions=>['id > 10000']).each do |ds|
+      ds.project_id = ds.milestone.project_id
+      ds.save
+    end
+    redirect_to '/tools/scripts'
+  end
+
   def sdp_import
   end
 
@@ -757,6 +765,7 @@ class ToolsController < ApplicationController
       spider_condition = spider_condition+" and history_counters.request_id="+@request_id.to_s
       qs_condition     = qs_condition+" and history_counters.request_id="+@request_id.to_s
     end
+    spider_condition_vt = spider_condition + " and concerned_spider_id > 10000"
     
     @spider_counter = HistoryCounter.find(:all,:conditions=>[spider_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id",
@@ -766,6 +775,21 @@ class ToolsController < ApplicationController
                                           ],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
     
+    @spider_counter_vt = HistoryCounter.find(:all,:conditions=>[spider_condition_vt],
+                                          :joins => ["JOIN requests ON requests.id = history_counters.request_id",
+                                          "JOIN deviation_spiders ON deviation_spiders.id = history_counters.concerned_spider_id",
+                                          "JOIN projects ON projects.id = deviation_spiders.project_id",
+                                          "JOIN projects as parent ON parent.id = projects.project_id"
+                                          ],
+                                          :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
+
+    @spider_counter_vt.each do |ss|
+      history_counter = HistoryCounter.new
+      #ss.spider = "0"
+      raise ss.deviation_spider.id.to_s
+      #@spider_counter << ss
+    end
+
     @qs_counter     = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id", 
                                           "JOIN statuses ON statuses.id = history_counters.concerned_status_id",
