@@ -831,7 +831,7 @@ class ToolsController < ApplicationController
       spider_condition = spider_condition+" and history_counters.request_id="+@request_id.to_s
       qs_condition     = qs_condition+" and history_counters.request_id="+@request_id.to_s
     end
-    spider_condition_vt = spider_condition + " and concerned_spider_id > 10000"
+    spider_condition_vt = spider_condition + " and (concerned_spider_id BETWEEN 10000 and 30000)"
     spider_condition_vtt = spider_condition + " and concerned_spider_id > 30000"
     
     spider_counter = HistoryCounter.find(:all,:conditions=>[spider_condition],
@@ -858,7 +858,6 @@ class ToolsController < ApplicationController
                                           ],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
 
-    #Spider_counter_struct    = Struct.new(:historycounter, :spider_version)
     table_spider_counter_temp = Array.new
     @table_spider_counter = Array.new
 
@@ -905,6 +904,8 @@ class ToolsController < ApplicationController
       spider_condition = spider_condition+" and history_counters.stream_id="+@stream_id.to_s
       qs_condition     = qs_condition+" and history_counters.stream_id="+@stream_id.to_s
     end
+    spider_condition_vt = spider_condition + " and (concerned_spider_id BETWEEN 10000 and 30000)"
+    spider_condition_vtt = spider_condition + " and concerned_spider_id > 30000"
       
     tmp_spider_counter_no_request = HistoryCounter.find(:all,:conditions=>[spider_condition],
                                           :joins => ["JOIN spiders ON spiders.id = history_counters.concerned_spider_id",
@@ -912,6 +913,19 @@ class ToolsController < ApplicationController
                                           "JOIN projects as parent ON parent.id = projects.project_id"
                                           ],
                                           :order=>"parent.name ASC, projects.name ASC")
+    tmp_spider_counter_no_request_vt = HistoryCounter.find(:all,:conditions=>[spider_condition_vt],
+                                          :joins => ["JOIN deviation_spiders ON deviation_spiders.id = history_counters.concerned_spider_id",
+                                          "JOIN projects ON projects.id = deviation_spiders.project_id",
+                                          "JOIN projects as parent ON parent.id = projects.project_id"
+                                          ],
+                                          :order=>"parent.name ASC, projects.name ASC")
+    tmp_spider_counter_no_request_vtt = HistoryCounter.find(:all,:conditions=>[spider_condition_vtt],
+                                          :joins => ["JOIN svt_deviation_spiders ON svt_deviation_spiders.id = history_counters.concerned_spider_id",
+                                          "JOIN projects ON projects.id = svt_deviation_spiders.project_id",
+                                          "JOIN projects as parent ON parent.id = projects.project_id"
+                                          ],
+                                          :order=>"parent.name ASC, projects.name ASC")
+
     tmp_qs_counter_no_request     = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN statuses ON statuses.id = history_counters.concerned_status_id",
                                           "JOIN projects ON projects.id = statuses.project_id",
@@ -919,7 +933,6 @@ class ToolsController < ApplicationController
                                           :order=>"parent.name ASC, projects.name ASC")
     @spider_counter_no_request    = Array.new
     @qs_counter_no_request        = Array.new
-
 
     # For each spider counter
     tmp_spider_counter_no_request.each do |s_req|
@@ -930,6 +943,42 @@ class ToolsController < ApplicationController
       
       # Check if we have a available spider request thanks to Workstream 
       stream_found  = Stream.find_with_workstream(s_req.spider.project.workstream)
+      if ((stream_found) and (current_user.id.to_i == current_spider_user.id.to_i))
+        request_found = stream_found.get_current_spider_counter_request(current_spider_user)
+        if request_found
+          current_spider_history["request"] = request_found
+        end
+      end
+      @spider_counter_no_request << current_spider_history
+    end
+
+    # For each deviation_spider counter
+    tmp_spider_counter_no_request_vt.each do |s_req|
+      current_spider_history            = Hash.new
+      current_spider_history["object"]  = s_req
+      current_spider_history["request"] = nil
+      current_spider_user               = Person.find(s_req.author_id)
+      
+      # Check if we have a available spider request thanks to Workstream 
+      stream_found  = Stream.find_with_workstream(s_req.deviation_spider.project.workstream)
+      if ((stream_found) and (current_user.id.to_i == current_spider_user.id.to_i))
+        request_found = stream_found.get_current_spider_counter_request(current_spider_user)
+        if request_found
+          current_spider_history["request"] = request_found
+        end
+      end
+      @spider_counter_no_request << current_spider_history
+    end
+
+    # For each svt_deviation_spider counter
+    tmp_spider_counter_no_request_vtt.each do |s_req|
+      current_spider_history            = Hash.new
+      current_spider_history["object"]  = s_req
+      current_spider_history["request"] = nil
+      current_spider_user               = Person.find(s_req.author_id)
+      
+      # Check if we have a available spider request thanks to Workstream 
+      stream_found  = Stream.find_with_workstream(s_req.deviation_spider.project.workstream)
       if ((stream_found) and (current_user.id.to_i == current_spider_user.id.to_i))
         request_found = stream_found.get_current_spider_counter_request(current_spider_user)
         if request_found
