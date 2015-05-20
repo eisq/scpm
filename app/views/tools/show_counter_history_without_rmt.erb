@@ -36,21 +36,38 @@ $j(document).ready(function (){
 <% @spider_counter_no_request.each do |spider_array| %>
 	<% sc_no_req = spider_array["object"] %>
 	<tr>
-		<td><%= sc_no_req.author.name %></td>
-		<td><%= sc_no_req.action_date.strftime("%Y-%m-%d %H:%M") %></td>
+		<td><%= sc_no_req.historycounter.author.name %></td>
+		<td><%= sc_no_req.historycounter.action_date.strftime("%Y-%m-%d %H:%M") %></td>
 		
-		<% project_name = sc_no_req.spider.project.name %>
-		<% if sc_no_req.spider.project.project %>
-			<% project_name = sc_no_req.spider.project.project.name + " > " + sc_no_req.spider.project.name %>
+		<% if sc_no_req.spider_version == 1 %>
+			<% project_name = sc_no_req.historycounter.spider.project.name %>
+			<% if sc_no_req.historycounter.spider.project.project %>
+				<% project_name = sc_no_req.historycounter.spider.project.project.name + " > " + sc_no_req.historycounter.spider.project.name %>
+			<% end %>
+			<td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc_no_req.historycounter.spider.project.id}) %></td>
+			<td><%= sc_no_req.historycounter.spider.milestone.to_s %></td>
+		<% elsif sc_no_req.spider_version == 2 %>
+			<% project_name = sc_no_req.historycounter.deviation_spider.project.name %>
+			<% if sc_no_req.historycounter.deviation_spider.project.project %>
+				<% project_name = sc_no_req.historycounter.deviation_spider.project.project.name + " > " + sc_no_req.historycounter.deviation_spider.project.name %>
+			<% end %>
+			<td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc_no_req.historycounter.deviation_spider.project.id}) %></td>
+			<td><%= sc_no_req.historycounter.deviation_spider.milestone.to_s %></td>
+		<% elsif sc_no_req.spider_version == 3 %>
+			<% project_name = sc_no_req.historycounter.svt_deviation_spider.project.name %>
+			<% if sc_no_req.historycounter.svt_deviation_spider.project.project %>
+				<% project_name = sc_no_req.historycounter.svt_deviation_spider.project.project.name + " > " + sc_no_req.historycounter.svt_deviation_spider.project.name %>
+			<% end %>
+			<td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc_no_req.historycounter.svt_deviation_spider.project.id}) %></td>
+			<td><%= sc_no_req.historycounter.svt_deviation_spider.milestone.to_s %></td>
 		<% end %>
-		<td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc_no_req.spider.project.id}) %></td>
-		<td><%= sc_no_req.spider.milestone.to_s %></td>
-		<td style="width:250px;" id=<%="req_#{sc_no_req.id}" %>>
+
+		<td style="width:250px;" id=<%="req_#{sc_no_req.historycounter.id}" %>>
 			<% if spider_array["request"] %> 
 				<%= link_to('Add this counter to request ' + spider_array["request"].request_id ,
 							{ :controller=>'streams', 
 							:action=>'link_old_counter', 
-							:history_counter_id => sc_no_req.id,
+							:history_counter_id => sc_no_req.historycounter.id,
 							:request_id=>spider_array["request"].id}) %>
 			<% else %>
 				No request 
@@ -58,7 +75,7 @@ $j(document).ready(function (){
 		</td>
 
     <% if (current_user.has_role?('Admin')) %>
-      <td class="admin"><%= link_to("Delete", {:controller=>'tools', :action=>'delete_history_spider', :id=>sc_no_req.id, :stream_id=>@stream_id.to_i, :caller => "show_counter_history_without_rmt" }, :confirm=>"Are you sure you want to delete this counter and decrement the counter on the assiociated project ?" ) %></td>
+      <td class="admin"><%= link_to("Delete", {:controller=>'tools', :action=>'delete_history_spider', :id=>sc_no_req.historycounter.id, :stream_id=>@stream_id.to_i, :caller => "show_counter_history_without_rmt" }, :confirm=>"Are you sure you want to delete this counter and decrement the counter on the assiociated project ?" ) %></td>
     <% end %>
 
 	</tr>
