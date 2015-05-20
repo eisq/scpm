@@ -93,14 +93,14 @@ class SvtDeviationSpidersController < ApplicationController
   	end
 
   	def update_spider_file_name
-    spider_id          = params[:id]
-    if params[:spider][:file_link]
-      spider           = SvtDeviationSpider.find(spider_id)
-      spider.file_link = params[:spider][:file_link]
-      spider.save
-    end
-    redirect_to :controller=>:tools ,:action=>:show_counter_history
-  end
+	    spider_id          = params[:id]
+	    if params[:svt_deviation_spider][:file_link]
+	      spider           = SvtDeviationSpider.find(spider_id)
+	      spider.file_link = params[:svt_deviation_spider][:file_link]
+	      spider.save
+	    end
+	    redirect_to :controller=>:tools ,:action=>:show_counter_history
+	end
 
 	# --------
 	# EXPORT
@@ -847,6 +847,7 @@ class SvtDeviationSpidersController < ApplicationController
 		if @milestone
 			@deviation_spider = SvtDeviationSpider.new
 			@deviation_spider.milestone_id = milestone_id
+			@deviation_spider.project_id = @milestone.project_id
 			@deviation_spider.save
 			@deviation_spider.init_spider_data
 			redirect_to :action =>:index, :milestone_id => milestone_id

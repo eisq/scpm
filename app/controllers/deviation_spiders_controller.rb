@@ -94,12 +94,12 @@ class DeviationSpidersController < ApplicationController
 
   	def update_spider_file_name
 	    spider_id          = params[:id]
-	    if params[:spider][:file_link]
+	    if params[:deviation_spider][:file_link]
 	      spider           = DeviationSpider.find(spider_id)
-	      spider.file_link = params[:spider][:file_link]
+	      spider.file_link = params[:deviation_spider][:file_link]
 	      spider.save
 	    end
-	    redirect_to :controller=>:tools ,:action=>:show_counter_history
+	    redirect_to :controller=>:tools, :action=>:show_counter_history
 	end
 
 	# --------
@@ -835,6 +835,7 @@ class DeviationSpidersController < ApplicationController
 		if @milestone
 			@deviation_spider = DeviationSpider.new
 			@deviation_spider.milestone_id = milestone_id
+			@deviation_spider.project_id = @milestone.project_id
 			@deviation_spider.save
 			@deviation_spider.init_spider_data
 			redirect_to :action =>:index, :milestone_id => milestone_id
