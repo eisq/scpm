@@ -87,7 +87,7 @@ $j(document).ready(function (){
     <!-- REQUEST TR -->
     <tr class="bg_blue">
       <td>
-        <a target="_blank" href="http://toulouse.sqli.com/EMN/view.php?id=<%= sc.historycounter.request_id %>">#<%= sc.historycounter.request_id %></a>
+        <a target="_blank" href="http://toulouse.sqli.com/EMN/view.php?id=<%= sc.historycounter.request.request_id %>">#<%= sc.historycounter.request.request_id %></a>
       </td>
       <td COLSPAN="<%= row_number-1 %>"><%= sc.historycounter.request.summary %></td>
       <td class="admin"><input style="float:right;" type="button" value="Copy" onclick="copyInView($j('#history_spider_count_table_<%= sc.historycounter.request_id.to_s %>'));" /></td>
