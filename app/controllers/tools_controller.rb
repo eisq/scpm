@@ -883,7 +883,16 @@ class ToolsController < ApplicationController
       @table_spider_counter << count_struct
     end
 
-    @table_spider_counter.sort_by { |tsc| tsc[:request_id]}
+    #@table_spider_counter.sort_by { |tsc| tsc[:request_id]}
+    @table_spider_counter.map {|u| [u.request_id, u[0].action_date]}
+
+    #Here I try to debug my sort_by function
+    @table_spider_counter.each do |tt|
+      if tt.request_id == 7486
+        Rails.logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%" + @table_spider_counter.index(tt).to_s)
+      end
+    end
+    #raise "lol"
 
     @qs_counter     = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id", 

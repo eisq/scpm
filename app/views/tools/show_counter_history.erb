@@ -115,23 +115,23 @@ $j(document).ready(function (){
     <td><%= sc.historycounter.action_date.strftime("%Y-%m-%d %H:%M") %></td>
 
     <% if sc.spider_version == 1 %>
-      <% project_name = sc.historycounter.spider.milestone.project.name %>
-      <% if sc.historycounter.spider.milestone.project.project %>
-        <% project_name = sc.historycounter.spider.milestone.project.project.name + " > " + sc.historycounter.spider.milestone.project.name %>
+      <% project_name = sc.historycounter.spider.project.name %>
+      <% if sc.historycounter.spider.project.project %>
+        <% project_name = sc.historycounter.spider.project.project.name + " > " + sc.historycounter.spider.project.name %>
       <% end %>
       <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.historycounter.spider.project.id}) %></td>
       <td><%= sc.historycounter.spider.milestone.to_s %></td>
     <% elsif sc.spider_version == 2 %>
-      <% project_name = sc.historycounter.deviation_spider.milestone.project.name %>
-      <% if sc.historycounter.deviation_spider.milestone.project.project %>
-        <% project_name = sc.historycounter.deviation_spider.milestone.project.project.name + " > " + sc.historycounter.deviation_spider.milestone.project.name %>
+      <% project_name = sc.historycounter.deviation_spider.project.name %>
+      <% if sc.historycounter.deviation_spider.project.project %>
+        <% project_name = sc.historycounter.deviation_spider.project.project.name + " > " + sc.historycounter.deviation_spider.project.name %>
       <% end %>
       <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.historycounter.deviation_spider.project.id}) %></td>
       <td><%= sc.historycounter.deviation_spider.milestone.to_s %></td>
     <% elsif sc.spider_version == 3 %>
-      <% project_name = sc.historycounter.svt_deviation_spider.milestone.project.name %>
-      <% if sc.historycounter.svt_deviation_spider.milestone.project.project %>
-        <% project_name = sc.historycounter.svt_deviation_spider.milestone.project.project.name + " > " + sc.historycounter.svt_deviation_spider.milestone.project.name %>
+      <% project_name = sc.historycounter.svt_deviation_spider.project.name %>
+      <% if sc.historycounter.svt_deviation_spider.project.project %>
+        <% project_name = sc.historycounter.svt_deviation_spider.milestone.project.name + " > " + sc.historycounter.svt_deviation_spider.project.name %>
       <% end %>
       <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.historycounter.svt_deviation_spider.project.id}) %></td>
       <td><%= sc.historycounter.svt_deviation_spider.milestone.to_s %></td>
