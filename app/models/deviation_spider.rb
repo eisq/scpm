@@ -7,6 +7,7 @@ class DeviationSpider < ActiveRecord::Base
   	has_many	:deviation_spider_activity_values
   	has_many	:deviation_spider_deliverable_values
 	belongs_to 	:milestone
+	belongs_to  :project
 
 
 	Spider_parameters 		= Struct.new(:deliverables, :activities, :psu_imported)

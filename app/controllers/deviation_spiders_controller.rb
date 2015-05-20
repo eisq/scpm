@@ -87,6 +87,21 @@ class DeviationSpidersController < ApplicationController
 		@projects = Project.find(:all, :conditions=>["supervisor_id = ?", 21])
 	end
 
+	def update_spider_file_name_form
+	    spider_id  = params[:id]
+	    @spider    = DeviationSpider.find(spider_id)
+  	end
+
+  	def update_spider_file_name
+	    spider_id          = params[:id]
+	    if params[:spider][:file_link]
+	      spider           = DeviationSpider.find(spider_id)
+	      spider.file_link = params[:spider][:file_link]
+	      spider.save
+	    end
+	    redirect_to :controller=>:tools ,:action=>:show_counter_history
+	end
+
 	# --------
 	# EXPORT
 	# --------

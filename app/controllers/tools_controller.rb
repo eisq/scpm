@@ -2,6 +2,8 @@ require 'google_chart'
 
 class ToolsController < ApplicationController
 
+  Spider_counter_struct    = Struct.new(:historycounter, :spider_version)
+
   if APP_CONFIG['project_name']=='EISQ'
     layout 'tools'
   else
@@ -174,11 +176,75 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
-  def fill_project_id
-    DeviationSpider.find(:all, :conditions=>['id > 10000']).each do |ds|
-      ds.project_id = ds.milestone.project_id
-      ds.save
+  def change_svt_id
+    #Create the new starting reference
+    svt_spider = SvtDeviationSpider.new
+    svt_spider.id = 30000
+    svt_spider.save
+
+    #migrate all existing svt_spiders
+    i = 0
+    SvtDeviationSpider.find(:all, :conditions=>["id < 30000"]).each do |spider|
+      i = i + 1
+      new_spider = SvtDeviationSpider.new
+      new_spider.id = (30000 + i)
+      new_spider.milestone_id = spider.milestone_id
+      new_spider.impact_count = spider.impact_count
+      new_spider.created_at = spider.created_at
+      new_spider.updated_at = spider.updated_at
+      new_spider.file_link = spider.file_link
+      new_spider.save
+
+      SvtDeviationSpiderConsolidation.find(:all, :conditions=>["svt_deviation_spider_id = ?", spider.id]).each do |conso|
+        conso.svt_deviation_spider_id = new_spider.id
+        conso.save
+      end
+
+      SvtDeviationSpiderDeliverable.find(:all, :conditions=>["svt_deviation_spider_id = ?", spider.id]).each do |deliv|
+        deliv.svt_deviation_spider_id = new_spider.id
+        deliv.save
+      end
+
+      SvtDeviationSpiderActivityValue.find(:all, :conditions=>["svt_deviation_spider_id = ?", spider.id]).each do |activ_val|
+        activ_val.svt_deviation_spider_id = new_spider.id
+        activ_val.save
+      end
+
+      SvtDeviationSpiderDeliverableValue.find(:all, :conditions=>["svt_deviation_spider_id = ?", spider.id]).each do |deliv_val|
+        deliv_val.svt_deviation_spider_id = new_spider.id
+        deliv_val.save
+      end
+
+      SvtDeviationSpiderConsolidationTemp.find(:all, :conditions=>["svt_deviation_spider_id = ?", spider.id]).each do |conso_temp|
+        conso_temp.svt_deviation_spider_id = new_spider.id
+        conso_temp.save
+      end
+
+      spider.delete
     end
+
+    redirect_to '/tools/scripts'
+  end
+
+  def fill_project_id
+    DeviationSpider.find(:all).each do |spider|
+      if spider.id > 10000
+        spider.project_id = spider.milestone.project_id
+        spider.save
+      end
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
+  def fill_svt_project_id
+    SvtDeviationSpider.find(:all).each do |spider|
+      if spider.id > 30000
+        spider.project_id = spider.milestone.project_id
+        spider.save
+      end
+    end
+
     redirect_to '/tools/scripts'
   end
 
@@ -766,8 +832,9 @@ class ToolsController < ApplicationController
       qs_condition     = qs_condition+" and history_counters.request_id="+@request_id.to_s
     end
     spider_condition_vt = spider_condition + " and concerned_spider_id > 10000"
+    spider_condition_vtt = spider_condition + " and concerned_spider_id > 30000"
     
-    @spider_counter = HistoryCounter.find(:all,:conditions=>[spider_condition],
+    spider_counter = HistoryCounter.find(:all,:conditions=>[spider_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id",
                                           "JOIN spiders ON spiders.id = history_counters.concerned_spider_id",
                                           "JOIN projects ON projects.id = spiders.project_id",
@@ -775,7 +842,7 @@ class ToolsController < ApplicationController
                                           ],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
     
-    @spider_counter_vt = HistoryCounter.find(:all,:conditions=>[spider_condition_vt],
+    spider_counter_vt = HistoryCounter.find(:all,:conditions=>[spider_condition_vt],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id",
                                           "JOIN deviation_spiders ON deviation_spiders.id = history_counters.concerned_spider_id",
                                           "JOIN projects ON projects.id = deviation_spiders.project_id",
@@ -783,12 +850,37 @@ class ToolsController < ApplicationController
                                           ],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
 
-    @spider_counter_vt.each do |ss|
-      history_counter = HistoryCounter.new
-      #ss.spider = "0"
-      raise ss.deviation_spider.id.to_s
-      #@spider_counter << ss
+    spider_counter_vtt = HistoryCounter.find(:all,:conditions=>[spider_condition_vtt],
+                                          :joins => ["JOIN requests ON requests.id = history_counters.request_id",
+                                          "JOIN svt_deviation_spiders ON svt_deviation_spiders.id = history_counters.concerned_spider_id",
+                                          "JOIN projects ON projects.id = svt_deviation_spiders.project_id",
+                                          "JOIN projects as parent ON parent.id = projects.project_id"
+                                          ],
+                                          :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
+
+    #Spider_counter_struct    = Struct.new(:historycounter, :spider_version )
+    @table_spider_counter = Array.new
+
+    spider_counter.each do |counter|
+      count_struct = Spider_counter_struct.new
+      count_struct.historycounter = counter
+      count_struct.spider_version = 1
+      @table_spider_counter << count_struct
     end
+    spider_counter_vt.each do |counter_vt|
+      count_struct = Spider_counter_struct.new
+      count_struct.historycounter = counter_vt
+      count_struct.spider_version = 2
+      @table_spider_counter << count_struct
+    end
+    spider_counter_vtt.each do |counter_vtt|
+      count_struct = Spider_counter_struct.new
+      count_struct.historycounter = counter_vtt
+      count_struct.spider_version = 3
+      @table_spider_counter << count_struct
+    end
+
+    @table_spider_counter.sort_by { |tsc| [tsc.historycounter.request_id, tsc.historycounter.action_date]}
 
     @qs_counter     = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id", 

@@ -75,22 +75,22 @@ $j(document).ready(function (){
 </div>
 
 <!-- For each spider counter -->
-<% @spider_counter.each do |sc| %>
+<% @table_spider_counter.each do |sc| %>
 
   <!-- IF NEW REQUEST -->
-  <% if last_request_spider != sc.request_id %>
+  <% if last_request_spider != sc.historycounter.request_id %>
     <!-- TABLE -->
     <% if last_request_spider != 0 %>
       </table><br />
     <% end %>
-    <table class="history_counts_table" id="history_spider_count_table_<%= sc.request_id.to_s %>">
+    <table class="history_counts_table" id="history_spider_count_table_<%= sc.historycounter.request_id.to_s %>">
     <!-- REQUEST TR -->
     <tr class="bg_blue">
       <td>
-        <a target="_blank" href="http://toulouse.sqli.com/EMN/view.php?id=<%= sc.request.request_id %>">#<%= sc.request.request_id %></a>
+        <a target="_blank" href="http://toulouse.sqli.com/EMN/view.php?id=<%= sc.historycounter.request_id %>">#<%= sc.historycounter.request_id %></a>
       </td>
-      <td COLSPAN="<%= row_number-1 %>"><%= sc.request.summary %></td>
-      <td class="admin"><input style="float:right;" type="button" value="Copy" onclick="copyInView($j('#history_spider_count_table_<%= sc.request_id.to_s %>'));" /></td>
+      <td COLSPAN="<%= row_number-1 %>"><%= sc.historycounter.request.summary %></td>
+      <td class="admin"><input style="float:right;" type="button" value="Copy" onclick="copyInView($j('#history_spider_count_table_<%= sc.historycounter.request_id.to_s %>'));" /></td>
     </tr>
     <!-- HEADER TR -->
     <tr class="bg_grey">
@@ -103,7 +103,7 @@ $j(document).ready(function (){
         <td class="admin">Admin</td>
       <% end %>
     </tr>
-    <% last_request_spider = sc.request_id %>
+    <% last_request_spider = sc.historycounter.request_id %>
     <% line_count = 0 %>
   <% end %>
   
@@ -111,27 +111,62 @@ $j(document).ready(function (){
   <% line_count+= 1 %>
   <tr>
     <td class="line_number"><%= line_count.to_s %></td>
-    <td><%= sc.author.name %></td>
-    <td><%= sc.action_date.strftime("%Y-%m-%d %H:%M") %></td>
-    <% project_name = sc.spider.milestone.project.name %>
-    <% if sc.spider.milestone.project.project %>
-      <% project_name = sc.spider.milestone.project.project.name + " > " + sc.spider.milestone.project.name %>
+    <td><%= sc.historycounter.author.name %></td>
+    <td><%= sc.historycounter.action_date.strftime("%Y-%m-%d %H:%M") %></td>
+
+    <% if sc.spider_version == 1 %>
+      <% project_name = sc.historycounter.spider.milestone.project.name %>
+      <% if sc.historycounter.spider.milestone.project.project %>
+        <% project_name = sc.historycounter.spider.milestone.project.project.name + " > " + sc.historycounter.spider.milestone.project.name %>
+      <% end %>
+      <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.historycounter.spider.project.id}) %></td>
+      <td><%= sc.historycounter.spider.milestone.to_s %></td>
+    <% elsif sc.spider_version == 2 %>
+      <% project_name = sc.historycounter.deviation_spider.milestone.project.name %>
+      <% if sc.historycounter.deviation_spider.milestone.project.project %>
+        <% project_name = sc.historycounter.deviation_spider.milestone.project.project.name + " > " + sc.historycounter.deviation_spider.milestone.project.name %>
+      <% end %>
+      <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.historycounter.deviation_spider.project.id}) %></td>
+      <td><%= sc.historycounter.deviation_spider.milestone.to_s %></td>
+    <% elsif sc.spider_version == 3 %>
+      <% project_name = sc.historycounter.svt_deviation_spider.milestone.project.name %>
+      <% if sc.historycounter.svt_deviation_spider.milestone.project.project %>
+        <% project_name = sc.historycounter.svt_deviation_spider.milestone.project.project.name + " > " + sc.historycounter.svt_deviation_spider.milestone.project.name %>
+      <% end %>
+      <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.historycounter.svt_deviation_spider.project.id}) %></td>
+      <td><%= sc.historycounter.svt_deviation_spider.milestone.to_s %></td>
     <% end %>
-    <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.spider.project.id}) %></td>
-    <td><%= sc.spider.milestone.to_s %></td>
 
     <% if (current_user.has_role?('Admin')) %>
-      <td class="admin"><%= link_to("Delete", {:controller=>'tools', :action=>'delete_history_spider', :id=>sc.id, :stream_id=>@stream_id.to_i, :request_id=>@request_id.to_i, :caller => "show_counter_history" }, :confirm=>"Are you sure you want to delete this counter and decrement the counter on the assiociated project ?") %></td>
+      <td class="admin"><%= link_to("Delete", {:controller=>'tools', :action=>'delete_history_spider', :id=>sc.historycounter.id, :stream_id=>@stream_id.to_i, :request_id=>@request_id.to_i, :caller => "show_counter_history" }, :confirm=>"Are you sure you want to delete this counter and decrement the counter on the assiociated project ?") %></td>
     <% end %>
   </tr>
 
   <% 
       file_link = "None"
-      if (sc.spider.file_link)
-        file_link = sc.spider.file_link
-      end
+      if sc.spider_version == 1
+        if (sc.historycounter.spider.file_link)
+          file_link = sc.historycounter.spider.file_link
+        end
+      elsif sc.spider_version == 2
+        if (sc.historycounter.deviation_spider.file_link)
+          file_link = sc.historycounter.deviation_spider.file_link
+        end
+      elsif sc.spider_version == 3
+        if (sc.historycounter.svt_deviation_spider.file_link)
+          file_link = sc.historycounter.svt_deviation_spider.file_link
+        end
+      end       
     %>
-  <tr><td class="tr_bottom"></td><td class="tr_bottom" COLSPAN="5"><div><%= link_to(file_link, {:controller=>'spiders', :action=>'update_spider_file_name_form', :id=>sc.spider.id}) %></div></td></tr>
+  <tr><td class="tr_bottom"></td><td class="tr_bottom" COLSPAN="5">
+    <% if sc.spider_version == 1 %>
+      <div><%= link_to(file_link, {:controller=>'spiders', :action=>'update_spider_file_name_form', :id=>sc.historycounter.spider.id}) %></div>
+    <% elsif sc.spider_version == 2 %>
+      <div><%= link_to(file_link, {:controller=>'deviation_spiders', :action=>'update_spider_file_name_form', :id=>sc.historycounter.deviation_spider.id}) %></div>
+    <% elsif sc.spider_version == 3 %>
+      <div><%= link_to(file_link, {:controller=>'svt_deviation_spiders', :action=>'update_spider_file_name_form', :id=>sc.historycounter.svt_deviation_spider.id}) %></div>
+    <% end %>
+  </td></tr>
 <% end %>
 </table>
 
