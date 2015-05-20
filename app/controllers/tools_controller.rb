@@ -2,7 +2,7 @@ require 'google_chart'
 
 class ToolsController < ApplicationController
 
-  Spider_counter_struct    = Struct.new(:historycounter, :request_id, :spider_version)
+  Spider_counter_struct    = Struct.new(:historycounter, :spider_version)
 
   if APP_CONFIG['project_name']=='EISQ'
     layout 'tools'
@@ -858,41 +858,30 @@ class ToolsController < ApplicationController
                                           ],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
 
-    #Spider_counter_struct    = Struct.new(:historycounter, :request_id, :spider_version)
+    #Spider_counter_struct    = Struct.new(:historycounter, :spider_version)
+    table_spider_counter_temp = Array.new
     @table_spider_counter = Array.new
 
     spider_counter.each do |counter|
       count_struct = Spider_counter_struct.new
       count_struct.historycounter = counter
-      count_struct.request_id = counter.request_id
       count_struct.spider_version = 1
-      @table_spider_counter << count_struct
+      table_spider_counter_temp << count_struct
     end
     spider_counter_vt.each do |counter_vt|
       count_struct = Spider_counter_struct.new
       count_struct.historycounter = counter_vt
-      count_struct.request_id = counter_vt.request_id
       count_struct.spider_version = 2
-      @table_spider_counter << count_struct
+      table_spider_counter_temp << count_struct
     end
     spider_counter_vtt.each do |counter_vtt|
       count_struct = Spider_counter_struct.new
       count_struct.historycounter = counter_vtt
-      count_struct.request_id = counter_vtt.request_id
       count_struct.spider_version = 3
-      @table_spider_counter << count_struct
+      table_spider_counter_temp << count_struct
     end
 
-    #@table_spider_counter.sort_by { |tsc| tsc[:request_id]}
-    @table_spider_counter.map {|u| [u.request_id, u[0].action_date]}
-
-    #Here I try to debug my sort_by function
-    @table_spider_counter.each do |tt|
-      if tt.request_id == 7486
-        Rails.logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%" + @table_spider_counter.index(tt).to_s)
-      end
-    end
-    #raise "lol"
+    @table_spider_counter = table_spider_counter_temp.sort_by { |tsc| [tsc.historycounter.request_id, tsc.historycounter.action_date]}
 
     @qs_counter     = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id", 
