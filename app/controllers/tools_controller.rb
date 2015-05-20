@@ -228,7 +228,7 @@ class ToolsController < ApplicationController
 
   def fill_project_id
     DeviationSpider.find(:all).each do |spider|
-      if spider.id > 10000
+      if spider.id > 10000 and spider.id < 30000 and spider.milestone
         spider.project_id = spider.milestone.project_id
         spider.save
       end
@@ -239,7 +239,7 @@ class ToolsController < ApplicationController
 
   def fill_svt_project_id
     SvtDeviationSpider.find(:all).each do |spider|
-      if spider.id > 30000
+      if spider.id > 30000 and spider.milestone
         spider.project_id = spider.milestone.project_id
         spider.save
       end
