@@ -596,19 +596,17 @@ class SvtDeviationSpidersController < ApplicationController
 		
 		spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 
-		if score == 2
-			project_id = spider.milestone.project_id
-			Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
-				spiders = SvtDeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
-					consolidation = SvtDeviationSpiderConsolidation.find(:first, :conditions=>["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", spider.id, deliverable.id, activity.id])
-					if consolidation
-						justification = consolidation.justification
-						break
-					end
-				end
-				if justification
+		project_id = spider.milestone.project_id
+		Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
+			spiders = SvtDeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
+				consolidation = SvtDeviationSpiderConsolidation.find(:first, :conditions=>["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", spider.id, deliverable.id, activity.id])
+				if consolidation
+					justification = consolidation.justification
 					break
 				end
+			end
+			if justification
+				break
 			end
 		end
 
@@ -1020,7 +1018,7 @@ class SvtDeviationSpidersController < ApplicationController
 			end
 		end
 
-		if spider_deliverable.is_added_by_hand
+		if spider_deliverable and spider_deliverable.is_added_by_hand
 			to_add = true
 		end
 

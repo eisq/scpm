@@ -46,6 +46,10 @@
 			<%= radio_button :project, :sqli_date_alert, 0 %> Yes
 			<%= radio_button :project, :sqli_date_alert, 1, :checked => true %> <span style="color:red;"><b>No</b></span>
 		<% end %>
+
+		<% if @project.sqli_commit_author %>
+		(Last commit: <b><%= @project.sqli_commit_author %></b>)
+		<% end %>
 		</td></tr>
 	<% end %>
 
@@ -87,6 +91,11 @@
 			<%= radio_button :project, :airbus_date_alert, 0 %> Yes
 			<%= radio_button :project, :airbus_date_alert, 1, :checked => true %> <span style="color:red;"><b>No</b></span>
 		<% end %>
+
+		<% if @project.airbus_commit_author %>
+		(Last commit: <b><%= @project.airbus_commit_author %></b>)
+		<% end %>
+
 		</td></tr>
 	<% end %>
 
@@ -128,6 +137,11 @@
 			<%= radio_button :project, :deployment_date_alert, 0 %> Yes
 			<%= radio_button :project, :deployment_date_alert, 1, :checked => true %> <span style="color:red;"><b>No</b></span>
 		<% end %>
+
+		<% if @project.deployment_commit_author %>
+		(Last commit: <b><%= @project.deployment_commit_author %></b>)
+		<% end %>
+
 		</td></tr>
 	<% end %>
 		

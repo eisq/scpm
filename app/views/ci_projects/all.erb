@@ -16,7 +16,15 @@
 	    <%= file_field 'upload', 'datafile' %>
 	    <%= submit_tag "Upload" %>
 	</form>
-	</td></tr></table>
+	</td></tr>
+
+	<tr><td colspan=2>
+		Last import date: 
+		<% if @last_import %>
+			<%= @last_import.updated_at %>
+		<% end %>
+	</td></tr>
+	</table>
 </div>
 
 <h2>Projects list</h2>

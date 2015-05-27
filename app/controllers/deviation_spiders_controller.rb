@@ -588,19 +588,17 @@ class DeviationSpidersController < ApplicationController
 		
 		spider = DeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 
-		if score == 2
-			project_id = spider.milestone.project_id
-			Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
-				spiders = DeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
-					consolidation = DeviationSpiderConsolidation.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", spider.id, deliverable.id, activity.id])
-					if consolidation
-						justification = consolidation.justification
-						break
-					end
-				end
-				if justification
+		project_id = spider.milestone.project_id
+		Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
+			spiders = DeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
+				consolidation = DeviationSpiderConsolidation.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", spider.id, deliverable.id, activity.id])
+				if consolidation
+					justification = consolidation.justification
 					break
 				end
+			end
+			if justification
+				break
 			end
 		end
 
@@ -1027,7 +1025,7 @@ class DeviationSpidersController < ApplicationController
 			end
 		end
 
-		if spider_deliverable.is_added_by_hand
+		if spider_deliverable and spider_deliverable.is_added_by_hand
 			to_add = true
 		end
 

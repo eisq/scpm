@@ -46,6 +46,7 @@ class CiProjectsController < ApplicationController
   def all
     #verif
     @projects = CiProject.find(:all).sort_by {|p| [p.order||0, p.assigned_to||'']}
+    @last_import = CiImport.find(:last)
   end
 
   def late
@@ -165,6 +166,12 @@ class CiProjectsController < ApplicationController
           end
         end
       }
+
+      ci_import = CiImport.new
+      ci_import.type = "mantis"
+      ci_import.author = current_user.rmt_user
+      ci_import.save
+
       redirect_to '/ci_projects/all'
     rescue Exception => e
       render(:text=>e)
@@ -201,6 +208,12 @@ class CiProjectsController < ApplicationController
           }
         end
       }
+
+      ci_import = CiImport.new
+      ci_import.type = "backlog"
+      ci_import.author = current_user.rmt_user
+      ci_import.save
+
       redirect_to '/ci_projects/all'
     rescue Exception => e
       render(:text=>e)
@@ -272,6 +285,7 @@ class CiProjectsController < ApplicationController
       delay.justification = p.justification_airbus_retard
       delay.new_date = p.airbus_validation_date
       p.justification_airbus_retard = nil
+      p.airbus_commit_author = current_user.rmt_user
       delay.save
     end
     if old_p.sqli_date_alert == 1 and p.sqli_date_alert == 0
@@ -281,6 +295,7 @@ class CiProjectsController < ApplicationController
       delay.justification = p.justification_sqli_retard
       delay.new_date = p.sqli_validation_date
       p.justification_sqli_retard = nil
+      p.sqli_commit_author = current_user.rmt_user
       delay.save
     end
     if old_p.deployment_date_alert == 1 and p.deployment_date_alert == 0
@@ -290,6 +305,7 @@ class CiProjectsController < ApplicationController
       delay.justification = p.justification_deployment_retard
       delay.new_date = p.deployment_date
       p.justification_deployment_retard = nil
+      p.deployment_commit_author = current_user.rmt_user
       delay.save
     end
 
