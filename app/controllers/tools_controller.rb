@@ -1017,10 +1017,24 @@ class ToolsController < ApplicationController
 
     # Delete the object
     if (history_object)
-      spider = history_object.spider
-      if (history_object.spider and history_object.spider.project)
-        project_object = history_object.spider.project
+
+      if history_object.concerned_spider_id < 10000
+        spider = history_object.spider
+        if (history_object.spider and history_object.spider.project)
+          project_object = history_object.spider.project
+        end
+      elsif history_object.concerned_spider_id > 10000 and history_object.concerned_spider_id < 30000
+        spider = history_object.deviation_spider
+        if (spider and spider.project)
+          project_object = spider.project
+        end
+      elsif history_object.concerned_spider_id > 30000
+        spider = history_object.svt_deviation_spider
+        if (spider and spider.project)
+          project_object = spider.project
+        end
       end
+        
       spider.impact_count = 0
       spider.save
       history_object.destroy
