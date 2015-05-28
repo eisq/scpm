@@ -598,30 +598,30 @@ class SvtDeviationSpidersController < ApplicationController
 
 		project_id = spider.milestone.project_id
 		Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
+			if !justification
 			spiders = SvtDeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
-				consolidation = SvtDeviationSpiderConsolidation.find(:first, :conditions=>["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", spider.id, deliverable.id, activity.id])
+				if !justification
+				consolidation = SvtDeviationSpiderConsolidation.find(:first, :conditions=>["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", spider.id, deliverable.id, activity.id], :order=>"id desc")
 				if consolidation
 					justification = consolidation.justification
-					break
+				end
 				end
 			end
-			if justification
-				break
 			end
 		end
 
-		if !justification
-			last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
-			if last_reference
-				setting = SvtDeviationSpiderSetting.find(:first, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+		#if !justification
+			#last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
+			#if last_reference
+				#setting = SvtDeviationSpiderSetting.find(:first, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 
-				well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+				#well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-				if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
-					justification = setting.justification
-				end
-			end
-		end
+				#if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
+				#	justification = setting.justification
+				#end
+			#end
+		#end
 
 		return justification
 	end
