@@ -35,8 +35,8 @@ function set_question(question_id, checked)
 			set_value_buttons(spider_values_updated[i], checked);
 		};
 		<% if @last_spider != nil and @last_spider.svt_deviation_spider_consolidations.count == 0  %>
-			show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Activity");
-			show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Deliverable");
+			show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Deliverable");
+			show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Activity");
 		<% end %>
 	})
 	.fail(function() 
@@ -75,8 +75,8 @@ function set_value_buttons(value_id, answer)
 // Open
 $( document ).ready(function() {
 	<% if @last_spider != nil and @last_spider.svt_deviation_spider_consolidations.count == 0 and @questions.count > 0 %>
-		show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Activity");
-		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Deliverable");
+		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Activity");
+		show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Deliverable");
 	<% end %>
 });
 
