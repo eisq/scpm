@@ -48,7 +48,7 @@
 		<% end %>
 
 		<% if @project.sqli_commit_author %>
-		(Last commit: <b><%= @project.sqli_commit_author %></b>)
+		(Validated by: <b><%= @project.sqli_commit_author %></b>)
 		<% end %>
 		</td></tr>
 	<% end %>
@@ -93,7 +93,7 @@
 		<% end %>
 
 		<% if @project.airbus_commit_author %>
-		(Last commit: <b><%= @project.airbus_commit_author %></b>)
+		(Validated by: <b><%= @project.airbus_commit_author %></b>)
 		<% end %>
 
 		</td></tr>
@@ -139,7 +139,7 @@
 		<% end %>
 
 		<% if @project.deployment_commit_author %>
-		(Last commit: <b><%= @project.deployment_commit_author %></b>)
+		(Validated by: <b><%= @project.deployment_commit_author %></b>)
 		<% end %>
 
 		</td></tr>

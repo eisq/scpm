@@ -168,8 +168,8 @@ class CiProjectsController < ApplicationController
       }
 
       ci_import = CiImport.new
-      ci_import.type = "mantis"
-      ci_import.author = current_user.rmt_user
+      ci_import.import_type = "mantis"
+      ci_import.import_author = current_user.rmt_user
       ci_import.save
 
       redirect_to '/ci_projects/all'

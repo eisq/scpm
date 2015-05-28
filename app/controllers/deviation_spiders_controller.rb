@@ -295,6 +295,7 @@ class DeviationSpidersController < ApplicationController
 	    		deliverables.each do |deliverable|
 	    			deviation_deliverable_added_by_hand = DeviationSpiderDeliverable.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
 	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
+
 	    			if (self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
 						consolidation_saved = DeviationSpiderConsolidationTemp.find(:first, :conditions => ["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
 						if !consolidation_saved and editable
@@ -590,26 +591,26 @@ class DeviationSpidersController < ApplicationController
 
 		project_id = spider.milestone.project_id
 		Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
+			if !justification
 			spiders = DeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
-				consolidation = DeviationSpiderConsolidation.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", spider.id, deliverable.id, activity.id])
+				if !justification
+				consolidation = DeviationSpiderConsolidation.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ? and deviation_activity_id = ?", spider.id, deliverable.id, activity.id], :order=>"id desc")
 				if consolidation
 					justification = consolidation.justification
-					break
+				end
 				end
 			end
-			if justification
-				break
 			end
 		end
 
 		if !justification
-			last_reference = DeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
+			last_reference = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number desc")
 			if last_reference
 				setting = DeviationSpiderSetting.find(:first, :conditions=>["deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 
 				well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-				if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
+				if (setting and well_used and (setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"))
 					justification = setting.justification
 				end
 			end
@@ -702,7 +703,7 @@ class DeviationSpidersController < ApplicationController
 		    project = deviation_spider.milestone.project
 		    
 		    if((project) && (list_choice.to_i == SPIDER_CONSO_COUNTER.to_i))
-		     	deviation_spider.impact_count = true;
+		     	deviation_spider.impact_count = true
 			    deviation_spider.save
 
 			    # Insert in history_counter
