@@ -12,7 +12,7 @@ function generate_spider_chart(chartId,chartName,chartData)
 	    },
 	    title: {
 	        text: chartName,
-	        x: -50,
+	        x: -55,
 	    	color: '#F91212'
 	    },
 	    pane: {
