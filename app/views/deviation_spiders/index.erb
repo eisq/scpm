@@ -36,7 +36,7 @@ function set_question(question_id, checked)
 		};
 		<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0  %>
 			show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Activity");
-			show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Activity");
+			show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Deliverable");
 		<% end %>
 	})
 	.fail(function() 
@@ -76,7 +76,7 @@ function set_value_buttons(value_id, answer)
 $( document ).ready(function() {
 	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0 and @questions.count > 0 %>
 		show_deliverable_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Activity");
-		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Activity");
+		show_activity_chart_data("<%= @last_spider.id.to_s %>", "<%= @meta_activity_id %>", "<%= @meta_activity.name %> Deliverable");
 	<% end %>
 });
 
