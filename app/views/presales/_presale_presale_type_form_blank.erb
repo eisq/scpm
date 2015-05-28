@@ -1,0 +1,18 @@
+<script>
+$j( document ).ready(function() {
+    $j( "#presale_presale_type_first_meeting_date" ).datepicker();
+    $j( "#presale_presale_type_buyside_launch_date" ).datepicker();
+    $j( "#presale_presale_type_buyside_accepted_date" ).datepicker();
+});
+</script>
+
+<p>Statut</p>
+<p><%= select(:presale_presale_type, :status, @status, :size => @status.size ) %></p>
+<p>Complexity</p>
+<p><%= select(:presale_presale_type, :complexity, @complexity, :size => @complexity.size ) %></p>
+<p>First meeting Date</p>
+<p><%= text_field :presale_presale_type, :first_meeting_date, :class => "presale_type_detail_tf" %></p>
+<p>Buyside launch Date</p>
+<p><%= text_field :presale_presale_type, :buyside_launch_date, :class => "presale_type_detail_tf" %></p>
+<p>Buyside accepted Date</p>
+<p><%= text_field :presale_presale_type, :buyside_accepted_date, :class => "presale_type_detail_tf" %></p>

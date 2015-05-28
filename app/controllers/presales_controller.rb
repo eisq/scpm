@@ -236,4 +236,20 @@ class PresalesController < ApplicationController
 	    render(:nothing=>true)
 	end
 
+	def show_presale_by_type_blank
+		# Type
+		@presalepresaletype = PresalePresaleType.new
+		@presale = Presale.new
+		@lastComment = ""
+		@status = ["Identified", "Project team contacted", "Presentation scheduled", "Team to recontact", "Waiting feedback from team", "Buyside creation in progress", "Buyside launched", "Buyside on hold", "Buyside Accepted", "Cancelled"]
+		@complexity = ["Easy", "Medium", "Complex"]
+	end
+
+	def create_presale_presale_type_blank
+		presalePresaleType = PresalePresaleType.new
+	    presalePresaleType.update_attributes(params[:presale_presale_type])
+	    presalePresaleType.save
+	    redirect_to :action=>:show_presale_by_type, :presale_presale_type=>presalePresaleType.id
+	end
+
 end

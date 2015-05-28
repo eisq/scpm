@@ -10,6 +10,10 @@
   <%= hidden_field_tag 'filter' %>
   <%= submit_tag('Filter') %>
 <% end %>
+<br/>
+<% form_tag(:action=>'show_presale_by_type_blank') do %>
+  <%= submit_tag('Create blank opportunity') %>
+<% end %>
 
 
 <div id="priority_milestones"></div>
