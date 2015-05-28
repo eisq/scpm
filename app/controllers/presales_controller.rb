@@ -101,6 +101,23 @@ class PresalesController < ApplicationController
 		end
 
 	end
+	
+	def show_presale_blank
+		# Project
+		@project_id = params[:id]
+		@project = Project.find(:first, :conditions => ["id = ?", @project_id])
+
+		# Presale
+		presale_type_already_filtered = params[:presale_type_id]
+		if presale_type_already_filtered
+			@presale_type_filtered = PresaleType.find(:first, :conditions=>['id = ?', presale_type_already_filtered])
+		end
+		@presale = Presale.find(:first, :conditions => ["project_id = ?", @project_id])
+		if @project && !@presale
+			@presale = Presale.init_with_project(@project_id)
+		end
+
+	end
 
 	def ignore_presale
 		# Project
@@ -132,14 +149,27 @@ class PresalesController < ApplicationController
 
 	def show_presale_by_type
 		# Type
-		presale_presale_type_id = params[:presale_presale_type]
-		@presale_presale_type = PresalePresaleType.find(:first, :conditions => ["id = ?", presale_presale_type_id])
-		@presale = Presale.find(:first, :conditions => ["id = ?", @presale_presale_type.presale_id])
-		@lastComment = @presale_presale_type.getLastComment
-		# @status = Array.new
-		# for i in 0..10
-		# 	@status << ["#{i*10} %"]
-		# end
+		if !params[:blank]
+			presale_presale_type_id = params[:presale_presale_type]
+			@presale_presale_type = PresalePresaleType.find(:first, :conditions => ["id = ?", presale_presale_type_id])
+			@presale = Presale.find(:first, :conditions => ["id = ?", @presale_presale_type.presale_id])
+			@lastComment = @presale_presale_type.getLastComment
+		else
+			presale = Presale.new
+			presale.project_id = 10000
+			presale.save
+			@presale = Presale.find(:last, :conditions=>['project_id = ?', 10000])
+
+			presalePresaleType = PresalePresaleType.new
+			presalePresaleType.presale_id = @presale.id
+			presalePresaleType.presale_type_id = params[:presale_type_id]
+			presalePresaleType.opportunity_number = 0
+			presalePresaleType.save
+			@presale_presale_type = PresalePresaleType.find(:last, :conditions=>["presale_id = ?", @presale.id])
+
+			@lastComment = ""
+		end
+
 		@status = ["Identified", "Project team contacted", "Presentation scheduled", "Team to recontact", "Waiting feedback from team", "Buyside creation in progress", "Buyside launched", "Buyside on hold", "Buyside Accepted", "Cancelled"]
 		@complexity = ["Easy", "Medium", "Complex"]
 
@@ -156,7 +186,11 @@ class PresalesController < ApplicationController
 		presalePresaleType = PresalePresaleType.find(:first, :conditions => ["id = ?", params[:id]])
 		project_id = presalePresaleType.presale.project.id
 	    presalePresaleType.destroy
-	    redirect_to :action=>:show_presale, :id=>project_id
+	    if project_id != 10000
+	    	redirect_to :action=>:show_presale, :id=>project_id
+	    else
+	    	redirect_to :action=>:show_presale_blank, :id=>project_id
+	    end
 	end
 
 	def update_presale_parameter
@@ -234,22 +268,6 @@ class PresalesController < ApplicationController
 			presale_comment.delete
 		end
 	    render(:nothing=>true)
-	end
-
-	def show_presale_by_type_blank
-		# Type
-		@presalepresaletype = PresalePresaleType.new
-		@presale = Presale.new
-		@lastComment = ""
-		@status = ["Identified", "Project team contacted", "Presentation scheduled", "Team to recontact", "Waiting feedback from team", "Buyside creation in progress", "Buyside launched", "Buyside on hold", "Buyside Accepted", "Cancelled"]
-		@complexity = ["Easy", "Medium", "Complex"]
-	end
-
-	def create_presale_presale_type_blank
-		presalePresaleType = PresalePresaleType.new
-	    presalePresaleType.update_attributes(params[:presale_presale_type])
-	    presalePresaleType.save
-	    redirect_to :action=>:show_presale_by_type, :presale_presale_type=>presalePresaleType.id
 	end
 
 end

@@ -31,7 +31,7 @@ class StreamsController < ApplicationController
     
     @projects = Project.find(:all,:conditions => ["workstream = ? 
                                                   and is_running = 1 
-                                                  and project_id is null", Workstream.find(@stream.workstream).name], :order=>"name")
+                                                  and project_id is null and name IS NOT NULL", Workstream.find(@stream.workstream).name], :order=>"name")
     if @order == "date"
       @projects = @projects.sort_by{|a| a.last_status_date or DateTime.strptime('0','%s')}.reverse!
     end
@@ -104,7 +104,7 @@ class StreamsController < ApplicationController
       qr_qwr_data["name"] = qr.name
 
       # Get number of project in this stream
-      project_list              = Project.find(:all,:conditions=>["workstream = ? and is_running = 1 and is_qr_qwr IS NOT NULL and qr_qwr_id = ?", Workstream.find(@stream.workstream).name, qr.id.to_s])
+      project_list              = Project.find(:all,:conditions=>["workstream = ? and is_running = 1 and is_qr_qwr IS NOT NULL and qr_qwr_id = ? and name IS NOT NULL", Workstream.find(@stream.workstream).name, qr.id.to_s])
       qr_qwr_data["nbProjects"] = project_list.count
 
       if qr_qwr_data["nbProjects"] > 0

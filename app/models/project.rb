@@ -281,6 +281,7 @@ class Project < ActiveRecord::Base
 
         cond_projects << "(child_requests.summary LIKE '%#{text}%')"
         cond_projects << "(child_requests.pm LIKE '%#{text}%')"
+        cond_projects << "(projects.name is not null)"
 
         projects = Project.find(:all, 
                                :joins =>["LEFT OUTER JOIN statuses as project_statuses ON project_statuses.project_id = projects.id",
@@ -712,29 +713,51 @@ class Project < ActiveRecord::Base
     milestones.sort_by { |m| m.index_order}
   end
 
-  #returns true if M3 not passed and M3 <= today + 7days
-  def get_next_milestone_column_red
-      background_color = false
+  #returns color according to PCA rules
+  def get_next_milestone_column_color
+      background_color = ""
+      color_red = "#FFA8A8"
+      color_yellow = "#EFF0A3"
       m_five_done = false
       m_five = Milestone.find(:all, :conditions => ["project_id = ? and name = ?", self.id, "M5"]).each do |m_fiv|
         if m_fiv.done > 0
           m_five_done = true
         end
       end
+
       if !m_five_done
-        Milestone.find(:all, :conditions=>["project_id = ? and name = ?", self.id, "M3"]).each do |m_trois|
-          if m_trois and m_trois.done == 0
-            if m_trois.actual_milestone_date
-                if m_trois.actual_milestone_date <= Date.today() + 10
-                    background_color = true
-                end
-            elsif !m_trois.actual_milestone_date and m_trois.milestone_date
-                if m_trois.milestone_date <= Date.today() + 10
-                    background_color = true
-                end
-            end
+        m_three = Milestone.find(:last, :conditions=>["project_id = ? and name = ?", self.id, "M3"])
+
+        if m_three and m_three.done == 0
+          if m_three.actual_milestone_date
+              if m_three.actual_milestone_date <= Date.today() + 10
+                background_color = color_red
+              elsif (m_three.actual_milestone_date > (Date.today() + 10)) and (m_three.actual_milestone_date <= (Date.today() + 20))
+                background_color = color_yellow
+              end
+          elsif !m_three.actual_milestone_date and m_three.milestone_date
+              if m_three.milestone_date <= Date.today() + 10
+                  background_color = color_red
+              elsif (m_three.milestone_date > (Date.today() + 10)) and (m_three.milestone_date <= (Date.today() + 20))
+                background_color = color_yellow
+              end
+          end
+        elsif m_three and m_three.done > 0 and m_five == 0
+          if m_five.actual_milestone_date
+              if m_five.actual_milestone_date <= Date.today() + 10
+                background_color = color_red
+              elsif (m_five.actual_milestone_date > (Date.today() + 10)) and (m_five.actual_milestone_date <= (Date.today() + 20))
+                background_color = color_yellow
+              end
+          elsif !m_five.actual_milestone_date and m_five.milestone_date
+              if m_five.milestone_date <= Date.today() + 10
+                  background_color = color_red
+              elsif (m_five.milestone_date > (Date.today() + 10)) and (m_five.milestone_date <= (Date.today() + 20))
+                background_color = color_yellow
+              end
           end
         end
+
       end
 
       return background_color
@@ -869,7 +892,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.active_projects_by_workstream(ws_name)
-    projects = Project.find(:all, :conditions=>["workstream=?", ws_name])
+    projects = Project.find(:all, :conditions=>["workstream=? and name is not null", ws_name])
     projects.select { |p| p.active_requests.size > 0}
   end
 

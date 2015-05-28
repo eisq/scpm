@@ -595,8 +595,8 @@ class ToolsController < ApplicationController
   end
 
   def kpi_check
-    @physicalsWithoutSuite = Project.find(:all, :joins=>["JOIN requests ON requests.project_id = projects.id"], :conditions=>["is_running = 1 and suite_tag_id IS NULL and (requests.request_type = 'Yes' or requests.request_type = 'Suite')"], :group => "projects.id")
-    @projectsWithoutSuiteForSpecificWPs = Project.find(:all, :joins=>["JOIN requests ON requests.project_id = projects.id"], :conditions=>["is_running = 1 and suite_tag_id IS NULL and requests.work_package IN (?)", APP_CONFIG['report_kpi_projects_should_have_suite_for_wp'].join(",")], :group => "projects.id")
+    @physicalsWithoutSuite = Project.find(:all, :joins=>["JOIN requests ON requests.project_id = projects.id"], :conditions=>["is_running = 1 and suite_tag_id IS NULL and (requests.request_type = 'Yes' or requests.request_type = 'Suite') and name IS NOT NULL"], :group => "projects.id")
+    @projectsWithoutSuiteForSpecificWPs = Project.find(:all, :joins=>["JOIN requests ON requests.project_id = projects.id"], :conditions=>["is_running = 1 and suite_tag_id IS NULL and requests.work_package IN (?) and name IS NOT NULL", APP_CONFIG['report_kpi_projects_should_have_suite_for_wp'].join(",")], :group => "projects.id")
     @specificWPs = APP_CONFIG['report_kpi_projects_should_have_suite_for_wp'].join(", ")
     @requestsWithoutMilestone = Request.find(:all, :conditions => ["work_package in (?) and milestone ='N/A'", APP_CONFIG['report_kpi_requests_should_have_milestone_for_wp'].join(",")])
     @specificWPsForRequests = APP_CONFIG['report_kpi_requests_should_have_milestone_for_wp'].join(", ")
@@ -662,7 +662,7 @@ class ToolsController < ApplicationController
   end
 
   def projects_length
-    @projects = Project.find(:all).select { |p| p.projects.size==0}
+    @projects = Project.find(:all, :conditions=>["name IS NOT NULL"]).select { |p| p.projects.size==0}
     @results  = []
     for p in @projects
       m,l,pl = p.length
@@ -723,13 +723,13 @@ class ToolsController < ApplicationController
     session["last_projects_filter"] = filter
     case filter
     when "m5"
-      @projects = Project.find(:all, :order=>"created_at desc").select{|p| 
+      @projects = Project.find(:all, :conditions=>["name IS NOT NULL"], :order=>"created_at desc").select{|p| 
         m3 = p.find_milestone_by_name("M3")
         m5 = p.find_milestone_by_name("M5") || p.find_milestone_by_name("M5/M7")
         m5 and m5.done == 0 and (m5.active_requests.size > 0 or (m3 and m3.active_requests.size>0))
         }
     else
-      @projects = Project.find(:all, :limit=>50, :order=>"created_at desc").select{|p| p.open_requests.size > 0}
+      @projects = Project.find(:all, :conditions=>["name IS NOT NULL"], :limit=>50, :order=>"created_at desc").select{|p| p.open_requests.size > 0}
     end
   end
 
@@ -741,7 +741,7 @@ class ToolsController < ApplicationController
     # verify session filter
     # TODO
 
-    @projects = Project.find(:all).select{ |p| p.has_requests }.sort_by { |p|
+    @projects = Project.find(:all, :conditions=>["name IS NOT NULL"]).select{ |p| p.has_requests }.sort_by { |p|
       u = p.get_status.updated_at
       if !u
         Time.parse("2000/01/01")
@@ -1095,7 +1095,7 @@ class ToolsController < ApplicationController
   end
 
   def circular_references
-    @projects = Project.find(:all).select {|p| p.has_circular_reference?}
+    @projects = Project.find(:all, :conditions=>["name IS NOT NULL"]).select {|p| p.has_circular_reference?}
   end
 
   def delete_parent

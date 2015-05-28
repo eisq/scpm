@@ -84,7 +84,7 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def index_export_all
 		#@projects = params[:projects]
-		@projects = Project.find(:all, :conditions=>["supervisor_id = ?", 21])
+		@projects = Project.find(:all, :conditions=>["supervisor_id = ? and name IS NOT NULL", 21])
 	end
 
 	def update_spider_file_name_form

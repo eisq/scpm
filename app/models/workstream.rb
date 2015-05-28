@@ -3,7 +3,7 @@ class Workstream < ActiveRecord::Base
   #has_many :projects, :foreign_key=>'workstream', :class_name=>'Project'
   
   def projects
-    Project.find(:all, :conditions=>["workstream=?", self.name]).sort_by { |p| [-p.get_status.status, p.full_name]}
+    Project.find(:all, :conditions=>["workstream=? and name is not null", self.name]).sort_by { |p| [-p.get_status.status, p.full_name]}
   end
   
   def non_green_projects

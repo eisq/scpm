@@ -61,7 +61,7 @@ class Stream < ActiveRecord::Base
 
   def get_consumed_qs_count
     # Get projects by workstream
-    projects = Project.find(:all,:conditions => ["workstream = ?", Workstream.find(self.workstream).name])
+    projects = Project.find(:all,:conditions => ["workstream = ? and name is not null", Workstream.find(self.workstream).name])
     # analyse all projects
     qs_count = 0
     projects.each do |project|
@@ -73,7 +73,7 @@ class Stream < ActiveRecord::Base
 
   def get_consumed_spider_count
     # Get projects by workstream
-    projects = Project.find(:all,:conditions => ["workstream = ?", Workstream.find(self.workstream).name])
+    projects = Project.find(:all,:conditions => ["workstream = ? and name is not null", Workstream.find(self.workstream).name])
     # analyse all projects
     spider_count = 0
     projects.each do |project|

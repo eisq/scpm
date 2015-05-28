@@ -518,7 +518,7 @@ class ProjectsController < ApplicationController
     timestamps_off
     Request.find(:all, :conditions=>"project_id is not null").each do |r|
       if r.workpackage_name != r.project.name
-        projects = Project.find(:all, :conditions=>"name='#{r.workpackage_name}'")
+        projects = Project.find(:all, :conditions=>["name != ? and name='#{r.workpackage_name}'", nil])
         @text << "found #{projects.size} projects with name '#{r.workpackage_name}' (#{r.project_name})"
         projects.each { |p|
           @text << ", wp belongs to #{p.project ? p.project.name : 'no parent'}"
@@ -560,12 +560,12 @@ class ProjectsController < ApplicationController
         @text << "not N/A for <a href='http://toulouse.sqli.com/EMN/view.php?id=#{r.request_id}'>#{r.project_name}</a><br/>"
       end
     end
-    Project.find(:all, :conditions=>"supervisor_id is null and project_id is not null").each { |p|
+    Project.find(:all, :conditions=>["supervisor_id is null and project_id is not null and name != ?", nil]).each { |p|
       p.supervisor_id = p.project.supervisor_id
       p.save
       }
-    @projects         = Project.find(:all, :conditions=>"is_running = 0 and is_qr_qwr = 0").select{ |p| p.projects.size == 0 and p.requests.size == 0}
-    @root_requests    = Project.find(:all, :conditions=>"project_id is null").select{ |p| p.requests.size > 0}
+    @projects         = Project.find(:all, :conditions=>["is_running = 0 and is_qr_qwr = 0 and name != ?", nil]).select{ |p| p.projects.size == 0 and p.requests.size == 0}
+    @root_requests    = Project.find(:all, :conditions=>["project_id is null and name != ?", nil]).select{ |p| p.requests.size > 0}
     @display_actions  = true
     @missing_associations = find_missing_project_person_associations
     timestamps_on
@@ -1231,7 +1231,7 @@ private
       date[center] = Hash.new
       month_loop(5,2010) { |to|
         date[center][to] = Array.new
-        Project.find(:all).each { |p|
+        Project.find(:all, :conditions=>["name != ?", nil]).each { |p|
           next if not p.open_requests.size > 0 or not p.has_status or (center != 'Total' and p.workstream != center)
           last_status = p.get_status(to)
           date[center][to] << last_status
@@ -1269,6 +1269,7 @@ private
     cond_wps << "project_people.person_id in #{session[:project_filter_qr]}" if session[:project_filter_qr] != nil
     cond_wps << "is_running = 1"
     cond_wps << "projects.project_id IS NOT NULL"
+    cond_wps << "projects.name IS NOT NULL"
 
     @wps = Project.find(:all, :joins => ["LEFT OUTER JOIN project_people ON project_people.project_id = projects.id"], :conditions=>cond_wps.join(" and "), :group => "projects.id")
   end
@@ -1297,6 +1298,7 @@ private
     end
     
     cond_projects << "(projects.project_id is null)"
+    cond_projects << "(projects.name IS NOT NULL)"
 
     @projects = Project.find(:all, :joins => ["LEFT OUTER JOIN projects as childs ON childs.project_id = projects.id","LEFT OUTER JOIN project_people ON project_people.project_id = projects.id", "LEFT OUTER JOIN project_people as childs_pp ON childs_pp.project_id = childs.id"],
                                     :conditions=>cond_projects.join(" and "),

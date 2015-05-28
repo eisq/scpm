@@ -87,13 +87,8 @@
 
   	<tr>
   		<td><%= p.id %></td>
-      <% if p.get_next_milestone_column_red %>
-        <td align="center" bgcolor="#FFA8A8"><%= p.get_next_milestone %></td>
-        <td align="center" bgcolor="#FFA8A8"><%= p.next_milestone_date %></td>
-      <% else %>
-        <td align="center"><%= p.get_next_milestone %></td>
-        <td align="center"><%= p.next_milestone_date %></td>
-      <% end %>
+        <td align="center" bgcolor=<%=p.get_next_milestone_column_color%>><%= p.get_next_milestone %></td>
+        <td align="center" bgcolor=<%=p.get_next_milestone_column_color%>><%= p.next_milestone_date %></td>
   		<td><%=link_to(name, :controller=>'projects', :action=>'show', :id=>p.id) %></td>
   		<td align="center"><%= p.workstream %></td>
   		<td><%= p.pm %></td>

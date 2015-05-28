@@ -1,0 +1,34 @@
+<%= render(:file=>"presales/menu", :locals=>{:dashboard => 1}) %>
+<div id="presale_content">
+<div id="presale_content_left">
+	<h3 class="presale_title">
+		Project informations
+	</h3>
+	<div>
+		<ul id="presale_project_info">
+			<!-- Project Name / link -->
+			<li>
+				<span class="presale_list_title">no Project</span>
+			</li>
+			<!-- Workstream -->
+			<li>
+				<span class="presale_list_title">no Workstream</span> 
+			</li>
+			<!-- Suite -->
+			<li>
+				<span class="presale_list_title">no Suite</span>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div id="presale_content_right">
+	<% for presalePresaleType in @presale.presale_presale_types %>
+		<h3 class="presale_title"><%= presalePresaleType.getName %> last comment</h3>
+		<% lastComment = presalePresaleType.getLastComment %>
+		<% if lastComment != nil %>
+				<%= render(:partial=>'presale_comment', :object=>lastComment, :locals=>{:edit_mode => false}) %>
+		<% end %>
+	<% end %>
+</div>
+</div>

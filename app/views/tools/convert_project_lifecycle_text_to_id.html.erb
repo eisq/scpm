@@ -10,7 +10,7 @@ lifecycleArray.each do |lifecycle|
 	indexLifecycle += 1
 end
 
-Project.find(:all).each{|p|
+Project.find(:all, :conditions=>["name IS NOT NULL"]).each{|p|
   projectLifecycleName = lifecycleArray[p.lifecycle]
   %>
 	<%= p.id %>-<%= projectLifecycleName %><br />

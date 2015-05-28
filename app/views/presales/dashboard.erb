@@ -11,8 +11,12 @@
   <%= submit_tag('Filter') %>
 <% end %>
 <br/>
-<% form_tag(:action=>'show_presale_by_type_blank') do %>
-  <%= submit_tag('Create blank opportunity') %>
+<% if @presale_presale_type_id and @presale_presale_type_id != nil and @presale_presale_type_id.to_i != 0 %>
+	<% form_tag(:action=>'show_presale_by_type') do %>
+	  <%= hidden_field_tag 'blank' %>
+	  <%= hidden_field_tag('presale_type_id', @presale_presale_type_id) %>
+	  <%= submit_tag('Create blank opportunity') %>
+	<% end %>
 <% end %>
 
 
@@ -37,19 +41,21 @@
 <% i = 0 %>
 <% @opportunities.each do |o| %>
 	<% name = "" %>
-	<% name += o.presale.project.project.name+" > " if o.presale.project.project %>
-	<% name += o.presale.project.name %>
+	<% if o.presale.project_id != 10000 %>
+		<% name += o.presale.project.project.name+" > " if o.presale.project.project %>
+		<% name += o.presale.project.name %>
+	<% end %>
 
 	<tr>
 		<td><%= o.presale_type.title %></td>
-		<% if o.presale.project.get_next_milestone_column_red %>
-			<td align="center" bgcolor="#FFA8A8"><%= o.presale.next_milestone %></td>
-			<td align="center" bgcolor="#FFA8A8"><%= o.presale.next_milestone_date %></td>
-		<% else %>
-			<td align="center"><%= o.presale.next_milestone %></td>
-			<td align="center"><%= o.presale.next_milestone_date %></td>
-		<% end %>
-		<td><%= o.presale.project.id %></td>
+			<td align="center" bgcolor=<%=o.presale.project.get_next_milestone_column_color%>><%= o.presale.next_milestone %></td>
+			<td align="center" bgcolor=<%=o.presale.project.get_next_milestone_column_color%>><%= o.presale.next_milestone_date %></td>
+		<td>
+			<% if o.presale.project_id != 10000 %>
+				<%= o.presale.project.id %></td>
+			<% else %>
+				<%= image_tag('unknown2.png') %>
+			<% end %>
 		<td><%=link_to(name, :controller=>'projects', :action=>'show', :id=>o.presale.project.id) %></td>
 		<td><%= o.presale.project.workstream %></td>
 		<td><%= o.presale.project.pm %></td>
@@ -84,19 +90,22 @@
 <tbody>
 <% @opportunities_second_table.each do |o_s| %>
 	<% name = "" %>
-	<% name += o_s.presale.project.project.name+" > " if o_s.presale.project.project %>
-	<% name += o_s.presale.project.name %>
+	<% if o_s.presale.project_id != 10000 %>
+		<% name += o_s.presale.project.project.name+" > " if o_s.presale.project.project %>
+		<% name += o_s.presale.project.name %>
+	<% end %>
 
 	<tr>
 		<td><%= o_s.presale_type.title %></td>
-		<% if o_s.presale.project.get_next_milestone_column_red %>
-			<td align="center" bgcolor="#FFA8A8"><%= o_s.presale.next_milestone %></td>
-			<td align="center" bgcolor="#FFA8A8"><%= o_s.presale.next_milestone_date %></td>
-		<% else %>
-			<td align="center"><%= o_s.presale.next_milestone %></td>
-			<td align="center"><%= o_s.presale.next_milestone_date %></td>
-		<% end %>
-		<td><%= o_s.presale.project.id %></td>
+			<td align="center" bgcolor=<%=o_s.presale.project.get_next_milestone_column_color%>><%= o_s.presale.next_milestone %></td>
+			<td align="center" bgcolor=<%=o_s.presale.project.get_next_milestone_column_color%>><%= o_s.presale.next_milestone_date %></td>
+		<td>
+			<% if o_s.presale.project_id != 10000 %>
+				<%= o_s.presale.project.id %>
+			<% else %>
+				<%= image_tag('unknown2.png') %>
+			<% end %>
+		</td>
 		<td><%=link_to(name, :controller=>'projects', :action=>'show', :id=>o_s.presale.project.id) %></td>
 		<td><%= o_s.presale.project.workstream %></td>
 		<td><%= o_s.presale.project.pm %></td>

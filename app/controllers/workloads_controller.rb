@@ -42,7 +42,7 @@ class WorkloadsController < ApplicationController
       end
     end
     @people = Person.find(:all, :conditions=>"has_left=0 and is_supervisor=0", :order=>"name").map {|p| ["#{p.name} (#{p.wl_lines.size} lines)", p.id]}
-    @projects = Project.find(:all).map {|p| ["#{p.name} (#{p.wl_lines.size} persons)", p.id]}
+    @projects = Project.find(:all, :conditions=>["name IS NOT NULL"]).map {|p| ["#{p.name} (#{p.wl_lines.size} persons)", p.id]}
     change_workload(session['workload_person_id'])
   end
 

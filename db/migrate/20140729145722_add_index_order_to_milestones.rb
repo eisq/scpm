@@ -2,7 +2,7 @@ class AddIndexOrderToMilestones < ActiveRecord::Migration
   def self.up
     add_column :milestones, :index_order, :integer
     
-    Project.find(:all).each do |p|
+    Project.find(:all, :conditions=>["name IS NOT NULL"]).each do |p|
     	i = 1
     	AddIndexOrderToMilestones.helper_sorted_milestones(p).each do |m|
     		m.index_order = i

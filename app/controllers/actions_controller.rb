@@ -56,7 +56,7 @@ private
 
   def get_infos
     @people = Person.find(:all, :conditions=>"has_left=0", :order=>"name")
-    @projects = Project.find(:all)
+    @projects = Project.find(:all, :conditions=>["name != ?", nil])
     @projects_select = @projects.map {|u| [u.workstream + " " + u.full_name,u.id]}.sort_by { |n| n[0]}
   end
 

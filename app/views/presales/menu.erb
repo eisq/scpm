@@ -5,13 +5,23 @@
 </script>
 
 <div id="presale_menu">
-	<h3 class="presale_title"><%= @presale.project.name %></h3>
+	<h3 class="presale_title">
+		<% if @presale.project_id != 10000 %>
+			<%= @presale.project.name %>
+		<% else %>
+			<u>blank presale</u>
+		<% end %>
+	</h3>
 
 	<!-- Dashboard -->
 	<% dashboardIsSelected = "" %>
 	<% dashboardIsSelected = " selected" if defined? dashboard  %>
 	<div class="presale_btnlnk<%= dashboardIsSelected %>">
+	<% if @presale.project_id != 10000 %>
 		<%= link_to "Dashboard", {:controller => "presales", :action => "show_presale", :id => @presale.project.id}, {:class => "presale_btnlnk_content"} %>
+	<% else %>
+		<%= link_to "Dashboard", {:controller => "presales", :action => "show_presale_blank", :id => @presale.project_id}, {:class => "presale_btnlnk_content"} %>
+	<% end %>
 	</div>
 	
 	<h3 class="presale_title">Opportunities</h3>

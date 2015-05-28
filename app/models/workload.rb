@@ -46,7 +46,7 @@ class Workload
     # return if project_ids.size==0
     @person     = Person.find(person_id)
     raise "could not find this person by id '#{person_id}'" if not @person
-    @projects = Project.find(:all, :conditions=>["id in (#{project_ids.join(',')})"]) if project_ids.size > 0
+    @projects = Project.find(:all, :conditions=>["id in (#{project_ids.join(',')}) and name is not null"]) if project_ids.size > 0
     @projects = WlLine.find(:all, :conditions=>["person_id=#{person_id} and project_id is not null"]).collect{|l| Project.find(l.project_id)}.uniq if project_ids.size==0
     @person_id  = person_id
     @name       = @person.name
