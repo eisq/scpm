@@ -730,29 +730,29 @@ class Project < ActiveRecord::Base
 
         if m_three and m_three.done == 0
           if m_three.actual_milestone_date
-              if m_three.actual_milestone_date >= Date.today() + 10
+              if m_three.actual_milestone_date <= Date.today() + 10
                 background_color = color_red
-              elsif (m_three.actual_milestone_date > (Date.today() + 10)) and (m_three.actual_milestone_date <= (Date.today() + 20))
+              elsif (m_three.actual_milestone_date < (Date.today() + 10)) and (m_three.actual_milestone_date <= (Date.today() + 20))
                 background_color = color_yellow
               end
           elsif !m_three.actual_milestone_date and m_three.milestone_date
-              if m_three.milestone_date >= Date.today() + 10
+              if m_three.milestone_date <= Date.today() + 10
                   background_color = color_red
-              elsif (m_three.milestone_date > (Date.today() + 10)) and (m_three.milestone_date <= (Date.today() + 20))
+              elsif (m_three.milestone_date < (Date.today() + 10)) and (m_three.milestone_date <= (Date.today() + 20))
                 background_color = color_yellow
               end
           end
         elsif m_three and m_three.done > 0 and m_five == 0
           if m_five.actual_milestone_date
-              if m_five.actual_milestone_date >= Date.today() + 10
+              if m_five.actual_milestone_date <= Date.today() + 10
                 background_color = color_red
-              elsif (m_five.actual_milestone_date > (Date.today() + 10)) and (m_five.actual_milestone_date <= (Date.today() + 20))
+              elsif (m_five.actual_milestone_date < (Date.today() + 10)) and (m_five.actual_milestone_date <= (Date.today() + 20))
                 background_color = color_yellow
               end
           elsif !m_five.actual_milestone_date and m_five.milestone_date
-              if m_five.milestone_date >= Date.today() + 10
+              if m_five.milestone_date <= Date.today() + 10
                   background_color = color_red
-              elsif (m_five.milestone_date > (Date.today() + 10)) and (m_five.milestone_date <= (Date.today() + 20))
+              elsif (m_five.milestone_date < (Date.today() + 10)) and (m_five.milestone_date <= (Date.today() + 20))
                 background_color = color_yellow
               end
           end
