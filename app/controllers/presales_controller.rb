@@ -76,13 +76,10 @@ class PresalesController < ApplicationController
 		elsif !@show_post_m_five
 			@projects.each do |project|
 				if project.post_m_five
-					#@projects.delete(project)
+					@projects.delete(project)
 				end
 			end
 		end
-			
-		Rails.logger.info("%%%%%%%%%%%%%%%" + @projects.count.to_s)
-		raise @projects.count.to_s
 
 	end
 	
