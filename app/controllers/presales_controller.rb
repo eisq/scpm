@@ -81,6 +81,8 @@ class PresalesController < ApplicationController
 			end
 		end
 			
+		raise @projects.count.to_s
+
 	end
 	
 
