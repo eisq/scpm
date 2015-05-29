@@ -63,7 +63,7 @@ class PresalesController < ApplicationController
 			                         	"LEFT JOIN presales ON projects.id = presales.project_id",
 			                         	"LEFT JOIN presale_presale_types ON presales.id = presale_presale_types.presale_id",
 			                         	"LEFT JOIN presale_ignore_projects ON projects.id = presale_ignore_projects.project_id"],
-			                         :conditions=>["is_running=1 and projects.project_id IS NOT NULL and #{cond}"], 
+			                         :conditions=>["is_running = true and projects.project_id is not null and #{cond}"], 
 			                         :group=>'projects.id')
 		end
 
