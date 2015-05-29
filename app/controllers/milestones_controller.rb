@@ -212,7 +212,7 @@ class MilestonesController < ApplicationController
 private
 
   def get_infos
-    @projects = Project.find(:all, :conditions=>["name != ?", nil])
+    @projects = Project.find(:all, :conditions=>["name is not null"])
     @projects_select = @projects.map {|u| [u.workstream + " " + u.full_name,u.id]}.sort_by { |n| n[0]}
   end
 

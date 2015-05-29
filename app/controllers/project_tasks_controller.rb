@@ -50,7 +50,7 @@ class ProjectTasksController < ApplicationController
         session['workload_tags'] = [tags_ids] # array with one string
       end
     end
-    @projects = Project.find(:all, :conditions=>["project_id is null and name != ?", nil], :order=>"name")
+    @projects = Project.find(:all, :conditions=>["project_id is null and name is not null"], :order=>"name")
     return if not session['workload_project_ids'] or session['workload_project_ids']==[]
 
     if @projects.size > 0
