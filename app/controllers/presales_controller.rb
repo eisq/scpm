@@ -81,6 +81,7 @@ class PresalesController < ApplicationController
 			end
 		end
 			
+		Rails.logger.info("%%%%%%%%%%%%%%%" + @projects.count.to_s)
 		raise @projects.count.to_s
 
 	end
