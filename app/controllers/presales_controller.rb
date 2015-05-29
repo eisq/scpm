@@ -76,7 +76,7 @@ class PresalesController < ApplicationController
 		elsif !@show_post_m_five
 			@projects.each do |project|
 				if project.post_m_five
-					@projects.delete(project)
+					#@projects.delete(project)
 				end
 			end
 		end
