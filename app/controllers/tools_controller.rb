@@ -248,6 +248,14 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def add_standard_project_for_avv
+    project = Project.new
+    project.id = 10000
+    project.save
+
+    redirect_to '/tools/scripts'
+  end
+
   def sdp_import
   end
 
