@@ -183,13 +183,26 @@ class PresalesController < ApplicationController
 	end
 
 	def delete_presale_presale_type
+		presale_destroyed = false
 		presalePresaleType = PresalePresaleType.find(:first, :conditions => ["id = ?", params[:id]])
+		#searching for several opportunities on the same presale, if yes, we do nothing, if no we delete de presale
+		several_presale = PresalePresaleType.find(:all, :conditions=>["presale_id = ?", presalePresaleType.presale_id])
+
 		project_id = presalePresaleType.presale.project.id
 	    presalePresaleType.destroy
-	    if project_id != 10000
+
+		if several_presale.count < 2
+			presale = Presale.find(:first, :conditions=>["id = ?", presalePresaleType.presale_id])
+			presale.destroy
+			presale_destroyed = true
+		end
+		
+	    if !presale_destroyed and project_id != 10000
 	    	redirect_to :action=>:show_presale, :id=>project_id
-	    else
+	    elsif !presale_destroyed
 	    	redirect_to :action=>:show_presale_blank, :id=>project_id
+	    elsif presale_destroyed
+	    	redirect_to :action=>:dashboard
 	    end
 	end
 

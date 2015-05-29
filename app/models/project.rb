@@ -720,7 +720,7 @@ class Project < ActiveRecord::Base
       color_yellow = "#EFF0A3"
       m_five_done = false
       m_five = Milestone.find(:all, :conditions => ["project_id = ? and name = ?", self.id, "M5"]).each do |m_fiv|
-        if m_fiv.done > 0
+        if m_fiv.done != 0
           m_five_done = true
         end
       end
@@ -730,29 +730,29 @@ class Project < ActiveRecord::Base
 
         if m_three and m_three.done == 0
           if m_three.actual_milestone_date
-              if m_three.actual_milestone_date >= Date.today() - 10
+              if (m_three.actual_milestone_date > Date.today()) and (m_three.actual_milestone_date <= Date.today() + 10)
                 background_color = color_red
-              elsif (m_three.actual_milestone_date < (Date.today() - 10)) and (m_three.actual_milestone_date >= (Date.today() - 20))
+              elsif (m_three.actual_milestone_date > (Date.today() + 10)) and (m_three.actual_milestone_date <= (Date.today() + 20))
                 background_color = color_yellow
               end
           elsif !m_three.actual_milestone_date and m_three.milestone_date
-              if m_three.milestone_date >= Date.today() - 10
+              if (m_three.milestone_date > Date.today()) and (m_three.milestone_date <= Date.today() + 10)
                   background_color = color_red
-              elsif (m_three.milestone_date < (Date.today() - 10)) and (m_three.milestone_date >= (Date.today() - 20))
+              elsif (m_three.milestone_date > (Date.today() + 10)) and (m_three.milestone_date <= (Date.today() + 20))
                 background_color = color_yellow
               end
           end
-        elsif m_three and m_three.done > 0 and m_five == 0
+        elsif m_three and m_three.done != 0 and m_five == 0
           if m_five.actual_milestone_date
-              if m_five.actual_milestone_date >= Date.today() - 45
+              if (m_five.actual_milestone_date > Date.today()) and (m_five.actual_milestone_date <= (Date.today() + 45))
                 background_color = color_red
-              elsif (m_five.actual_milestone_date < (Date.today() - 45)) and (m_five.actual_milestone_date >= (Date.today() - 120))
+              elsif (m_five.actual_milestone_date > (Date.today() + 45)) and (m_five.actual_milestone_date <= (Date.today() + 120))
                 background_color = color_yellow
               end
           elsif !m_five.actual_milestone_date and m_five.milestone_date
-              if m_five.milestone_date >= Date.today() - 45
+              if (m_five.milestone_date > Date.today()) and (m_five.milestone_date <= (Date.today() + 45))
                   background_color = color_red
-              elsif (m_five.milestone_date < (Date.today() - 45)) and (m_five.milestone_date >= (Date.today() - 120))
+              elsif (m_five.milestone_date > (Date.today() + 45)) and (m_five.milestone_date <= (Date.today() + 120))
                 background_color = color_yellow
               end
           end
@@ -766,7 +766,7 @@ class Project < ActiveRecord::Base
   def post_m_five
     post_m_five = false
     m_five = Milestone.find(:all, :conditions => ["project_id = ? and name = ?", self.id, "M5"]).each do |m_fiv|
-      if m_fiv.done > 0
+      if m_fiv.done != 0
         post_m_five = true
       end
     end
