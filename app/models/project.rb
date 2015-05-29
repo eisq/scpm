@@ -744,15 +744,15 @@ class Project < ActiveRecord::Base
           end
         elsif m_three and m_three.done > 0 and m_five == 0
           if m_five.actual_milestone_date
-              if m_five.actual_milestone_date >= Date.today() - 10
+              if m_five.actual_milestone_date >= Date.today() - 45
                 background_color = color_red
-              elsif (m_five.actual_milestone_date < (Date.today() - 10)) and (m_five.actual_milestone_date >= (Date.today() - 20))
+              elsif (m_five.actual_milestone_date < (Date.today() - 45)) and (m_five.actual_milestone_date >= (Date.today() - 120))
                 background_color = color_yellow
               end
           elsif !m_five.actual_milestone_date and m_five.milestone_date
-              if m_five.milestone_date >= Date.today() - 10
+              if m_five.milestone_date >= Date.today() - 45
                   background_color = color_red
-              elsif (m_five.milestone_date < (Date.today() - 10)) and (m_five.milestone_date >= (Date.today() - 20))
+              elsif (m_five.milestone_date < (Date.today() - 45)) and (m_five.milestone_date >= (Date.today() - 120))
                 background_color = color_yellow
               end
           end
