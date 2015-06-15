@@ -3,6 +3,7 @@ require 'lib/csv_backlog'
 class CiProjectsController < ApplicationController
 
 	layout 'ci'
+  Delays = Struct.new(:ci_project, :ci_delay)
 
 	def index
   	redirect_to :action=>:mine
@@ -284,6 +285,7 @@ class CiProjectsController < ApplicationController
       delay.title = "Airbus validation date"
       delay.justification = p.justification_airbus_retard
       delay.new_date = p.airbus_validation_date
+      delay.old_date = old_p.airbus_validation_date
       p.justification_airbus_retard = nil
       p.airbus_commit_author = current_user.rmt_user
       delay.save
@@ -294,6 +296,7 @@ class CiProjectsController < ApplicationController
       delay.title = "SQLI validation date"
       delay.justification = p.justification_sqli_retard
       delay.new_date = p.sqli_validation_date
+      delay.old_date = old_p.sqli_validation_date
       p.justification_sqli_retard = nil
       p.sqli_commit_author = current_user.rmt_user
       delay.save
@@ -304,6 +307,7 @@ class CiProjectsController < ApplicationController
       delay.title = "Deployment date"
       delay.justification = p.justification_deployment_retard
       delay.new_date = p.deployment_date
+      delay.old_date = old_p.deployment_date
       p.justification_deployment_retard = nil
       p.deployment_commit_author = current_user.rmt_user
       delay.save
@@ -401,6 +405,15 @@ class CiProjectsController < ApplicationController
 
   def dashboard
     @ci_projects = CiProject.find(:all).sort_by {|p| [p.id]}
+    @ci_projects_delays = Array.new
+    delays = CiProjectDelay.find(:all)
+    delays.each do |del|
+      ciproject = CiProject.find(:first, :conditions=>["id = ?", del.ci_project_id])
+      delay_struct = Delays.new
+      delay_struct.ci_project = ciproject
+      delay_struct.ci_delay = del
+      @ci_projects_delays << delay_struct
+    end
   end
 
   def delete_link

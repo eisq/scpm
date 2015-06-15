@@ -37,3 +37,27 @@
 <% end %>
 
 </table>
+
+<br/><br/>
+<table style="border: 1px solid black;" id="copy_table">
+<tr>
+	<th class="cell_border">ID CI</th>
+	<th class="cell_border">CI name</th>
+	<th class="cell_border">Date type</th>
+	<th class="cell_border">Justification</th>
+	<th class="cell_border">Old date</th>
+	<th class="cell_border">New date</th>	
+</tr>
+
+<% @ci_projects_delays.each do |delay_struct| %>
+	<tr>
+		<td class="cell_border"><%= delay_struct.ci_delay.ci_project_id %></td>
+		<td class="cell_border"><%= delay_struct.ci_project.summary %></td>
+		<td class="cell_border"><%= delay_struct.ci_delay.title %></td>
+		<td class="cell_border"><%= delay_struct.ci_delay.justification %></td>
+		<td class="cell_border"><%= delay_struct.ci_delay.old_date %></td>
+		<td class="cell_border"><%= delay_struct.ci_delay.new_date %></td>
+	</tr>
+<% end %>
+
+</table>
