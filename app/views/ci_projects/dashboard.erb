@@ -51,7 +51,7 @@
 
 <% @ci_projects_delays.each do |delay_struct| %>
 	<tr>
-		<td class="cell_border"><%= delay_struct.ci_delay.ci_project_id %></td>
+		<td class="cell_border"><%= delay_struct.ci_delay.extract_mantis_external_id %></td>
 		<td class="cell_border"><%= delay_struct.ci_project.summary %></td>
 		<td class="cell_border"><%= delay_struct.ci_delay.title %></td>
 		<td class="cell_border"><%= delay_struct.ci_delay.justification %></td>
