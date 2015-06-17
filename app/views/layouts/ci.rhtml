@@ -45,6 +45,8 @@
     <%= link_to('Report',   {:controller=>'ci_projects', :action=>'report'},{:class=>menu_style('ci_projects', 'report')}) %> -->
     <%= link_to('Dashboard', {:controller=>'ci_projects', :action=>'dashboard'}, {:class=>menu_style('ci_projects','dashboard')  }) %>
     <%= link_to('Create CI', {:controller=>'ci_projects', :action=>'create_ci'}, {:class=>menu_style('ci_projects','create ci')  }) %>
+    <%= link_to('Timeline', {:controller=>'ci_projects', :action=>'timeline'}, {:class=>menu_style('ci_projects','timeline')  }) %>
+    &nbsp;
   <b><%= Date.today.strftime('%d-%b-%Y') %> - week <%= Date.today.cweek %></b>
   </div>
 </div>

@@ -52,3 +52,34 @@ strong {
 .delay_justif {
   display: none;
 }
+
+.timeline_th {
+  width: 100px;
+  background-color: #D8D8D8;
+  border-radius: 6px;
+}
+
+.timeline_th_summary {
+  width: 400px;
+  background-color: #D8D8D8;
+  border-radius: 6px;
+}
+
+.timeline_table {
+  border-style: solid;
+  border-width: 1px;
+  border-color: orange;
+  border-radius: 12px;
+}
+
+.timeline_blue_box {
+  background-color: blue;
+}
+
+.timeline_red_box {
+  background-color: red;
+}
+
+.timeline_green_box {
+  background-color: green;
+}

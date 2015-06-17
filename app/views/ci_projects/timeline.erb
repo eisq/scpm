@@ -1,0 +1,29 @@
+<table class="timeline_table">
+	<tr>
+		<th class="timeline_th_summary">ID - Summary</th>
+		<th class="timeline_th">Responsible</th>
+		<th class="timeline_th">Validator</th>
+		<th class="timeline_th">Start date</th>
+		<th class="timeline_th">Status</th>
+		<th class="timeline_th">Validation date delay (vs initial date in weeks)</th>
+		<th class="timeline_th">Deployment date delay (vs initial date in weeks)</th>
+		<th class="timeline_th">Planning external validation</th>
+	</tr>
+
+	<% @ci_projects.each do |ci_project| %>
+	<tr>
+		<td><%= ci_project.extract_mantis_external_id.to_s %> - <%= ci_project.summary %></td>
+		<td><%= ci_project.reporter %></td>
+		<td><%= ci_project.sqli_validation_responsible %></td>
+		<td><%= ci_project.kick_off_date %></td>
+		<td><%= ci_project.status %></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<% end %>
+</table>
+
+
+
+

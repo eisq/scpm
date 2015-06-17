@@ -428,4 +428,8 @@ class CiProjectsController < ApplicationController
     redirect_to(:action=>'show', :id=>ci_id)
   end
 
+  def timeline
+    @ci_projects = CiProject.find(:all, :conditions=>["deployment_done = 0"])
+  end
+
 end
