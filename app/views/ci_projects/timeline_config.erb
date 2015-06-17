@@ -1,0 +1,29 @@
+<%= link_to('Back on timeline', {:action=>'timeline'}, {:class=>'menu grey'}) %>
+<br/><br/><br/>
+
+<strong>Create a new date</strong><br/>
+<%= form_tag({:action => 'timeline_create_date'}, :multipart => true) %>
+    <table><tr>
+    <td>Date type:</td><td><%= select_tag('date_type', options_for_select(@types)) %></td>
+    <td>Date (yyyy/mm/dd):</td><td><%= text_field_tag('date', "") %></td>
+	<td><%= submit_tag "Create" %></td>
+	</tr></table>
+</form>
+<br/><br/>
+
+<strong>Current dates</strong><br/><br/>
+<table>
+	<tr>
+		<th width=200>Date type</th>
+		<th width=100>Date</th>
+		<th></th>
+	</tr>
+
+	<% @timeline_dates.each do |timeline_date| %>
+	<tr id="a_<%=timeline_date.id%>">
+		<td><%= timeline_date.date_type %></td>
+		<td><%= timeline_date.date %></td>
+		<td><%= link_to_remote(image_tag('delete.gif'), :url=>{:action=>'timeline_delete_date', :id=>timeline_date.id}, :success=>"$('a_#{timeline_date.id}').hide();") %></td>
+	</tr>
+	<% end %>
+</table>

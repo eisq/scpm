@@ -1,6 +1,9 @@
+<%= link_to('Configure', {:action=>'timeline_config'}, {:class=>'menu grey'}) %>
+<br/><br/>
+
 <table class="timeline_table">
 	<tr>
-		<th class="timeline_th_summary">ID - Summary</th>
+		<th class="timeline_th_summary">#ID - Summary</th>
 		<th class="timeline_th">Responsible</th>
 		<th class="timeline_th">Validator</th>
 		<th class="timeline_th">Start date</th>
@@ -8,18 +11,34 @@
 		<th class="timeline_th">Validation date delay (vs initial date in weeks)</th>
 		<th class="timeline_th">Deployment date delay (vs initial date in weeks)</th>
 		<th class="timeline_th">Planning external validation</th>
+		<th class="timeline_th_separation"></th>
+		<% for i in 0..24 %>
+			<% if i == 12 %>
+				<th class="timeline_th_date_today">25</th>
+			<% else %>
+				<th class="timeline_th_date">20</th>
+			<% end %>
+		<% end %>
 	</tr>
 
 	<% @ci_projects.each do |ci_project| %>
-	<tr>
-		<td><%= ci_project.extract_mantis_external_id.to_s %> - <%= ci_project.summary %></td>
-		<td><%= ci_project.reporter %></td>
-		<td><%= ci_project.sqli_validation_responsible %></td>
-		<td><%= ci_project.kick_off_date %></td>
-		<td><%= ci_project.status %></td>
-		<td></td>
-		<td></td>
-		<td></td>
+	<tr class="timeline_tr">
+		<td class="timeline_td">#<%= ci_project.external_id.to_s %> - <%= ci_project.summary %></td>
+		<td class="timeline_td"><%= ci_project.reporter %></td>
+		<td class="timeline_td"><%= ci_project.sqli_validation_responsible %></td>
+		<td class="timeline_td"><%= ci_project.kick_off_date %></td>
+		<td class="timeline_td"><%= ci_project.status %></td>
+		<td class="timeline_td"></td>
+		<td class="timeline_td"></td>
+		<td class="timeline_td"></td>
+		<td class="timeline_td_separation"></td>
+		<% for i in 0..24 %>
+			<% if i == 12 %>
+				<td class="timeline_td_date_today">22</td>
+			<% else %>
+				<td></td>
+			<% end %>
+		<% end %>
 	</tr>
 	<% end %>
 </table>

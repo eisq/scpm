@@ -432,4 +432,32 @@ class CiProjectsController < ApplicationController
     @ci_projects = CiProject.find(:all, :conditions=>["deployment_done = 0"])
   end
 
+  def timeline_config
+    @types = ['CCB Date', 'CCB Deployment']
+    @timeline_dates = CiTimelineDate.find(:all)
+  end
+
+  def timeline_create_date
+    date_type = params[:date_type]
+    date = params[:date]
+    if date_type and date and date_type != "" and date != ""
+      ci_timeline_date = CiTimelineDate.new
+      ci_timeline_date.date_type = date_type
+      ci_timeline_date.date = date
+      ci_timeline_date.save
+    end
+
+    redirect_to(:action=>'timeline_config')
+  end
+
+  def timeline_delete_date
+    id = params[:id]
+    timeline_date = CiTimelineDate.find(:first, :conditions=>["id = ?", id])
+    if timeline_date
+      timeline_date.destroy
+    end
+    
+    redirect_to(:action=>'timeline_config')
+  end
+
 end
