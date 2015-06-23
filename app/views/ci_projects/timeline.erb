@@ -12,12 +12,24 @@
 		<th class="timeline_th">Deployment date delay (vs initial date in weeks)</th>
 		<th class="timeline_th">Planning external validation</th>
 		<th class="timeline_th_separation"></th>
-		<% for i in 0..24 %>
-			<% if i == 12 %>
-				<th class="timeline_th_date_today">25</th>
-			<% else %>
-				<th class="timeline_th_date">20</th>
+		<% @dates.each do |date| %>
+			<th class="timeline_th_date">
+			<% @weeks_ccb.each do |week_ccb| %>
+				<% if week_ccb.week == date.date_week %>
+					<% if week_ccb.date_type == "CCB Date" %>
+						<span class="timeline_th_date_ccb">
+					<% elsif week_ccb.date_type == "CCB Deployment" %>
+						<span class="timeline_th_date_ccb_deployment">
+					<% end %>
+				<% else %>
+					<% if date.date_string == @date_today %>
+						<span class="timeline_th_date_span_today">
+					<% else %>
+						<span class="timeline_th_date_span">
+					<% end %>
+				<% end %>
 			<% end %>
+			<%= date.date_string %></span></th>
 		<% end %>
 	</tr>
 

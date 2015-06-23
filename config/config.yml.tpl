@@ -55,7 +55,10 @@ workloads_display_status_column: true
 workloads_show_filter: false # Show or hide the filter buttn
 workload_holiday_threshold_before_backup: 2 # Number of holidays days which need the attribution of a backup
 workload_show_overload_availability: false #Show on the availability parameters of workload if user is in overload
-workload_show_negative_sum_availability: false 
+workload_show_negative_sum_availability: false
+
+# CI Timeline
+timeline_months: 6
 
 # SDP
 use_multiple_projects_sdp_export: false

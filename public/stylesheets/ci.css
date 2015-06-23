@@ -74,11 +74,23 @@ strong {
 
 .timeline_th_date {
   width: 25px;
+  transform:
+  rotate(300deg);
+  white-space: nowrap;
+}
+
+.timeline_th_date {
+  width: 25px;
+  transform:
+  rotate(300deg);
+  white-space: nowrap;
+}
+
+.timeline_th_date_span {
   background-color: #E8E8E8;
 }
 
-.timeline_th_date_today {
-  width: 25px;
+.timeline_th_date_span_today {
   background-color: #FFFF99;
 }
 

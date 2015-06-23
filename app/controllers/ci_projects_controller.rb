@@ -4,6 +4,8 @@ class CiProjectsController < ApplicationController
 
 	layout 'ci'
   Delays = Struct.new(:ci_project, :ci_delay)
+  Date_ccb = Struct.new(:week, :date_type)
+  Timeline_date = Struct.new(:date_string, :date_week)
 
 	def index
   	redirect_to :action=>:mine
@@ -430,6 +432,44 @@ class CiProjectsController < ApplicationController
 
   def timeline
     @ci_projects = CiProject.find(:all, :conditions=>["deployment_done = 0"])
+    @dates = []
+
+    
+    @weeks_ccb = []
+    ci_timeline_dates = CiTimelineDate.find(:all).each do |ci_timeline_date|
+      date = Date_ccb.new # Date_ccb = Struct.new(:week, :date_type)
+      ci_timeline_date_split = ci_timeline_date.date.to_s.split("-")
+      ccb_date_format = Date.new(ci_timeline_date_split[0].to_i, ci_timeline_date_split[1].to_i, ci_timeline_date_split[2].to_i)
+      date.week = ccb_date_format.cweek
+      date.date_type = ci_timeline_date.date_type
+      @weeks_ccb << date
+    end
+
+    u = -84
+    for i in 0..24
+      timeline_date = Timeline_date.new #Timeline_date = Struct.new(:date_string, :date_week)
+      date = Date.today + u
+      date_monday = date - (date.cwday-1).days # get monday of the week
+      if date_monday.mday < 10
+        date_day = "0"+date_monday.mday.to_s
+      else
+        date_day = date_monday.mday.to_s
+      end
+      if date_monday.mon < 10
+        date_month = "/0"+date_monday.mon.to_s
+      else
+        date_month = "/"+date_monday.mon.to_s
+      end
+      date_format = date_day + date_month + "/" + date_monday.year.to_s
+      if i == 12
+        @date_today = date_format
+      end
+      timeline_date.date_string = date_format
+      timeline_date.date_week = date.cweek
+      @dates << timeline_date
+      u += 7
+    end
+
   end
 
   def timeline_config
