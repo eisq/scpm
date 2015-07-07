@@ -40,6 +40,10 @@ module DeviationSvt
       sheet_rows = self.parse_excel_content(psu)
     end
 
+    if doc.worksheet "PSU_GPP"
+      Rails.logger.info("%%%%%%%%%% " + lifecycle_id.to_s)
+    end
+
     return sheet_rows
   end
 

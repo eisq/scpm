@@ -33,20 +33,20 @@
 		<% end %>
 	</tr>
 
-	<% @ci_projects.each do |ci_project| %>
+	<% @timeline_projects.each do |project| %>
 	<tr class="timeline_tr">
-		<td class="timeline_td">#<%= ci_project.external_id.to_s %> - <%= ci_project.summary %></td>
-		<td class="timeline_td"><%= ci_project.reporter %></td>
-		<td class="timeline_td"><%= ci_project.sqli_validation_responsible %></td>
-		<td class="timeline_td"><%= ci_project.kick_off_date %></td>
-		<td class="timeline_td"><%= ci_project.status %></td>
-		<td class="timeline_td"></td>
-		<td class="timeline_td"></td>
-		<td class="timeline_td"></td>
+		<td class="timeline_td">#<%= project.id %> - <%= project.name %></td>
+		<td class="timeline_td"><%= project.responsible %></td>
+		<td class="timeline_td"><%= project.validator %></td>
+		<td class="timeline_td"><%= project.start_date %></td>
+		<td class="timeline_td"><%= project.status %></td>
+		<td class="timeline_td"><%= project.validation_date_delay %></td>
+		<td class="timeline_td"><%= project.deployment_date_delay %></td>
+		<td class="timeline_td"><%= project.planning_external_validation %></td>
 		<td class="timeline_td_separation"></td>
 		<% for i in 0..24 %>
 			<% if i == 12 %>
-				<td class="timeline_td_date_today">22</td>
+				<td class="timeline_td_date_today"></td>
 			<% else %>
 				<td></td>
 			<% end %>
@@ -54,7 +54,3 @@
 	</tr>
 	<% end %>
 </table>
-
-
-
-

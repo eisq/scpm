@@ -6,6 +6,7 @@ class CiProjectsController < ApplicationController
   Delays = Struct.new(:ci_project, :ci_delay)
   Date_ccb = Struct.new(:week, :date_type)
   Timeline_date = Struct.new(:date_string, :date_week)
+  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :validation_date_week, :deployment_date_week)
 
 	def index
   	redirect_to :action=>:mine
@@ -431,20 +432,33 @@ class CiProjectsController < ApplicationController
   end
 
   def timeline
-    @ci_projects = CiProject.find(:all, :conditions=>["deployment_done = 0"])
-    @dates = []
+    @timeline_projects = Array.new
+    CiProject.find(:all, :conditions=>["deployment_done = 0"]).each do |ci_project|
+      timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :validation_date_week, :deployment_date_week)
+      timeline_project.id = ci_project.external_id.to_s
+      timeline_project.name = ci_project.summary
+      timeline_project.responsible = ci_project.reporter
+      timeline_project.validator = ci_project.sqli_validation_responsible
+      timeline_project.start_date = ci_project.kick_off_date
+      timeline_project.status = timeline_get_displayed_status(ci_project.status)
+      timeline_project.validation_date_delay = ""
+      timeline_project.deployment_date_delay = ""
+      timeline_project.planning_external_validation = timeline_get_planning_external_validation(ci_project.planning_validated)
+      timeline_project.validation_date_week = timeline_get_validation_date_week(ci_project)
+      timeline_project.deployment_date_week = timeline_get_deployment_date_week(ci_project)
 
+      @timeline_projects << timeline_project
+    end
     
-    @weeks_ccb = []
+    @weeks_ccb = Array.new
     ci_timeline_dates = CiTimelineDate.find(:all).each do |ci_timeline_date|
       date = Date_ccb.new # Date_ccb = Struct.new(:week, :date_type)
-      ci_timeline_date_split = ci_timeline_date.date.to_s.split("-")
-      ccb_date_format = Date.new(ci_timeline_date_split[0].to_i, ci_timeline_date_split[1].to_i, ci_timeline_date_split[2].to_i)
-      date.week = ccb_date_format.cweek
+      date.week = timeline_get_week_from_date(ci_timeline_date.date)
       date.date_type = ci_timeline_date.date_type
       @weeks_ccb << date
     end
 
+    @dates = Array.new
     u = -84
     for i in 0..24
       timeline_date = Timeline_date.new #Timeline_date = Struct.new(:date_string, :date_week)
@@ -498,6 +512,76 @@ class CiProjectsController < ApplicationController
     end
     
     redirect_to(:action=>'timeline_config')
+  end
+
+  def timeline_get_displayed_status(ci_project_status)
+    status = ""
+
+    case ci_project_status
+    when "New"
+      status = "Waiting CCB"
+    when "Qualification"
+      status = "Waiting Kick-off"
+    when "Assigned"
+      status = "Running"
+    when "Verified"
+      status = "Running"
+    when "Validated"
+      status = "Running"
+    when "Delivered"
+      status = "Deployed"
+    when "Comment"
+      status = "" #TBD
+    end
+
+    return status
+  end
+
+  def timeline_get_planning_external_validation(ci_project_planning_validated)
+    validation = "No"
+
+    case ci_project_planning_validated
+    when true
+      validation = "Yes"
+    when false
+      validation = "No"
+    end
+
+    return validation
+  end
+
+  def timeline_get_week_from_date(date)
+    week = 0
+
+    date_split = date.to_s.split("-")
+    date_format = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+    week = date_format.cweek
+
+    return week
+  end
+
+  def timeline_get_deployment_date_week(ci_project)
+    week = 0
+
+    if ci_project.deployment_date != nil
+      week = timeline_get_week_from_date(ci_project.deployment_date)
+    else
+      week = timeline_get_week_from_date(ci_project.deployment_date_objective)
+    end
+
+    return week
+  end
+
+  def timeline_get_validation_date_week(ci_project)
+    week = 0
+
+    if ci_project.airbus_validation_date != nil
+      week = timeline_get_week_from_date(ci_project.airbus_validation_date)
+    else
+      week = timeline_get_week_from_date(ci_project.airbus_validation_date_objective)
+    end
+
+    return week
   end
 
 end
