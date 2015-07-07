@@ -553,9 +553,11 @@ class CiProjectsController < ApplicationController
   def timeline_get_week_from_date(date)
     week = 0
 
-    date_split = date.to_s.split("-")
-    date_format = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
-    week = date_format.cweek
+    if date
+      date_split = date.to_s.split("-")
+      date_format = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+      week = date_format.cweek
+    end
 
     return week
   end
