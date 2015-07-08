@@ -32,7 +32,7 @@
 		<td class="timeline_td"><%= project.planning_external_validation %></td>
 		<td class="timeline_td_separation"></td>
 		<% @dates.each do |date| %>
-			<% if blue_box == true and project.validation_date_week != date.date_week %>
+			<% if blue_box == true and project.validation_date_week != date.date_week and project.deployment_date_week != date.date_week %>
 				<td class="timeline_td_progress"></td>
 			<% elsif project.validation_date_week == date.date_week and project.deployment_date_week == date.date_week %>
 				<td class="timeline_td_date_val_dep">VD</td>
@@ -45,6 +45,7 @@
 				<% blue_box = false %>
 			<% elsif project.deployment_date_week == date.date_week %>
 				<td class="timeline_td_date_val_dep">D</td>
+				<% blue_box = false %>
 			<% else %>
 				<td class="<%= date.date_td_span %>"></td>
 			<% end %>
