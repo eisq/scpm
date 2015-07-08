@@ -3,7 +3,7 @@
 
 <table class="timeline_table">
 	<tr>
-		<th class="timeline_th_summary">#ID - Summary</th>
+		<th class="timeline_th_summary">#ID - CI Name</th>
 		<th class="timeline_th">Responsible</th>
 		<th class="timeline_th">Validator</th>
 		<th class="timeline_th">Start date</th>
@@ -14,26 +14,14 @@
 		<th class="timeline_th_separation"></th>
 		<% @dates.each do |date| %>
 			<th class="timeline_th_date">
-			<% @weeks_ccb.each do |week_ccb| %>
-				<% if week_ccb.week == date.date_week %>
-					<% if week_ccb.date_type == "CCB Date" %>
-						<span class="timeline_th_date_ccb">
-					<% elsif week_ccb.date_type == "CCB Deployment" %>
-						<span class="timeline_th_date_ccb_deployment">
-					<% end %>
-				<% else %>
-					<% if date.date_string == @date_today %>
-						<span class="timeline_th_date_span_today">
-					<% else %>
-						<span class="timeline_th_date_span">
-					<% end %>
-				<% end %>
-			<% end %>
-			<%= date.date_string %></span></th>
+			<span class="<%= date.date_th_span %>"><%= date.date_string %></span>
+			</th>
+		<th></th>
 		<% end %>
 	</tr>
 
 	<% @timeline_projects.each do |project| %>
+	<% blue_box = project.in_progress %>
 	<tr class="timeline_tr">
 		<td class="timeline_td">#<%= project.id %> - <%= project.name %></td>
 		<td class="timeline_td"><%= project.responsible %></td>
@@ -44,13 +32,28 @@
 		<td class="timeline_td"><%= project.deployment_date_delay %></td>
 		<td class="timeline_td"><%= project.planning_external_validation %></td>
 		<td class="timeline_td_separation"></td>
-		<% for i in 0..24 %>
-			<% if i == 12 %>
-				<td class="timeline_td_date_today"></td>
+		<% @dates.each do |date| %>
+			<% if blue_box == true and project.validation_date_week != date.date_week %>
+				<td class="timeline_td_progress"></td>
+			<% elsif project.start_date_week == date.date_week %>
+				<td class="timeline_td_date_start">S</td>
+				<% blue_box = true %>
+			<% elsif project.validation_date_week == date.date_week %>
+				<td class="timeline_td_date_val_dep">V</td>
+				<% blue_box = false %>
+			<% elsif project.deployment_date_week == date.date_week %>
+				<td class="timeline_td_date_val_dep">D</td>
 			<% else %>
-				<td></td>
+				<td class="<%= date.date_td_span %>"></td>
 			<% end %>
+			<td></td>
 		<% end %>
 	</tr>
+
+	<% if project.id == "0" %>
+		<% #raise project.deployment_date_week.to_s %>
+	<% end %>
+
 	<% end %>
 </table>
+

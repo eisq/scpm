@@ -5,8 +5,8 @@ class CiProjectsController < ApplicationController
 	layout 'ci'
   Delays = Struct.new(:ci_project, :ci_delay)
   Date_ccb = Struct.new(:week, :date_type)
-  Timeline_date = Struct.new(:date_string, :date_week)
-  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :validation_date_week, :deployment_date_week)
+  Timeline_date = Struct.new(:date_string, :date_week, :date_th_span, :date_td_span)
+  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
 
 	def index
   	redirect_to :action=>:mine
@@ -434,8 +434,8 @@ class CiProjectsController < ApplicationController
   def timeline
     @timeline_projects = Array.new
     CiProject.find(:all, :conditions=>["deployment_done = 0"]).each do |ci_project|
-      timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :validation_date_week, :deployment_date_week)
-      timeline_project.id = ci_project.external_id.to_s
+      timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
+      timeline_project.id = ci_project.extract_mantis_external_id.to_s
       timeline_project.name = ci_project.summary
       timeline_project.responsible = ci_project.reporter
       timeline_project.validator = ci_project.sqli_validation_responsible
@@ -444,26 +444,34 @@ class CiProjectsController < ApplicationController
       timeline_project.validation_date_delay = ""
       timeline_project.deployment_date_delay = ""
       timeline_project.planning_external_validation = timeline_get_planning_external_validation(ci_project.planning_validated)
+      timeline_project.start_date_week = timeline_get_week_from_date(ci_project.kick_off_date)
       timeline_project.validation_date_week = timeline_get_validation_date_week(ci_project)
       timeline_project.deployment_date_week = timeline_get_deployment_date_week(ci_project)
+      timeline_project.in_progress = timeline_get_ci_in_progress(ci_project)
 
       @timeline_projects << timeline_project
     end
     
-    @weeks_ccb = Array.new
+    weeks_ccb = Array.new
     ci_timeline_dates = CiTimelineDate.find(:all).each do |ci_timeline_date|
       date = Date_ccb.new # Date_ccb = Struct.new(:week, :date_type)
       date.week = timeline_get_week_from_date(ci_timeline_date.date)
       date.date_type = ci_timeline_date.date_type
-      @weeks_ccb << date
+      weeks_ccb << date
     end
 
     @dates = Array.new
     u = -84
     for i in 0..24
-      timeline_date = Timeline_date.new #Timeline_date = Struct.new(:date_string, :date_week)
+      date_th_span = "timeline_th_date_span"
+      date_td_span = ""
+      span_found = false
+
+      timeline_date = Timeline_date.new #Timeline_date = Struct.new(:date_string, :date_week, :date_th_span, :date_td_span)
       date = Date.today + u
       date_monday = date - (date.cwday-1).days # get monday of the week
+      
+      # Here it adds a "O" before the date to be more graphical: 07/08/2015 instead of 7/08/2015
       if date_monday.mday < 10
         date_day = "0"+date_monday.mday.to_s
       else
@@ -475,11 +483,33 @@ class CiProjectsController < ApplicationController
         date_month = "/"+date_monday.mon.to_s
       end
       date_format = date_day + date_month + "/" + date_monday.year.to_s
+
+      #Here it sets the span of the current week (in yellow)
       if i == 12
-        @date_today = date_format
+        date_th_span = "timeline_th_date_span_today"
+        date_td_span = "timeline_td_date_today"
       end
+
+      #Here it sets the td and th span on the row according to CCB date or CCB deployment
+      weeks_ccb.each do |week_ccb|
+        if week_ccb.week == date.cweek and !span_found
+          if week_ccb.date_type == "CCB Date"
+            date_th_span = "timeline_th_date_ccb"
+            date_td_span = "timeline_td_date_cbb"
+            span_found = true
+          elsif week_ccb.date_type == "CCB Deployment"
+            date_th_span = "timeline_th_date_ccb_deployment"
+            date_td_span = "timeline_td_date_ccb_deployment"
+            span_found = true
+          end
+        end
+      end
+
       timeline_date.date_string = date_format
       timeline_date.date_week = date.cweek
+      timeline_date.date_th_span = date_th_span
+      timeline_date.date_td_span = date_td_span
+
       @dates << timeline_date
       u += 7
     end
@@ -554,8 +584,7 @@ class CiProjectsController < ApplicationController
     week = 0
 
     if date
-      date_split = date.to_s.split("-")
-      date_format = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+      date_format = get_date_from_bdd_date(date)
       week = date_format.cweek
     end
 
@@ -584,6 +613,37 @@ class CiProjectsController < ApplicationController
     end
 
     return week
+  end
+
+  def timeline_get_ci_in_progress(ci_project)
+    in_progress = false
+
+    if ci_project.kick_off_date and (ci_project.airbus_validation_date or ci_project.airbus_validation_date_objective)
+
+      kick_off_date = get_date_from_bdd_date(ci_project.kick_off_date)
+      if ci_project.airbus_validation_date != nil
+        airbus_validation_date = get_date_from_bdd_date(ci_project.airbus_validation_date)
+      else
+        airbus_validation_date = get_date_from_bdd_date(ci_project.airbus_validation_date_objective)
+      end
+      timeline_start_date = Date.today - 84
+
+      if kick_off_date and airbus_validation_date
+        if (kick_off_date < timeline_start_date) and (airbus_validation_date > timeline_start_date)
+          in_progress = true
+        end
+      end
+
+    end
+
+    return in_progress
+  end
+
+  def get_date_from_bdd_date(bdd_date)
+    date_split = bdd_date.to_s.split("-")
+    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+
+    return date
   end
 
 end

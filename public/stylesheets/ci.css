@@ -138,12 +138,16 @@ strong {
 }
 
 .timeline_td_date_start {
-  background-color: #6666CC;
+  background-color: #9999FF;
+  font-weight: bold;
+  color: white;
   text-align: center;
 }
 
 .timeline_td_date_val_dep {
-  background-color: #6600CC;
+  background-color: #0000CC;
+  font-weight: bold;
+  color: white;
   text-align: center;
 }
 
