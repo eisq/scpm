@@ -60,6 +60,7 @@ strong {
   border-color: #D8D8D8;
   font-size: 10px;
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  width: 2400px;
 }
 
 .timeline_th {
@@ -69,11 +70,6 @@ strong {
 
 .timeline_th_summary {
   width: 400px;
-  background-color: #E8E8E8;
-}
-
-.timeline_th_start_date {
-  width: 80px;
   background-color: #E8E8E8;
 }
 
