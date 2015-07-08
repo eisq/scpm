@@ -23,7 +23,7 @@
 	<% @timeline_projects.each do |project| %>
 	<% blue_box = project.in_progress %>
 	<tr class="timeline_tr">
-		<td class="timeline_td">#<%= project.id %> - <%= project.name %></td>
+		<td>#<%= project.id %> - <%= project.name %></td>
 		<td class="timeline_td"><%= project.responsible %></td>
 		<td class="timeline_td"><%= project.validator %></td>
 		<td class="timeline_td"><%= project.start_date %></td>
