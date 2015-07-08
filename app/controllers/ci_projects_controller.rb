@@ -670,7 +670,9 @@ class CiProjectsController < ApplicationController
     answer = false
 
     if (ci_project.airbus_validation_date or ci_project.airbus_validation_date_objective) and (ci_project.deployment_date or ci_project.deployment_date_objective)
-      answer = true
+      if (ci_project.airbus_validation_date != "" or ci_project.airbus_validation_date_objective != "") and (ci_project.deployment_date != "" or ci_project.deployment_date_objective != "")
+        answer = true
+      end
     end
 
     return answer
