@@ -433,7 +433,7 @@ class CiProjectsController < ApplicationController
 
   def timeline
     @timeline_projects = Array.new
-    CiProject.find(:all, :conditions=>["deployment_done = 0"]).each do |ci_project|
+    CiProject.find(:all).each do |ci_project|
       timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
       timeline_project.id = ci_project.extract_mantis_external_id.to_s
       timeline_project.name = ci_project.summary
@@ -441,8 +441,8 @@ class CiProjectsController < ApplicationController
       timeline_project.validator = ci_project.sqli_validation_responsible
       timeline_project.start_date = ci_project.kick_off_date
       timeline_project.status = timeline_get_displayed_status(ci_project.status)
-      timeline_project.validation_date_delay = ""
-      timeline_project.deployment_date_delay = ""
+      timeline_project.validation_date_delay = timeline_get_validation_date_delay_weeks(ci_project)
+      timeline_project.deployment_date_delay = timeline_get_deployment_date_delay_weeks(ci_project)
       timeline_project.planning_external_validation = timeline_get_planning_external_validation(ci_project.planning_validated)
       timeline_project.start_date_week = timeline_get_week_from_date(ci_project.kick_off_date)
       timeline_project.validation_date_week = timeline_get_validation_date_week(ci_project)
@@ -644,6 +644,26 @@ class CiProjectsController < ApplicationController
     date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
 
     return date
+  end
+
+  def timeline_get_validation_date_delay_weeks(ci_project)
+    delay = 0
+    if ci_project.airbus_validation_date and ci_project.airbus_validation_date_objective
+      date_week = timeline_get_week_from_date(ci_project.airbus_validation_date)
+      date_objective_week = timeline_get_week_from_date(ci_project.airbus_validation_date_objective)
+      delay = date_week - date_objective_week
+    end
+    return delay
+  end
+
+  def timeline_get_deployment_date_delay_weeks(ci_project)
+    delay = 0
+    if ci_project.deployment_date and ci_project.deployment_date_objective
+      date_week = timeline_get_week_from_date(ci_project.deployment_date)
+      date_objective_week = timeline_get_week_from_date(ci_project.deployment_date_objective)
+      delay = date_week - date_objective_week
+    end
+    return delay
   end
 
 end

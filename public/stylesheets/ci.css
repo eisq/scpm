@@ -114,6 +114,10 @@ strong {
   border-top: 1px solid #D8D8D8;
 }
 
+.timeline_td {
+  text-align: center;
+}
+
 .timeline_td_date_today {
   border-left: 2px solid #FFFF99;
   border-right: 2px solid #FFFF99;
@@ -140,6 +144,7 @@ strong {
 .timeline_td_date_start {
   background-color: #9999FF;
   font-weight: bold;
+  font-size: 150%;
   color: white;
   text-align: center;
 }
@@ -147,6 +152,7 @@ strong {
 .timeline_td_date_val_dep {
   background-color: #0000CC;
   font-weight: bold;
+  font-size: 150%;
   color: white;
   text-align: center;
 }
