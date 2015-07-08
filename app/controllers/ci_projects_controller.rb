@@ -630,7 +630,7 @@ class CiProjectsController < ApplicationController
 
       if kick_off_date and airbus_validation_date
         if (kick_off_date < timeline_start_date) and (airbus_validation_date > timeline_start_date)
-          in_progress = true
+          in_progress = timeline_is_there_validation_and_deployment_dates(ci_project)
         end
       end
 
@@ -664,6 +664,16 @@ class CiProjectsController < ApplicationController
       delay = date_week - date_objective_week
     end
     return delay
+  end
+
+  def timeline_is_there_validation_and_deployment_dates(ci_project)
+    answer = false
+
+    if (ci_project.airbus_validation_date or ci_project.airbus_validation_date_objective) and (ci_project.deployment_date or ci_project.deployment_date_objective)
+      answer = true
+    end
+
+    return answer
   end
 
 end
