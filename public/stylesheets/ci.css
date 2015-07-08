@@ -72,8 +72,13 @@ strong {
   background-color: #E8E8E8;
 }
 
+.timeline_th_start_date {
+  width: 80px;
+  background-color: #E8E8E8;
+}
+
 .timeline_th_date {
-  width: 25px;
+  width: 23px;
   transform:
   rotate(300deg);
   white-space: nowrap;
