@@ -658,6 +658,11 @@ class CiProjectsController < ApplicationController
     else
       delay_days_weeks = nil
     end
+
+    if delay_days_weeks == 0
+      delay_days_weeks = nil
+    end
+
     return delay_days_weeks
   end
 
@@ -670,6 +675,11 @@ class CiProjectsController < ApplicationController
     else
       delay_days_weeks = nil
     end
+
+    if delay_days_weeks == 0
+      delay_days_weeks = nil
+    end
+    
     return delay_days_weeks
   end
 
