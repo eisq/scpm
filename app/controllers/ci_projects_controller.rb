@@ -6,7 +6,7 @@ class CiProjectsController < ApplicationController
   Delays = Struct.new(:ci_project, :ci_delay)
   Date_ccb = Struct.new(:week, :date_type)
   Timeline_date = Struct.new(:date_string, :date_week, :date_th_span, :date_td_span)
-  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
+  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
 
 	def index
   	redirect_to :action=>:mine
@@ -433,16 +433,19 @@ class CiProjectsController < ApplicationController
 
   def timeline
     @timeline_projects = Array.new
-    CiProject.find(:all).each do |ci_project|
-      timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :validation_date_delay, :deployment_date_delay, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
+    CiProject.find(:all, :conditions=>["status <> ?", "Rejected"]).each do |ci_project|
+      timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
       timeline_project.id = ci_project.extract_mantis_external_id.to_s
       timeline_project.name = ci_project.summary
       timeline_project.responsible = ci_project.reporter
       timeline_project.validator = ci_project.sqli_validation_responsible
       timeline_project.start_date = ci_project.kick_off_date
       timeline_project.status = timeline_get_displayed_status(ci_project.status)
+      timeline_project.status_color = timeline_get_color_from_status(ci_project.status)
       timeline_project.validation_date_delay = timeline_get_validation_date_delay_weeks(ci_project)
+      timeline_project.validation_date_delay_color = timeline_get_date_delay_color(timeline_project.validation_date_delay)
       timeline_project.deployment_date_delay = timeline_get_deployment_date_delay_weeks(ci_project)
+      timeline_project.deployment_date_delay_color = timeline_get_date_delay_color(timeline_project.deployment_date_delay)
       timeline_project.planning_external_validation = timeline_get_planning_external_validation(ci_project.planning_validated)
       timeline_project.start_date_week = timeline_get_week_from_date(ci_project.kick_off_date)
       timeline_project.validation_date_week = timeline_get_validation_date_week(ci_project)
@@ -647,23 +650,27 @@ class CiProjectsController < ApplicationController
   end
 
   def timeline_get_validation_date_delay_weeks(ci_project)
-    delay = 0
+    delay_days = delay_days_weeks = 0
     if ci_project.airbus_validation_date and ci_project.airbus_validation_date_objective
-      date_week = timeline_get_week_from_date(ci_project.airbus_validation_date)
-      date_objective_week = timeline_get_week_from_date(ci_project.airbus_validation_date_objective)
-      delay = date_week - date_objective_week
+      delay_days = ci_project.airbus_validation_date - ci_project.airbus_validation_date_objective
+      delay_days_weeks = delay_days / 7
+      delay_days_weeks = delay_days_weeks.round
+    else
+      delay_days_weeks = nil
     end
-    return delay
+    return delay_days_weeks
   end
 
   def timeline_get_deployment_date_delay_weeks(ci_project)
-    delay = 0
+    delay_days = delay_days_weeks = 0
     if ci_project.deployment_date and ci_project.deployment_date_objective
-      date_week = timeline_get_week_from_date(ci_project.deployment_date)
-      date_objective_week = timeline_get_week_from_date(ci_project.deployment_date_objective)
-      delay = date_week - date_objective_week
+      delay_days = ci_project.deployment_date - ci_project.deployment_date_objective
+      delay_days_weeks = delay_days / 7
+      delay_days_weeks = delay_days_weeks.round
+    else
+      delay_days_weeks = nil
     end
-    return delay
+    return delay_days_weeks
   end
 
   def timeline_is_there_validation_and_deployment_dates(ci_project)
@@ -676,6 +683,41 @@ class CiProjectsController < ApplicationController
     end
 
     return answer
+  end
+
+  def timeline_get_color_from_status(status)
+    td_color_style = ""
+
+    case status
+    when "New"
+      td_color_style = "timeline_td_status_pink"
+    when "Qualification"
+      td_color_style = "timeline_td_status_lightblue"
+    when "Assigned"
+      td_color_style = "timeline_td_status_blue"
+    when "Verified"
+      td_color_style = "timeline_td_status_blue"
+    when "Validated"
+      td_color_style = "timeline_td_status_blue"
+    when "Delivered"
+      td_color_style = "timeline_td_status_green"
+    when "Comment"
+      td_color_style = "" #TBD
+    end
+
+    return td_color_style
+  end
+
+  def timeline_get_date_delay_color(date_delay)
+    td_color_style = ""
+
+    if date_delay != nil and date_delay != 0
+      td_color_style = "timeline_td_date_delay"
+    else
+      td_color_style = "timeline_td_date_no_delay"
+    end
+
+    return td_color_style
   end
 
 end

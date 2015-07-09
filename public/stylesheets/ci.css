@@ -105,18 +105,47 @@ strong {
   background-color: #A0A0A0;
 }
 
-.timeline_th_separation {
-  width: 0px;
-  border-right: 2px solid #D8D8D8;
-  background-color: #E8E8E8;
-}
-
 .timeline_tr {
   border-top: 1px solid #D8D8D8;
 }
 
 .timeline_td {
   text-align: center;
+  border-left: 2px solid #E8E8E8;
+  border-right: 2px solid #E8E8E8;
+}
+
+.timeline_td_status_pink {
+  text-align: center;
+  background-color: #FFE0FF;
+}
+
+.timeline_td_status_lightblue {
+  text-align: center;
+  background-color: #DBFFFF;
+}
+
+.timeline_td_status_blue {
+  text-align: center;
+  background-color: #D6D6FF;
+}
+
+.timeline_td_status_green {
+  text-align: center;
+  background-color: #D6FFD6;
+}
+
+.timeline_td_date_delay {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  background-color: #FFCCCC;
+}
+
+.timeline_td_date_no_delay {
+  background-color: #CCFFCC;
+  border-left: 2px solid #E8E8E8;
+  border-right: 2px solid #E8E8E8;
 }
 
 .timeline_td_date_today {
@@ -156,11 +185,6 @@ strong {
   font-size: 150%;
   color: white;
   text-align: center;
-}
-
-.timeline_td_separation {
-  width: 0px;
-  border-right: 2px solid #D8D8D8;
 }
 
 .timeline_blue_box {
