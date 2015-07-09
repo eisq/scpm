@@ -437,7 +437,7 @@ class CiProjectsController < ApplicationController
       timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
       timeline_project.id = ci_project.extract_mantis_external_id.to_s
       timeline_project.name = ci_project.summary
-      timeline_project.responsible = ci_project.reporter
+      timeline_project.responsible = ci_project.assigned_to
       timeline_project.validator = ci_project.sqli_validation_responsible
       timeline_project.start_date = ci_project.kick_off_date
       timeline_project.status = timeline_get_displayed_status(ci_project.status)
