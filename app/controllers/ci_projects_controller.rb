@@ -712,7 +712,7 @@ class CiProjectsController < ApplicationController
     when "Delivered"
       td_color_style = "timeline_td_status_green"
     when "Comment"
-      td_color_style = "" #TBD
+      td_color_style = "timeline_td" #TBD
     end
 
     return td_color_style
