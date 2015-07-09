@@ -564,7 +564,7 @@ class CiProjectsController < ApplicationController
     when "Delivered"
       status = "Deployed"
     when "Comment"
-      status = "" #TBD
+      status = "TBD"
     end
 
     return status
