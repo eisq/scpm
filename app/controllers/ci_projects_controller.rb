@@ -597,7 +597,7 @@ class CiProjectsController < ApplicationController
   def timeline_get_deployment_date_week(ci_project)
     week = 0
 
-    if ci_project.deployment_date != nil
+    if ci_project.deployment_date != nil and ci_project.deployment_date_alert == 0
       week = timeline_get_week_from_date(ci_project.deployment_date)
     else
       week = timeline_get_week_from_date(ci_project.deployment_date_objective)
@@ -609,7 +609,7 @@ class CiProjectsController < ApplicationController
   def timeline_get_validation_date_week(ci_project)
     week = 0
 
-    if ci_project.airbus_validation_date != nil
+    if ci_project.airbus_validation_date != nil and ci_project.airbus_date_alert == 0
       week = timeline_get_week_from_date(ci_project.airbus_validation_date)
     else
       week = timeline_get_week_from_date(ci_project.airbus_validation_date_objective)
@@ -651,7 +651,7 @@ class CiProjectsController < ApplicationController
 
   def timeline_get_validation_date_delay_weeks(ci_project)
     delay_days = delay_days_weeks = 0
-    if ci_project.airbus_validation_date and ci_project.airbus_validation_date_objective
+    if ci_project.airbus_validation_date and ci_project.airbus_validation_date_objective and ci_project.airbus_date_alert == 0
       delay_days = ci_project.airbus_validation_date - ci_project.airbus_validation_date_objective
       delay_days_weeks = delay_days / 7
       delay_days_weeks = delay_days_weeks.round
@@ -668,7 +668,7 @@ class CiProjectsController < ApplicationController
 
   def timeline_get_deployment_date_delay_weeks(ci_project)
     delay_days = delay_days_weeks = 0
-    if ci_project.deployment_date and ci_project.deployment_date_objective
+    if ci_project.deployment_date and ci_project.deployment_date_objective and ci_project.deployment_date_alert == 0
       delay_days = ci_project.deployment_date - ci_project.deployment_date_objective
       delay_days_weeks = delay_days / 7
       delay_days_weeks = delay_days_weeks.round
@@ -679,7 +679,7 @@ class CiProjectsController < ApplicationController
     if delay_days_weeks == 0
       delay_days_weeks = nil
     end
-    
+
     return delay_days_weeks
   end
 
