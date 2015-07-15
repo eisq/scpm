@@ -6,7 +6,7 @@ class CiProjectsController < ApplicationController
   Delays = Struct.new(:ci_project, :ci_delay)
   Date_ccb = Struct.new(:week, :date_type)
   Timeline_date = Struct.new(:date_string, :date_week, :date_th_span, :date_td_span)
-  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
+  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress, :link_type, :link_to)
 
 	def index
   	redirect_to :action=>:mine
@@ -432,9 +432,9 @@ class CiProjectsController < ApplicationController
   end
 
   def timeline
-    @timeline_projects = Array.new
+    timeline_projects = Array.new
     CiProject.find(:all, :conditions=>["status <> ?", "Rejected"]).each do |ci_project|
-      timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress)
+      timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress, :link_type, :link_to)
       timeline_project.id = ci_project.extract_mantis_external_id.to_s
       timeline_project.name = ci_project.summary
       timeline_project.responsible = ci_project.assigned_to
@@ -451,9 +451,91 @@ class CiProjectsController < ApplicationController
       timeline_project.validation_date_week = timeline_get_validation_date_week(ci_project)
       timeline_project.deployment_date_week = timeline_get_deployment_date_week(ci_project)
       timeline_project.in_progress = timeline_get_ci_in_progress(ci_project)
+      timeline_project.link_type = 0 #0 = nothing, 1 = father, 2 = son, 3 = brother
+      timeline_project.link_to = 0 #id of the linked ci_project
 
-      @timeline_projects << timeline_project
+      timeline_projects << timeline_project
     end
+
+    #Here we sort the ci_projects to allow the link display in the timeline
+    #Links are: Related to, Dependant on, Blocks
+    links_bloc = Array.new
+    CiProjectLink.find(:all).each do |link|
+      first_project_id = CiProject.find(:first, :conditions=>["id = ?", link.first_ci_project_id]).extract_mantis_external_id
+      second_project_id = CiProject.find(:first, :conditions=>["id = ?", link.second_ci_project_id]).extract_mantis_external_id
+
+      
+
+      timeline_project_first_array = timeline_projects.select { |p| p.id == first_project_id }
+      #raise timeline_project_first_array.count.to_s
+      timeline_project_second_array = timeline_projects.select { |p| p.id == second_project_id }
+      timeline_project_first = timeline_project_first_array[0]
+      timeline_project_second = timeline_project_second_array[0]
+
+      if timeline_project_first and timeline_project_second
+
+        timeline_projects.delete(timeline_project_first)
+        timeline_projects.delete(timeline_project_second)
+
+        case link.title
+          when "Related to"
+            timeline_project_first.link_type = 3
+            timeline_project_first.link_to = timeline_project_second.id
+            timeline_project_second.link_type = 3
+            timeline_project_second.link_to = timeline_project_first.id
+          when "Dependant on"
+            timeline_project_first.link_type = 2
+            timeline_project_first.link_to = timeline_project_second.id
+            timeline_project_second.link_type = 1
+          when "Blocks"
+            timeline_project_first.link_type = 1
+            timeline_project_second.link_type = 2
+            timeline_project_second.link_to = timeline_project_first.id
+        end
+
+        links_bloc << timeline_project_first
+        links_bloc << timeline_project_second
+      end
+    end
+
+
+
+
+    @timeline_projects_sorted = Array.new
+    links_bloc.each do |timeline_project_with_link|
+      if timeline_project_with_link.link_type == 1
+        @timeline_projects_sorted << timeline_project_with_link
+        links_bloc.each do |timeline_project_with_link_son|
+          if timeline_project_with_link_son.link_to == timeline_project_with_link.id and timeline_project_with_link_son.link_type == 2
+            @timeline_projects_sorted << timeline_project_with_link_son
+
+            links_bloc.delete(timeline_project_with_link)
+            links_bloc.delete(timeline_project_with_link_son)
+          end
+        end
+      end
+    end
+
+    links_bloc.each do |timeline_project_with_link|
+      if timeline_project_with_link.link_type == 3
+        @timeline_projects_sorted << timeline_project_with_link
+        links_bloc.each do |timeline_project_with_link_brother|
+          if timeline_project_with_link_brother.link_to == timeline_project_with_link.id and timeline_project_with_link_brother.link_type == 3
+            @timeline_projects_sorted << timeline_project_with_link_brother
+
+            links_bloc.delete(timeline_project_with_link)
+            links_bloc.delete(timeline_project_with_link_brother)
+          end
+        end
+      end
+    end
+
+    timeline_projects.each do |timeline_project_to_add|
+      @timeline_projects_sorted << timeline_project_to_add
+    end
+
+
+
     
     weeks_ccb = Array.new
     ci_timeline_dates = CiTimelineDate.find(:all).each do |ci_timeline_date|

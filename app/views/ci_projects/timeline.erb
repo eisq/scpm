@@ -3,6 +3,7 @@
 
 <table class="timeline_table">
 	<tr>
+		<th></th>
 		<th class="timeline_th_summary">#ID - CI Name</th>
 		<th class="timeline_th">Responsible</th>
 		<th class="timeline_th">Validator</th>
@@ -18,10 +19,17 @@
 		<% end %>
 	</tr>
 
-	<% @timeline_projects.each do |project| %>
+	<% @timeline_projects_sorted.each do |project| %>
 	<% blue_box = project.in_progress %>
 	<tr class="timeline_tr">
-		<td>#<%= project.id %> - <%= project.name %></td>
+		<td> <!-- 0 = nothing, 1 = father, 2 = son, 3 = brother -->
+			<% if project.link_type == 2 %>
+				<img src="/images/son.png" style="width:50px;height:50px;">
+			<% elsif project.link_type == 3 %>
+				<img src="/images/brother.png" style="width:50px;height:50px;">
+			<% end %>
+		</td>
+		<td><%= project.id %> - <%= project.name %></td>
 		<td class="timeline_td"><%= project.responsible %></td>
 		<td class="timeline_td"><%= project.validator %></td>
 		<td class="timeline_td"><%= project.start_date %></td>
