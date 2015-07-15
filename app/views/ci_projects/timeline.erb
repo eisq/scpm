@@ -3,11 +3,11 @@
 
 <table class="timeline_table">
 	<tr>
-		<th></th>
+		<th class="timeline_th_links"></th>
 		<th class="timeline_th_summary">#ID - CI Name</th>
 		<th class="timeline_th">Responsible</th>
 		<th class="timeline_th">Validator</th>
-		<th class="timeline_th">Start date</th>
+		<th class="timeline_th">Kick-off date</th>
 		<th class="timeline_th">Status</th>
 		<th class="timeline_th">Validation date delay (vs initial date in weeks)</th>
 		<th class="timeline_th">Deployment date delay (vs initial date in weeks)</th>
@@ -22,14 +22,18 @@
 	<% @timeline_projects_sorted.each do |project| %>
 	<% blue_box = project.in_progress %>
 	<tr class="timeline_tr">
-		<td> <!-- 0 = nothing, 1 = father, 2 = son, 3 = brother -->
-			<% if project.link_type == 2 %>
-				<img src="/images/son.png" style="width:50px;height:50px;">
-			<% elsif project.link_type == 3 %>
-				<img src="/images/brother.png" style="width:50px;height:50px;">
-			<% end %>
-		</td>
-		<td><%= project.id %> - <%= project.name %></td>
+		<!-- 0 = nothing, 1 = father, 2 = son, 3 = brother -->
+		<% if project.link_type == 2 %>
+			<td>
+			<img src="/images/arrow.png" style="width:20px;height:20px;"></td>
+			<td><%= project.id %> - <%= project.name %></td>
+		<% elsif project.link_type == 3 %>
+			<td>
+			<img src="/images/arrow_double.png" style="width:20px;height:17px;"></td>
+			<td><%= project.id %> - <%= project.name %></td>
+		<% else %>
+			<td colspan=2><%= project.id %> - <%= project.name %></td>
+		<% end %>
 		<td class="timeline_td"><%= project.responsible %></td>
 		<td class="timeline_td"><%= project.validator %></td>
 		<td class="timeline_td"><%= project.start_date %></td>

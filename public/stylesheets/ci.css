@@ -59,12 +59,17 @@ strong {
   border-width: 1px;
   border-color: #D8D8D8;
   font-size: 10px;
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-family: Calibri, Candara, Segoe, 'Segoe UI', Optima, Arial, sans-serif;
   width: 2300px;
 }
 
 .timeline_th {
   width: 100px;
+  height: 55px;
+  background-color: #E8E8E8;
+}
+
+.timeline_th_links {
   background-color: #E8E8E8;
 }
 
@@ -92,7 +97,7 @@ strong {
 }
 
 .timeline_th_date_span_today {
-  background-color: #FFFF99;
+  background-color: #99D6AD;
 }
 
 .timeline_th_date_ccb {
@@ -149,8 +154,8 @@ strong {
 }
 
 .timeline_td_date_today {
-  border-left: 2px solid #FFFF99;
-  border-right: 2px solid #FFFF99;
+  border-left: 2px solid #99D6AD;
+  border-right: 2px solid #99D6AD;
   text-align: center;
 }
 

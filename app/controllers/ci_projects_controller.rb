@@ -433,7 +433,7 @@ class CiProjectsController < ApplicationController
 
   def timeline
     timeline_projects = Array.new
-    CiProject.find(:all, :conditions=>["status <> ?", "Rejected"]).each do |ci_project|
+    CiProject.find(:all, :conditions=>["status <> ? and visibility = ?", "Rejected", "public"]).each do |ci_project|
       timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress, :link_type, :link_to)
       timeline_project.id = ci_project.extract_mantis_external_id.to_s
       timeline_project.name = ci_project.summary
@@ -464,15 +464,18 @@ class CiProjectsController < ApplicationController
       first_project_id = CiProject.find(:first, :conditions=>["id = ?", link.first_ci_project_id]).extract_mantis_external_id
       second_project_id = CiProject.find(:first, :conditions=>["id = ?", link.second_ci_project_id]).extract_mantis_external_id
 
-      
+      timeline_project_first_array = timeline_projects.select { |p| p.id.to_i == first_project_id }
+      timeline_projects.each do |pi|
+        Rails.logger.info("%%%%%%%%%%%%%% : " + pi.id)
+      end
+      #raise "test"
 
-      timeline_project_first_array = timeline_projects.select { |p| p.id == first_project_id }
-      #raise timeline_project_first_array.count.to_s
-      timeline_project_second_array = timeline_projects.select { |p| p.id == second_project_id }
+      timeline_project_second_array = timeline_projects.select { |p| p.id.to_i == second_project_id }
       timeline_project_first = timeline_project_first_array[0]
       timeline_project_second = timeline_project_second_array[0]
 
       if timeline_project_first and timeline_project_second
+        #raise "lol"
 
         timeline_projects.delete(timeline_project_first)
         timeline_projects.delete(timeline_project_second)
@@ -634,7 +637,7 @@ class CiProjectsController < ApplicationController
 
     case ci_project_status
     when "New"
-      status = "Waiting CCB"
+      status = "Waiting Kick-off"
     when "Qualification"
       status = "Waiting Kick-off"
     when "Assigned"
@@ -646,7 +649,7 @@ class CiProjectsController < ApplicationController
     when "Delivered"
       status = "Deployed"
     when "Comment"
-      status = "TBD"
+      status = "On hold"
     end
 
     return status
