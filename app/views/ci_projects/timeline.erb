@@ -1,5 +1,7 @@
 <%= link_to('Configure', {:action=>'timeline_config'}, {:class=>'menu grey'}) %>
-<br/><br/>
+<br/>
+
+<h1>Continuous improvement Timeline (<%= Date.today %>)</h1>
 
 <table class="timeline_table">
 	<tr>
@@ -67,5 +69,51 @@
 	<% end %>
 
 	<% end %>
+</table>
+
+<br/><br/>
+
+<table class="caption_table">
+<tr>
+	<td colspan=3 class="caption_title">Caption</td>
+</tr><tr class="caption_tr">
+	<td>
+		<table>
+		<tr>
+			<td colspan=2>EISQ Status vs Change Request Airbus</td>
+		</tr>
+		<tr>
+			<td class="caption_td_new">New</td>
+			<td class="caption_td_new">Waiting CCB</td>
+		</tr>
+		<tr>
+			<td class="caption_td_qualification">Qualification</td>
+			<td class="caption_td_qualification">Waiting Kick-off</td>
+		</tr>
+		<tr>
+			<td class="caption_td_assigned">Assigned</td>
+			<td class="caption_td_assigned">Running</td>
+		</tr>
+		<tr>
+			<td class="caption_td_assigned">Verified</td>
+			<td class="caption_td_assigned">Running</td>
+		</tr>
+		<tr>
+			<td class="caption_td_assigned">Validated</td>
+			<td class="caption_td_assigned">Running</td>
+		</tr>
+		<tr>
+			<td class="caption_td_delivered">Delivered</td>
+			<td class="caption_td_delivered">Deployed</td>
+		</tr>
+		<tr>
+			<td>Comment</td>
+			<td>On hold</td>
+		</tr>
+		</table>
+	</td>
+	<td></td>
+	<td></td>
+</tr>
 </table>
 

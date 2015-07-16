@@ -203,3 +203,34 @@ strong {
 .timeline_green_box {
   background-color: green;
 }
+
+.caption_table {
+  border-collapse: collapse;
+  border-style: solid;
+  width: 500px;
+}
+
+.caption_title {
+  text-align: center;
+  font-weight: bold;
+}
+
+.caption_tr {
+  border-top: 3px solid black;
+}
+
+.caption_td_new {
+  background-color: #FFE0FF;
+}
+
+.caption_td_qualification {
+  background-color: #DBFFFF;
+}
+
+.caption_td_assigned {
+  background-color: #D6D6FF;
+}
+
+.caption_td_delivered {
+  background-color: #D6FFD6;
+}
