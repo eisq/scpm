@@ -465,18 +465,11 @@ class CiProjectsController < ApplicationController
       second_project_id = CiProject.find(:first, :conditions=>["id = ?", link.second_ci_project_id]).extract_mantis_external_id
 
       timeline_project_first_array = timeline_projects.select { |p| p.id.to_i == first_project_id }
-      timeline_projects.each do |pi|
-        Rails.logger.info("%%%%%%%%%%%%%% : " + pi.id)
-      end
-      #raise "test"
-
       timeline_project_second_array = timeline_projects.select { |p| p.id.to_i == second_project_id }
       timeline_project_first = timeline_project_first_array[0]
       timeline_project_second = timeline_project_second_array[0]
 
       if timeline_project_first and timeline_project_second
-        #raise "lol"
-
         timeline_projects.delete(timeline_project_first)
         timeline_projects.delete(timeline_project_second)
 
@@ -500,9 +493,6 @@ class CiProjectsController < ApplicationController
         links_bloc << timeline_project_second
       end
     end
-
-
-
 
     @timeline_projects_sorted = Array.new
     links_bloc.each do |timeline_project_with_link|
@@ -536,9 +526,6 @@ class CiProjectsController < ApplicationController
     timeline_projects.each do |timeline_project_to_add|
       @timeline_projects_sorted << timeline_project_to_add
     end
-
-
-
     
     weeks_ccb = Array.new
     ci_timeline_dates = CiTimelineDate.find(:all).each do |ci_timeline_date|
