@@ -120,11 +120,6 @@ strong {
   border-right: 2px solid #E8E8E8;
 }
 
-.timeline_td_status_pink {
-  text-align: center;
-  background-color: #FFE0FF;
-}
-
 .timeline_td_status_lightblue {
   text-align: center;
   background-color: #DBFFFF;
@@ -138,6 +133,10 @@ strong {
 .timeline_td_status_green {
   text-align: center;
   background-color: #D6FFD6;
+}
+
+.timeline_td_status_blank {
+  text-align: center;
 }
 
 .timeline_td_date_delay {
@@ -173,7 +172,12 @@ strong {
 
 .timeline_td_progress {
   background-color: #99CCFF;
+}
+
+.timeline_td_progress_show_ci_id {
+  background-color: #99CCFF;
   text-align: center;
+  color: white;
 }
 
 .timeline_td_date_start {
@@ -206,8 +210,8 @@ strong {
 
 .caption_table {
   border-collapse: collapse;
-  border-style: solid;
-  width: 500px;
+  border: 1px solid black;
+  width: 700px;
 }
 
 .caption_title {
@@ -216,11 +220,7 @@ strong {
 }
 
 .caption_tr {
-  border-top: 3px solid black;
-}
-
-.caption_td_new {
-  background-color: #FFE0FF;
+  border-top: 1px solid black;
 }
 
 .caption_td_qualification {

@@ -6,7 +6,7 @@ class CiProjectsController < ApplicationController
   Delays = Struct.new(:ci_project, :ci_delay)
   Date_ccb = Struct.new(:week, :date_type)
   Timeline_date = Struct.new(:date_string, :date_week, :date_th_span, :date_td_span)
-  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress, :link_type, :link_to)
+  Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress, :link_type, :link_to, :id_start_to_show_week, :id_finish_to_show_week, :status_sort)
 
 	def index
   	redirect_to :action=>:mine
@@ -434,27 +434,32 @@ class CiProjectsController < ApplicationController
   def timeline
     timeline_projects = Array.new
     CiProject.find(:all, :conditions=>["status <> ? and visibility = ?", "Rejected", "public"]).each do |ci_project|
-      timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress, :link_type, :link_to)
-      timeline_project.id = ci_project.extract_mantis_external_id.to_s
-      timeline_project.name = ci_project.summary
-      timeline_project.responsible = ci_project.assigned_to
-      timeline_project.validator = ci_project.sqli_validation_responsible
-      timeline_project.start_date = ci_project.kick_off_date
-      timeline_project.status = timeline_get_displayed_status(ci_project.status)
-      timeline_project.status_color = timeline_get_color_from_status(ci_project.status)
-      timeline_project.validation_date_delay = timeline_get_validation_date_delay_weeks(ci_project)
-      timeline_project.validation_date_delay_color = timeline_get_date_delay_color(timeline_project.validation_date_delay)
-      timeline_project.deployment_date_delay = timeline_get_deployment_date_delay_weeks(ci_project)
-      timeline_project.deployment_date_delay_color = timeline_get_date_delay_color(timeline_project.deployment_date_delay)
-      timeline_project.planning_external_validation = timeline_get_planning_external_validation(ci_project.planning_validated)
-      timeline_project.start_date_week = timeline_get_week_from_date(ci_project.kick_off_date)
-      timeline_project.validation_date_week = timeline_get_validation_date_week(ci_project)
-      timeline_project.deployment_date_week = timeline_get_deployment_date_week(ci_project)
-      timeline_project.in_progress = timeline_get_ci_in_progress(ci_project)
-      timeline_project.link_type = 0 #0 = nothing, 1 = father, 2 = son, 3 = brother
-      timeline_project.link_to = 0 #id of the linked ci_project
+      if timeline_is_ci_project_visible(ci_project)
+        timeline_project = Timeline_project.new # Timeline_project = Struct.new(:id, :name, :responsible, :validator, :start_date, :status, :status_color, :validation_date_delay, :validation_date_delay_color, :deployment_date_delay, :deployment_date_delay_color, :planning_external_validation, :start_date_week, :validation_date_week, :deployment_date_week, :in_progress, :link_type, :link_to, :id_start_to_show_week, :id_finish_to_show_week, :status_sort)
+        timeline_project.id = ci_project.extract_mantis_external_id.to_s
+        timeline_project.name = ci_project.summary
+        timeline_project.responsible = ci_project.assigned_to
+        timeline_project.validator = ci_project.sqli_validation_responsible
+        timeline_project.start_date = ci_project.kick_off_date
+        timeline_project.status = timeline_get_displayed_status(ci_project.status)
+        timeline_project.status_color = timeline_get_color_from_status(ci_project.status)
+        timeline_project.validation_date_delay = timeline_get_validation_date_delay_weeks(ci_project)
+        timeline_project.validation_date_delay_color = timeline_get_date_delay_color(timeline_project.validation_date_delay)
+        timeline_project.deployment_date_delay = timeline_get_deployment_date_delay_weeks(ci_project)
+        timeline_project.deployment_date_delay_color = timeline_get_date_delay_color(timeline_project.deployment_date_delay)
+        timeline_project.planning_external_validation = timeline_get_planning_external_validation(ci_project.planning_validated)
+        timeline_project.start_date_week = timeline_get_week_from_date(ci_project.kick_off_date)
+        timeline_project.validation_date_week = timeline_get_validation_date_week(ci_project)
+        timeline_project.deployment_date_week = timeline_get_deployment_date_week(ci_project)
+        timeline_project.in_progress = timeline_get_ci_in_progress(ci_project)
+        timeline_project.link_type = 0 #0 = nothing, 1 = father, 2 = son, 3 = brother
+        timeline_project.link_to = 0 #id of the linked ci_project
+        timeline_project.id_start_to_show_week = timeline_get_id_start_to_show_week(ci_project)
+        timeline_project.id_finish_to_show_week = timeline_get_id_finish_to_show_week(ci_project)
+        timeline_project.status_sort = timeline_get_status_sort(ci_project)
 
-      timeline_projects << timeline_project
+        timeline_projects << timeline_project
+      end
     end
 
     #Here we sort the ci_projects to allow the link display in the timeline
@@ -489,21 +494,28 @@ class CiProjectsController < ApplicationController
             timeline_project_second.link_to = timeline_project_first.id
         end
 
-        links_bloc << timeline_project_first
-        links_bloc << timeline_project_second
+        links_bloc.push(timeline_project_first, timeline_project_second)
       end
     end
 
     @timeline_projects_sorted = Array.new
     links_bloc.each do |timeline_project_with_link|
       if timeline_project_with_link.link_type == 1
-        @timeline_projects_sorted << timeline_project_with_link
         links_bloc.each do |timeline_project_with_link_son|
           if timeline_project_with_link_son.link_to == timeline_project_with_link.id and timeline_project_with_link_son.link_type == 2
-            @timeline_projects_sorted << timeline_project_with_link_son
+            @timeline_projects_sorted.push(timeline_project_with_link, timeline_project_with_link_son)
 
             links_bloc.delete(timeline_project_with_link)
             links_bloc.delete(timeline_project_with_link_son)
+          end
+        end
+      elsif timeline_project_with_link.link_type == 2
+        links_bloc.each do |timeline_project_with_link_father|
+          if timeline_project_with_link.link_to == timeline_project_with_link_father.id and timeline_project_with_link_father.link_type == 1
+            @timeline_projects_sorted.push(timeline_project_with_link_father, timeline_project_with_link)
+
+            links_bloc.delete(timeline_project_with_link)
+            links_bloc.delete(timeline_project_with_link_father)
           end
         end
       end
@@ -511,10 +523,10 @@ class CiProjectsController < ApplicationController
 
     links_bloc.each do |timeline_project_with_link|
       if timeline_project_with_link.link_type == 3
-        @timeline_projects_sorted << timeline_project_with_link
+        
         links_bloc.each do |timeline_project_with_link_brother|
           if timeline_project_with_link_brother.link_to == timeline_project_with_link.id and timeline_project_with_link_brother.link_type == 3
-            @timeline_projects_sorted << timeline_project_with_link_brother
+            @timeline_projects_sorted.push(timeline_project_with_link, timeline_project_with_link_brother)
 
             links_bloc.delete(timeline_project_with_link)
             links_bloc.delete(timeline_project_with_link_brother)
@@ -523,7 +535,8 @@ class CiProjectsController < ApplicationController
       end
     end
 
-    timeline_projects.each do |timeline_project_to_add|
+    timeline_projects_sort = timeline_projects.sort_by { |n| n.status_sort}
+    timeline_projects_sort.each do |timeline_project_to_add|
       @timeline_projects_sorted << timeline_project_to_add
     end
     
@@ -772,7 +785,7 @@ class CiProjectsController < ApplicationController
 
     case status
     when "New"
-      td_color_style = "timeline_td_status_pink"
+      td_color_style = "timeline_td_status_lightblue"
     when "Qualification"
       td_color_style = "timeline_td_status_lightblue"
     when "Assigned"
@@ -784,7 +797,7 @@ class CiProjectsController < ApplicationController
     when "Delivered"
       td_color_style = "timeline_td_status_green"
     when "Comment"
-      td_color_style = "timeline_td" #TBD
+      td_color_style = "timeline_td_status_blank"
     end
 
     return td_color_style
@@ -800,6 +813,81 @@ class CiProjectsController < ApplicationController
     end
 
     return td_color_style
+  end
+
+  def timeline_get_id_start_to_show_week(ci_project)
+    date_week = 0
+
+    if ci_project.kick_off_date
+      kick_off_date = get_date_from_bdd_date(ci_project.kick_off_date)
+      kick_off_date_next = kick_off_date + 7
+      date_week = kick_off_date_next.cweek
+    end
+
+    return date_week
+  end
+
+  def timeline_get_id_finish_to_show_week(ci_project)
+    date_week = 0
+
+    if ci_project.airbus_validation_date != nil and ci_project.airbus_date_alert == 0
+      kick_off_date = get_date_from_bdd_date(ci_project.airbus_validation_date)
+      kick_off_date_previous = kick_off_date - 7
+      date_week = kick_off_date_previous.cweek
+    elsif ci_project.airbus_validation_date_objective != nil
+      kick_off_date = get_date_from_bdd_date(ci_project.airbus_validation_date_objective)
+      kick_off_date_previous = kick_off_date - 7
+      date_week = kick_off_date_previous.cweek
+    end
+    
+    return date_week
+  end
+
+  def timeline_is_ci_project_visible(ci_project)
+    is_visible = false
+    difference_in_days = 100
+
+    if ci_project.deployment_done
+      if ci_project.deployment_date != nil and ci_project.deployment_date_alert == 0
+        difference_in_days = (Date.today - get_date_from_bdd_date(ci_project.deployment_date)).to_i
+      elsif ci_project.deployment_date_objective != nil
+        difference_in_days = (Date.today - get_date_from_bdd_date(ci_project.deployment_date_objective)).to_i
+      end
+
+      if difference_in_days < 84
+        is_visible = true
+      end
+
+    else
+      is_visible = true
+    end
+
+    return is_visible
+  end
+
+  def timeline_get_status_sort(ci_project)
+    status_sorted = 0
+
+    if ci_project.status
+      case ci_project.status
+        when "New"
+          status_sorted = 5
+        when "Qualification"
+          status_sorted = 3
+        when "Assigned"
+          status_sorted = 0
+        when "Verified"
+          status_sorted = 1
+        when "Validated"
+          status_sorted = 2
+        when "Delivered"
+          status_sorted = 4
+        when "Comment"
+          status_sorted = 6
+      end
+    end
+
+      return status_sorted
   end
 
 end

@@ -45,7 +45,11 @@
 		<td class="timeline_td"><%= project.planning_external_validation %></td>
 		<% @dates.each do |date| %>
 			<% if blue_box == true and project.validation_date_week != date.date_week and project.deployment_date_week != date.date_week %>
-				<td class="timeline_td_progress"></td>
+				<% if date.date_week == project.id_start_to_show_week or date.date_week == project.id_finish_to_show_week %>
+					<td class="timeline_td_progress_show_ci_id"><%= project.id %></td>
+				<% else %>
+					<td class="timeline_td_progress"></td>
+				<% end %>
 			<% elsif project.validation_date_week == date.date_week and project.deployment_date_week == date.date_week %>
 				<td class="timeline_td_date_val_dep">VD</td>
 				<% blue_box = false %>
@@ -63,11 +67,6 @@
 			<% end %>
 		<% end %>
 	</tr>
-
-	<% if project.id == "0" %>
-		<% #raise project.deployment_date_week.to_s %>
-	<% end %>
-
 	<% end %>
 </table>
 
@@ -80,40 +79,89 @@
 	<td>
 		<table>
 		<tr>
-			<td colspan=2>EISQ Status vs Change Request Airbus</td>
+			<td colspan=2 class="timeline_td_status_blank"><u>EISQ Status vs Change Request Airbus</u></td>
+		</tr>
+		<tr><td colspan=2></td></tr>
+		<tr>
+			<td class="timeline_td_status_lightblue">New</td>
+			<td class="timeline_td_status_lightblue">Waiting Kick-off</td>
 		</tr>
 		<tr>
-			<td class="caption_td_new">New</td>
-			<td class="caption_td_new">Waiting CCB</td>
+			<td class="timeline_td_status_lightblue">Qualification</td>
+			<td class="timeline_td_status_lightblue">Waiting Kick-off</td>
 		</tr>
 		<tr>
-			<td class="caption_td_qualification">Qualification</td>
-			<td class="caption_td_qualification">Waiting Kick-off</td>
+			<td class="timeline_td_status_blue">Assigned</td>
+			<td class="timeline_td_status_blue">Running</td>
 		</tr>
 		<tr>
-			<td class="caption_td_assigned">Assigned</td>
-			<td class="caption_td_assigned">Running</td>
+			<td class="timeline_td_status_blue">Verified</td>
+			<td class="timeline_td_status_blue">Running</td>
 		</tr>
 		<tr>
-			<td class="caption_td_assigned">Verified</td>
-			<td class="caption_td_assigned">Running</td>
+			<td class="timeline_td_status_blue">Validated</td>
+			<td class="timeline_td_status_blue">Running</td>
 		</tr>
 		<tr>
-			<td class="caption_td_assigned">Validated</td>
-			<td class="caption_td_assigned">Running</td>
+			<td class="timeline_td_status_green">Delivered</td>
+			<td class="timeline_td_status_green">Deployed</td>
 		</tr>
 		<tr>
-			<td class="caption_td_delivered">Delivered</td>
-			<td class="caption_td_delivered">Deployed</td>
-		</tr>
-		<tr>
-			<td>Comment</td>
-			<td>On hold</td>
+			<td class="timeline_td_status_blank">Comment</td>
+			<td class="timeline_td_status_blank">On hold</td>
 		</tr>
 		</table>
 	</td>
-	<td></td>
-	<td></td>
+	<td>
+		<table>
+		<tr>
+			<td colspan=2 class="timeline_td_status_blank"><u>Weeks</u></td>
+		</tr>
+		<tr><td colspan=2></td></tr>
+		<tr>
+			<td>Current week</td>
+			<td class="timeline_th_date_span_today"></td>
+		</tr>
+		<tr>
+			<td>Date CCB</td>
+			<td class="timeline_th_date_ccb"></td>
+		</tr>
+		<tr>
+			<td>Date CCB deployment</td>
+			<td class="timeline_th_date_ccb_deployment"></td>
+		</tr>
+		<tr><td colspan=2>&nbsp;</td></tr>
+		<tr><td colspan=2>&nbsp;</td></tr>
+		<tr><td colspan=2>&nbsp;</td></tr>
+		<tr><td colspan=2>&nbsp;</td></tr>
+		</table>
+	</td>
+	<td>
+		<table>
+		<tr>
+			<td colspan=2 class="timeline_td_status_blank"><u>Project status</u></td>
+		</tr>
+		<tr><td colspan=2></td></tr>
+		<tr>
+			<td>Kick-off date</td>
+			<td class="timeline_td_date_start">S</td>
+		</tr>
+		<tr>
+			<td>In progress</td>
+			<td class="timeline_td_progress"></td>
+		</tr>
+		<tr>
+			<td>Airbus validation date</td>
+			<td class="timeline_td_date_val_dep">v</td>
+		</tr>
+		<tr>
+			<td>Deployment date</td>
+			<td class="timeline_td_date_val_dep">D</td>
+		</tr>
+		<tr><td colspan=2>&nbsp;</td></tr>
+		<tr><td colspan=2>&nbsp;</td></tr>
+		</table>
+	</td>
 </tr>
 </table>
 
