@@ -98,15 +98,19 @@ strong {
 
 .timeline_th_date_span_today {
   background-color: #99D6AD;
+  height: 20px;
+  width: 30px;
 }
 
 .timeline_th_date_ccb {
-  width: 25px;
+  height: 20px;
+  width: 30px;
   background-color: #FF6666;
 }
 
 .timeline_th_date_ccb_deployment {
-  width: 25px;
+  height: 20px;
+  width: 30px;
   background-color: #A0A0A0;
 }
 
@@ -184,6 +188,8 @@ strong {
 
 .timeline_td_progress {
   background-color: #99CCFF;
+  width: 30px;
+  height: 20px;
 }
 
 .timeline_td_progress_show_ci_id {
@@ -198,6 +204,7 @@ strong {
   font-size: 150%;
   color: white;
   text-align: center;
+  width: 30px;
 }
 
 .timeline_td_date_val_dep {
