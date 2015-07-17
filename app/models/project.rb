@@ -720,9 +720,6 @@ class Project < ActiveRecord::Base
       color_yellow = "#EFF0A3"
 
       m_five = Milestone.find(:first, :conditions=>["project_id = ? and name = ?", self.id, "M5"])
-      if self.id = 1672
-        #raise m_five.id.to_s
-      end
 
       if !m_five or m_five.done != 0
         m_three = Milestone.find(:last, :conditions=>["project_id = ? and name = ?", self.id, "M3"])
