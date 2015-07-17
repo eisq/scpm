@@ -121,9 +121,9 @@ strong {
 }
 
 .timeline_tr_bot {
-  border-left: 1px solid #D8D8D8;
-  border-right: 1px solid #D8D8D8;
-  border-bottom: 1px solid #D8D8D8;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 .timeline_td {
