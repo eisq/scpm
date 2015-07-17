@@ -1,5 +1,5 @@
 <tr class="<%= p.css_class %>">
-	<td align="right"><b><%=link_to(p.extract_mantis_external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}")%></b></td>
+	<td align="right"><b><%=link_to(p.extract_mantis_external_id, "https://sqli.steering-project.com/mantis/view.php?id=#{p.internal_id}", :target => "_blank")%></b></td>
 	<td>
 		<% p.get_links.each do |link| %>
 			<%= link.title %> <%=link_to(link.second_ci_project_external_id, {:action=>'show', :id=>link.second_ci_project})%><br/>
@@ -59,5 +59,4 @@
 	<% else %>
 		No
 	<% end %></td>
-	<td><%= link_to(image_tag('edit.gif'), :controller => "ci_projects", :action=>"edit", :id=>p.id)%></td>
 </tr>

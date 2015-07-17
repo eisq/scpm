@@ -114,6 +114,18 @@ strong {
   border-top: 1px solid #D8D8D8;
 }
 
+.timeline_tr_top {
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.timeline_tr_bot {
+  border-left: 1px solid #D8D8D8;
+  border-right: 1px solid #D8D8D8;
+  border-bottom: 1px solid #D8D8D8;
+}
+
 .timeline_td {
   text-align: center;
   border-left: 2px solid #E8E8E8;
@@ -211,7 +223,7 @@ strong {
 .caption_table {
   border-collapse: collapse;
   border: 1px solid black;
-  width: 700px;
+  width: 800px;
 }
 
 .caption_title {

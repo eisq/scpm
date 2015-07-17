@@ -871,7 +871,7 @@ class CiProjectsController < ApplicationController
     if ci_project.status
       case ci_project.status
         when "New"
-          status_sorted = 5
+          status_sorted = 4
         when "Qualification"
           status_sorted = 3
         when "Assigned"
@@ -881,7 +881,7 @@ class CiProjectsController < ApplicationController
         when "Validated"
           status_sorted = 2
         when "Delivered"
-          status_sorted = 4
+          status_sorted = 5
         when "Comment"
           status_sorted = 6
       end

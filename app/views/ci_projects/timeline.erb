@@ -1,7 +1,7 @@
 <%= link_to('Configure', {:action=>'timeline_config'}, {:class=>'menu grey'}) %>
 <br/>
 
-<h1>Continuous improvement Timeline (<%= Date.today %>)</h1>
+<h1>Continuous Improvement Timeline (<%= Date.today %>)</h1>
 
 <table class="timeline_table">
 	<tr>
@@ -21,9 +21,19 @@
 		<% end %>
 	</tr>
 
+	<% first_related = true %>
 	<% @timeline_projects_sorted.each do |project| %>
 	<% blue_box = project.in_progress %>
-	<tr class="timeline_tr">
+
+	<% if project.link_type == 1 or (project.link_type == 3 and first_related == true) %>
+		<% first_related = false %>
+		<tr class="timeline_tr_top">
+	<% elsif project.link_type == 2 or (project.link_type == 3 and first_related == false) %>
+		<% first_related = true %>
+		<tr class="timeline_tr_bot">
+	<% else %>
+		<tr class="timeline_tr">
+	<% end %>
 		<!-- 0 = nothing, 1 = father, 2 = son, 3 = brother -->
 		<% if project.link_type == 2 %>
 			<td>
@@ -152,7 +162,7 @@
 		</tr>
 		<tr>
 			<td>Airbus validation date</td>
-			<td class="timeline_td_date_val_dep">v</td>
+			<td class="timeline_td_date_val_dep">V</td>
 		</tr>
 		<tr>
 			<td>Deployment date</td>
