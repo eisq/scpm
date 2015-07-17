@@ -48,7 +48,11 @@
 		<% end %>
 		<td class="timeline_td"><%= project.responsible %></td>
 		<td class="timeline_td"><%= project.validator %></td>
-		<td class="timeline_td"><%= project.start_date.strftime("%d-%m-%Y") %></td>
+		<% if project.start_date %>
+			<td class="timeline_td"><%= project.start_date.strftime("%d-%m-%Y") %></td>
+		<% else %>
+			<td class="timeline_td"><%= project.start_date %></td>
+		<% end %>
 		<td class="<%= project.status_color %>"><%= project.status %></td>
 		<td class="<%= project.validation_date_delay_color %>"><%= project.validation_date_delay %></td>
 		<td class="<%= project.deployment_date_delay_color %>"><%= project.deployment_date_delay %></td>
