@@ -1,4 +1,4 @@
-<% if current_user.has_role?('Admin') and current_user.has_role?('CI Manager') %>
+<% if current_user.has_role?('Admin') or current_user.has_role?('CI Manager') %>
 	<%= link_to('Configure', {:action=>'timeline_config'}, {:class=>'menu grey'}) %>
 	<br/>
 <% end %>
