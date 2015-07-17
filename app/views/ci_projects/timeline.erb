@@ -1,5 +1,7 @@
-<%= link_to('Configure', {:action=>'timeline_config'}, {:class=>'menu grey'}) %>
-<br/>
+<% if current_user.has_role?('Admin') and current_user.has_role?('CI Manager') %>
+	<%= link_to('Configure', {:action=>'timeline_config'}, {:class=>'menu grey'}) %>
+	<br/>
+<% end %>
 
 <h1>Continuous Improvement Timeline (<%= Date.today.strftime("%d-%m-%Y") %>)</h1>
 

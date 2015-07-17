@@ -5,7 +5,7 @@
 <%= form_tag({:action => 'timeline_create_date'}, :multipart => true) %>
     <table><tr>
     <td>Date type:</td><td><%= select_tag('date_type', options_for_select(@types)) %></td>
-    <td>Date (yyyy/mm/dd):</td><td><%= text_field_tag('date', "") %></td>
+    <td>Date (<strong>yyyy/mm/dd</strong>):</td><td><%= text_field_tag('date', "") %></td>
 	<td><%= submit_tag "Create" %></td>
 	</tr></table>
 </form>
