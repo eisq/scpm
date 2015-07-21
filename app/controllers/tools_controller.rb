@@ -1134,12 +1134,12 @@ class ToolsController < ApplicationController
   def replace_e
     #Blatché
     CiProject.find(:all, :conditions=>["id=14 or id=15 or id=16 or id=17 or id=18 or id=19 or id=20 or id=21 or id=56"]).each do |ci|
-      ci.sqli_validation_reponsible = "Marion Blatché"
+      ci.sqli_validation_responsible = "Marion Blatché"
       ci.save
     end
     #Céline
     CiProject.find(:all, :conditions=>["id=43"]).each do |ci|
-      ci.sqli_validation_reponsible = "Céline Pages"
+      ci.sqli_validation_responsible = "Céline Pages"
       ci.save
     end
 
