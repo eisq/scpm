@@ -1130,6 +1130,22 @@ class ToolsController < ApplicationController
       render(:layout=>false, :text=>'error') 
     end
   end
+
+  def replace_e
+    #Blatché
+    CiProject.find(:all, :conditions=>["id=14 or id=15 or id=16 or id=17 or id=18 or id=19 or id=20 or id=21 or id=56"]).each do |ci|
+      ci.sqli_validation_reponsible = "Marion Blatché"
+      ci.save
+    end
+    #Céline
+    CiProject.find(:all, :conditions=>["id=43"]).each do |ci|
+      ci.sqli_validation_reponsible = "Céline Pages"
+      ci.save
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
 private
 
   def round_to_hour(f)
