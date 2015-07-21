@@ -412,7 +412,8 @@ class ToolsController < ApplicationController
   def get_sdp_graph_series(method)
     serie   = []
     labels  = []
-    logs = SdpImportLog.find(:all, :order=>"id")
+    #id > 589 = dps logs from January 2015.
+    logs = SdpImportLog.find(:all, :conditions=>["id > 589"], :order=>"id")
     first = logs.first.created_at
     for l in logs
       serie << [l.created_at-first, l.send(method)]
