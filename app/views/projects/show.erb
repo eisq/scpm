@@ -34,7 +34,8 @@ function add(id, nb_months, has_requests, has_rights) {
         "Amendments <strong>#{@project.current_amendments.size}</strong>",
         "Actions <strong>#{@project.current_actions.size}</strong>",
         "Notes/Capi <strong>#{@project.visible_notes(current_user.id).size}</strong>",
-        "Information"
+        "Information",
+        "Milestone delays"
         ]) %>
     </ol>
 
@@ -252,6 +253,14 @@ function add(id, nb_months, has_requests, has_rights) {
             </ul>
 
           </div>
+      </div>
+
+      <div id="tabContent7" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="7"? "block" : "none"%>;">
+        <div>
+          <table>
+            <tr><td></td></tr>
+          </table>
+        </div>
       </div>
 
     </div><!--End of tabscontent-->
