@@ -1221,6 +1221,7 @@ class ProjectsController < ApplicationController
       redirect_to :action=>:index
     end
   end
+
   # - 
 
 private

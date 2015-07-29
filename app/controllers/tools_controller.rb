@@ -1147,6 +1147,12 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def milestone_delay_config
+    @milestone_delay_reasons_first = MilestoneDelayReason.find(:all, :conditions=>["level_of_reason", 1])
+    @milestone_delay_reasons_second = MilestoneDelayReason.find(:all, :conditions=>["level_of_reason", 2])
+    @milestone_delay_reasons_third = MilestoneDelayReason.find(:all, :conditions=>["level_of_reason", 3])
+  end
+
 private
 
   def round_to_hour(f)

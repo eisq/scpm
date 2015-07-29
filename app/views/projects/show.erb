@@ -31,11 +31,11 @@ function add(id, nb_months, has_requests, has_rights) {
       <%= tab_menu("project_show", [
         "Timeline and status",
         "Risks <strong>#{@project.current_risks.size}</strong>",
+        "Milestone delays",
         "Amendments <strong>#{@project.current_amendments.size}</strong>",
         "Actions <strong>#{@project.current_actions.size}</strong>",
         "Notes/Capi <strong>#{@project.visible_notes(current_user.id).size}</strong>",
-        "Information",
-        "Milestone delays"
+        "Information"
         ]) %>
     </ol>
 
@@ -149,7 +149,15 @@ function add(id, nb_months, has_requests, has_rights) {
           </div>
       </div>
 
-      <div id="tabContent3" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="3"? "block":"none"%>;">
+      <div id="tabContent3" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="3"? "block" : "none"%>;">
+        <div>
+          <table>
+            <tr><td></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="tabContent4" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="4"? "block":"none"%>;">
           <div>
             <% if !@has_sibling %>
               <%= link_to('Add amendment', {:controller=>'amendments', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br />
@@ -161,7 +169,7 @@ function add(id, nb_months, has_requests, has_rights) {
           </div>
       </div>
 
-      <div id="tabContent4" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="4"? "block":"none"%>;">
+      <div id="tabContent5" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="5"? "block":"none"%>;">
           <div>
             <% if !@has_sibling %>
               <%= link_to('Add action', {:controller=>'actions', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br/>
@@ -173,7 +181,7 @@ function add(id, nb_months, has_requests, has_rights) {
           </div>
       </div>
 
-      <div id="tabContent5" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="5"? "block":"none"%>;">
+      <div id="tabContent6" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="6"? "block":"none"%>;">
           <div>
             <% if !@has_sibling %>
               <%= link_to('Add note', {:controller=>'notes', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br />
@@ -183,7 +191,7 @@ function add(id, nb_months, has_requests, has_rights) {
           </div>
       </div>
 
-      <div id="tabContent6" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="6"? "block":"none"%>;">
+      <div id="tabContent7" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="7"? "block":"none"%>;">
           <div>
             <% if !@has_sibling %>
               <%= link_to('Edit project', {:action=>'edit', :id=>@project.id}, {:class=>'btnlnk'}) %>
@@ -253,14 +261,6 @@ function add(id, nb_months, has_requests, has_rights) {
             </ul>
 
           </div>
-      </div>
-
-      <div id="tabContent7" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="7"? "block" : "none"%>;">
-        <div>
-          <table>
-            <tr><td></td></tr>
-          </table>
-        </div>
       </div>
 
     </div><!--End of tabscontent-->
