@@ -152,7 +152,32 @@ function add(id, nb_months, has_requests, has_rights) {
       <div id="tabContent3" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="3"? "block" : "none"%>;">
         <div>
           <table>
-            <tr><td></td></tr>
+            <tr>
+              <th>Milestone</th>
+              <th>Planned date</th>
+              <th>Current date</th>
+              <th>Delay days</th>
+              <th>1st reason</th>
+              <th>2nd reason</th>
+              <th>3rd reason</th>
+              <th>Other reason</th>
+              <th>Last update</th>
+              <th>Logged by</th>
+            </tr>
+            <% @milestone_delays.each do |delay| %>
+              <tr>
+                <td>delay.milestone</td>
+                <td>delay.planned_date</td>
+                <td>delay.current_date</td>
+                <td>delay.delay_days</td>
+                <td>delay.first_reason</td>
+                <td>delay.second_reason</td>
+                <td>delay.third_reason</td>
+                <td>delay.other_reason</td>
+                <td>delay.last_update</td>
+                <td>delay.person</td>
+              </tr>
+            <% end %>
           </table>
         </div>
       </div>

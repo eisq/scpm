@@ -17,3 +17,9 @@
 
 <p><%= label_tag 'comments' %>
 <%= text_area :milestone, :comments, {:rows=>3} %></p>
+
+<p><%= label_tag 'Reason' %>
+<div id="delay_first_select"><%= select(:delay, :first_id, @first_reasons.map {|u| [u.reason_description,u.id]}, :include_blank=>"--- select a reason ---") %></div>
+<div id="delay_second_select"><%= select(:delay, :second_id, @second_reasons.map {|u| [u.reason_description,u.id]}, :include_blank=>"--- select a reason ---") %></div>
+<div id="delay_third_select"><%= select(:delay, :third_id, @third_reasons.map {|u| [u.reason_description,u.id]}, :include_blank=>"--- select a reason ---") %></div>
+Other: <%= text_area :delay, :other, {:rows=>2} %></p>

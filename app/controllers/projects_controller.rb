@@ -6,6 +6,7 @@ include ActionView::Helpers::DateHelper # just for time_ago_in_words...
 class ProjectsController < ApplicationController
 
   before_filter :require_login
+  Milestone_delay = Struct.new(:milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, :other_reason, :last_update, :person)
 
   def index
     @time = Time.now
@@ -252,6 +253,51 @@ class ProjectsController < ApplicationController
       @new_spider_to_show = @project.get_before_M5
     end
 
+    @milestone_delays = Array.new
+    MilestoneDelayRecord.find(:all).each do |milestone_delay_record|
+      if milestone_delay_record.milestone.project_id == id
+        milestone_delay = Milestone_delay.new # Milestone_delay = Struct.new(:milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, ;other_reason, :last_update, :person)
+        milestone_delay.milestone = delay_get_milestone_name(milestone_delay_record.milestone_id)
+        milestone_delay.planned_date = milestone_delay_record.planned_date
+        milestone_delay.current_date = milestone_delay_record.current_date
+        milestone_delay.delay_days = milestone_delay_record.delay_days
+        milestone_delay.first_reason = delay_get_reason_name(milestone_delay_record.reason_first_id, 1)
+        milestone_delay.second_reason = delay_get_reason_name(milestone_delay_record.reason_second_id, 2)
+        milestone_delay.third_reason = delay_get_reason_name(milestone_delay_record.reason_third_id, 3)
+        milestone_delay.other_reason = milestone_delay_record.reason_other
+        milestone_delay.last_update = milestone_delay_record.updated_at
+        milestone_delay.person = delay_get_current_user_name(milestone_delay_record.updated_by)
+
+        @milestone_delays << milestone_delay
+      end
+    end
+  end
+
+  def delay_get_milestone_name(milestone_id)
+    milestone_name = Milestone.find(:first, :conditions=>["id = ?", milestone_id]).name
+
+    return milestone_name
+  end
+
+  def delay_get_reason_name(delay_id, delay_level)
+    reason = ""
+
+    case delay_level
+    when 1
+      reason = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", delay_id]).reason_description
+    when 2
+      reason = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", delay_id]).reason_description
+    when 3
+      reason = MilestoneDelayReasonThird.find(:first, :conditions=>["id = ?", delay_id]).reason_description
+    end
+
+    return reason
+  end
+
+  def delay_get_current_user_name(milestone_delay_record.updated_by)
+    current_user_name = Person.find(:first, :conditions=>["id = ?", milestone_delay_record.updated_by]).name
+    
+    return current_user_name
   end
 
   def check_all_milestones

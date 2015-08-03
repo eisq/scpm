@@ -1148,9 +1148,9 @@ class ToolsController < ApplicationController
   end
 
   def milestone_delay_config
-    @milestone_delay_reasons_first = MilestoneDelayReason.find(:all, :conditions=>["level_of_reason", 1])
-    @milestone_delay_reasons_second = MilestoneDelayReason.find(:all, :conditions=>["level_of_reason", 2])
-    @milestone_delay_reasons_third = MilestoneDelayReason.find(:all, :conditions=>["level_of_reason", 3])
+    @milestone_delay_reason_ones = MilestoneDelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
+    @milestone_delay_reason_twos = MilestoneDelayReasonTwos.find(:all, :conditions=>["is_active = ?", true])
+    @milestone_delay_reason_threes = MilestoneDelayReasonThrees.find(:all, :conditions=>["is_active = ?", true])
   end
 
 private

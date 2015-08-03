@@ -3,16 +3,16 @@
 <h3>Delay reasons</h3>
 
 <ul>
-<% @milestone_delay_reasons_first.each do |mdr_f| %>
-	<li> mdr_f.reason_description: 
+<% @milestone_delay_reason_ones.each do |mdr_o| %>
+	<li> mdr_o.reason_description: 
 		<ul>
-		<% @milestone_delay_reasons_second.each do |mdr_s| %>
-			<% if mdr_s.reason_first_id_link == mdr_f.id %>
-			<li> mdr_s.reason_description: 
+		<% @milestone_delay_reason_twos.each do |mdr_t| %>
+			<% if mdr_t.reason_one_id == mdr_o.id %>
+			<li> mdr_t.reason_description: 
 				<ul>
-					<% @milestone_delay_reasons_third.each do |mdr_t| %>
-						<% if mdr_s.reason_first_id_link == mdr_f.id %>
-							<li> mdr_t.reason_description </li>
+					<% @milestone_delay_reason_threes.each do |mdr_th| %>
+						<% if mdr_t.reason_two_id == mdr_t.id %>
+							<li> mdr_th.reason_description </li>
 						<% end %>
 					<% end %>
 				</ul>
