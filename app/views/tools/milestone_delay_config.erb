@@ -1,7 +1,29 @@
+<script src="/javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  var $j = jQuery.noConflict();
+</script>
+<script src="/javascripts/tool.js"></script>
 
+<script type="text/javascript">
+$j(document).ready(function (){
+
+});
+</script>
 
 <h3>Delay reasons</h3>
 
+<% form_tag(:action=>'milestone_delay_config') do %>
+  <%= select_tag ("reason_one",options_for_select(@reason_ones)  %>
+  <%= select_tag ("reason_two",options_for_select(@reason_twos)  %>
+  <%= text_area :reason, :reason, {:rows=>1} %>
+  <%= submit_tag('Add') %>
+  <%= submit_tag('Remove') %>
+  <%= submit_tag('Reset') %>
+<% end %>
+
+<u>Note</u>: if you remove a lvl1 reason, all lvl2 and lvl3 reasons linked are removed.
+
+<!--
 <ul>
 <% @milestone_delay_reason_ones.each do |mdr_o| %>
 	<li> mdr_o.reason_description: 
@@ -23,3 +45,4 @@
 	</li>
 <% end %>
 </ul>
+-->

@@ -294,8 +294,8 @@ class ProjectsController < ApplicationController
     return reason
   end
 
-  def delay_get_current_user_name(milestone_delay_record.updated_by)
-    current_user_name = Person.find(:first, :conditions=>["id = ?", milestone_delay_record.updated_by]).name
+  def delay_get_current_user_name(milestone_delay_record_updated_by)
+    current_user_name = Person.find(:first, :conditions=>["id = ?", milestone_delay_record_updated_by]).name
     
     return current_user_name
   end
