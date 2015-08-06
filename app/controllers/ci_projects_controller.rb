@@ -744,7 +744,7 @@ class CiProjectsController < ApplicationController
       delay_days_weeks = nil
     end
 
-    if delay_days_weeks == 0
+    if delay_days_weeks <= 0
       delay_days_weeks = nil
     end
 
@@ -761,7 +761,7 @@ class CiProjectsController < ApplicationController
       delay_days_weeks = nil
     end
 
-    if delay_days_weeks == 0
+    if delay_days_weeks <= 0
       delay_days_weeks = nil
     end
 
@@ -806,7 +806,7 @@ class CiProjectsController < ApplicationController
   def timeline_get_date_delay_color(date_delay)
     td_color_style = ""
 
-    if date_delay != nil and date_delay != 0
+    if date_delay != nil and date_delay != 0 and date_delay > 0
       td_color_style = "timeline_td_date_delay"
     else
       td_color_style = "timeline_td_date_no_delay"

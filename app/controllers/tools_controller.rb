@@ -1148,9 +1148,15 @@ class ToolsController < ApplicationController
   end
 
   def milestone_delay_config
-    @milestone_delay_reason_ones = MilestoneDelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
-    @milestone_delay_reason_twos = MilestoneDelayReasonTwo.find(:all, :conditions=>["is_active = ?", true])
-    @milestone_delay_reason_threes = MilestoneDelayReasonThree.find(:all, :conditions=>["is_active = ?", true])
+    if params[:commit] and params[:commit] == "add"
+
+    elsif params[:commit] and params[:commit] == "remove"
+
+    else
+      @milestone_delay_reason_ones = MilestoneDelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
+      @milestone_delay_reason_twos = MilestoneDelayReasonTwo.find(:all, :conditions=>["is_active = ?", true])
+      @milestone_delay_reason_threes = MilestoneDelayReasonThree.find(:all, :conditions=>["is_active = ?", true])
+    end
   end
 
   def milestone_delay_add_reason

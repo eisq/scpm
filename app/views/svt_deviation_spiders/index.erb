@@ -100,6 +100,11 @@ $( document ).ready(function() {
 
 <h2>Current spider</h2>
 
+<% if @warning_psu_imported %>
+	<span style="color:red; font-weight: bold;"><%= @warning_psu_imported %></span>
+<% end %>
+<br/><br/>
+
 <% if @last_spider == nil or @last_spider.svt_deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
 <% elsif @last_spider.svt_deviation_spider_consolidations.count == 0 %>

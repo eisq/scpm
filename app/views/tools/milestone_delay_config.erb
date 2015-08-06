@@ -13,12 +13,12 @@ $j(document).ready(function (){
 <h3>Delay reasons</h3>
 
 <% form_tag(:action=>'milestone_delay_config') do %>
-  <%= select_tag ("reason_one",options_for_select(@reason_ones)  %>
-  <%= select_tag ("reason_two",options_for_select(@reason_twos)  %>
+  <%= select_tag ("reason_one", options_for_select(@reason_ones)) %>
+  <%= select_tag ("reason_two", options_for_select(@reason_twos)) %>
   <%= text_area :reason, :reason, {:rows=>1} %>
-  <%= submit_tag('Add') %>
-  <%= submit_tag('Remove') %>
-  <%= submit_tag('Reset') %>
+  <%= submit_tag 'Add', :name => 'add' %>
+  <%= submit_tag 'Remove', :name => 'remove' %>
+  <%= submit_tag 'Reset', :name => 'reset' %>
 <% end %>
 
 <u>Note</u>: if you remove a lvl1 reason, all lvl2 and lvl3 reasons linked are removed.

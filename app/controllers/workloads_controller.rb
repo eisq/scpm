@@ -112,6 +112,7 @@ class WorkloadsController < ApplicationController
     backups = WlBackup.find(:all, :conditions=>["backup_person_id = ? and (week = ? or week = ?)", person_id, currentWeek, nextWeek])
 
     @backup_holidays = []
+    @backup_holidays_comments = []
     backups.each do |b|  
       # Load for holyday and concerned user (for the 14 next days)
       person_holiday_load = WlLoad.find(:all,
@@ -124,7 +125,10 @@ class WorkloadsController < ApplicationController
         # Calcul the number of day of holiday. If it's over the threshold, display the warning
         person_holiday_load.map { |wload| load_total += wload.wlload }
         if (load_total > APP_CONFIG['workload_holiday_threshold_before_backup'])
-         @backup_holidays << b.person.name if !@backup_holidays.include?(b.person.name)
+          if !@backup_holidays.include?(b.person.name)
+           @backup_holidays << b.person.name 
+           @backup_holidays_comments << b.comment
+          end
         end
       end
 

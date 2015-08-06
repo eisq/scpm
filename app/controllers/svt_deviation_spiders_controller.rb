@@ -52,10 +52,32 @@ class SvtDeviationSpidersController < ApplicationController
 				    end
 		    	end
 		    	generate_spider_history(@milestone)
+
+		    	@warning_psu_imported = compare_last_import_date_with_spider_creation_date(@last_spider)
 	    	end
 	    else
 	    	redirect_to :controller=>:projects, :action=>:show, :id=>@project.id
 	    end
+	end
+
+	def compare_last_import_date_with_spider_creation_date(spider)
+		var = nil
+		if spider
+			import_date = get_last_import_date(spider.milestone.project_id)
+			spider_creation_date = spider.created_at
+			if spider_creation_date < import_date
+				var = "This spider has been created before last PSU Import, please delete it and create a new one if necessary."
+			end
+		end
+
+		return var
+	end
+
+	def get_last_import_date(project_id)
+		var = nil
+		var = SvtDeviationSpiderReference.find(:first, :conditions=>["project_id = ?", project_id], :order=>"version_number desc").created_at
+
+		return var
 	end
 
 	def index_history
@@ -304,7 +326,7 @@ class SvtDeviationSpidersController < ApplicationController
 	    				consolidation_temp.svt_deviation_deliverable_id = deliverable.id
 	    				consolidation_temp.svt_deviation_activity_id = activity.id
 	    				consolidation_temp.score = self.get_score(deviation_spider.id, deliverable, activity)
-	    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity, consolidation_temp.score)
+	    				consolidation_temp.justification = self.get_justification(deviation_spider.id, deliverable, activity, consolidation_temp.score)
 
 	    				consolidation_temp.save
     					consolidation_saved = consolidation_temp

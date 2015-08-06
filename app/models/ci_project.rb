@@ -270,77 +270,13 @@
         return var
     end
 
-    def list_reporter_and_responsible(var)
-        case var
-        when "acario"
-            puts var = "10000720"
-        when "agoupil"
-            puts var = "999843"
-        when "bissali"
-            puts var = "10002608"
-        when "bmonteils"
-            puts var = "9999622"
-        when "btisseur"
-            puts var = "46"
-        when "ccaron"
-            puts var = "10000292"
-        when "capottier"
-            puts var = "10000560"
-        when "cpages"
-            puts var = "9999919"
-        when "cdebortoli"
-            puts var = "9999245"
-        when "dadupont"
-            puts var = "4437"
-        when "fplisson"
-            puts var = "9999515"
-        when "jmondy"
-            puts var = "7772"
-        when "lbalansac"
-            puts var = "10000222"
-        when "mbuscail"
-            puts var = "9999327"
-        when "mantoine"
-            puts var = "7793"
-        when "mbaugier"
-            puts var = "10000626"
-        when "mblatche"
-            puts var = "9999516"
-        when "mmaglionepiromallo"
-            puts var = "7728"
-        when "mbekkouch"
-            puts var = "3652"
-        when "nrigaud"
-            puts var = "10000958"
-        when "ngagnaire"
-            puts var = "10000260"
-        when "nmenvielle"
-            puts var = "10000710"
-        when "ocabrera"
-            puts var = "10001140"
-        when "pdestefani"
-            puts var = "10000559"
-        when "pescande"
-            puts var = "9999311"
-        when "pcauquil"
-            puts var = "7323"
-        when "rbaillard"
-            puts var = "10000709"
-        when "rallin"
-            puts var = "7363"
-        when "swezel"
-            puts var = "10001620"
-        when "saury"
-            puts var = "10000239"
-        when "stessier"
-            puts var = "7330"
-        when "vlaffont"
-            puts var = "7155"
-        when "zallou"
-            puts var = "10000629"
-        else
-            puts var = "null"
+    def list_reporter_and_responsible(rmt_user)
+        var = "null"
+        var_temp = Person.find(:first, :conditions=>["rmt_user = ?", rmt_user])
+        if var_temp
+            var = var_temp.mantis_id
         end
+        
         var = format(var)
         return var
     end
