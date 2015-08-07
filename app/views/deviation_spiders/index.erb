@@ -100,14 +100,15 @@ $( document ).ready(function() {
 
 <h2>Current spider</h2>
 
-<% if @warning_psu_imported %>
-	<span style="color:red; font-weight: bold;"><%= @warning_psu_imported %></span>
-<% end %>
-<br/><br/>
-
 <% if @last_spider == nil or @last_spider.deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
 <% elsif @last_spider.deviation_spider_consolidations.count == 0 %>
+
+	<% if @warning_psu_imported %>
+		<span style="color:red; font-weight: bold;"><%= @warning_psu_imported %></span>
+		<br/><br/>
+	<% end %>
+
 	<div style="float:left;">Operational Activities : <%= select_tag('choose_meta_activity', options_for_select(@meta_activities, @meta_activity_id.to_i), {:onchange=>"change_meta_activity(this.value)"}) %></div>
 	<br /><br/><br/>
 
