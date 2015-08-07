@@ -744,7 +744,7 @@ class CiProjectsController < ApplicationController
       delay_days_weeks = nil
     end
 
-    if delay_days_weeks <= 0
+    if delay_days_weeks and delay_days_weeks <= 0
       delay_days_weeks = nil
     end
 
@@ -761,7 +761,7 @@ class CiProjectsController < ApplicationController
       delay_days_weeks = nil
     end
 
-    if delay_days_weeks <= 0
+    if delay_days_weeks and delay_days_weeks <= 0
       delay_days_weeks = nil
     end
 
