@@ -1149,17 +1149,45 @@ class ToolsController < ApplicationController
 
   def milestone_delay_config
     if params[:add]
-      
+      milestone_delay_add_reason(params[:reason_one_select], params[:reason_two_select], params[:reason_three_select])
+      milestone_delay_reasons_init
     elsif params[:remove]
-      
+      milestone_delay_remove_reason(params[:reason_one], params[:reason_two], params[:reason_three])
+      milestone_delay_reasons_init
     else
-      @reason_ones = MilestoneDelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
-      @reason_twos = MilestoneDelayReasonTwo.find(:all, :conditions=>["is_active = ?", true])
-      @reason_threes = MilestoneDelayReasonThree.find(:all, :conditions=>["is_active = ?", true])
+      milestone_delay_reasons_init
     end
+
+    
+
+    if params[:reason_two]
+      @reason_threes = MilestoneDelayReasonThree.find(:all, :conditions=>["reason_two_id = ? and is_active = ?",params[:reason_two], true])
+    end
+
   end
 
-  def milestone_delay_add_reason
+  def milestone_delay_reasons_init
+    @reason_ones = MilestoneDelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
+    @reason_twos = Array.new
+    @reason_threes = Array.new
+
+    @area_disabled_two = true
+    @area_disabled_three = true
+  end
+
+  def milestone_delay_get_reason_twos
+    reason_twos = Array.new
+    if params[:reason_one]
+      reason_twos = MilestoneDelayReasonTwo.find(:all, :conditions=>["reason_one_id = ? and is_active = ?",params[:reason_one], true])
+    end
+    return reason_twos
+  end
+
+  def milestone_delay_add_reason(reason_one_select, reason_two_select, reason_three_select)
+    
+  end
+
+  def milestone_delay_remove_reason(reason_one, reason_two, reason_three)
     
   end
 

@@ -1,32 +1,45 @@
-<script src="/javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-  var $j = jQuery.noConflict();
-</script>
-<script src="/javascripts/tool.js"></script>
-
-<script type="text/javascript">
+<SCRIPT language="Javascript">
 $j(document).ready(function (){
 
+function reason_one_select(reason_one_id)
+{
+  $.ajax({
+    type: "POST",
+    url: "/tools/milestone_delay_get_reason_twos",
+    data: {reason_one: reason_one_id}
+  })
+  .done(function(msg) {
+    <% @reason_twos = %> msg
+  })
+  .fail(function() 
+  { 
+    alert("Error");
+  })
+}
+
 });
-</script>
+</SCRIPT>
 
 <h3>Delay reasons</h3>
 
 <% form_tag(:action=>'milestone_delay_config') do %>
-  <%= select_tag("reason_one_select", options_for_select(@reason_ones.map{ |reason| [reason.reason_description, reason.id ]})) %>
-  <%= select_tag("reason_two_select", options_for_select(@reason_twos.map{ |reason| [reason.reason_description, reason.id ]})) %>
-  <%= select_tag("reason_three_select", options_for_select(@reason_threes.map{ |reason| [reason.reason_description, reason.id ]})) %>
+<%= submit_tag 'Reset', :name => 'reset' %>
+<br/><br/>
+  <%= select_tag("reason_one_select", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id ]}.insert(0, "")), {:onchange=>"select_reason_one(this.value)", :style=>"width:280px"}) %>
+
+  <%= select_tag("reason_two_select", options_for_select(@reason_twos.map{|reason| [reason.reason_description, reason.id ]}), {:onchange=>"select_reason_two(this.value)", :style=>"width:280px"}) %>
+
+  <%= select_tag("reason_three_select", options_for_select(@reason_threes.map{|reason| [reason.reason_description, reason.id ]}), {:onchange=>"select_reason_three(this.value)", :style=>"width:280px"}) %>
   <br/>
-  <%= text_area :reason_one, :reason_one, {:rows=>1, :cols=>45} %>
-  <%= text_area :reason_two, :reason_two, {:rows=>1, :cols=>45} %>
-  <%= text_area :reason_three, :reason_three, {:rows=>1, :cols=>45} %>
+
+  <%= text_area :reason_one, :reason_one, {:rows=>1, :cols=>37} %>
+  <%= text_area :reason_two, :reason_two, {:rows=>1, :cols=>37, :disabled => @area_disabled_two} %>
+  <%= text_area :reason_three, :reason_three, {:rows=>1, :cols=>37, :disabled => @area_disabled_three} %>
+
   <br/><br/>
   <%= submit_tag 'Add', :name => 'add' %>
   <br/><br/>
   <%= submit_tag 'Remove', :name => 'remove' %>
   <br/>
   <u>Note</u>: if you remove a lvl1 reason, all lvl2 and lvl3 reasons linked are removed.
-  <br/><br/>
-  <%= submit_tag 'Reset', :name => 'reset' %>
 <% end %>
-<br/>
