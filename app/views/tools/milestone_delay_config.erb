@@ -13,36 +13,20 @@ $j(document).ready(function (){
 <h3>Delay reasons</h3>
 
 <% form_tag(:action=>'milestone_delay_config') do %>
-  <%= select_tag ("reason_one", options_for_select(@reason_ones)) %>
-  <%= select_tag ("reason_two", options_for_select(@reason_twos)) %>
-  <%= text_area :reason, :reason, {:rows=>1} %>
+  <%= select_tag("reason_one_select", options_for_select(@reason_ones.map{ |reason| [reason.reason_description, reason.id ]})) %>
+  <%= select_tag("reason_two_select", options_for_select(@reason_twos.map{ |reason| [reason.reason_description, reason.id ]})) %>
+  <%= select_tag("reason_three_select", options_for_select(@reason_threes.map{ |reason| [reason.reason_description, reason.id ]})) %>
+  <br/>
+  <%= text_area :reason_one, :reason_one, {:rows=>1, :cols=>45} %>
+  <%= text_area :reason_two, :reason_two, {:rows=>1, :cols=>45} %>
+  <%= text_area :reason_three, :reason_three, {:rows=>1, :cols=>45} %>
+  <br/><br/>
   <%= submit_tag 'Add', :name => 'add' %>
+  <br/><br/>
   <%= submit_tag 'Remove', :name => 'remove' %>
+  <br/>
+  <u>Note</u>: if you remove a lvl1 reason, all lvl2 and lvl3 reasons linked are removed.
+  <br/><br/>
   <%= submit_tag 'Reset', :name => 'reset' %>
 <% end %>
-
-<u>Note</u>: if you remove a lvl1 reason, all lvl2 and lvl3 reasons linked are removed.
-
-<!--
-<ul>
-<% @milestone_delay_reason_ones.each do |mdr_o| %>
-	<li> mdr_o.reason_description: 
-		<ul>
-		<% @milestone_delay_reason_twos.each do |mdr_t| %>
-			<% if mdr_t.reason_one_id == mdr_o.id %>
-			<li> mdr_t.reason_description: 
-				<ul>
-					<% @milestone_delay_reason_threes.each do |mdr_th| %>
-						<% if mdr_t.reason_two_id == mdr_t.id %>
-							<li> mdr_th.reason_description </li>
-						<% end %>
-					<% end %>
-				</ul>
-			</li>
-			<% end %>
-		<% end %>
-		</ul>
-	</li>
-<% end %>
-</ul>
--->
+<br/>
