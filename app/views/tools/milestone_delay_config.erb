@@ -1,23 +1,13 @@
 <SCRIPT language="Javascript">
-$j(document).ready(function (){
-
 function reason_one_select(reason_one_id)
 {
-  $.ajax({
-    type: "POST",
-    url: "/tools/milestone_delay_get_reason_twos",
-    data: {reason_one: reason_one_id}
-  })
-  .done(function(msg) {
-    <% @reason_twos = %> msg
-  })
-  .fail(function() 
-  { 
-    alert("Error");
-  })
+  location.replace("milestone_delay_config?reason_one_id="+reason_one_id);
 }
-
-});
+function reason_two_select(reason_two_id)
+{
+  var reason_one_select_id = document.getElementById("select_reason_one").value;
+  location.replace("milestone_delay_config?reason_one_id="+reason_one_select_id+"&reason_two_id="+reason_two_id);
+}
 </SCRIPT>
 
 <h3>Delay reasons</h3>
@@ -25,16 +15,16 @@ function reason_one_select(reason_one_id)
 <% form_tag(:action=>'milestone_delay_config') do %>
 <%= submit_tag 'Reset', :name => 'reset' %>
 <br/><br/>
-  <%= select_tag("reason_one_select", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id ]}.insert(0, "")), {:onchange=>"select_reason_one(this.value)", :style=>"width:280px"}) %>
+  <%= select_tag("select_reason_one", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id ]}.insert(0, ""), @reason_one_selected), {:onchange=>"reason_one_select(this.value)", :style=>"width:185px"}) %>
 
-  <%= select_tag("reason_two_select", options_for_select(@reason_twos.map{|reason| [reason.reason_description, reason.id ]}), {:onchange=>"select_reason_two(this.value)", :style=>"width:280px"}) %>
+  <%= select_tag("select_reason_two", options_for_select(@reason_twos.map{|reason| [reason.reason_description, reason.id ]}.insert(0, ""), @reason_two_selected), {:onchange=>"reason_two_select(this.value)", :style=>"width:185px"}) %>
 
-  <%= select_tag("reason_three_select", options_for_select(@reason_threes.map{|reason| [reason.reason_description, reason.id ]}), {:onchange=>"select_reason_three(this.value)", :style=>"width:280px"}) %>
+  <%= select_tag("select_reason_three", options_for_select(@reason_threes.map{|reason| [reason.reason_description, reason.id ]}.insert(0, "")), {:style=>"width:185px"}) %>
   <br/>
 
-  <%= text_area :reason_one, :reason_one, {:rows=>1, :cols=>37} %>
-  <%= text_area :reason_two, :reason_two, {:rows=>1, :cols=>37, :disabled => @area_disabled_two} %>
-  <%= text_area :reason_three, :reason_three, {:rows=>1, :cols=>37, :disabled => @area_disabled_three} %>
+  <%= text_field_tag 'reason_one', '' %>
+  <%= text_field_tag 'reason_two', '', :readonly => @area_disabled_two %>
+  <%= text_field_tag 'reason_three', '', :readonly => @area_disabled_three %>
 
   <br/><br/>
   <%= submit_tag 'Add', :name => 'add' %>
