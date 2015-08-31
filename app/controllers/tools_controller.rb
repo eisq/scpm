@@ -1210,7 +1210,7 @@ class ToolsController < ApplicationController
       reason_two_to_add.reason_one_id = select_reason_one
       reason_two_to_add.is_active = true
       reason_two_to_add.save
-    elsif select_reason_one != "" and select_reason_two = !"" and reason_three != ""
+    elsif select_reason_one != "" and select_reason_two != "" and reason_three != ""
       #add a lvl3 reason to the DB
       reason_three_to_add = MilestoneDelayReasonThree.new
       reason_three_to_add.reason_description = reason_three
