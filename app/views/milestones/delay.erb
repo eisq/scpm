@@ -1,0 +1,24 @@
+<SCRIPT language="Javascript">
+function reason_one_select(milestone_id, reason_one_id)
+{
+  location.replace(milestone_id+"?reason_one_id="+reason_one_id);
+}
+function reason_two_select(milestone_id, reason_two_id)
+{
+  var reason_one_select_id = document.getElementById("select_reason_one").value;
+  location.replace(milestone_id+"?reason_one_id="+reason_one_select_id+"&reason_two_id="+reason_two_id);
+}
+</SCRIPT>
+
+<h2>Delay record</h2>
+
+<p><%= label_tag 'Reason' %><p>
+
+<%= select_tag("select_reason_one", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id ]}.insert(0, ""), @reason_one_selected), {:onchange=>"reason_one_select(#{@milestone.id}, this.value)", :style=>"width:185px"}) %>
+
+<%= select_tag("select_reason_two", options_for_select(@reason_twos.map{|reason| [reason.reason_description, reason.id ]}.insert(0, ""), @reason_two_selected), {:onchange=>"reason_two_select(#{@milestone.id}, this.value)", :style=>"width:185px"}) %>
+
+<%= select_tag("select_reason_three", options_for_select(@reason_threes.map{|reason| [reason.reason_description, reason.id ]}.insert(0, "")), {:style=>"width:185px"}) %>
+
+<p><%= label_tag 'Other reason' %>
+<%= text_field_tag 'reason_other', '', :readonly => @other_disabled %></p>

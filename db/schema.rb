@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150403115900) do
+ActiveRecord::Schema.define(:version => 20150831172000) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -133,6 +133,13 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
   add_index "checklist_items", ["parent_id"], :name => "IDX_CHECKLIST_ITEMS_PARENT_ID"
   add_index "checklist_items", ["template_id"], :name => "IDX_CHECKLIST_ITEMS_TEMPLATE_ID"
 
+  create_table "ci_imports", :force => true do |t|
+    t.string   "import_type"
+    t.string   "import_author"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ci_project_delays", :force => true do |t|
     t.integer  "ci_project_id"
     t.string   "title"
@@ -140,6 +147,7 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "new_date"
+    t.date     "old_date"
   end
 
   create_table "ci_project_links", :force => true do |t|
@@ -245,6 +253,16 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.string   "justification_sqli_retard"
     t.string   "justification_deployment_retard"
     t.string   "ci_objectives_2015"
+    t.text     "airbus_commit_author"
+    t.text     "sqli_commit_author"
+    t.text     "deployment_commit_author"
+  end
+
+  create_table "ci_timeline_dates", :force => true do |t|
+    t.string   "date_type"
+    t.date     "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "companies", :force => true do |t|
@@ -347,7 +365,7 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.integer  "deviation_spider_id"
     t.integer  "deviation_deliverable_id"
     t.integer  "deviation_activity_id"
-    t.string   "score"
+    t.integer  "score"
     t.string   "justification",            :limit => 1000
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -415,6 +433,7 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_link"
+    t.integer  "project_id"
   end
 
   create_table "generic_risk_questions", :force => true do |t|
@@ -605,6 +624,44 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.datetime "updated_at"
   end
 
+  create_table "milestone_delay_reason_ones", :force => true do |t|
+    t.string   "reason_description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "is_active",          :default => true
+  end
+
+  create_table "milestone_delay_reason_threes", :force => true do |t|
+    t.string   "reason_description"
+    t.integer  "reason_two_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "is_active",          :default => true
+  end
+
+  create_table "milestone_delay_reason_twos", :force => true do |t|
+    t.string   "reason_description"
+    t.integer  "reason_one_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "is_active",          :default => true
+  end
+
+  create_table "milestone_delay_records", :force => true do |t|
+    t.integer  "milestone_id"
+    t.date     "planned_date"
+    t.date     "current_date"
+    t.integer  "delay_days"
+    t.integer  "reason_first_id"
+    t.integer  "reason_second_id"
+    t.integer  "reason_third_id"
+    t.string   "reason_other"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "updated_by"
+    t.text     "date_type"
+  end
+
   create_table "milestone_names", :force => true do |t|
     t.string  "title"
     t.boolean "count_in_spider_prev", :default => true
@@ -684,6 +741,7 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.text     "settings"
     t.integer  "cost_profile_id"
     t.integer  "tbp_collab_id"
+    t.integer  "mantis_id"
   end
 
   create_table "person_roles", :force => true do |t|
@@ -801,7 +859,7 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.integer  "sibling_id"
     t.integer  "tbp_project_id"
     t.boolean  "deviation_spider",     :default => false
-    t.boolean  "deviation_spider_svt", :default => true
+    t.boolean  "deviation_spider_svt", :default => false
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
@@ -1241,6 +1299,20 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.datetime "updated_at"
   end
 
+  create_table "svt_deviation_macro_activity_deliverable_flights", :force => true do |t|
+    t.string   "svt_deviation_macro_activity_name"
+    t.string   "svt_deviation_deliverable_name"
+    t.string   "svt_deviation_activity_name"
+    t.integer  "project_id"
+    t.string   "answer_1"
+    t.string   "answer_2"
+    t.string   "answer_3"
+    t.string   "justification"
+    t.integer  "is_active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "svt_deviation_macro_activity_deliverables", :force => true do |t|
     t.integer  "svt_deviation_macro_activity_id"
     t.integer  "svt_deviation_deliverable_id"
@@ -1293,7 +1365,7 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.integer  "svt_deviation_spider_id"
     t.integer  "svt_deviation_deliverable_id"
     t.integer  "svt_deviation_activity_id"
-    t.string   "score"
+    t.integer  "score"
     t.string   "justification",                :limit => 1000
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1362,6 +1434,7 @@ ActiveRecord::Schema.define(:version => 20150403115900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_link"
+    t.integer  "project_id"
   end
 
   create_table "tags", :force => true do |t|
