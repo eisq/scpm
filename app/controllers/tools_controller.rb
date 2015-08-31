@@ -1151,7 +1151,9 @@ class ToolsController < ApplicationController
     @reason_one_selected = @reason_two_selected = nil
 
     if params[:add]
-      milestone_delay_add_reason(params[:select_reason_one], params[:select_reason_two], params[:select_reason_three])
+      milestone_delay_add_reason(params[:select_reason_one], params[:select_reason_two], params[:select_reason_three], params[:reason_one], params[:reason_two], params[:reason_three])
+      @reason_one_selected = params[:select_reason_one]
+      @reason_two_selected = params[:select_reason_two]
       milestone_delay_reasons_init
     elsif params[:remove]
       milestone_delay_remove_reason(params[:select_reason_one], params[:select_reason_two], params[:select_reason_three])
@@ -1163,11 +1165,14 @@ class ToolsController < ApplicationController
     if params[:reason_one_id] and !params[:reason_two_id]
       @reason_twos = milestone_delay_get_reason_twos(params[:reason_one_id])
       @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:reason_one_id]]).id
+      @area_disabled_two = false
     elsif params[:reason_one_id] and params[:reason_two_id]
       @reason_twos = milestone_delay_get_reason_twos(params[:reason_one_id])
       @reason_threes = milestone_delay_get_reason_threes(params[:reason_two_id])
       @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:reason_one_id]]).id
       @reason_two_selected = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", params[:reason_two_id]]).id
+      @area_disabled_two = false
+      @area_disabled_three = false
     end
 
   end
@@ -1193,8 +1198,28 @@ class ToolsController < ApplicationController
     return reason_threes
   end
 
-  def milestone_delay_add_reason(select_reason_one, select_reason_two, select_reason_three)
-    
+  def milestone_delay_add_reason(select_reason_one, select_reason_two, select_reason_three, reason_one, reason_two, reason_three)
+    if select_reason_one == "" and reason_one != ""
+      #add a lvl1 reason to the DB
+      reason_one_to_add = MilestoneDelayReasonOne.new
+      reason_one_to_add.reason_description = reason_one
+      reason_one_to_add.is_active = true
+      reason_one_to_add.save
+    elsif select_reason_one != "" and reason_two != ""
+      #add a lvl2 reason to the DB
+      reason_two_to_add = MilestoneDelayReasonTwo.new
+      reason_two_to_add.reason_description = reason_two
+      reason_two_to_add.reason_one_id = select_reason_one
+      reason_two_to_add.is_active = true
+      reason_two_to_add.save
+    elsif select_reason_one != "" and select_reason_two = !"" and reason_three != ""
+      #add a lvl3 reason to the DB
+      reason_three_to_add = MilestoneDelayReasonTwo.new
+      reason_three_to_add.reason_description = reason_three
+      reason_three_to_add.reason_two_id = select_reason_one
+      reason_three_to_add.is_active = true
+      reason_three_to_add.save
+    end
   end
 
   def milestone_delay_remove_reason(reason_one, reason_two, reason_three)
