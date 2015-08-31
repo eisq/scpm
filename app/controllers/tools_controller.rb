@@ -1197,7 +1197,7 @@ class ToolsController < ApplicationController
   end
 
   def milestone_delay_add_reason(select_reason_one, select_reason_two, select_reason_three, reason_one, reason_two, reason_three)
-    if select_reason_one == "" and reason_one != ""
+    if reason_one != ""
       #add a lvl1 reason to the DB
       reason_one_to_add = MilestoneDelayReasonOne.new
       reason_one_to_add.reason_description = reason_one
