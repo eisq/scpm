@@ -17,6 +17,12 @@
   <script src="/javascripts/highcharts/highcharts-more.js" type="text/javascript"></script>  
   <script src="/javascripts/highcharts/exporting.js" type="text/javascript"></script>  
   <script src="/javascripts/highcharts/spider_chart.js" type="text/javascript"></script>
+  <!--Load the AJAX API-->
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+  </script>
 </head>
 
 <body>

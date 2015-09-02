@@ -34,7 +34,11 @@ $( document ).ready(function() {
 			alert("Error");
 		})
 	});
+
+	
 });
+
+
 </SCRIPT>
 
 <% if @editable %>
@@ -146,7 +150,7 @@ $( document ).ready(function() {
 </table>
 
 <br/>
-
+<div id="piechart" style="width: 900px; height: 500px;"></div>
 <h2>Consolidation process</h2>
 <% if @editable %>
 <%= button_to "Consolidate", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
