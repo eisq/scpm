@@ -152,33 +152,33 @@ function add(id, nb_months, has_requests, has_rights) {
       <div id="tabContent3" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="3"? "block" : "none"%>;">
         <div>
           <% if @milestone_delays.count > 0 %>
-            <table>
+            <table class="delay_table">
               <tr>
-                <th>Milestone</th>
-                <th>Planned date</th>
-                <th>Current date</th>
-                <th>Delay days</th>
-                <th>1st reason</th>
-                <th>2nd reason</th>
-                <th>3rd reason</th>
-                <th>Other reason</th>
-                <th>Last update</th>
-                <th>Logged by</th>
-                <th></th>
+                <th class="delay_td">Milestone</th>
+                <th class="delay_td">Planned date</th>
+                <th class="delay_td">Current date</th>
+                <th class="delay_td">Delay days</th>
+                <th class="delay_td">1st reason</th>
+                <th class="delay_td">2nd reason</th>
+                <th class="delay_td">3rd reason</th>
+                <th class="delay_td_reason">Other reason</th>
+                <th class="delay_td">Last update</th>
+                <th class="delay_td">Logged by</th>
+                <th class="delay_td"></th>
               </tr>
               <% @milestone_delays.each do |delay| %>
-                <tr id='delay_<%=delay.id%>'>
-                  <td><%= delay.milestone %></td>
-                  <td><%= delay.planned_date %></td>
-                  <td><%= delay.current_date %></td>
-                  <td><%= delay.delay_days %></td>
-                  <td><%= delay.first_reason %></td>
-                  <td><%= delay.second_reason %></td>
-                  <td><%= delay.third_reason %></td>
-                  <td><%= delay.other_reason %></td>
-                  <td><%= delay.last_update %></td>
-                  <td><%= delay.person %></td>
-                  <td><%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'delay_delete', :delay_id=>delay.delay_id}, :success=>"$('delay_#{delay.id}').hide();") %></td>
+                <tr class="delay_tr" id='delay_<%=delay.id%>'>
+                  <td class="delay_td"><%= delay.milestone %></td>
+                  <td class="delay_td"><%= delay.planned_date %></td>
+                  <td class="delay_td"><%= delay.current_date %></td>
+                  <td class="delay_td"><%= delay.delay_days %></td>
+                  <td class="delay_td"><%= delay.first_reason %></td>
+                  <td class="delay_td"><%= delay.second_reason %></td>
+                  <td class="delay_td"><%= delay.third_reason %></td>
+                  <td class="delay_td_reason"><%= delay.other_reason %></td>
+                  <td class="delay_td"><%= delay.last_update %></td>
+                  <td class="delay_td"><%= delay.person %></td>
+                  <td class="delay_td"><%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'delay_delete', :delay_id=>delay.delay_id}, :success=>"$('delay_#{delay.id}').hide();") %></td>
                 </tr>
               <% end %>
             </table>

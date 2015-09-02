@@ -49,3 +49,22 @@
   border-top:2px solid #A3CCFF;
 }
 
+.delay_table {
+  border-collapse: collapse;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #D8D8D8;
+  font-size: 12px;
+}
+
+.delay_tr {
+  border: 1px solid #D8D8D8;
+}
+
+.delay_td {
+  border: 1px solid #D8D8D8;
+}
+
+.delay_td_reason {
+  width: 300px;
+}
