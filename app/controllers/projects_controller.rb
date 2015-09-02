@@ -6,7 +6,7 @@ include ActionView::Helpers::DateHelper # just for time_ago_in_words...
 class ProjectsController < ApplicationController
 
   before_filter :require_login
-  Milestone_delay = Struct.new(:milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, :other_reason, :last_update, :person)
+  Milestone_delay = Struct.new(:delay_id, :milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, :other_reason, :last_update, :person)
 
   def index
     @time = Time.now
@@ -258,7 +258,8 @@ class ProjectsController < ApplicationController
     MilestoneDelayRecord.find(:all).each do |milestone_delay_record|
       project_id = Milestone.find(:first, :conditions=>["id = ?", milestone_delay_record.milestone_id]).project_id
       if project_id == id.to_i
-        milestone_delay = Milestone_delay.new # Milestone_delay = Struct.new(:milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, ;other_reason, :last_update, :person)
+        milestone_delay = Milestone_delay.new # Milestone_delay = Struct.new(:delay_id, :milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, ;other_reason, :last_update, :person)
+        milestone_delay.delay_id = milestone_delay_record.id
         milestone_delay.milestone = milestone_delay_record.milestone.name
         milestone_delay.planned_date = milestone_delay_record.planned_date
         milestone_delay.current_date = milestone_delay_record.current_date
@@ -294,6 +295,15 @@ class ProjectsController < ApplicationController
     current_user_name = Person.find(:first, :conditions=>["id = ?", milestone_delay_record_updated_by]).name
     
     return current_user_name
+  end
+
+  def delay_delete
+    milestone_delay_record_id = params['delay_id']
+    milestone_delay_record = MilestoneDelayRecord.find(:first, :conditions =>['id = ?', milestone_delay_record_id])
+    if milestone_delay_record
+      milestone_delay_record.delete
+    end
+      render(:nothing=>true)
   end
 
   def check_all_milestones
