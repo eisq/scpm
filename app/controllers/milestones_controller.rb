@@ -27,30 +27,6 @@ class MilestonesController < ApplicationController
     @date_error = params[:date_error]
     params[:date_error] ? @date_error = params[:date_error] : @date_error = 0
 
-    @reason_one_selected = @reason_two_selected = nil
-    @other_disabled = true
-
-    milestone_delay_reasons_init
-    if params[:reason_one_id] and !params[:reason_two_id]
-      @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:reason_one_id]])
-      if @reason_one_selected.reason_description == "Other reason"
-        @other_disabled = false
-      else
-        @reason_twos = milestone_delay_get_reason_twos(params[:reason_one_id])
-      end
-      @reason_one_selected = @reason_one_selected.id
-    elsif params[:reason_one_id] and params[:reason_two_id]
-      @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:reason_one_id]]).id
-      @reason_two_selected = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", params[:reason_two_id]])
-      @reason_twos = milestone_delay_get_reason_twos(params[:reason_one_id])
-      if @reason_two_selected.reason_description == "Other reason"
-        @other_disabled = false
-      else
-        @reason_threes = milestone_delay_get_reason_threes(params[:reason_two_id])
-      end
-      @reason_two_selected = @reason_two_selected.id
-    end
-
     get_infos
   end
 
@@ -101,65 +77,16 @@ class MilestonesController < ApplicationController
   def update
     m   = Milestone.find(params[:id])
     old = m.done
-    error = delay_which_date = delay_days = 0
-    old_date_bdd = new_date_bdd = ""
-    #old_date_bdd = new_date_bdd = Date.new
-
-    # Check previous and next milestones
-    # if (m.project != nil)
-    #   sorted_milestones = m.project.sorted_milestones
-    #   current_milestone_position = sorted_milestones.index(m)
-
-    #   i = 0
-    #   sorted_milestones.each do |m_other|
-
-    #     if (current_milestone_position > i)
-         
-    #       previous_date = nil
-    #       if (m_other.actual_milestone_date != nil)
-    #         previous_date = m_other.actual_milestone_date
-    #       else
-    #         previous_date = m_other.milestone_date
-    #       end
-
-    #       if (params[:milestone][:actual_milestone_date] and params[:milestone][:actual_milestone_date].length > 0)
-    #         error = 1 if isDateInferior(params[:milestone][:actual_milestone_date], previous_date)
-    #       else
-    #         error = 1 if isDateInferior(params[:milestone][:milestone_date], previous_date)
-    #       end
-
-    #     elsif (current_milestone_position < i)
-
-    #       next_date = nil
-    #       if (m_other.actual_milestone_date != nil)
-    #         next_date = m_other.actual_milestone_date
-    #       else
-    #         next_date = m_other.milestone_date
-    #       end
-
-    #       if (params[:milestone][:actual_milestone_date] and params[:milestone][:actual_milestone_date].length > 0)
-    #         error = 1 if isDateSuperior(params[:milestone][:actual_milestone_date], next_date)
-    #       else
-    #         error = 1 if isDateSuperior(params[:milestone][:milestone_date], next_date)
-    #       end
-          
-    #     end
-
-    #     i = i + 1
-    #   end
-    # end
-
+    error = delay_days = 0
+    old_date_bdd = new_date_bdd = nil
+    delay_to_record = false
 
     # Try to update the date, if wrong format = remote
     if params[:milestone][:milestone_date] and params[:milestone][:milestone_date].length > 0
       begin
         date_bdd = Date.parse(params[:milestone][:milestone_date]).strftime("%Y-%m-%d %H:%M:%S")
         if date_bdd
-          old_date_bdd = m.milestone_date
-          delay_days = old_date_bdd - date_bdd
-          new_date_bdd = date_bdd
           m.milestone_date = date_bdd
-          delay_which_date = 1
         else
           raise 'Date format error'
         end
@@ -175,10 +102,20 @@ class MilestonesController < ApplicationController
         date_bdd = Date.parse(params[:milestone][:actual_milestone_date]).strftime("%Y-%m-%d %H:%M:%S")
         if date_bdd
           old_date_bdd = m.actual_milestone_date
-          delay_days = old_date_bdd - date_bdd
-          new_date_bdd = date_bdd
+          new_date_bdd = Date.parse(date_bdd).strftime("%Y-%m-%d %H:%M:%S")
+          if old_date_bdd == nil or old_date_bdd == ""
+            if m.milestone_date
+              old_date_bdd = m.milestone_date
+            else
+              old_date_bdd = Date.parse(params[:milestone][:milestone_date]).strftime("%Y-%m-%d %H:%M:%S")
+            end
+          end
+          delay_days =  get_date_from_bdd_date(new_date_bdd) - get_date_from_bdd_date(old_date_bdd)
           m.actual_milestone_date = date_bdd
-          delay_which_date = 2
+
+          if delay_days > 0
+            delay_to_record = true
+          end
         else
           raise 'Date format error'
         end
@@ -191,7 +128,6 @@ class MilestonesController < ApplicationController
 
     # If no date error
     if error == 0
-
       if params[:milestone][:name]
         m.name = params[:milestone][:name]
       end
@@ -213,50 +149,79 @@ class MilestonesController < ApplicationController
       end
 
       # Save
-
-
-
       m.save true
 
-      # Redirect
-      # if m.done == 1 and old == 0 and m.is_eligible_for_note?
-        # redirect_to "/notes/new?project_id=#{m.project_id}&done=1"
-      # else
-      if delay_which_date > 0
-        redirect_to "/milestones/delay?milestone_id=#{m.id}&date_type=#{delay_which_date}&planned_date=#{old_date_bdd}&current_date=#{date_bdd}&delay_days=#{delay_days}"
+      if delay_to_record
+        old_date_bdd = get_date_from_bdd_date(old_date_bdd)
+        new_date_bdd = get_date_from_bdd_date(new_date_bdd)
+        redirect_to :action=>:delay, :milestone_id=>m.id, :planned_date=>old_date_bdd, :current_date=>new_date_bdd, :delay_days=>delay_days
       else
         redirect_to "/projects/show/#{m.project_id}"
       end
-      # end
     else
-      # Date error
       redirect_to("/milestones/edit?id=#{params[:id]}&date_error="+error.to_s)
     end
   end
 
+  def get_date_from_bdd_date(bdd_date)
+    date_split = bdd_date.to_s.split("-")
+    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+
+    return date
+  end
+
   def delay
-    milestone_id = params[:milestone_id]
-    milestone = Milestone.find(:first, :conditions=>["id = ?", milestone_id])
-    date_type = params[:]
-    planned_date = params[:]
-    current_date = params[:]
-    delay_days = params[:]
+    @milestone_id = params[:milestone_id]
+    project_id = Milestone.find(:first, :conditions=>["id = ?", @milestone_id]).project_id
+    @planned_date = params[:planned_date]
+    @current_date = params[:current_date]
+    @delay_days = params[:delay_days]
 
-    if ((params[:select_reason_one] != "") or (params[:reason_other] != ""))
-      milestone_delay = MilestoneDelayRecord.new
-      milestone_delay.milestone_id = milestone_id
-      milestone_delay.planned_date = old_date_bdd
-      milestone_delay.current_date = current_date
-      milestone_dealy.delay_days = delay_days
-      milestone_dealy.reason_first_id = params[:select_reason_one]
-      milestone_dealy.reason_second_id = params[:select_reason_two]
-      milestone_dealy.reason_third_id = params[:select_reason_three]
-      milestone_dealy.reason_other = params[:reason_other]
-      milestone_dealy.updated_by = current_user.id
-      milestone_dealy.save
+    @reason_one_selected = @reason_two_selected = nil
+    @other_disabled = true
+
+    milestone_delay_reasons_init
+    if params[:select_reason_one] and params[:select_reason_one] != "" and (!params[:select_reason_two] or params[:select_reason_two] == "")
+      @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:select_reason_one]])
+      if @reason_one_selected.reason_description == "Other reason"
+        @other_disabled = false
+      else
+        @reason_twos = milestone_delay_get_reason_twos(params[:select_reason_one])
+      end
+      @reason_one_selected = @reason_one_selected.id
+    elsif params[:select_reason_one] and params[:select_reason_one] != "" and params[:select_reason_two] and params[:select_reason_two] != 0
+      @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:select_reason_one]]).id
+      @reason_two_selected = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", params[:select_reason_two]])
+      @reason_twos = milestone_delay_get_reason_twos(params[:select_reason_one])
+      if @reason_two_selected.reason_description == "Other reason"
+        @other_disabled = false
+      else
+        @reason_threes = milestone_delay_get_reason_threes(params[:select_reason_two])
+      end
+      @reason_two_selected = @reason_two_selected.id
     end
+  end
 
-    redirect_to "/projects/show/#{milestone.project_id}"
+  def add_delay_record
+    if ((params[:select_reason_one] != "") or (params[:reason_other] != ""))
+      project_id = Milestone.find(:first, :conditions=>["id = ?", params[:milestone_id]]).project_id
+      milestone_delay = MilestoneDelayRecord.new
+      milestone_delay.milestone_id = params[:milestone_id]
+      milestone_delay.planned_date = params[:planned_date]
+      milestone_delay.current_date = params[:current_date]
+      milestone_delay.delay_days = params[:delay_days]
+      milestone_delay.reason_first_id = params[:select_reason_one]
+      milestone_delay.reason_second_id = params[:select_reason_two]
+      milestone_delay.reason_third_id = params[:select_reason_three]
+      milestone_delay.reason_other = params[:reason_other]
+      milestone_delay.updated_by = current_user.id
+      milestone_delay.save
+
+      redirect_to "/projects/show/#{project_id}"
+    else
+      #error
+      redirect_to "/milestones/delay?milestone_id=#{milestone_delay.milestone_id}&planned_date=#{milestone_delay.planned_date}&current_date=#{milestone_delay.current_date}&delay_days=#{milestone_delay.delay_days}"
+    end
   end
 
   def destroy

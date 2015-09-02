@@ -254,18 +254,20 @@ class ProjectsController < ApplicationController
     end
 
     @milestone_delays = Array.new
+    i = 0
     MilestoneDelayRecord.find(:all).each do |milestone_delay_record|
-      if milestone_delay_record.milestone.project_id == id
+      project_id = Milestone.find(:first, :conditions=>["id = ?", milestone_delay_record.milestone_id]).project_id
+      if project_id == id.to_i
         milestone_delay = Milestone_delay.new # Milestone_delay = Struct.new(:milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, ;other_reason, :last_update, :person)
-        milestone_delay.milestone = delay_get_milestone_name(milestone_delay_record.milestone_id)
+        milestone_delay.milestone = milestone_delay_record.milestone.name
         milestone_delay.planned_date = milestone_delay_record.planned_date
         milestone_delay.current_date = milestone_delay_record.current_date
         milestone_delay.delay_days = milestone_delay_record.delay_days
-        milestone_delay.first_reason = delay_get_reason_name(milestone_delay_record.reason_first_id, 1)
-        milestone_delay.second_reason = delay_get_reason_name(milestone_delay_record.reason_second_id, 2)
-        milestone_delay.third_reason = delay_get_reason_name(milestone_delay_record.reason_third_id, 3)
+        milestone_delay.first_reason = get_delay_reason_description(milestone_delay_record.reason_first_id, 1)
+        milestone_delay.second_reason = get_delay_reason_description(milestone_delay_record.reason_second_id, 2)
+        milestone_delay.third_reason = get_delay_reason_description(milestone_delay_record.reason_third_id, 3)
         milestone_delay.other_reason = milestone_delay_record.reason_other
-        milestone_delay.last_update = milestone_delay_record.updated_at
+        milestone_delay.last_update = milestone_delay_record.updated_at.to_s
         milestone_delay.person = delay_get_current_user_name(milestone_delay_record.updated_by)
 
         @milestone_delays << milestone_delay
@@ -273,25 +275,19 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def delay_get_milestone_name(milestone_id)
-    milestone_name = Milestone.find(:first, :conditions=>["id = ?", milestone_id]).name
-
-    return milestone_name
-  end
-
-  def delay_get_reason_name(delay_id, delay_level)
-    reason = ""
-
-    case delay_level
-    when 1
-      reason = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", delay_id]).reason_description
-    when 2
-      reason = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", delay_id]).reason_description
-    when 3
-      reason = MilestoneDelayReasonThird.find(:first, :conditions=>["id = ?", delay_id]).reason_description
+  def get_delay_reason_description(delay_reason_id, level)
+    description = ""
+    if delay_reason_id
+      case level
+      when 1
+        description = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", delay_reason_id]).reason_description
+      when 2
+        description = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", delay_reason_id]).reason_description
+      when 3
+        description = MilestoneDelayReasonThree.find(:first, :conditions=>["id = ?", delay_reason_id]).reason_description
+      end
     end
-
-    return reason
+    return description
   end
 
   def delay_get_current_user_name(milestone_delay_record_updated_by)

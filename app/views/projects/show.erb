@@ -164,19 +164,21 @@ function add(id, nb_months, has_requests, has_rights) {
                 <th>Other reason</th>
                 <th>Last update</th>
                 <th>Logged by</th>
+                <th></th>
               </tr>
               <% @milestone_delays.each do |delay| %>
                 <tr>
-                  <td>delay.milestone</td>
-                  <td>delay.planned_date</td>
-                  <td>delay.current_date</td>
-                  <td>delay.delay_days</td>
-                  <td>delay.first_reason</td>
-                  <td>delay.second_reason</td>
-                  <td>delay.third_reason</td>
-                  <td>delay.other_reason</td>
-                  <td>delay.last_update</td>
-                  <td>delay.person</td>
+                  <td><%= delay.milestone %></td>
+                  <td><%= delay.planned_date %></td>
+                  <td><%= delay.current_date %></td>
+                  <td><%= delay.delay_days %></td>
+                  <td><%= delay.first_reason %></td>
+                  <td><%= delay.second_reason %></td>
+                  <td><%= delay.third_reason %></td>
+                  <td><%= delay.other_reason %></td>
+                  <td><%= delay.last_update %></td>
+                  <td><%= delay.person %></td>
+                  <td></td>
                 </tr>
               <% end %>
             </table>

@@ -5,6 +5,7 @@ class Milestone < ActiveRecord::Base
   has_many    :checklist_items, :dependent=>:destroy
   has_many    :spiders
   has_many    :deviation_spiders
+  has_many    :milestone_delay_records
 
   #case milestone.status
   #  when -1
