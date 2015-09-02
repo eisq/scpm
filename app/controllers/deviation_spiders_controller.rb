@@ -65,7 +65,7 @@ class DeviationSpidersController < ApplicationController
 		if spider
 			import_date = get_last_import_date(spider.milestone.project_id)
 			spider_creation_date = spider.created_at
-			if spider_creation_date < import_date
+			if import_date and spider_creation_date < import_date
 				var = "This spider has been created before last PSU Import, please delete it and create a new one if necessary."
 			end
 		end
@@ -75,8 +75,10 @@ class DeviationSpidersController < ApplicationController
 
 	def get_last_import_date(project_id)
 		var = nil
-		var = DeviationSpiderReference.find(:first, :conditions=>["project_id = ?", project_id], :order=>"version_number desc").created_at
-
+		var = DeviationSpiderReference.find(:first, :conditions=>["project_id = ?", project_id], :order=>"version_number desc")
+		if var
+			var = var.created_at
+		end
 		return var
 	end
 
@@ -299,7 +301,8 @@ class DeviationSpidersController < ApplicationController
 
 	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable, false)
 
-	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(@consolidations).to_url
+	    	@maturity = @deviation_spider.get_deviation_maturity
+	    	#@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(@consolidations).to_url
 	    else
 	    	redirect_to :controller=>:projects, :action=>:index
 	    end

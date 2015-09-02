@@ -118,6 +118,19 @@ class Person < ActiveRecord::Base
     {:trigram=>self.trigram, :initial=>init, :balance=>balance, :percent=>percent, :remaining=>remaining, :delay=>delay}
   end
 
+  def sdp_percent_period
+    tasks = SDPTask.find(:all, :conditions=>"collab LIKE '%#{self.trigram}%'")
+    init    = tasks.inject(0.0) { |sum, t| sum+t.initial}
+    balance = tasks.inject(0.0) { |sum, t| sum+t.balancea}
+    if init > 0
+      percent   = ((balance / init )*100 / 0.1).round * 0.1
+    else
+      percent   = 0
+    end
+
+    return percent
+  end
+
   def css_style
     if self.has_left == 1
       'color: grey;text-decoration:line-through;'

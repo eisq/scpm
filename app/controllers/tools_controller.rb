@@ -646,6 +646,23 @@ class ToolsController < ApplicationController
     @percent_total  = ((@balance / @init_total)*100 / 0.01).round * 0.01
   end
 
+  def sdp_period
+    @people = Person.find(:all, :conditions=>["has_left = ?", 0])
+    @period_selected_start = @period_selected_stop = @gain = ""
+    if params[:person_selected]
+      @person_selected = params[:person_selected].to_i
+      @period_selected_start = params[:period_selected_start].to_date
+      @period_selected_stop = params[:period_selected_stop].to_date
+      @gain = get_gain(@person_selected, @period_selected_start, @period_selected_stop)
+    end
+  end
+
+  def get_gain(person, period_start, period_stop)
+    gain = 0
+    gain = Person.find(:first, :conditions=>["id = ?", person]).sdp_percent_period
+    return gain
+  end
+
   def sdp_add
     @requests = Request.find(:all, :conditions=>"sdp='No' and resolution='in progress' and status!='to be validated' and complexity!='TBD' and status!='cancelled'")
     @pbs      = Request.find(:all, :conditions=>"sdp='No' and resolution='in progress' and (status='to be validated' or status='cancelled' or status='removed')")

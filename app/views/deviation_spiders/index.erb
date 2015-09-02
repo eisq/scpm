@@ -86,7 +86,7 @@ $( document ).ready(function() {
 
 <div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @milestone.project.id} %></div>
 <% if @empty %>
-<%= @empty %>
+	<%= @empty %>
 <% end %>
 <%
 	projectName = ""
