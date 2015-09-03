@@ -29,12 +29,12 @@ function drawChart() {
 
     var data = google.visualization.arrayToDataTable([
       ['Maturity', 'Percent'],
-      ['Mature', maturity],
-      ['Not mature', rest]
+      ['Projects/Suite activities maturity reached for the current phase', maturity],
+      ['Delta', rest]
     ]);
 
     var options = {
-      title: 'Milestone maturity',
+      title: 'Activities maturity reached for the current phase',
       pieHole: 0.5,
       'width':450,
       'height':350,

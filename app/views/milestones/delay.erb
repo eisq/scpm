@@ -36,7 +36,7 @@ function reason_three_select(reason_three_id)
 <%= select_tag("select_reason_three", options_for_select(@reason_threes.map{|reason| [reason.reason_description, reason.id]}.insert(0, "")), {:onchange=>"reason_three_select(this.value)", :style=>"width:185px"}) %>
 
 <p><%= label_tag 'Other reason' %>
-<%= text_field_tag 'reason_other', '', :readonly => @other_disabled, :id => 'reason_other' %></p>
+<%= text_area_tag('reason_other', '', {:cols=>21, :rows=>1, :id=>"reason_other", :disabled=>@other_disabled}) %></p>
 
 <p><%= label_tag '&nbsp;' %>
 <%= submit_tag 'Save' %></p>
