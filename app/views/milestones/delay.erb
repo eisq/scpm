@@ -8,6 +8,14 @@ function reason_two_select(reason_two_id)
   var reason_one_select_id = document.getElementById("select_reason_one").value;
   location.replace("?milestone_id=<%= @milestone_id %>&planned_date=<%=@planned_date%>&current_date=<%=@current_date%>&delay_days=<%=@delay_days%>&select_reason_one="+reason_one_select_id+"&select_reason_two="+reason_two_id);
 }
+function reason_three_select(reason_three_id)
+{
+	if ((reason_three_id == 7) || (reason_three_id == 13) || (reason_three_id == 16) || (reason_three_id == 17) || (reason_three_id == 25) || (reason_three_id == 28) || (reason_three_id == 32)) {
+		document.getElementById("reason_other").readOnly = false;
+	} else {
+		document.getElementById("reason_other").readOnly = true;
+	}
+}
 </SCRIPT>
 
 <h2>Delay record</h2>
@@ -25,10 +33,10 @@ function reason_two_select(reason_two_id)
 
 <%= select_tag("select_reason_two", options_for_select(@reason_twos.map{|reason| [reason.reason_description, reason.id]}.insert(0, ""), @reason_two_selected), {:onchange=>"reason_two_select(this.value)", :style=>"width:185px"}) %>
 
-<%= select_tag("select_reason_three", options_for_select(@reason_threes.map{|reason| [reason.reason_description, reason.id]}.insert(0, "")), {:style=>"width:185px"}) %>
+<%= select_tag("select_reason_three", options_for_select(@reason_threes.map{|reason| [reason.reason_description, reason.id]}.insert(0, "")), {:onchange=>"reason_three_select(this.value)", :style=>"width:185px"}) %>
 
 <p><%= label_tag 'Other reason' %>
-<%= text_field_tag 'reason_other', '', :readonly => @other_disabled %></p>
+<%= text_field_tag 'reason_other', '', :readonly => @other_disabled, :id => 'reason_other' %></p>
 
 <p><%= label_tag '&nbsp;' %>
 <%= submit_tag 'Save' %></p>

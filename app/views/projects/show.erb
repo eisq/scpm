@@ -31,7 +31,7 @@ function add(id, nb_months, has_requests, has_rights) {
       <%= tab_menu("project_show", [
         "Timeline and status",
         "Risks <strong>#{@project.current_risks.size}</strong>",
-        "Milestone delays",
+        "Milestone delays <strong>#{@project.current_delays.size}</strong>",
         "Amendments <strong>#{@project.current_amendments.size}</strong>",
         "Actions <strong>#{@project.current_actions.size}</strong>",
         "Notes/Capi <strong>#{@project.visible_notes(current_user.id).size}</strong>",

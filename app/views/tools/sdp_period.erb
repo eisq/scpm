@@ -1,16 +1,16 @@
 <%= render(:file=>"tools/sdp_menu.erb") %>
 <%= render(:file=>"tools/sdp_logs_menu.erb") %>
-
-<%= form_tag :action => 'sdp_period' %>
-Person: <%= select_tag("person_selected", options_for_select(@people.map{|people| [people.name, people.id]}.insert(0, ""), @person_selected), {:style=>"width:185px"}) %>
-<br/><br/>
-Period start (yyyy-mm-dd): <%= text_field_tag 'period_selected_start', @period_selected_start %></p>
-Period stop (yyyy-mm-dd): <%= text_field_tag 'period_selected_stop', @period_selected_stop %></p>
-
-<%= submit_tag('Set period') %>
-</form>
-
-<br/><br/>
-<% if @gain %>
-Gain: <strong><%= @gain.to_s %> %</strong>
-<% end %>
+<table><tr><td>
+	<%= form_tag :action => 'sdp_period' %>
+	Person: </td><td><%= select_tag("person_selected", options_for_select(@people.map{|people| [people.name, people.id]}.insert(0, ""), @person_selected), {:style=>"width:185px"}) %></td>
+</tr><tr>
+	<td>Period start (yyyy-mm-dd): </td><td><%= text_field_tag 'period_selected_start', @period_selected_start %></td>
+</tr><tr>
+	<td>Period stop (yyyy-mm-dd): </td><td><%= text_field_tag 'period_selected_stop', @period_selected_stop %></td>
+</tr><tr>
+	<td><%= submit_tag('Check period') %></td><td>
+	<% if @gain %>
+	Gain: <strong><%= @gain.to_s %> %</strong></td>
+	<% end %>
+	</form>
+</tr></table>

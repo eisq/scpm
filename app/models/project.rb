@@ -40,6 +40,7 @@ class Project < ActiveRecord::Base
   has_many    :presales, :dependent => :nullify
   has_many    :presale_ignore_projects, :dependent => :nullify
   has_many    :deviation_spider_references
+  has_many    :current_delays, :class_name=>'MilestoneDelayRecord', :conditions=>"delay_days > 0"
 
   def planning
     planning = Planning.find(:first, :conditions=>["project_id=#{self.id}"])
