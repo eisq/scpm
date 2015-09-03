@@ -46,6 +46,12 @@ function drawChart() {
 
     var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
+    google.visualization.events.addListener(chart, 'ready', function () {
+	    piechart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+	    console.log(piechart.innerHTML);
+	  });
+
+
     chart.draw(data, options);
   }
 
