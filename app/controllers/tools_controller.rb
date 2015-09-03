@@ -647,7 +647,7 @@ class ToolsController < ApplicationController
   end
 
   def sdp_period
-    @people = Person.find(:all, :conditions=>["has_left = ? and company_id = ? and is_supervisor = ? and is_transverse = ?", 0, 1, 0, 0])
+    @people = Person.find(:all, :conditions=>["has_left = ? and company_id = ? and is_supervisor = ? and is_transverse = ?", 0, 1, 0, 0], :order=>"name")
     @period_selected_start = @period_selected_stop = @gain = ""
     if params[:person_selected]
       @person_selected = params[:person_selected].to_i
@@ -659,7 +659,10 @@ class ToolsController < ApplicationController
 
   def get_gain(person, period_start, period_stop)
     gain = 0
-    gain = Person.find(:first, :conditions=>["id = ?", person]).sdp_percent_period(period_start, period_stop)
+    person = Person.find(:first, :conditions=>["id = ?", person])
+    if person
+      gain = person.sdp_percent_period(period_start, period_stop)
+    end
     return gain
   end
 
