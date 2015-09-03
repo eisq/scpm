@@ -1,7 +1,5 @@
 
 <SCRIPT language="Javascript">
-google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(drawChart);
 
 function change_score(consolidation_temp_id, value)
 {
@@ -21,33 +19,6 @@ function change_score(consolidation_temp_id, value)
 		alert("Error");
 	})
 }
-
-function drawChart() {
-
-	var maturity = <%= @maturity %>
-	var rest = 100 - maturity
-
-    var data = google.visualization.arrayToDataTable([
-      ['Maturity', 'Percent'],
-      ['Mature', maturity],
-      ['Not mature', rest]
-    ]);
-
-    var options = {
-      title: 'Milestone maturity',
-      pieHole: 0.5,
-      'width':450,
-      'height':350,
-      slices: {
-        0: { color: 'green' },
-        1: { color: 'orange' }
-      }
-    };
-
-    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-    chart.draw(data, options);
-  }
 
 //Open
 $( document ).ready(function() {
@@ -168,7 +139,7 @@ $( document ).ready(function() {
 <table>
 	<tr>
 		<td colspan=2 style="border:1px outset black;">
-		<div id="piechart" style="width: 450px; height: 350px;"></div>
+			
 		</td>
 	</tr>
 	<tr>

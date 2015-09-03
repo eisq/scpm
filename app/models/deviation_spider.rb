@@ -576,20 +576,4 @@ class DeviationSpider < ActiveRecord::Base
 		end
 	end
 
-	def get_deviation_maturity
-		maturity = i = u = 0
-		DeviationSpiderDeliverable.find(:all, :conditions=>["deviation_spider_id = ?", self.id]).each do |deliverable|
-			DeviationSpiderValue.find(:all, :conditions=>["deviation_spider_deliverable_id = ?", deliverable.id]).each do |value|
-				i = i+1
-				if value.answer == true
-					u = u+1
-				end
-			end
-		end
-
-		maturity = u*100/i
-		
-		return maturity
-	end
-
 end
