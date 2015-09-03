@@ -215,6 +215,7 @@ class MilestonesController < ApplicationController
       milestone_delay.reason_third_id = params[:select_reason_three]
       milestone_delay.reason_other = params[:reason_other]
       milestone_delay.updated_by = current_user.id
+      milestone_delay.project_id = project_id
       milestone_delay.save
 
       redirect_to "/projects/show/#{project_id}"
