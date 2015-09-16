@@ -119,18 +119,27 @@ class Person < ActiveRecord::Base
   end
 
   def sdp_percent_period(start, stop)
-    i = 0
-    some = 0
+    percent = i = balance_init = 0
+    log_stop = SdpLog.new
     SdpLog.find(:all, :conditions=>["person_id = ? and date >= ? and date <= ?", self.id, start, stop]).each do |log|
-      i = i+1
-      some = some + log.percent
+      if i == 0
+        balance_init = log.balance
+      end
+      log_stop = log
+      i = i + 1
+      #some = some + log.percent
     end
 
     if i != 0
-      percent = some / i
-    else
-      percent = 0
+      percent = (balance_init - log_stop.balance) / log_stop.initial
+      #raise "Percent: " + percent.to_s + " , balance_init: " + balance_init.to_s + " , balance_stop: " + log_stop.balance.to_s + " , log_stop_init: " + log_stop.initial.to_s
     end
+
+    #if i != 0
+    #  percent = some / i
+    #else
+    #  percent = 0
+    #end
 
     return percent
   end

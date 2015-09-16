@@ -2,6 +2,7 @@
 <SCRIPT language="Javascript">
 google.load("visualization", "1", {packages:["corechart"]});
 google.setOnLoadCallback(drawChart);
+google.setOnLoadCallback(drawChartTwo);
 
 function change_score(consolidation_temp_id, value)
 {
@@ -27,33 +28,62 @@ function drawChart() {
 	var maturity = <%= @maturity %>
 	var rest = 100 - maturity
 
-    var data = google.visualization.arrayToDataTable([
-      ['Maturity', 'Percent'],
-      ['Projects/Suite activities maturity reached for the current phase', maturity],
-      ['Delta', rest]
-    ]);
+	var data = google.visualization.arrayToDataTable([
+	  ['Maturity', 'Percent'],
+	  ['Projects/Suite activities maturity reached for the current phase', maturity],
+	  ['Delta', rest]
+	]);
 
-    var options = {
-      title: 'Activities maturity reached for the current phase',
-      pieHole: 0.5,
-      'width':450,
-      'height':350,
-      slices: {
-        0: { color: 'green' },
-        1: { color: 'orange' }
-      }
-    };
+	var options = {
+	  title: 'Activities maturity reached for the current phase',
+	  pieHole: 0.5,
+	  'width':450,
+	  'height':350,
+	  slices: {
+	    0: { color: 'green' },
+	    1: { color: 'orange' }
+	  }
+	};
 
-    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+	var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
-    google.visualization.events.addListener(chart, 'ready', function () {
+	google.visualization.events.addListener(chart, 'ready', function () {
 	    piechart.innerHTML = '<img src="' + chart.getImageURI() + '">';
 	    console.log(piechart.innerHTML);
 	  });
 
 
-    chart.draw(data, options);
-  }
+	chart.draw(data, options);
+}
+
+function drawChartTwo() {
+
+	var data = google.visualization.arrayToDataTable([
+        ["Element", "Density", { role: "style" } ],
+        ["Copper", 8.94, "#b87333"],
+        ["Silver", 10.49, "silver"],
+        ["Gold", 19.30, "gold"],
+        ["Platinum", 21.45, "color: #e5e4e2"]
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title: "Density of Precious Metals, in g/cm^3",
+        width: 600,
+        height: 400,
+        bar: {groupWidth: "95%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("histochart"));
+      chart.draw(view, options);
+}
 
 //Open
 $( document ).ready(function() {
@@ -177,6 +207,8 @@ $( document ).ready(function() {
 	<tr><td colspan=2 style="border:1px outset black;">
 		<div id="piechart" style="width: 450px; height: 350px;"></div>
 		</td>
+		<td>
+			<div id="histochart" style="width: 450px; height: 350px;"></div></td>
 	</tr>
 	<tr>
 		<td>Bilan Deviation assessment: </td>
