@@ -653,7 +653,8 @@ class ToolsController < ApplicationController
       @person_selected = params[:person_selected].to_i
       @period_selected_start = params[:period_selected_start].to_date
       @period_selected_stop = params[:period_selected_stop].to_date
-      @gain = get_gain(@person_selected, @period_selected_start, @period_selected_stop).round(2)
+      #@gain = get_gain(@person_selected, @period_selected_start, @period_selected_stop).round(2)
+      @gain = get_gain(@person_selected, @period_selected_start, @period_selected_stop)
     end
   end
 
