@@ -58,12 +58,15 @@ function drawChart() {
 
 function drawChartTwo() {
 
+	var maturities = <%= @maturities %>;
+	var maturities_name = <%= @maturities_name %>;
+	var maturitieslength = maturities.length;
+
 	var data = google.visualization.arrayToDataTable([
-        ["Element", "Density", { role: "style" } ],
-        ["Copper", 8.94, "#b87333"],
-        ["Silver", 10.49, "silver"],
-        ["Gold", 19.30, "gold"],
-        ["Platinum", 21.45, "color: #e5e4e2"]
+        ["Percentage", "Milestone", { role: "style" } ],
+        {for (var i = 0; i < maturitieslength; i++) {
+        	[maturities[i], maturities_name[i], "green"],
+        }}
       ]);
 
       var view = new google.visualization.DataView(data);
@@ -75,13 +78,19 @@ function drawChartTwo() {
                        2]);
 
       var options = {
-        title: "Density of Precious Metals, in g/cm^3",
+        title: "Activities maturity reached by Milestone",
         width: 600,
         height: 400,
-        bar: {groupWidth: "95%"},
+        bar: {groupWidth: "60%"},
         legend: { position: "none" },
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("histochart"));
+
+      google.visualization.events.addListener(chart, 'ready', function () {
+	    histochart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+	    console.log(histochart.innerHTML);
+	  });
+
       chart.draw(view, options);
 }
 
@@ -204,15 +213,14 @@ $( document ).ready(function() {
 	<%= button_to "Refresh pie", {:action => "consolidate_interface", :deviation_spider_id => @deviation_spider.id, :editable => @editable} %>
 </div>
 <table>
-	<tr><td colspan=2 style="border:1px outset black;">
+	<tr><td style="border:1px outset black;">
 		<div id="piechart" style="width: 450px; height: 350px;"></div>
 		</td>
-		<td>
-			<div id="histochart" style="width: 450px; height: 350px;"></div></td>
+		<td style="border:1px outset black;">
+			<div id="histochart" style="width: 600px; height: 400px;"></div></td>
 	</tr>
 	<tr>
-		<td>Bilan Deviation assessment: </td>
-		<td><%= button_to "Excel export", {:action => "export_deviation_excel", :project_id => @deviation_spider.milestone.project.id, :milestone_name => @deviation_spider.milestone.name, :deviation_spider_id => @deviation_spider.id} %></td>
+		<td colspan="2"><table><tr><td>Bilan Deviation assessment: </td><td><%= button_to "Excel export", {:action => "export_deviation_excel", :project_id => @deviation_spider.milestone.project.id, :milestone_name => @deviation_spider.milestone.name, :deviation_spider_id => @deviation_spider.id} %></td></tr></table></td>
 	</tr>
 </table>
 

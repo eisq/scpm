@@ -7,6 +7,7 @@ class SvtDeviationSpidersController < ApplicationController
 	Consolidation_export = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification, :status)
 	Devia_status_saved = Struct.new(:deliverable_id, :status_number)
 	Customization_deliverable_status = Struct.new(:deliverable_name, :status_number)
+	Maturity = Struct.new(:name, :percent)
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
 	# 
@@ -303,10 +304,38 @@ class SvtDeviationSpidersController < ApplicationController
 	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable, false)
 
 			@maturity = @deviation_spider.get_deviation_maturity
-	    	#@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(@consolidations).to_url
+
+			#get all svt deviation spiders linked to this project
+			deviation_spiders = Array.new
+			deviation_spiders = get_svt_deviation_spiders(@deviation_spider)
+			@maturities, @maturities_name = get_maturities(deviation_spiders)
+
 	    else
 	    	redirect_to :controller=>:projects, :action=>:index
 	    end
+	end
+
+	def get_svt_deviation_spiders(deviation_spider)
+		spiders = Array.new
+		SvtDeviationSpider.find(:all, :conditions=>["project_id = ?", deviation_spider.project_id]).each do |devia_spider|
+			spiders << devia_spider
+		end
+
+		return spiders
+	end
+
+	def get_maturities(deviation_spider)
+		maturities = Array.new
+		maturities_name = Array.new
+		mat = Maturity.new # Maturity = Struct.new(:name, :percent)
+		if deviation_spider.count > 0
+			deviation_spider.each do |ds|
+				maturities << ds.get_deviation_maturity
+				maturities_name << ds.milestone.name
+			end
+		end
+
+		return maturities, maturities_name
 	end
 
 	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable, export)
