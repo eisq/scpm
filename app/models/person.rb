@@ -131,7 +131,7 @@ class Person < ActiveRecord::Base
 
     if i != 0 and log_stop.initial != 0
       percent = ((log_stop.balance - balance_init) / log_stop.initial) * 100
-      #raise "Percent: " + percent.to_s + " , balance_init: " + balance_init.to_s + " , balance_stop: " + log_stop.balance.to_s + " , log_stop_init: " + log_stop.initial.to_s
+      raise "Percent: " + percent.to_s + " , balance_init: " + balance_init.to_s + " , balance_stop: " + log_stop.balance.to_s + " , log_stop_init: " + log_stop.initial.to_s
     end
 
     return percent
