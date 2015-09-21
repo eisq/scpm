@@ -318,6 +318,11 @@ class SvtDeviationSpidersController < ApplicationController
 	def get_svt_deviation_spiders(deviation_spider)
 		spiders = Array.new
 		SvtDeviationSpider.find(:all, :conditions=>["project_id = ?", deviation_spider.project_id], :order=>"id asc").each do |devia_spider|
+			spiders.each do |sp|
+				if sp.milestone_id == devia_spider.milestone_id
+					sp.delete
+				end
+			end
 			spiders << devia_spider
 		end
 

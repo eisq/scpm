@@ -82,13 +82,14 @@ function drawChartTwo() {
 		                   2]);
 
 		var options = {
-		    title: "Activities maturity reached by Milestone",
+		    title: "Activities maturity reached by Milestone (by %)",
 		    width: 600,
 		    height: 400,
 		    bar: {groupWidth: "60%"},
 		    legend: { position: "none" },
+		    vAxis: { minValue: '0', maxValue: '100'}
 		  };
-		  
+
 		var chart = new google.visualization.ColumnChart(document.getElementById("histochart"));
 
 		google.visualization.events.addListener(chart, 'ready', function () {
@@ -225,7 +226,8 @@ $( document ).ready(function() {
 		<td style="border:1px outset black;">
 			<div id="histochart" style="width: 600px; height: 400px;">
 				<% if @maturities.count == 0 %>
-					No consolidated milestone for the moment.
+					<h3>Activities maturity reached by Milestone</h3>
+					None of your previous milestones has been consolidated.
 				<% end %>
 			</div></td>
 	</tr>
