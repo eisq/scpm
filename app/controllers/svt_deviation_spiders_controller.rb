@@ -317,7 +317,7 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def get_svt_deviation_spiders(deviation_spider)
 		spiders = Array.new
-		SvtDeviationSpider.find(:all, :conditions=>["project_id = ?", deviation_spider.project_id], :order=>"id desc").each do |devia_spider|
+		SvtDeviationSpider.find(:all, :conditions=>["project_id = ?", deviation_spider.project_id], :order=>"id asc").each do |devia_spider|
 			spiders << devia_spider
 		end
 
