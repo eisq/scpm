@@ -82,7 +82,7 @@ function drawChartTwo() {
 		                   2]);
 
 		var options = {
-		    title: "Activities maturity reached by Milestone (by %)",
+		    title: "Reminders on previous phases activities maturity status (by %)",
 		    width: 600,
 		    height: 400,
 		    bar: {groupWidth: "60%"},
@@ -226,7 +226,7 @@ $( document ).ready(function() {
 		<td align=center style="border:1px outset black;">
 			<div id="histochart" style="width: 600px; height: 400px;">
 				<% if @maturities.count == 0 %>
-					<h3>Activities maturity reached by Milestone</h3>
+					<h3>Reminders on previous phases activities maturity status</h3>
 					None of your previous milestones has been consolidated.
 				<% end %>
 			</div></td>
