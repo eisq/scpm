@@ -58,40 +58,46 @@ function drawChart() {
 
 function drawChartTwo() {
 
-	var maturities = <%= @maturities %>;
-	var maturities_name = <%= @maturities_name %>;
+	var maturities = <%= @maturities.to_json %>;
+	var maturities_name = <%= @maturities_name.to_json %>;
 	var maturitieslength = maturities.length;
 
-	var data = google.visualization.arrayToDataTable([
-        ["Percentage", "Milestone", { role: "style" } ],
-        {for (var i = 0; i < maturitieslength; i++) {
-        	[maturities[i], maturities_name[i], "green"],
-        }}
-      ]);
+	if (maturitieslength > 0) {
+		var data_temp = [];
+		var Header = ['Percentage', 'Milestone', { role: 'style' }];
+	 	data_temp.push(Header);
 
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
+	 	for (var i=0; i < maturitieslength; i++) {
+	 		data_temp.push([maturities_name[i], maturities[i], "green"]);
+	 	}
 
-      var options = {
-        title: "Activities maturity reached by Milestone",
-        width: 600,
-        height: 400,
-        bar: {groupWidth: "60%"},
-        legend: { position: "none" },
-      };
-      var chart = new google.visualization.ColumnChart(document.getElementById("histochart"));
+		var data = google.visualization.arrayToDataTable(data_temp);
 
-      google.visualization.events.addListener(chart, 'ready', function () {
-	    histochart.innerHTML = '<img src="' + chart.getImageURI() + '">';
-	    console.log(histochart.innerHTML);
-	  });
+		var view = new google.visualization.DataView(data);
+		view.setColumns([0, 1,
+		                   { calc: "stringify",
+		                     sourceColumn: 1,
+		                     type: "string",
+		                     role: "annotation" },
+		                   2]);
 
-      chart.draw(view, options);
+		var options = {
+		    title: "Activities maturity reached by Milestone",
+		    width: 600,
+		    height: 400,
+		    bar: {groupWidth: "60%"},
+		    legend: { position: "none" },
+		  };
+		  
+		var chart = new google.visualization.ColumnChart(document.getElementById("histochart"));
+
+		google.visualization.events.addListener(chart, 'ready', function () {
+		    histochart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+		    console.log(histochart.innerHTML);
+		  });
+
+		chart.draw(view, options);
+	}
 }
 
 //Open
@@ -217,7 +223,11 @@ $( document ).ready(function() {
 		<div id="piechart" style="width: 450px; height: 350px;"></div>
 		</td>
 		<td style="border:1px outset black;">
-			<div id="histochart" style="width: 600px; height: 400px;"></div></td>
+			<div id="histochart" style="width: 600px; height: 400px;">
+				<% if @maturities.count == 0 %>
+					No consolidated milestone for the moment.
+				<% end %>
+			</div></td>
 	</tr>
 	<tr>
 		<td colspan="2"><table><tr><td>Bilan Deviation assessment: </td><td><%= button_to "Excel export", {:action => "export_deviation_excel", :project_id => @deviation_spider.milestone.project.id, :milestone_name => @deviation_spider.milestone.name, :deviation_spider_id => @deviation_spider.id} %></td></tr></table></td>

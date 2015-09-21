@@ -317,21 +317,23 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def get_svt_deviation_spiders(deviation_spider)
 		spiders = Array.new
-		SvtDeviationSpider.find(:all, :conditions=>["project_id = ?", deviation_spider.project_id]).each do |devia_spider|
+		SvtDeviationSpider.find(:all, :conditions=>["project_id = ?", deviation_spider.project_id], :order=>"id desc").each do |devia_spider|
 			spiders << devia_spider
 		end
 
 		return spiders
 	end
 
-	def get_maturities(deviation_spider)
+	def get_maturities(deviation_spiders)
 		maturities = Array.new
 		maturities_name = Array.new
 		mat = Maturity.new # Maturity = Struct.new(:name, :percent)
-		if deviation_spider.count > 0
-			deviation_spider.each do |ds|
-				maturities << ds.get_deviation_maturity
-				maturities_name << ds.milestone.name
+		if deviation_spiders.count > 0
+			deviation_spiders.each do |ds|
+				if ds.milestone.done == 1
+					maturities << ds.get_deviation_maturity
+					maturities_name << ds.milestone.name
+				end
 			end
 		end
 

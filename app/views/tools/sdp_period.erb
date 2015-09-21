@@ -9,8 +9,10 @@
 	<td>Period stop (yyyy-mm-dd): </td><td><%= text_field_tag 'period_selected_stop', @period_selected_stop %></td>
 </tr><tr>
 	<td><%= submit_tag('Check period') %></td><td>
-	<% if @gain %>
-	Gain: <strong><%= @gain.to_s %> %</strong></td>
+	<% if @gain and @gain != -1000 #-1000 = error code, no initial tasks %>
+		Gain: <strong><%= @gain.to_s %> %</strong></td>
+	<% elsif @gain == -1000 %>
+		Gain: No gain as there is no difference of the initial value during the period.
 	<% end %>
 	</form>
 </tr></table>

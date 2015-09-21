@@ -133,7 +133,7 @@ class Person < ActiveRecord::Base
       balance = log_stop.balance - log_start.balance
       init = log_stop.initial - log_start.initial
       if init == 0
-        percent = 0
+        percent = -1000
       else
         gain = balance / init
         percent = (gain * 100).round(2)
