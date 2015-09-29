@@ -947,12 +947,20 @@ class Project < ActiveRecord::Base
 
   # Get the last incrementation date of QS count
   def get_last_qs_increment
+    last_inc = last_inc_sibling = final_last_inc = nil
     last_inc =  HistoryCounter.last(:include => :status, :conditions=>["concerned_status_id IS NOT NULL and statuses.project_id = ?" ,self.id])
     if last_inc
-      return last_inc.created_at
+      final_last_inc = last_inc.created_at
     else
-      return nil
+      if self.sibling_id
+        last_inc_sibling = HistoryCounter.last(:include => :status, :conditions=>["concerned_status_id IS NOT NULL and statuses.project_id = ?" ,self.sibling_id])
+        if last_inc_sibling
+          final_last_inc = last_inc_sibling.created_at
+        end
+      end
     end
+
+    return final_last_inc
   end
 
   # Get the last incrementation date of spider count
