@@ -257,7 +257,7 @@ class ProjectsController < ApplicationController
     @milestone_delays = Array.new
     i = 0
     MilestoneDelayRecord.find(:all).each do |milestone_delay_record|
-      milestone = Milestone.find(:first, :conditions=>["id = ?", milestone_delay_record.milestone_id]).project_id
+      milestone = Milestone.find(:first, :conditions=>["id = ?", milestone_delay_record.milestone_id])
       if milestone and milestone.project_id == id.to_i
         milestone_delay = Milestone_delay.new # Milestone_delay = Struct.new(:delay_id, :milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, ;other_reason, :last_update, :person)
         milestone_delay.delay_id = milestone_delay_record.id
