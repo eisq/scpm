@@ -244,6 +244,7 @@ class ProjectsController < ApplicationController
     if @sibling != nil
       @has_sibling = true
     end
+    project_id = nil
     #@checklist_items = TransverseItems.find()
 
     @new_spider_to_show = false
@@ -257,7 +258,7 @@ class ProjectsController < ApplicationController
     i = 0
     MilestoneDelayRecord.find(:all).each do |milestone_delay_record|
       project_id = Milestone.find(:first, :conditions=>["id = ?", milestone_delay_record.milestone_id]).project_id
-      if project_id == id.to_i
+      if project_id and project_id == id.to_i
         milestone_delay = Milestone_delay.new # Milestone_delay = Struct.new(:delay_id, :milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, ;other_reason, :last_update, :person)
         milestone_delay.delay_id = milestone_delay_record.id
         milestone_delay.milestone = milestone_delay_record.milestone.name
