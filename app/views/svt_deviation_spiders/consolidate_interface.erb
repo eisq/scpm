@@ -40,9 +40,12 @@ function drawChart() {
 	  'width':450,
 	  'height':350,
 	  slices: {
-	    0: { color: 'green' },
+	    0: { color: '#82FA58' },
 	    1: { color: 'orange' }
-	  }
+	  },
+	  pieSliceTextStyle: {
+            color: 'black',
+          }
 	};
 
 	var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -68,7 +71,7 @@ function drawChartTwo() {
 	 	data_temp.push(Header);
 
 	 	for (var i=0; i < maturitieslength; i++) {
-	 		data_temp.push([maturities_name[i], maturities[i], "green"]);
+	 		data_temp.push([maturities_name[i], maturities[i], "#82FA58"]);
 	 	}
 
 		var data = google.visualization.arrayToDataTable(data_temp);
@@ -84,8 +87,8 @@ function drawChartTwo() {
 		var options = {
 		    title: "Reminders on previous phases activities maturity status (by %)",
 		    width: 600,
-		    height: 400,
-		    bar: {groupWidth: "60%"},
+		    height: 80,
+		    bar: {groupWidth: "25%"},
 		    legend: { position: "none" },
 		    vAxis: { minValue: '0', maxValue: '100'}
 		  };
@@ -224,7 +227,7 @@ $( document ).ready(function() {
 		<div id="piechart" style="width: 450px; height: 350px;"></div>
 		</td>
 		<td align=center style="border:1px outset black;">
-			<div id="histochart" style="width: 600px; height: 400px;">
+			<div id="histochart" style="width: 600px; height: 80px;">
 				<% if @maturities.count == 0 %>
 					<h3>Reminders on previous phases activities maturity status</h3>
 					None of your previous milestones has been consolidated.
