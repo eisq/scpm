@@ -1261,6 +1261,25 @@ class ToolsController < ApplicationController
     end
   end
 
+  def export_delays_excel
+    @delays = MilestoneDelayRecord.find(:all)
+
+    if @delays.count > 0
+      begin
+        @xml = Builder::XmlMarkup.new(:indent => 1)
+
+        filename = "Milestones delays"
+
+        headers['Content-Type']         = "application/vnd.ms-excel"
+            headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
+            headers['Cache-Control']        = ''
+            render "delays.erb", :layout=>false
+      rescue Exception => e
+            render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+          end
+    end
+  end
+
 private
 
   def round_to_hour(f)
