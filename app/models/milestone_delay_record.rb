@@ -18,7 +18,10 @@ class MilestoneDelayRecord < ActiveRecord::Base
 	def get_reason_one
 		reason = ""
 		if self.reason_first_id
-			reason = self.milestone_delay_reason_one.reason_description
+			reason_one = MilestoneDelayReasonOne.find(:first, :conditions=>["id=?", self.reason_first_id])
+			if reason_one
+				reason = reason_one.reason_description
+			end
 		end
 
 		return reason
@@ -27,7 +30,10 @@ class MilestoneDelayRecord < ActiveRecord::Base
 	def get_reason_two
 		reason = ""
 		if self.reason_second_id
-			reason = self.milestone_delay_reason_two.reason_description
+			reason_two = MilestoneDelayReasonTwo.find(:first, :conditions=>["id=?", self.reason_second_id])
+			if reason_two
+				reason = reason_two.reason_description
+			end
 		end
 
 		return reason
@@ -36,7 +42,10 @@ class MilestoneDelayRecord < ActiveRecord::Base
 	def get_reason_three
 		reason = ""
 		if self.reason_third_id
-			reason = self.milestone_delay_reason_three.reason_description
+			reason_three = MilestoneDelayReasonThree.find(:first, :conditions=>["id=?", self.reason_third_id])
+			if reason_three
+				reason = reason_three.reason_description
+			end
 		end
 
 		return reason
