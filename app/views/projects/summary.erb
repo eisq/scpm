@@ -591,5 +591,124 @@ end
   end
   # STREAMS RISKS END
 
+  # DELAYS
+  @xml.Worksheet 'ss:Name' => 'Delays export' do
+    @xml.Table do
+
+      # Columns width
+      @xml.Column 0, {'ss:Width' => 150}
+      @xml.Column 1, {'ss:Width' => 150}
+      @xml.Column 2, {'ss:Width' => 320}
+      @xml.Column 3, {'ss:Width' => 150}
+
+      # Header 1
+      @xml.Row 'ss:StyleID' => 'Default' do
+        @xml.Cell 'ss:StyleID' => 'Default'
+        @xml.Cell 'ss:StyleID' => 'Header3bold' do
+          @xml.Data "Delays", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Header 2
+      @xml.Row 'ss:StyleID' => 'Default'
+
+      # Header 3
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "DWS / PLM", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Project Parent", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data " Project Name", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Milestone", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Planned date", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Current date", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Delay", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Reason 1", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Reason 2", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Reason 3", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 's75' do
+          @xml.Data "Other", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Rows
+      for delay in @delays
+        @xml.Row do
+          @xml.Cell 'ss:StyleID' => 'borderleft' do
+            @xml.Data delay.get_dws, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.get_parent, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.project.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.milestone.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.planned_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.current_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.delay_days, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.get_reason_one, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.get_reason_two, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.get_reason_three, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.reason_other, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell 'ss:StyleID' => 'borderleft' do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+        end #End row
+      end #End for
+
+      # Last row
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+    end #End xml.table
+  end #End xml.worksheet
+
 end
 %>

@@ -808,6 +808,12 @@ class ProjectsController < ApplicationController
   def summary
     begin
       @xml = Builder::XmlMarkup.new(:indent => 1) #Builder::XmlMarkup.new(:target => $stdout, :indent => 1)
+      @delays = Array.new
+      MilestoneDelayRecord.find(:all).each do |delay|
+        #if delay.project.is_running
+          @delays << delay
+        #end
+      end
       get_projects
       saveWps = @wps
       @wps = @wps.sort_by { |w|

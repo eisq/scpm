@@ -1,4 +1,6 @@
 require 'google_chart'
+require 'spreadsheet'
+require 'builder'
 
 class ToolsController < ApplicationController
 
@@ -1262,21 +1264,24 @@ class ToolsController < ApplicationController
   end
 
   def export_delays_excel
-    @delays = MilestoneDelayRecord.find(:all)
+    @delays = Array.new
+    MilestoneDelayRecord.find(:all).each do |delay|
+      #if delay.project.is_running
+        @delays << delay
+      #end
+    end
 
     if @delays.count > 0
       begin
         @xml = Builder::XmlMarkup.new(:indent => 1)
 
-        filename = "Milestones delays"
-
         headers['Content-Type']         = "application/vnd.ms-excel"
-            headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
-            headers['Cache-Control']        = ''
-            render "delays.erb", :layout=>false
+        headers['Content-Disposition']  = 'attachment; filename="Milestones delays"'
+        headers['Cache-Control']        = ''
+        render "delays.erb", :layout=>false
       rescue Exception => e
-            render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
-          end
+        render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+      end
     end
   end
 
