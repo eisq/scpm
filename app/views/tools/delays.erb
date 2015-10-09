@@ -68,10 +68,18 @@ end
     @xml.Table do
 
       # Columns width
-      @xml.Column 0, {'ss:Width' => 150}
+      @xml.Column 0, {'ss:Width' => 40}
       @xml.Column 1, {'ss:Width' => 150}
-      @xml.Column 2, {'ss:Width' => 320}
+      @xml.Column 2, {'ss:Width' => 280}
+      @xml.Column 3, {'ss:Width' => 40}
+      @xml.Column 3, {'ss:Width' => 80}
+      @xml.Column 3, {'ss:Width' => 80}
       @xml.Column 3, {'ss:Width' => 150}
+      @xml.Column 3, {'ss:Width' => 30}
+      @xml.Column 3, {'ss:Width' => 200}
+      @xml.Column 3, {'ss:Width' => 300}
+      @xml.Column 3, {'ss:Width' => 300}
+      @xml.Column 3, {'ss:Width' => 300}
 
       # Header 1
       @xml.Row 'ss:StyleID' => 'Default' do
@@ -127,7 +135,7 @@ end
           @xml.Cell 'ss:StyleID' => 'borderleft' do
             @xml.Data delay.get_dws, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
-          @xml.Cell 'ss:StyleID' => 'Pink' do
+          @xml.Cell do
             @xml.Data delay.get_parent, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell 'ss:StyleID' => 'Pink' do
