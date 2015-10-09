@@ -808,12 +808,6 @@ class ProjectsController < ApplicationController
   def summary
     begin
       @xml = Builder::XmlMarkup.new(:indent => 1) #Builder::XmlMarkup.new(:target => $stdout, :indent => 1)
-      @delays = Array.new
-      MilestoneDelayRecord.find(:all).each do |delay|
-        #if delay.project.is_running
-          @delays << delay
-        #end
-      end
       get_projects
       saveWps = @wps
       @wps = @wps.sort_by { |w|
@@ -898,6 +892,15 @@ class ProjectsController < ApplicationController
       end
       @spidersLines    = Spider.spider_export_by_projects_and_milestones(saveWps)
       # SPIDERS EXPORT END
+
+      # Milestone delays export
+      @delays = Array.new
+      MilestoneDelayRecord.find(:all).each do |delay|
+        #if delay.project.is_running
+          @delays << delay
+        #end
+      end
+      # Milestone delays export end
 
       headers['Content-Type']         = "application/vnd.ms-excel"
       headers['Content-Disposition']  = 'attachment; filename="Summary.xls"'

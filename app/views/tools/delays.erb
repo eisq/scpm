@@ -18,18 +18,9 @@
     @xml.NumberFormat
     @xml.Protection 
   end
-  @xml.Style 'ss:ID' => 's62', 'ss:Name' => 'Header1' do
-    @xml.Font 'ss:FontName' => 'Verdana'
-    @xml.Borders do
-      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
-      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
-      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
-      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
-    end
-  end
-  @xml.Style 'ss:ID' => 's75', 'ss:Name' => 'Header2' do
-    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#FFFFFF', 'ss:Bold'=>"1"
-    @xml.Interior 'ss:Color'=>"#2C5FE1", 'ss:Pattern'=>'Solid'
+  @xml.Style 'ss:ID' => 'TitleBlue', 'ss:Name' => 'TitleBlue' do
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#000000', 'ss:Bold'=>"1"
+    @xml.Interior 'ss:Color'=>"#b6dde8", 'ss:Pattern'=>'Solid'
     @xml.Borders do
       @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
       @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
@@ -37,21 +28,26 @@
       @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
     end
   end
+  @xml.Style 'ss:ID' => 'TitlePink', 'ss:Name' => 'TitlePink' do
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#000000', 'ss:Bold'=>"1"
+    @xml.Interior 'ss:Color'=>"#fde9d9", 'ss:Pattern'=>'Solid'
+    @xml.Borders do
+      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"2", 'ss:LineStyle'=> 'Continuous'
+    end
+  end
+  @xml.Style 'ss:ID' => 'Pink', 'ss:Name' => 'Pink' do
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#000000'
+    @xml.Interior 'ss:Color'=>"#fde9d9", 'ss:Pattern'=>'Solid'
+  end
+  @xml.Style 'ss:ID' => 'Blue', 'ss:Name' => 'Blue' do
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#000000'
+    @xml.Interior 'ss:Color'=>"#b6dde8", 'ss:Pattern'=>'Solid'
+  end
   @xml.Style 'ss:ID' => 'Header3bold', 'ss:Name' => 'Header3bold' do
     @xml.Font  'ss:Bold'=>"1"
-  end
-  @xml.Style 'ss:ID' => 's1024', 'ss:Name' => 'Classic' do
-    @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
-    @xml.Font 'ss:FontName' => 'Verdana'
-    @xml.Borders do
-      @xml.Border 'ss:Position'=>'Top', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
-      @xml.Border 'ss:Position'=>'Bottom', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
-      @xml.Border 'ss:Position'=>'Left', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
-      @xml.Border 'ss:Position'=>'Right', 'ss:Color'=>'#000000', 'ss:Weight'=>"1", 'ss:LineStyle'=> 'Continuous'
-    end
-    @xml.Interior
-    @xml.NumberFormat
-    @xml.Protection 
   end
   @xml.Style 'ss:ID' => 'borderleft', 'ss:Name' => 'BorderLeft' do
     @xml.Font 'ss:FontName' => 'Verdana'
@@ -68,7 +64,7 @@
 end
   
   # DELAYS
-  @xml.Worksheet 'ss:Name' => 'Delays export' do
+  @xml.Worksheet 'ss:Name' => 'Milestones Delays Export' do
     @xml.Table do
 
       # Columns width
@@ -81,7 +77,7 @@ end
       @xml.Row 'ss:StyleID' => 'Default' do
         @xml.Cell 'ss:StyleID' => 'Default'
         @xml.Cell 'ss:StyleID' => 'Header3bold' do
-          @xml.Data "Delays", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Milestone Delays", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
 
@@ -90,43 +86,106 @@ end
 
       # Header 3
       @xml.Row do
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
           @xml.Data "DWS / PLM", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
           @xml.Data "Project Parent", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
           @xml.Data " Project Name", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Milestone", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Planned date", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Current date", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Delay", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Reason 1", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Reason 2", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Reason 3", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 's75' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Other", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
 
+      # Rows
+      for delay in @delays
+        @xml.Row do
+          @xml.Cell 'ss:StyleID' => 'borderleft' do
+            @xml.Data delay.get_dws, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell 'ss:StyleID' => 'Pink' do
+            @xml.Data delay.get_parent, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell 'ss:StyleID' => 'Pink' do
+            @xml.Data delay.project.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.milestone.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.planned_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.current_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell 'ss:StyleID' => 'Blue' do
+            @xml.Data delay.delay_days, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.get_reason_one, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.get_reason_two, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.get_reason_three, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data delay.reason_other, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell 'ss:StyleID' => 'borderleft' do
+            @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+        end #End row
+      end #End for
+
       # Last row
       @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
         @xml.Cell 'ss:StyleID' => 'bordertop' do
           @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
