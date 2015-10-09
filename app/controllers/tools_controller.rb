@@ -1278,7 +1278,7 @@ class ToolsController < ApplicationController
           @xml = Builder::XmlMarkup.new(:indent => 1)
 
           headers['Content-Type']         = "application/vnd.ms-excel"
-          headers['Content-Disposition']  = 'attachment; filename="Milestone Delays.xls"'
+          headers['Content-Disposition']  = 'attachment; filename="Delay Classification.xls"'
           headers['Cache-Control']        = ''
           render "delays.erb", :layout=>false
         rescue Exception => e

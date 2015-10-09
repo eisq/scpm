@@ -64,11 +64,11 @@
 end
   
   # DELAYS
-  @xml.Worksheet 'ss:Name' => 'Milestones Delays Export' do
+  @xml.Worksheet 'ss:Name' => 'Delay Classification' do
     @xml.Table do
 
       # Columns width
-      @xml.Column 0, {'ss:Width' => 50}
+      @xml.Column 0, {'ss:Width' => 60}
       @xml.Column 1, {'ss:Width' => 150}
       @xml.Column 2, {'ss:Width' => 280}
       @xml.Column 3, {'ss:Width' => 60}
@@ -84,7 +84,7 @@ end
       @xml.Row 'ss:StyleID' => 'Default' do
         @xml.Cell 'ss:StyleID' => 'Default'
         @xml.Cell 'ss:StyleID' => 'Header3bold' do
-          @xml.Data "Milestone Delays", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Delay Classification", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
       end
 
