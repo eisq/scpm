@@ -2112,9 +2112,9 @@ class ToolsController < ApplicationController
   def export_delays_excel
     @delays = Array.new
     MilestoneDelayRecord.find(:all).each do |delay|
-      #if delay.project.is_running
+      if delay.project.id != 2480
         @delays << delay
-      #end
+      end
     end
 
     if @delays.count > 0
