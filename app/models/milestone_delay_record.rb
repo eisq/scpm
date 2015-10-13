@@ -15,6 +15,14 @@ class MilestoneDelayRecord < ActiveRecord::Base
 		return self.project.project_name
 	end
 
+	def get_milestone_name
+		name = ""
+		if self.milestone
+			name = self.milestone.name
+		end
+		return name
+	end
+
 	def get_reason_one
 		reason = ""
 		if self.reason_first_id

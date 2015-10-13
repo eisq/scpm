@@ -141,7 +141,7 @@ end
             @xml.Data delay.project.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data delay.milestone.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data delay.get_milestone_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data delay.planned_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
