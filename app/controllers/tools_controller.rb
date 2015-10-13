@@ -1168,6 +1168,850 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def import_milestone_delays
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2097
+    delay.updated_by = 92
+    delay.milestone_id = 32664
+    delay.planned_date = "2015-05-11"
+    delay.current_date = "2015-05-19"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 10
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2476
+    delay.updated_by = 42
+    delay.milestone_id = 38351
+    delay.planned_date = "2015-04-30"
+    delay.current_date = "2015-05-18"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 13
+    delay.reason_third_id = 22
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2402
+    delay.updated_by = 42
+    delay.milestone_id = 38608
+    delay.planned_date = "2015-06-10"
+    delay.current_date = "2015-07-10"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 28
+    delay.reason_other = "Subcontractor for develompent has to be found"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2332
+    delay.updated_by = 54
+    delay.milestone_id = 36953
+    delay.planned_date = "2015-05-19"
+    delay.current_date = "2015-05-29"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "RU7 M5 date dependancies"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1324
+    delay.updated_by = 42
+    delay.milestone_id = 21867
+    delay.planned_date = "2015-02-26"
+    delay.current_date = "2015-04-30"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 31
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1856
+    delay.updated_by = 42
+    delay.milestone_id = 40577
+    delay.planned_date = "2015-04-30"
+    delay.current_date = "2015-06-25"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 13
+    delay.reason_third_id = 19
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2324
+    delay.updated_by = 42
+    delay.milestone_id = 36841
+    delay.planned_date = "2015-03-15"
+    delay.current_date = "2015-06-15"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 30
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2446
+    delay.updated_by = 91
+    delay.milestone_id = 39084
+    delay.planned_date = "2015-05-22"
+    delay.current_date = "2015-05-29"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 10
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1998
+    delay.updated_by = 84
+    delay.milestone_id = 31596
+    delay.planned_date = "2015-06-05"
+    delay.current_date = "2015-06-30"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 11
+    delay.reason_third_id = 25
+    delay.reason_other = "Same subcontractor is working on a related tool: Trackdev, which is the priority. If Trackdev is not ready on time, migration tool cannot be tested/used. To give more time for Trackdev development, Migration M9 has been postponed. Nevertheless, extra time was planned bt project team and there is no impact on global time and cost."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2363
+    delay.updated_by = 84
+    delay.milestone_id = 37663
+    delay.planned_date = "2015-07-22"
+    delay.current_date = "2015-09-30"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 31
+    delay.reason_other = "BPL has an accident. BRD redaction and validation are delayed. M5 is postponed and will be merged with M7 (no global change on time and cost for now)."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2323
+    delay.updated_by = 91
+    delay.milestone_id = 37435
+    delay.planned_date = "2015-04-01"
+    delay.current_date = "2015-05-12"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 7
+    delay.reason_other = "The customer feedback assessment and AS IS workshops takes more time."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2229
+    delay.updated_by = 73
+    delay.milestone_id = 35737
+    delay.planned_date = "2015-05-19"
+    delay.current_date = "2015-06-07"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "RU7 M5 date dependancies"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2008
+    delay.updated_by = 88
+    delay.milestone_id = 36844
+    delay.planned_date = "2015-03-20"
+    delay.current_date = "2015-06-08"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "Techical reasons: Kerberos issues, MG5 of A330_neo"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2022
+    delay.updated_by = 88
+    delay.milestone_id = 31975
+    delay.planned_date = "2015-05-04"
+    delay.current_date = "2015-06-10"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "Other project dependency. Module from ROOTS project not deployed under GISEH platform: so it can not be integrated in Fan Noise V4"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2453
+    delay.updated_by = 88
+    delay.milestone_id = 39271
+    delay.planned_date = "2015-05-28"
+    delay.current_date = "2015-06-11"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 9
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2258
+    delay.updated_by = 88
+    delay.milestone_id = 37046
+    delay.planned_date = "2015-05-28"
+    delay.current_date = "2015-06-11"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 9
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2256
+    delay.updated_by = 88
+    delay.milestone_id = 37028
+    delay.planned_date = "2015-05-28"
+    delay.current_date = "2015-06-11"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 9 
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2462
+    delay.updated_by = 92
+    delay.milestone_id = 40385
+    delay.planned_date = "2015-04-15"
+    delay.current_date = "2015-05-29"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "PM did'nt prepare the M3 because the GO for this version was already done by parent project. Finally, after several solutions and way to do the project studied, the final scope need to be presented to the steering (only by mail)."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2460
+    delay.updated_by = 88
+    delay.milestone_id = 39465
+    delay.planned_date = "2015-05-05"
+    delay.current_date = "2015-05-28"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 9
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2145
+    delay.updated_by = 92
+    delay.milestone_id = 40170
+    delay.planned_date = "2015-04-30"
+    delay.current_date = "2015-05-07"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "- Initial planning was done by the first PM and was nos applicable all along the project
+    - Many many infra problems occured and was not predictable
+    - PM planning are precise concerning the tasks to do but he do not plan the risk provision so the planning was many time postponned week by week"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2145
+    delay.updated_by = 92
+    delay.milestone_id = 34316
+    delay.planned_date = "2015-05-07"
+    delay.current_date = "2015-09-14"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "- Initial planning was done by the first PM and was nos applicable all along the project
+    - Many many infra problems occured and was not predictable
+    - PM planning are precise concerning the tasks to do but he do not plan the risk provision so the planning was many time postponned week by week"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2145
+    delay.updated_by = 92
+    delay.milestone_id = 34318
+    delay.planned_date = "2015-05-15"
+    delay.current_date = "2015-10-02"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "- Initial planning was done by the first PM and was nos applicable all along the project
+    - Many many infra problems occured and was not predictable
+    - PM planning are precise concerning the tasks to do but he do not plan the risk provision so the planning was many time postponned week by week"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2118
+    delay.updated_by = 92
+    delay.milestone_id = 33093
+    delay.planned_date = "2015-03-27"
+    delay.current_date = "2015-10-02"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "- Initial planning was done by the first PM and was nos applicable all along the project
+    - Many many infra problems occured and was not predictable
+    - PM planning are precise concerning the tasks to do but he do not plan the risk provision so the planning was many time postponned week by week"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2357
+    delay.updated_by = 91
+    delay.milestone_id = 37565
+    delay.planned_date = "2015-09-25"
+    delay.current_date = "2015-11-27"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 28
+    delay.reason_other = "A330neo platform availability"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2035
+    delay.updated_by = 92
+    delay.milestone_id = 31738
+    delay.planned_date = "2015-10-25"
+    delay.current_date = "2015-07-06"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 7
+    delay.reason_other = "Milestone many times postponed for many reasons since end 2014. The final delay is due to a release of the ressources of the project. The M13 will be done with the M14."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2035
+    delay.updated_by = 92
+    delay.milestone_id = 31739
+    delay.planned_date = "2015-01-31"
+    delay.current_date = "2015-07-06"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 7
+    delay.reason_other = "Milestone many times postponed for many reasons since end 2014. The final delay is due to a release of the ressources of the project."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2422
+    delay.updated_by = 42
+    delay.milestone_id = 38638
+    delay.planned_date = "2015-05-21"
+    delay.current_date = "2015-05-28"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 29
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2029
+    delay.updated_by = 88
+    delay.milestone_id = 31905
+    delay.planned_date = "2015-05-22"
+    delay.current_date = "2015-06-22"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 13
+    delay.reason_third_id = 17
+    delay.reason_other = "Loops on Architecture Dossier"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1422
+    delay.updated_by = 84
+    delay.milestone_id = 31914
+    delay.planned_date = "2015-05-05"
+    delay.current_date = "2015-05-27"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "EIS realised the 05/05/2015 but official mail sent the 27/05/2015"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2118
+    delay.updated_by = 92
+    delay.milestone_id = 33091
+    delay.planned_date = "2015-06-12"
+    delay.current_date = "2015-09-14"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "- Initial planning was done by the first PM and was nos applicable all along the project - Many many infra problems occured and was not predictable - PM planning are precise concerning the tasks to do but he do not plan the risk provision so the planning was many time postponned week by week"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2294
+    delay.updated_by = 55
+    delay.milestone_id = 39258
+    delay.planned_date = "2015-04-27"
+    delay.current_date = "2015-06-26"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 13
+    delay.reason_third_id = 17
+    delay.reason_other = "INT Platform not available from India to deploy after each end of Sprint."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2176
+    delay.updated_by = 88
+    delay.milestone_id = 34714
+    delay.planned_date = "2015-04-25"
+    delay.current_date = "2015-07-20"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 13
+    delay.reason_third_id = 17
+    delay.reason_other = "Deployment on GISEH platform has added lead time"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2412
+    delay.updated_by = 92
+    delay.milestone_id = 38693
+    delay.planned_date = "2015-06-21"
+    delay.current_date = "2015-07-31"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 15
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2412
+    delay.updated_by = 92
+    delay.milestone_id = 38695
+    delay.planned_date = "2015-09-01"
+    delay.current_date = "2015-09-30"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 15
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2199
+    delay.updated_by = 91
+    delay.milestone_id = 35190
+    delay.planned_date = "2015-06-15"
+    delay.current_date = "2015-06-29"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 28
+    delay.reason_other = "Complete steering is not available for the 1st slot."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2362
+    delay.updated_by = 91
+    delay.milestone_id = 37644
+    delay.planned_date = "2015-06-18"
+    delay.current_date = "2015-06-30"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "Other solution identified during BRD finalization (M5 postponned to ananlyse and choose the best technical solution and involved an other supplier if needed)."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1981
+    delay.updated_by = 65
+    delay.milestone_id = 32446
+    delay.planned_date = "2015-05-13"
+    delay.current_date = "2015-06-23"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 12
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1672
+    delay.updated_by = 65
+    delay.milestone_id = 27314
+    delay.planned_date = "2015-03-05"
+    delay.current_date = "2015-03-31"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 28
+    delay.reason_other = "The shift is necessary in order to take benefit of a face to face discussion with the development team of this specific software feature from San Diego the 25th of March."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2325
+    delay.updated_by = 65
+    delay.milestone_id = 36869
+    delay.planned_date = "2015-02-12"
+    delay.current_date = "2015-02-18"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 29
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2360
+    delay.updated_by = 65
+    delay.milestone_id = 39895
+    delay.planned_date = "2015-06-03"
+    delay.current_date = "2015-07-30"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 9
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2020
+    delay.updated_by = 88
+    delay.milestone_id = 31878
+    delay.planned_date = "2015-03-02"
+    delay.current_date = "2015-07-06"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "1st delay was due to alignment of schedule betwwen the 4 Work packages. 2nd delay is due to development activities that have taken more time than foreseen. For both delays, there is noimpact on EIS date"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2035
+    delay.updated_by = 65
+    delay.milestone_id = 31739
+    delay.planned_date = "2015-07-06"
+    delay.current_date = "2015-12-18"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "Two major reason, the lack of users feedbacks (6weeks between EIS and M14) and the redaction of users manuals that are late and will be done in July"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2498
+    delay.updated_by = 84
+    delay.milestone_id = 40374
+    delay.planned_date = "24-06-2015"
+    delay.current_date = "2015-07-17"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 28
+    delay.reason_other = "It take more time than expected to have a validated ARD. Indeed, even if project was plan on ICT side, architects are really busy. Moreover, key people are busy and it is difficult to obtain key answers/validations."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2349
+    delay.updated_by = 88
+    delay.milestone_id = 38816
+    delay.planned_date = "2015-06-16"
+    delay.current_date = "2015-06-30"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 11
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1884
+    delay.updated_by = 92
+    delay.milestone_id = 31177
+    delay.planned_date = "2014-10-30"
+    delay.current_date = "2015-11-16"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "Postponed many times since the original date (NOGO M3 2014-02-06, NOGO M5/M7 2014-11-27, technical issues and many project management issues."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2361
+    delay.updated_by = 65
+    delay.milestone_id = 40006
+    delay.planned_date = "2015-04-20"
+    delay.current_date = "2015-05-19"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 10
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2426
+    delay.updated_by = 65
+    delay.milestone_id = 38833
+    delay.planned_date = "2015-06-15"
+    delay.current_date = "2015-06-19"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 9
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2060
+    delay.updated_by = 42
+    delay.milestone_id = 32099
+    delay.planned_date = "2015-03-15"
+    delay.current_date = "2015-07-30"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 13
+    delay.reason_third_id = 19
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2192
+    delay.updated_by = 85
+    delay.milestone_id = 35081
+    delay.planned_date = "2015-07-21"
+    delay.current_date = "2015-09-01"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 12
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2462
+    delay.updated_by = 92
+    delay.milestone_id = 39535
+    delay.planned_date = "2015-06-29"
+    delay.current_date = "2015-07-17"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "Ressources problems with the architect for ARD writting, lack of planning management (M3 NOGO), IN issue (infrastructure descibed in the ARD is no longer available), the project inherited issues not studied from previous versions and finally previous version of the ARD was completely obsolete, according to the Architect."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2461
+    delay.updated_by = 73
+    delay.milestone_id = 39490
+    delay.planned_date = "2015-09-20"
+    delay.current_date = "2016-01-20"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "After a first NOGO on G3/G4, project completely changes the solution of the project. It's now more complete (90% of Use Case, instead of 10% of UC) but costs and delay have been impacted."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2461
+    delay.updated_by = 73
+    delay.milestone_id = 39491
+    delay.planned_date = "2015-12-15"
+    delay.current_date = "2016-03-01"
+    delay.reason_first_id = 9
+    delay.reason_second_id = nil
+    delay.reason_third_id = nil
+    delay.reason_other = "After a first NOGO on G3/G4, project completely changes the solution of the project. It's now more complete (90% of Use Case, instead of 10% of UC) but costs and delay have been impacted."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2323
+    delay.updated_by = 91
+    delay.milestone_id = 37437
+    delay.planned_date = "2015-08-07"
+    delay.current_date = "2015-09-23"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 7
+    delay.reason_other = "Workshops organization complicated to schedule in the initial short period."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2368
+    delay.updated_by = 91
+    delay.milestone_id = 37720
+    delay.planned_date = "2015-12-17"
+    delay.current_date = "2016-01-30"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 7
+    delay.reason_third_id = 8
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2118
+    delay.updated_by = 92
+    delay.milestone_id = 33094
+    delay.planned_date = "2015-08-07"
+    delay.current_date = "2015-10-26"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "- Initial planning was done by the first PM and was nos applicable all along the project - Many many infra problems occured and was not predictable - PM planning are precise concerning the tasks to do but he do not plan the risk provision so the planning was many time postponned week by week"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2145
+    delay.updated_by = 92
+    delay.milestone_id = 34319
+    delay.planned_date = "2015-07-28"
+    delay.current_date = "2015-10-26"
+    delay.reason_first_id = 11
+    delay.reason_second_id = 8
+    delay.reason_third_id = 13
+    delay.reason_other = "- Initial planning was done by the first PM and was nos applicable all along the project - Many many infra problems occured and was not predictable - PM planning are precise concerning the tasks to do but he do not plan the risk provision so the planning was many time postponned week by week"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2157
+    delay.updated_by = 47
+    delay.milestone_id = 34593
+    delay.planned_date = "2015-08-28"
+    delay.current_date = "2015-09-28"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 31
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2141
+    delay.updated_by = 88
+    delay.milestone_id = 34152
+    delay.planned_date = "2015-03-26"
+    delay.current_date = "2015-09-30"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 12
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1768
+    delay.updated_by = 91
+    delay.milestone_id = 29100
+    delay.planned_date = "2015-12-15"
+    delay.current_date = "2016-01-05"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 28
+    delay.reason_other = "PM in holidays during the initial milestone date and bank holidays period."
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2128
+    delay.updated_by = 88
+    delay.milestone_id = 33431
+    delay.planned_date = "2015-07-01"
+    delay.current_date = "2015-10-01"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 11
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1954
+    delay.updated_by = 88
+    delay.milestone_id = 31118
+    delay.planned_date = "2015-06-15"
+    delay.current_date = "2015-07-17"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 11
+    delay.reason_third_id = 27
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2453
+    delay.updated_by = 88
+    delay.milestone_id = 39274
+    delay.planned_date = "2015-09-04"
+    delay.current_date = "2015-09-18"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 11
+    delay.reason_third_id = 25
+    delay.reason_other = "Delay on development activity (may be due to bas understanding of need)"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 1938
+    delay.updated_by = 72
+    delay.milestone_id = 30657
+    delay.planned_date = "2015-08-17"
+    delay.current_date = "2015-09-15"
+    delay.reason_first_id = 14
+    delay.reason_second_id = 17
+    delay.reason_third_id = 28
+    delay.reason_other = "Business and IS teams in holidays"
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    delay = MilestoneDelayRecord.new
+    delay.project_id = 2319
+    delay.updated_by = 72
+    delay.milestone_id = 37469
+    delay.planned_date = "2015-08-28"
+    delay.current_date = "2015-09-28"
+    delay.reason_first_id = 12
+    delay.reason_second_id = 12
+    delay.reason_third_id = nil
+    delay.reason_other = ""
+    delay.delay_days = delay.get_delay_days
+    delay.save
+
+    redirect_to '/tools/scripts'
+  end
+
   def milestone_delay_config
     @reason_one_selected = @reason_two_selected = nil
 

@@ -50,4 +50,15 @@ class MilestoneDelayRecord < ActiveRecord::Base
 
 		return reason
 	end
+
+	def get_delay_days
+		get_date_from_bdd_date(self.current_date) - get_date_from_bdd_date(self.planned_date)
+	end
+
+	def get_date_from_bdd_date(bdd_date)
+    date_split = bdd_date.to_s.split("-")
+    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+
+    return date
+  end
 end
