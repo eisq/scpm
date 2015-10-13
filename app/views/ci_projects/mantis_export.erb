@@ -2,7 +2,7 @@
 
 <h3>All CI except delivered/closed/rejected</h3>
 <p> <% if @export_mantis_count > 0 %>
-	<%= @export_mantis_count %> new projects to be implemented -> <%= link_to('implement', {:action=>'mantis_implemented'}, {:class=>'btnlnk'}) %>
+	<%= @export_mantis_count %> new projects to be implemented -> <%= link_to('implement', {:action=>'mantis_implemented'}, {:class=>'btnlnk'}) %> <span style="color:red;">Click here after having imported from BAM to Mantis</span>
 <% end %></p>
 <textarea rows="18" cols="150" readonly>
 	<%= @export_mantis_formula %>
