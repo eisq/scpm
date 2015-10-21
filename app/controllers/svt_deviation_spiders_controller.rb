@@ -4,6 +4,10 @@ class SvtDeviationSpidersController < ApplicationController
 
 	ExportCustomization = Struct.new(:activity, :name, :status, :justification)
 	Consolidation = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification)
+	Consolidation_export = Struct.new(:conso_id, :spider_id, :deliverable, :activity, :score, :justification, :status)
+	Devia_status_saved = Struct.new(:deliverable_id, :status_number)
+	Customization_deliverable_status = Struct.new(:deliverable_name, :status_number)
+	Maturity = Struct.new(:name, :percent)
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
 	# 
@@ -49,10 +53,35 @@ class SvtDeviationSpidersController < ApplicationController
 				    end
 		    	end
 		    	generate_spider_history(@milestone)
+
+		    	@warning_psu_imported = compare_last_import_date_with_spider_creation_date(@last_spider)
 	    	end
 	    else
 	    	redirect_to :controller=>:projects, :action=>:show, :id=>@project.id
 	    end
+	end
+
+	def compare_last_import_date_with_spider_creation_date(spider)
+		var = nil
+		if spider
+			import_date = get_last_import_date(spider.milestone.project_id)
+			spider_creation_date = spider.created_at
+			if import_date and spider_creation_date < import_date
+				var = "This spider has been created before last PSU Import, please delete it and create a new one if necessary."
+			end
+		end
+
+		return var
+	end
+
+	def get_last_import_date(project_id)
+		var = nil
+		var = SvtDeviationSpiderReference.find(:first, :conditions=>["project_id = ?", project_id], :order=>"version_number desc")
+		if var
+			var = var.created_at
+		end
+
+		return var
 	end
 
 	def index_history
@@ -81,13 +110,34 @@ class SvtDeviationSpidersController < ApplicationController
 
 	def index_export_all
 		#@projects = params[:projects]
-		@projects = Project.find(:all, :conditions=>["supervisor_id = ?", 21])
+		@projects = Project.find(:all, :conditions=>["supervisor_id = ? and name IS NOT NULL", 21])
+	end
+
+	def update_spider_file_name_form
+	    spider_id  = params[:id]
+	    @spider    = SvtDeviationSpider.find(spider_id)
+  	end
+
+  	def update_spider_file_name
+	    spider_id          = params[:id]
+	    if params[:svt_deviation_spider][:file_link]
+	      spider           = SvtDeviationSpider.find(spider_id)
+	      spider.file_link = params[:svt_deviation_spider][:file_link]
+	      spider.save
+	    end
+	    redirect_to :controller=>:tools ,:action=>:show_counter_history
 	end
 
 	# --------
 	# EXPORT
 	# --------
 	def export_customization_excel
+		@custo_array = Array.new
+		for i in 0..3 do
+			@custo_array[i] = 0
+		end
+		customization_status_array = Array.new
+
 		project_id = params[:project_id]
 		@milestone_name = params[:milestone_name]
 		@project = Project.find(:first, :conditions => ["id = ?", project_id])
@@ -105,6 +155,7 @@ class SvtDeviationSpidersController < ApplicationController
 					exportCustomization.status = get_customization_deliverable_status(devia_settings.answer_1, devia_settings.answer_2, devia_settings.answer_3)
 					exportCustomization.justification = devia_settings.justification
 					@exportCustomizations << exportCustomization
+					@custo_array, customization_status_array = get_customization_deliverable_status_array(devia_settings.deliverable_name, exportCustomization.status, @custo_array, customization_status_array)
 				end
 				lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
 				filename = @project.name+"_"+lifecycle.name+"_PSU_CustomizationDeviationMeasurement_Spiders_v1.0.xls"
@@ -145,11 +196,6 @@ class SvtDeviationSpidersController < ApplicationController
 	    end
 	end
 
-	def export_customization_pie(chart)
-		chart.getImageURI()
-		render(:nothing=>true)
-	end
-
 	def get_customization_deliverable_status(answer_1, answer_2, answer_3)
 		status = ""
 		case answer_1
@@ -178,6 +224,48 @@ class SvtDeviationSpidersController < ApplicationController
 		return status
 	end
 
+	def get_customization_deliverable_status_array(deliverable_name, status, custo_array, customization_status_array)
+		#:deliverable_name, :status_number
+		customization_deliverable_status = Customization_deliverable_status.new
+		status_number = nil
+		already_added = false
+
+		case status
+		when "Project plans to use referential template to produce the deliverable"
+			status_number = 0
+		when "Deliverable not applicable to the project"
+			status_number = 1
+		when "Project plans to use a different template from the referential one to produce the deliverable"
+			status_number = 2
+		when "Project doesn't plan to produce deliverable without justification"
+			status_number = 3
+		end
+
+		if status_number
+			customization_deliverable_status.deliverable_name = deliverable_name
+			customization_deliverable_status.status_number = status_number
+
+			customization_status_array.each do |customization_status|
+				if customization_status.deliverable_name == deliverable_name
+					if status_number < customization_status.status_number
+						customization_status_array.delete(customization_status)
+						customization_status_array.push(customization_deliverable_status)
+						custo_array[customization_status.status_number] = custo_array[customization_status.status_number] - 1
+						custo_array[status_number] = custo_array[status_number] + 1
+					end
+					already_added = true
+				end
+			end
+
+			if !already_added
+				custo_array[status_number] = custo_array[status_number] + 1
+				customization_status_array.push(customization_deliverable_status)
+			end
+		end
+		
+		return custo_array, customization_status_array
+	end
+
 	def consolidate_interface
 	    deviation_spider_id = params[:deviation_spider_id]
 	    if deviation_spider_id
@@ -196,72 +284,326 @@ class SvtDeviationSpidersController < ApplicationController
 		    	redirect_to('/svt_deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
 			end
 
-		    @editable = params[:editable]
-		    if @editable == nil
-		    	@editable = false
-		    end
-
-	    	@score_list = [0,1,2,3]
-	    	@all_meta_activities = SvtDeviationMetaActivity.find(:all, :conditions=>["is_active = ?", true])
-	    	@all_activities 	= SvtDeviationActivity.find(:all, :conditions=>["is_active = ?", true])
-	    	parameters = @deviation_spider.get_parameters
-	    	@deliverables 		= Array.new
+	    	@achieved_list = ["", "Yes", "No"]
+	    	@deliverables = Array.new
 	    	@deviation_spider.svt_deviation_spider_deliverables.all(
 	    	    :joins =>["JOIN svt_deviation_deliverables ON svt_deviation_spider_deliverables.svt_deviation_deliverable_id = svt_deviation_deliverables.id"],
 	    	    :conditions => ["svt_deviation_deliverables.is_active = ?", true], 
 	    	    :order => ["svt_deviation_deliverables.name"]).each do |spider_deliverable|
-	    		@deliverables << spider_deliverable.svt_deviation_deliverable
+	    		maturity = SvtDeviationSpiderMaturity.new
+	    		maturity.svt_deviation_spider_id = @deviation_spider.id
+	    		maturity.svt_deviation_deliverable_id = spider_deliverable.id
+	    		maturity.planned = maturity.get_planned
+	    		maturity.achieved = ""
+	    		maturity.comment = ""
+	    		
+	    		@maturity_deliverables << maturity
 	    	end
 
-	    	@consolidations = Array.new
-	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable)
+			@maturity = @deviation_spider.get_deviation_maturity
+			#get all svt deviation spiders linked to this project
+			deviation_spiders = Array.new
+			deviation_spiders = get_svt_deviation_spiders(@deviation_spider)
+			@maturities, @maturities_name = get_maturities(deviation_spiders)
 
-	    	standard = @deviation_spider.get_devia_standard(@consolidations)
-	    	@devia_pie_chart = @deviation_spider.generate_devia_pie_chart(standard).to_url
 	    else
 	    	redirect_to :controller=>:projects, :action=>:index
 	    end
 	end
 
-	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable)
+	def get_svt_deviation_spiders(deviation_spider)
+		spiders = Array.new
+		SvtDeviationSpider.find(:all, :conditions=>["project_id = ?", deviation_spider.project_id], :order=>"id asc").each do |devia_spider|
+			spiders.each do |sp|
+				if sp.milestone_id == devia_spider.milestone_id
+					sp.delete
+				end
+			end
+			spiders << devia_spider
+		end
+
+		return spiders
+	end
+
+	def get_maturities(deviation_spiders)
+		maturities = Array.new
+		maturities_name = Array.new
+		mat = Maturity.new # Maturity = Struct.new(:name, :percent)
+		if deviation_spiders.count > 0
+			deviation_spiders.each do |ds|
+				if ds.milestone.done == 1
+					maturities << ds.get_deviation_maturity
+					maturities_name << ds.milestone.name
+				end
+			end
+		end
+
+		return maturities, maturities_name
+	end
+
+	def get_consolidations(deviation_spider, all_activities, deliverables, parameters, editable, export)
 		consolidations = Array.new
+		devia_status_saved_array = Array.new
+		@status_array = Array.new
+		for i in 0..9 do
+			@status_array[i] = 0
+		end
 
 		all_activities.each do |activity|
-	    		deliverables.each do |deliverable|
-	    			deviation_deliverable_added_by_hand = SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
-	    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
-	    			if (self.get_deliverable_activity_applicable(@deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
-						consolidation_saved = SvtDeviationSpiderConsolidationTemp.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
-						if !consolidation_saved and editable
-							#Consolidation in a temp table for manipulations before the real consolidation
-		    				consolidation_temp = SvtDeviationSpiderConsolidationTemp.new
-		    				consolidation_temp.svt_deviation_spider_id = deviation_spider.id
-		    				consolidation_temp.svt_deviation_deliverable_id = deliverable.id
-		    				consolidation_temp.svt_deviation_activity_id = activity.id
-		    				consolidation_temp.score = self.get_score(deviation_spider.id, deliverable, activity)
-		    				consolidation_temp.justification = self.get_justification(@deviation_spider.id, deliverable, activity, consolidation_temp.score)
+    		deliverables.each do |deliverable|
+    			deviation_deliverable_added_by_hand = SvtDeviationSpiderDeliverable.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and is_added_by_hand = ?", deviation_spider.id, deliverable.id, true])
+    			is_applicable_added_by_hand = existing_question_activity_deliverable(deliverable.id, activity.id, deviation_spider.milestone)
+    			if (self.get_deliverable_activity_applicable(deviation_spider.milestone.project_id, deliverable, activity, deviation_spider.milestone, parameters.psu_imported) or (deviation_deliverable_added_by_hand and is_applicable_added_by_hand))
+					consolidation_saved = SvtDeviationSpiderConsolidationTemp.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
+					if !consolidation_saved and editable
+						#Consolidation in a temp table for manipulations before the real consolidation
+	    				consolidation_temp = SvtDeviationSpiderConsolidationTemp.new
+	    				consolidation_temp.svt_deviation_spider_id = deviation_spider.id
+	    				consolidation_temp.svt_deviation_deliverable_id = deliverable.id
+	    				consolidation_temp.svt_deviation_activity_id = activity.id
+	    				consolidation_temp.score = self.get_score(deviation_spider.id, deliverable, activity)
+	    				consolidation_temp.justification = self.get_justification(deviation_spider.id, deliverable, activity, consolidation_temp.score)
 
-		    				consolidation_temp.save
-	    					consolidation_saved = consolidation_temp
-						elsif !consolidation_saved and !editable
-	    					#We consult the tab consolidation instead of the temporary one
-	    					consolidation_saved = SvtDeviationSpiderConsolidation.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
-	    				end
+	    				consolidation_temp.save
+    					consolidation_saved = consolidation_temp
+					elsif !consolidation_saved and !editable
+    					#We consult the tab consolidation instead of the temporary one
+    					consolidation_saved = SvtDeviationSpiderConsolidation.find(:first, :conditions => ["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", deviation_spider.id, deliverable.id, activity.id])
+    				end
 
+    				if export == false
 	    				consolidation = Consolidation.new
-	    				consolidation.conso_id = consolidation_saved.id
-	    				consolidation.spider_id = consolidation_saved.svt_deviation_spider_id
-	    				consolidation.deliverable = SvtDeviationDeliverable.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_deliverable_id])
-	    				consolidation.activity = SvtDeviationActivity.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_activity_id])
-	    				consolidation.score = consolidation_saved.score
-	    				consolidation.justification = consolidation_saved.justification
-	    				
-	    				consolidations << consolidation
+	    			elsif export == true
+	    				consolidation = Consolidation_export.new
+	    				consolidation.status = get_deviation_status(deviation_spider, deliverable, activity, consolidation_saved.score)
+	    				@status_array, devia_status_saved_array = get_deviation_status_total(deviation_spider, deliverable, consolidation_saved.score, @status_array, devia_status_saved_array)
 	    			end
-	    		end
-	    	end
-	    	consolidations = consolidations & consolidations
-	    	return consolidations
+    				consolidation.conso_id = consolidation_saved.id
+    				consolidation.spider_id = consolidation_saved.svt_deviation_spider_id
+    				consolidation.deliverable = SvtDeviationDeliverable.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_deliverable_id])
+    				consolidation.activity = SvtDeviationActivity.find(:first, :conditions => ["id = ?", consolidation_saved.svt_deviation_activity_id])
+    				consolidation.score = consolidation_saved.score
+    				consolidation.justification = consolidation_saved.justification
+    				
+    				consolidations << consolidation
+    			end
+    		end
+    	end
+    	@status_array[0] = @status_array[6] + @status_array[7] + @status_array[8] + @status_array[9]
+    	@status_array[5] = @status_array[1] + @status_array[2] + @status_array[3] + @status_array[4]
+    	consolidations = consolidations & consolidations
+    	return consolidations
+	end
+
+	def get_deviation_status(deviation_spider, deliverable, activity, score)
+		status = weight = weight_temp = nil
+		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
+		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
+			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
+				case score
+				when 0
+					weight_temp = 4
+				when 1
+					weight_temp = 5
+				when 2
+					weight_temp = 6
+				when 3
+					weight_temp = 7
+				end
+			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
+				case score
+				when 0
+					weight_temp = 0
+				when 1
+					weight_temp = 1
+				when 2
+					weight_temp = 2
+				when 3
+					weight_temp = 3
+				end
+			end
+
+			if weight
+				if weight_temp and (weight_temp > weight)
+					weight = weight_temp
+				end
+			else
+				weight = weight_temp
+			end
+		end
+
+		if !weight
+			case score
+			when 0
+				weight = 0
+			when 1
+				weight = 1
+			when 2
+				weight = 2
+			when 3
+				weight = 3
+			end
+		end
+
+		case weight
+		when 0
+			status = "Deliverable not expected \n -- \n Project did not produce the deliverable and it was not justified"
+		when 1
+			status = "Deliverable not expected \n -- \n Project did not produce the deliverable and it was justified"
+		when 2
+			status = "Deliverable not expected \n -- \n Project did produce the deliverable using a different template from the referential one"
+		when 3
+			status = "Deliverable not expected \n -- \n Project did produce the deliverable using the referential template"
+		when 4
+			status = "Deliverable expected \n -- \n Project did not produce Deliverable without appropriate justification"
+		when 5
+			status = "Deliverable expected \n -- \n Project did not produce Deliverable with appropriate justification"
+		when 6
+			status = "Deliverable expected \n -- \n Project produced Deliverable using a different template from the referential one"
+		when 7
+			status = "Deliverable expected \n -- \n Project produced Deliverable with the expected template"
+		end
+
+		return status
+	end
+
+	def get_deviation_status_total(deviation_spider, deliverable, score, status_array, devia_status_saved_array)
+		setting_found = 0
+		#:deliverable_id, :status_number
+		devia_status_saved = Devia_status_saved.new
+
+		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", deviation_spider.milestone.project_id], :order => "version_number asc")
+		SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ?", last_reference, deliverable.name]).each do |setting|
+			not_to_add = false
+			status_number = nil
+			if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
+				case score
+				when 0
+					status_number = 6
+				when 1
+					status_number = 7
+				when 2
+					status_number = 8
+				when 3
+					status_number = 9
+				end
+			elsif setting.answer_1 != "Yes" and setting.answer_3 != "Another template is used"
+				case score
+				when 0
+					status_number = 1
+				when 1
+					status_number = 2
+				when 2
+					status_number = 3
+				when 3
+					status_number = 4
+				end
+			end
+
+			if status_number
+				setting_found = 1
+
+				devia_status_saved_array.each do |devia_status|
+					if devia_status.deliverable_id == deliverable.id
+						if devia_status.status_number < status_number
+							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
+							status_array[status_number] = status_array[status_number] + 1
+							devia_status.status_number = status_number
+						end
+						not_to_add = true
+					end
+				end
+
+				if !not_to_add
+					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved.deliverable_id = deliverable.id
+					devia_status_saved.status_number = status_number
+					devia_status_saved_array.push(devia_status_saved)
+				end
+			end
+		end
+
+		if setting_found == 0
+			not_to_add = false
+			case score
+			when 0
+				status_number = 1
+			when 1
+				status_number = 2
+			when 2
+				status_number = 3
+			when 3
+				status_number = 4
+			end
+			
+			if status_number
+				setting_found = 1
+
+				devia_status_saved_array.each do |devia_status|
+					if devia_status.deliverable_id == deliverable.id
+						if devia_status.status_number < status_number
+							status_array[devia_status.status_number] = status_array[devia_status.status_number] - 1
+							status_array[status_number] = status_array[status_number] + 1
+							devia_status.status_number = status_number
+						end
+						not_to_add = true
+					end
+				end
+
+				if !not_to_add
+					status_array[status_number] = status_array[status_number] + 1
+					devia_status_saved.deliverable_id = deliverable.id
+					devia_status_saved.status_number = status_number
+					devia_status_saved_array.push(devia_status_saved)
+				end
+			end
+		end
+
+		return status_array, devia_status_saved_array
+	end
+
+	def export_deviation_excel
+		project_id = params[:project_id]
+		deviation_spider_id = params[:deviation_spider_id]
+		@milestone_name = params[:milestone_name]
+
+		all_activities 	= SvtDeviationActivity.find(:all, :conditions=>["is_active = ?", true])
+		deviation_spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
+    	parameters = deviation_spider.get_parameters
+    	deliverables 		= Array.new
+    	deviation_spider.svt_deviation_spider_deliverables.all(
+    	    :joins =>["JOIN svt_deviation_deliverables ON svt_deviation_spider_deliverables.svt_deviation_deliverable_id = svt_deviation_deliverables.id"],
+    	    :conditions => ["svt_deviation_deliverables.is_active = ?", true], 
+    	    :order => ["svt_deviation_deliverables.name"]).each do |spider_deliverable|
+    		deliverables << spider_deliverable.svt_deviation_deliverable
+    	end
+
+		@project = Project.find(:first, :conditions => ["id = ?", project_id])
+		if @project
+			begin
+				@xml = Builder::XmlMarkup.new(:indent => 1)
+
+				@lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
+				filename = @project.name+"_"+@lifecycle.name+"_DeviationMeasurement_Spiders_v1.0.xls"
+
+				@first_milestone_name = ""
+				if @lifecycle.id == 4 or @lifecycle.id == 5 or @lifecycle.id == 6 or @lifecycle.id == 9
+					@first_milestone_name = "G2"
+				else
+					@first_milestone_name = "M3"
+				end
+
+				@consolidations = Consolidation_export.new
+				@consolidations = get_consolidations(deviation_spider, all_activities, deliverables, parameters, true, true)
+
+				headers['Content-Type']         = "application/vnd.ms-excel"
+		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
+		        headers['Cache-Control']        = ''
+		        render "devia.erb", :layout=>false
+			rescue Exception => e
+	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+	        end
+		end
 	end
 
 	def get_deliverable_activity_applicable(project_id, deliverable, activity, milestone, psu_imported=true)
@@ -269,7 +611,7 @@ class SvtDeviationSpidersController < ApplicationController
 		if psu_imported
 			last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
 			SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name]).each do |setting|
-				if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")))
+				if (setting and (setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"))
 					applicable = self.existing_question_activity_deliverable(deliverable.id, activity.id, milestone)
 				end
 			end
@@ -285,14 +627,22 @@ class SvtDeviationSpidersController < ApplicationController
 		spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
 		if last_reference
-			setting = SvtDeviationSpiderSetting.find(:first, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+			setting = SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 
 			well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
 
-			if setting and setting.answer_1 == "Yes" and well_used
+			if setting and setting.count == 1 and setting[0].answer_1 == "Yes" and well_used
 				score = 3
-			elsif setting and setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used" and well_used
+			elsif setting and setting.count == 1 and setting[0].answer_3 == "Another template is used" and well_used
 				score = 2
+			elsif setting and setting.count > 1
+				setting.each do |sett|
+					if sett.answer_1 == "Yes" and well_used
+						score = 3
+					elsif sett.answer_3 == "Another template is used" and well_used
+						score = 2
+					end
+				end
 			end
 		end
 
@@ -304,31 +654,23 @@ class SvtDeviationSpidersController < ApplicationController
 		
 		spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
 
-		if score == 2
-			project_id = spider.milestone.project_id
-			Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
-				spiders = SvtDeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
-					consolidation = SvtDeviationSpiderConsolidation.find(:first, :conditions=>["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", spider.id, deliverable.id, activity.id])
-					if consolidation
-						justification = consolidation.justification
-						break
-					end
-				end
-				if justification
-					break
-				end
+		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
+		if last_reference
+			setting = SvtDeviationSpiderSetting.find(:first, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
+
+			well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
+
+			if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
+				justification = setting.justification
 			end
 		end
 
-		if !justification
-			last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", spider.milestone.project_id], :order => "version_number asc")
-			if last_reference
-				setting = SvtDeviationSpiderSetting.find(:first, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
-
-				well_used = get_deliverable_is_well_used(deviation_spider_id, deliverable, activity)
-
-				if (setting and (setting.answer_1 == "Yes" or (setting.answer_1 == "No" and setting.answer_2 == "Yes" and setting.answer_3 == "Another template is used")) and well_used)
-					justification = setting.justification
+		project_id = spider.milestone.project_id
+		Milestone.find(:all, :conditions=>["project_id = ?", project_id], :order=>"id desc").each do |milestone|
+			spiders = SvtDeviationSpider.find(:all, :conditions=>["milestone_id = ?", milestone.id], :order=>"id desc").each do |spider|
+				consolidation = SvtDeviationSpiderConsolidation.find(:first, :conditions=>["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ? and svt_deviation_activity_id = ?", spider.id, deliverable.id, activity.id], :order=>"id desc")
+				if consolidation and consolidation.justification and consolidation.justification != ""
+					justification = consolidation.justification
 				end
 			end
 		end
@@ -555,6 +897,7 @@ class SvtDeviationSpidersController < ApplicationController
 		if @milestone
 			@deviation_spider = SvtDeviationSpider.new
 			@deviation_spider.milestone_id = milestone_id
+			@deviation_spider.project_id = @milestone.project_id
 			@deviation_spider.save
 			@deviation_spider.init_spider_data
 			redirect_to :action =>:index, :milestone_id => milestone_id
@@ -727,7 +1070,7 @@ class SvtDeviationSpidersController < ApplicationController
 			end
 		end
 
-		if spider_deliverable.is_added_by_hand
+		if spider_deliverable and spider_deliverable.is_added_by_hand
 			to_add = true
 		end
 
