@@ -284,27 +284,23 @@ class SvtDeviationSpidersController < ApplicationController
 		    	redirect_to('/svt_deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
 			end
 
-		    @editable = params[:editable]
-		    if @editable == nil
-		    	@editable = false
-		    end
-
-	    	@score_list = [0,1,2,3]
-	    	@all_meta_activities = SvtDeviationMetaActivity.find(:all, :conditions=>["is_active = ?", true])
-	    	@all_activities 	= SvtDeviationActivity.find(:all, :conditions=>["is_active = ?", true])
-	    	parameters = @deviation_spider.get_parameters
-	    	@deliverables 		= Array.new
+	    	@achieved_list = ["", "Yes", "No"]
+	    	@deliverables = Array.new
 	    	@deviation_spider.svt_deviation_spider_deliverables.all(
 	    	    :joins =>["JOIN svt_deviation_deliverables ON svt_deviation_spider_deliverables.svt_deviation_deliverable_id = svt_deviation_deliverables.id"],
 	    	    :conditions => ["svt_deviation_deliverables.is_active = ?", true], 
 	    	    :order => ["svt_deviation_deliverables.name"]).each do |spider_deliverable|
-	    		@deliverables << spider_deliverable.svt_deviation_deliverable
+	    		maturity = SvtDeviationSpiderMaturity.new
+	    		maturity.svt_deviation_spider_id = @deviation_spider.id
+	    		maturity.svt_deviation_deliverable_id = spider_deliverable.id
+	    		maturity.planned = maturity.get_planned
+	    		maturity.achieved = ""
+	    		maturity.comment = ""
+	    		
+	    		@maturity_deliverables << maturity
 	    	end
-
-	    	@consolidations = get_consolidations(@deviation_spider, @all_activities, @deliverables, parameters, @editable, false)
-
+	    	
 			@maturity = @deviation_spider.get_deviation_maturity
-
 			#get all svt deviation spiders linked to this project
 			deviation_spiders = Array.new
 			deviation_spiders = get_svt_deviation_spiders(@deviation_spider)
