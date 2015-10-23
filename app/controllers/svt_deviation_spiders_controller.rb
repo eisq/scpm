@@ -284,7 +284,7 @@ class SvtDeviationSpidersController < ApplicationController
 		    	redirect_to('/svt_deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
 			end
 
-	    	@achieved_list = ["", "Yes", "No"]
+	    	@achieved_list = ["", "M&T", "Other"]
 	    	@deliverables = Array.new
 	    	@deviation_spider.svt_deviation_spider_deliverables.all(
 	    	    :joins =>["JOIN svt_deviation_deliverables ON svt_deviation_spider_deliverables.svt_deviation_deliverable_id = svt_deviation_deliverables.id"],
