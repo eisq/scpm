@@ -896,9 +896,12 @@ class ProjectsController < ApplicationController
       # Milestone delays export
       @delays = Array.new
       MilestoneDelayRecord.find(:all).each do |delay|
-        #if delay.project.is_running
-          @delays << delay
-        #end
+        milestone = Milestone.find(:first, :conditions=>["id = ?", delay.milestone_id])
+        if milestone
+          #if delay.project.is_running
+            @delays << delay
+          #end
+        end
       end
       # Milestone delays export end
 

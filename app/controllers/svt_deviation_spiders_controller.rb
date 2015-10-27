@@ -301,7 +301,7 @@ class SvtDeviationSpidersController < ApplicationController
 		    		maturity.svt_deviation_spider_id = @deviation_spider.id
 		    		maturity.svt_deviation_deliverable_id = spider_deliverable.svt_deviation_deliverable.id
 		    		maturity.planned = maturity.get_planned
-		    		maturity.achieved = ""
+		    		maturity.achieved = maturity.planned
 		    		maturity.comment = ""
 		    		maturity.save
 	    		end
@@ -443,6 +443,17 @@ class SvtDeviationSpidersController < ApplicationController
 		if svt_deviation_spider_maturity_id and svt_deviation_spider_maturity_achieved
 			svt_deviation_spider_maturity = SvtDeviationSpiderMaturity.find(:first, :conditions => ["id = ?", svt_deviation_spider_maturity_id])
 			svt_deviation_spider_maturity.achieved = svt_deviation_spider_maturity_achieved
+			svt_deviation_spider_maturity.save
+		end
+		render(:nothing=>true)
+	end
+
+	def update_planned
+		svt_deviation_spider_maturity_id 		= params[:svt_deviation_spider_maturity_id]
+		svt_deviation_spider_maturity_planned 	= params[:svt_deviation_spider_maturity_planned]
+		if svt_deviation_spider_maturity_id and svt_deviation_spider_maturity_planned
+			svt_deviation_spider_maturity = SvtDeviationSpiderMaturity.find(:first, :conditions => ["id = ?", svt_deviation_spider_maturity_id])
+			svt_deviation_spider_maturity.planned = svt_deviation_spider_maturity_planned
 			svt_deviation_spider_maturity.save
 		end
 		render(:nothing=>true)

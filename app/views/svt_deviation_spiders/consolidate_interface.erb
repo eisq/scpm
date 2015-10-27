@@ -21,6 +21,23 @@ function change_score(maturity_id, value)
 	})
 }
 
+function change_planned(maturity_id, value)
+{
+	$.ajax({
+		type: "POST",
+		url: "/svt_deviation_spiders/update_planned",
+ 		data: {svt_deviation_spider_maturity_id: maturity_id, svt_deviation_spider_maturity_planned: value}
+	})
+	.done(function( msg ) {
+		var conso_id = "#" + maturity_id
+		$(conso_id).val('');
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+
 function drawChart() {
 
 	var maturity = <%= @maturity %>
@@ -109,7 +126,7 @@ function drawChartThree() {
 
 	var data = google.visualization.arrayToDataTable([
 	  ['Maturity', 'Percent'],
-	  ['Projects/Suite activities maturity reached for the current phase', maturity],
+	  ['E-M&T Referential templates/tools used to perform the activities planned on the current phase', maturity],
 	  ['Delta', rest]
 	]);
 
@@ -145,7 +162,7 @@ function drawChartFour() {
 
 	var data = google.visualization.arrayToDataTable([
 	  ['Maturity', 'Percent'],
-	  ['Projects/Suite activities maturity reached for the current phase', maturity],
+	  ['Other templates/tools used to perform the activities planned on the current phase', maturity],
 	  ['Delta', rest]
 	]);
 
@@ -210,7 +227,11 @@ $( document ).ready(function() {
 		<%= maturity.svt_deviation_deliverable.name %>
 	</td>
 	<td class="consolidation_td_deliverable_left_maturity">
-		<%= maturity.planned %>
+		<% if maturity.planned != "" %>
+			<%= maturity.planned %>
+		<% else %>
+			<%= select_tag('planned', options_for_select(@achieved_list, maturity.planned), {:onchange=>"change_planned(#{maturity.id.to_s}, this.value);"}) %>
+		<% end %>
 	</td>
 	<td class="consolidation_td_deliverable_left_maturity">
 		<%= select_tag('achieved', options_for_select(@achieved_list, maturity.achieved), {:onchange=>"change_score(#{maturity.id.to_s}, this.value);"}) %>
@@ -224,7 +245,7 @@ $( document ).ready(function() {
 
 <br/><br/>
 
-<h2>Export Deviation <span style="font-weight:normal; font-size:13px">- To be added to Quality Slide</span></h2>
+<h2>Export Maturity <span style="font-weight:normal; font-size:13px">- To be added to Quality Slide</span></h2>
 <table>
 	<tr><td style="border:1px outset black;">
 			<div id="piechart" style="width: 450px; height: 350px;"></div>
@@ -241,7 +262,7 @@ $( document ).ready(function() {
 
 <br/>
 
-<h2>What was planned against done</h2>
+<h2>Templates/Tools used to perform the activities planned on the current phase</h2>
 <table>
 	<tr><td style="border:1px outset black;">
 			<div id="piechartthree" style="width: 450px; height: 350px;"></div>

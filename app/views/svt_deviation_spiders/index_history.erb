@@ -129,21 +129,6 @@ $( document ).ready(function() {
 </table>
 <br/><br/>
 
-<h2>Export Bilan Customization <span style="font-weight:normal; font-size:13px">- To be added to M3/G2 Quality Slide  (Pie+Excel export)</span></h2>
-<table>
-<tr>
-	<td colspan=2 style="border:1px outset black;"><%= image_tag(@pie_chart) if @pie_chart%></td>
-</tr>
-<tr>
-	<td>Bilan Customization assessment: </td>
-	<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project_id, :milestone_name => @milestone.name} %></td>
-</tr>
-</table>
-
-<div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
-<div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>
-<div class="deviation_spider_export_chart" id="export_chart"></div>
-
 <% if @history and @history.count > 0%>
 <h2>History</h2>
 	<% @history.each { |s|
