@@ -4,15 +4,15 @@ google.load("visualization", "1", {packages:["corechart"]});
 google.setOnLoadCallback(drawChart);
 google.setOnLoadCallback(drawChartTwo);
 
-function change_score(consolidation_temp_id, value)
+function change_score(maturity_id, value)
 {
 	$.ajax({
 		type: "POST",
 		url: "/svt_deviation_spiders/update_score",
- 		data: {deviation_spider_consolidation_temp_id: consolidation_temp_id, deviation_spider_consolidation_temp_score: value}
+ 		data: {svt_deviation_spider_maturity_id: maturity_id, svt_deviation_spider_maturity_achieved: value}
 	})
 	.done(function( msg ) {
-		var conso_id = "#" + consolidation_temp_id
+		var conso_id = "#" + maturity_id
 		$(conso_id).val('');
 	})
 	.fail(function() 
@@ -102,13 +102,85 @@ function drawChartTwo() {
 	}
 }
 
+function drawChartThree() {
+
+	var maturity = <%= @maturity %>
+	var rest = 100 - maturity
+
+	var data = google.visualization.arrayToDataTable([
+	  ['Maturity', 'Percent'],
+	  ['Projects/Suite activities maturity reached for the current phase', maturity],
+	  ['Delta', rest]
+	]);
+
+	var options = {
+	  title: 'Activities maturity reached for the current phase',
+	  pieHole: 0.5,
+	  'width':450,
+	  'height':350,
+	  slices: {
+	    0: { color: '#82FA58' },
+	    1: { color: 'orange' }
+	  },
+	  pieSliceTextStyle: {
+            color: 'black',
+          }
+	};
+
+	var chart = new google.visualization.PieChart(document.getElementById('piechartthree'));
+
+	google.visualization.events.addListener(chart, 'ready', function () {
+	    piechartthree.innerHTML = '<img src="' + chart.getImageURI() + '">';
+	    console.log(piechartthree.innerHTML);
+	  });
+
+
+	chart.draw(data, options);
+}
+
+function drawChartFour() {
+
+	var maturity = <%= @maturity %>
+	var rest = 100 - maturity
+
+	var data = google.visualization.arrayToDataTable([
+	  ['Maturity', 'Percent'],
+	  ['Projects/Suite activities maturity reached for the current phase', maturity],
+	  ['Delta', rest]
+	]);
+
+	var options = {
+	  title: 'Activities maturity reached for the current phase',
+	  pieHole: 0.5,
+	  'width':450,
+	  'height':350,
+	  slices: {
+	    0: { color: '#82FA58' },
+	    1: { color: 'orange' }
+	  },
+	  pieSliceTextStyle: {
+            color: 'black',
+          }
+	};
+
+	var chart = new google.visualization.PieChart(document.getElementById('piechartfour'));
+
+	google.visualization.events.addListener(chart, 'ready', function () {
+	    piechartfour.innerHTML = '<img src="' + chart.getImageURI() + '">';
+	    console.log(piechartfour.innerHTML);
+	  });
+
+
+	chart.draw(data, options);
+}
+
 //Open
 $( document ).ready(function() {
 	$(".conso_tf").focusout(function() {
 		$.ajax({
 			type: "POST",
-			url: "/svt_deviation_spiders/update_justification",
-	 		data: {deviation_spider_consolidation_temp_id: $(this).attr('id'), deviation_spider_consolidation_temp_justification: $(this).val()}
+			url: "/svt_deviation_spiders/update_comment",
+	 		data: {deviation_spider_maturity_id: $(this).attr('id'), deviation_spider_maturity_comment: $(this).val()}
 		})
 		.done(function( msg ) {
 		})
@@ -121,27 +193,12 @@ $( document ).ready(function() {
 
 </SCRIPT>
 
-
-<h2>Caption</h2>
-<table><tr><td>
-0: Deliverable expected - Project did not produce Deliverable without appropriate justification<br/>
-1: Deliverable expected - Project did not produce Deliverable with appropriate justification<br/>
-2: Deliverable expected - Project produced Deliverable using a different template from the referential one<br/>
-3: Deliverable expected - Project produced Deliverable with the expected template<br/>
-</td><td>&nbsp;&nbsp;&nbsp;</td><td>
-0: Deliverable not expected - Project did not produce the deliverable and it was not justified<br/>
-1: Deliverable not expected - Project did not produce the deliverable and it was justified<br/>
-2: Deliverable not expected - Project did produce the deliverable using a different template from the referential one<br/>
-3: Deliverable not expected - Project did produce the deliverable using the referential template<br/>
-</td></tr></table>
-
-<h2>Deviation table</h2>
+<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id} %></div>
 
 <h2>Planned vs achieved deliverables</h2>
 <table class="consolidation_table">
 
 <tr class="consolidation_tr_activity">
-	<td><table width=210><tr><td></td></tr></table></td>
 	<td class="consolidation_td_activity"><bold>Deliverable</bold></td>
 	<td class="consolidation_td_activity"><bold>Planned</bold></td>
 	<td class="consolidation_td_activity"><bold>Achieved</bold></td>
@@ -150,16 +207,16 @@ $( document ).ready(function() {
 <% @maturity_deliverables.each do |maturity| %>
 <tr class="consolidation_tr_deliverable">
 	<td class="consolidation_td_deliverable">
-		<%= maturity.deliverable.name %>
+		<%= maturity.svt_deviation_deliverable.name %>
 	</td>
-	<td class="consolidation_td_deliverable_left">
-		<%= select_tag('achieved', options_for_select(@achieved_list, maturity.achieved), {:onchange=>"change_score(#{deliverable.id.to_s}, this.value);"}) %>
+	<td class="consolidation_td_deliverable_left_maturity">
+		<%= maturity.planned %>
 	</td>
-	<td class="consolidation_td_deliverable_left">
-		<%= select_tag('achieved', options_for_select(@achieved_list, maturity.achieved), {:onchange=>"change_score(#{deliverable.id.to_s}, this.value);"}) %>
+	<td class="consolidation_td_deliverable_left_maturity">
+		<%= select_tag('achieved', options_for_select(@achieved_list, maturity.achieved), {:onchange=>"change_score(#{maturity.id.to_s}, this.value);"}) %>
 	</td>
-	<td class="consolidation_td_deliverable_right">
-		<%= text_area_tag('comment', maturity.comment, :cols=>21, :rows=>1, :id=>"#{deliverable.id.to_s}", :class=>"conso_tf") %>
+	<td class="consolidation_td_deliverable_right_maturity">
+		<%= text_area_tag('comment', maturity.comment, :cols=>21, :rows=>1, :id=>"#{maturity.id.to_s}", :class=>"conso_tf") %>
 	</td>
 </tr>
 <% end %>
@@ -170,7 +227,7 @@ $( document ).ready(function() {
 <h2>Export Deviation <span style="font-weight:normal; font-size:13px">- To be added to Quality Slide</span></h2>
 <table>
 	<tr><td style="border:1px outset black;">
-		<div id="piechart" style="width: 450px; height: 350px;"></div>
+			<div id="piechart" style="width: 450px; height: 350px;"></div>
 		</td>
 		<td align=center style="border:1px outset black;">
 			<div id="histochart" style="width: 600px; height: 80px;">
@@ -184,7 +241,18 @@ $( document ).ready(function() {
 
 <br/>
 
+<h2>What was planned against done</h2>
+<table>
+	<tr><td style="border:1px outset black;">
+			<div id="piechartthree" style="width: 450px; height: 350px;"></div>
+		</td>
+		<td style="border:1px outset black;">
+			<div id="piechartfour" style="width: 450px; height: 350px;"></div>
+		</td>
+	</tr>
+</table>
+
+<br/>
+
 <h2>Consolidation process</h2>
-<% if @editable %>
 <%= button_to "Consolidate", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
-<% end %>

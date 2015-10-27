@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150902160200) do
+ActiveRecord::Schema.define(:version => 20151021105900) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -626,25 +626,35 @@ ActiveRecord::Schema.define(:version => 20150902160200) do
 
   create_table "milestone_delay_reason_ones", :force => true do |t|
     t.string   "reason_description"
+    t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_active",          :default => true
   end
 
   create_table "milestone_delay_reason_threes", :force => true do |t|
     t.string   "reason_description"
     t.integer  "reason_two_id"
+    t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_active",          :default => true
   end
 
   create_table "milestone_delay_reason_twos", :force => true do |t|
     t.string   "reason_description"
     t.integer  "reason_one_id"
+    t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_active",          :default => true
+  end
+
+  create_table "milestone_delay_reasons", :force => true do |t|
+    t.string   "reason_description"
+    t.integer  "level_of_reason"
+    t.integer  "reason_first_id_link"
+    t.integer  "reason_second_id_link"
+    t.integer  "reason_third_id_link"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "milestone_delay_records", :force => true do |t|
@@ -658,8 +668,8 @@ ActiveRecord::Schema.define(:version => 20150902160200) do
     t.string   "reason_other"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "updated_by"
-    t.text     "date_type"
+    t.integer  "updated_by"
+    t.integer  "project_id"
   end
 
   create_table "milestone_names", :force => true do |t|
@@ -1397,6 +1407,16 @@ ActiveRecord::Schema.define(:version => 20150902160200) do
     t.datetime "updated_at"
     t.boolean  "not_done",                     :default => false
     t.boolean  "is_added_by_hand",             :default => false
+  end
+
+  create_table "svt_deviation_spider_maturities", :force => true do |t|
+    t.integer  "svt_deviation_spider_id"
+    t.integer  "svt_deviation_deliverable_id"
+    t.string   "planned"
+    t.string   "achieved"
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "svt_deviation_spider_references", :force => true do |t|

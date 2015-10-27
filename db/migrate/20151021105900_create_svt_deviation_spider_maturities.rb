@@ -6,6 +6,7 @@ class CreateSvtDeviationSpiderMaturities < ActiveRecord::Migration
       t.string :planned
       t.string :achieved
       t.string :comment
+      t.boolean :is_consolidated, :default => false
       t.timestamps
     end
   end

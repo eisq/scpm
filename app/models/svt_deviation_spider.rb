@@ -6,6 +6,7 @@ class SvtDeviationSpider < ActiveRecord::Base
   	has_many    :svt_deviation_spider_deliverables
   	has_many	:svt_deviation_spider_activity_values
   	has_many	:svt_deviation_spider_deliverable_values
+  	has_many	:svt_deviation_spider_maturities
 	belongs_to 	:milestone
 	belongs_to  :project
 
