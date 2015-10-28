@@ -302,7 +302,7 @@ class SvtDeviationSpidersController < ApplicationController
 		    		maturity.svt_deviation_deliverable_id = spider_deliverable.svt_deviation_deliverable.id
 		    		maturity.planned = maturity.get_planned
 		    		maturity.achieved = maturity.planned
-		    		maturity.comment = ""
+		    		maturity.comment = "This deliverable has been added after project customisation."
 		    		maturity.save
 	    		end
 	    		
@@ -486,9 +486,19 @@ class SvtDeviationSpidersController < ApplicationController
 
 		     # Increment the spider counter of the project
 		    project = deviation_spider.milestone.project
+
+		    # Create consolidation to define if the spider is consolidated or not
+		    deviation_spider_consolidation = SvtDeviationSpiderConsolidation.new
+	    	deviation_spider_consolidation.svt_deviation_spider_id = deviation_spider_id
+	    	deviation_spider_consolidation.save
+
+	    	# Delete consolidation temps
+	    	SvtDeviationSpiderConsolidationTemp.find(:all, :conditions=>["svt_deviation_spider_id = ?", deviation_spider_id]).each do |conso_temp|
+	    		conso_temp.delete
+	    	end
 		    
 		    if((project) && (list_choice.to_i == SPIDER_CONSO_COUNTER.to_i))
-		     	deviation_spider.impact_count = true;
+		     	deviation_spider.impact_count = true
 			    deviation_spider.save
 
 			    # Insert in history_counter
@@ -836,7 +846,7 @@ class SvtDeviationSpidersController < ApplicationController
 		SvtDeviationSpider.find(:all,
 		    :select => "DISTINCT(svt_deviation_spiders.id),svt_deviation_spiders.created_at",
     		:joins => 'JOIN svt_deviation_spider_consolidations ON svt_deviation_spiders.id = svt_deviation_spider_consolidations.svt_deviation_spider_id',
-    		:conditions => ["milestone_id= ?", milestone.id]).each { |s| @history.push(s) }
+    		:conditions => ["milestone_id = ?", milestone.id]).each { |s| @history.push(s) }
 	end
 
 

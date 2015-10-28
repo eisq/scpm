@@ -2012,6 +2012,14 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def delete_temp_deviation
+    SvtDeviationSpiderConsolidationTemp.find(:all).each do |conso_temp|
+      conso_temp.delete
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
   def milestone_delay_config
     @reason_one_selected = @reason_two_selected = nil
 
