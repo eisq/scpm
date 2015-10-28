@@ -3,6 +3,8 @@
 google.load("visualization", "1", {packages:["corechart"]});
 google.setOnLoadCallback(drawChart);
 google.setOnLoadCallback(drawChartTwo);
+google.setOnLoadCallback(drawChartThree);
+google.setOnLoadCallback(drawChartFour);
 
 function change_score(maturity_id, value)
 {
@@ -121,74 +123,76 @@ function drawChartTwo() {
 
 function drawChartThree() {
 
-	var maturity = <%= @maturity %>
-	var rest = 100 - maturity
+	var data_temp = [];
+	var Header = ['Deliverables', '', { role: 'style' }];
+ 	data_temp.push(Header);
+ 	data_temp.push(["Number of deliverables done with templates from E-M&T Referential", 4, "#F5A9E1"]);
+ 	data_temp.push(["Number of deliverables that should have been done with templates from E-M&T Referential", 3, "#A9D0F5"]);
 
-	var data = google.visualization.arrayToDataTable([
-	  ['Maturity', 'Percent'],
-	  ['E-M&T Referential templates/tools used to perform the activities planned on the current phase', maturity],
-	  ['Delta', rest]
-	]);
+	var data = google.visualization.arrayToDataTable(data_temp);
+
+	var view = new google.visualization.DataView(data);
+	view.setColumns([0, 1,
+	                   { calc: "stringify",
+	                     sourceColumn: 1,
+	                     type: "string",
+	                     role: "annotation" },
+	                   2]);
 
 	var options = {
-	  title: 'Activities maturity reached for the current phase',
-	  pieHole: 0.5,
-	  'width':450,
-	  'height':350,
-	  slices: {
-	    0: { color: '#82FA58' },
-	    1: { color: 'orange' }
-	  },
-	  pieSliceTextStyle: {
-            color: 'black',
-          }
-	};
+	    title: "E-M&T Referential templates/tools used to perform the activities planned on the current phase",
+	    width: 500,
+	    height: 250,
+	    bar: {groupWidth: "70%"},
+	    legend: { position: "none" },
+		vAxis: { textPosition: 'none'}
+	  };
 
-	var chart = new google.visualization.PieChart(document.getElementById('piechartthree'));
+	var chart = new google.visualization.ColumnChart(document.getElementById("piechartthree"));
 
 	google.visualization.events.addListener(chart, 'ready', function () {
 	    piechartthree.innerHTML = '<img src="' + chart.getImageURI() + '">';
 	    console.log(piechartthree.innerHTML);
 	  });
 
-
-	chart.draw(data, options);
+	chart.draw(view, options);
 }
 
 function drawChartFour() {
 
-	var maturity = <%= @maturity %>
-	var rest = 100 - maturity
+	var data_temp = [];
+	var Header = ['Deliverables', '', { role: 'style' }];
+ 	data_temp.push(Header);
+ 	data_temp.push(["Number of deliverables done with other templates", 2, "#F5A9E1"]);
+ 	data_temp.push(["Number of deliverables that should have been done with other templates", 3, "#A9D0F5"]);
 
-	var data = google.visualization.arrayToDataTable([
-	  ['Maturity', 'Percent'],
-	  ['Other templates/tools used to perform the activities planned on the current phase', maturity],
-	  ['Delta', rest]
-	]);
+	var data = google.visualization.arrayToDataTable(data_temp);
+
+	var view = new google.visualization.DataView(data);
+	view.setColumns([0, 1,
+	                   { calc: "stringify",
+	                     sourceColumn: 1,
+	                     type: "string",
+	                     role: "annotation" },
+	                   2]);
 
 	var options = {
-	  title: 'Activities maturity reached for the current phase',
-	  pieHole: 0.5,
-	  'width':450,
-	  'height':350,
-	  slices: {
-	    0: { color: '#82FA58' },
-	    1: { color: 'orange' }
-	  },
-	  pieSliceTextStyle: {
-            color: 'black',
-          }
-	};
+	    title: "Other templates/tools used to perform the activities planned on the current phase",
+	    width: 500,
+	    height: 250,
+	    bar: {groupWidth: "70%"},
+	    legend: { position: "none" },
+		vAxis: { textPosition: 'none'}
+	  };
 
-	var chart = new google.visualization.PieChart(document.getElementById('piechartfour'));
+	var chart = new google.visualization.ColumnChart(document.getElementById("piechartfour"));
 
 	google.visualization.events.addListener(chart, 'ready', function () {
 	    piechartfour.innerHTML = '<img src="' + chart.getImageURI() + '">';
 	    console.log(piechartfour.innerHTML);
 	  });
 
-
-	chart.draw(data, options);
+	chart.draw(view, options);
 }
 
 //Open
@@ -259,16 +263,21 @@ $( document ).ready(function() {
 			</div></td>
 	</tr>
 </table>
+<h3>Not achieved activities</h3>
+<ul>
+	<li>act1</li>
+	<li>act2</li>
+</ul>
 
 <br/>
 
 <h2>Templates/Tools used to perform the activities planned on the current phase</h2>
 <table>
-	<tr><td style="border:1px outset black;">
-			<div id="piechartthree" style="width: 450px; height: 350px;"></div>
+	<tr><td align=center style="border:1px outset black;">
+			<div id="piechartthree" style="width: 500px; height: 250px;"></div>
 		</td>
-		<td style="border:1px outset black;">
-			<div id="piechartfour" style="width: 450px; height: 350px;"></div>
+		<td align=center style="border:1px outset black;">
+			<div id="piechartfour" style="width: 500px; height: 250px;"></div>
 		</td>
 	</tr>
 </table>
