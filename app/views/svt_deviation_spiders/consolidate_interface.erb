@@ -216,6 +216,28 @@ $( document ).ready(function() {
 
 <div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id} %></div>
 
+<h2>Export Maturity <span style="font-weight:normal; font-size:13px">- To be added to Quality Slide</span></h2>
+<table>
+	<tr><td style="border:1px outset black;">
+			<div id="piechart" style="width: 450px; height: 350px;"></div>
+		</td>
+		<td align=center style="border:1px outset black;">
+			<div id="histochart" style="width: 600px; height: 80px;">
+				<% if @maturities.count == 0 %>
+					<h3>Reminders on previous phases activities maturity status</h3>
+					None of your previous milestones has been consolidated.
+				<% end %>
+			</div></td>
+	</tr>
+</table>
+<h3>Not achieved activities</h3>
+<ul>
+	<li>act1</li>
+	<li>act2</li>
+</ul>
+
+<br/>
+
 <h2>Planned vs achieved deliverables</h2>
 <table class="consolidation_table">
 
@@ -248,28 +270,6 @@ $( document ).ready(function() {
 </table>
 
 <br/><br/>
-
-<h2>Export Maturity <span style="font-weight:normal; font-size:13px">- To be added to Quality Slide</span></h2>
-<table>
-	<tr><td style="border:1px outset black;">
-			<div id="piechart" style="width: 450px; height: 350px;"></div>
-		</td>
-		<td align=center style="border:1px outset black;">
-			<div id="histochart" style="width: 600px; height: 80px;">
-				<% if @maturities.count == 0 %>
-					<h3>Reminders on previous phases activities maturity status</h3>
-					None of your previous milestones has been consolidated.
-				<% end %>
-			</div></td>
-	</tr>
-</table>
-<h3>Not achieved activities</h3>
-<ul>
-	<li>act1</li>
-	<li>act2</li>
-</ul>
-
-<br/>
 
 <h2>Templates/Tools used to perform the activities planned on the current phase</h2>
 <table>
