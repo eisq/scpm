@@ -325,7 +325,7 @@ class SvtDeviationSpidersController < ApplicationController
 		SvtDeviationSpider.find(:all, :conditions=>["project_id = ?", deviation_spider.project_id], :order=>"id asc").each do |devia_spider|
 			spiders.each do |sp|
 				if sp.milestone_id == devia_spider.milestone_id
-					sp.delete
+					spiders.delete(sp)
 				end
 			end
 			spiders << devia_spider
@@ -348,50 +348,6 @@ class SvtDeviationSpidersController < ApplicationController
 		end
 
 		return maturities, maturities_name
-	end
-
-	def export_deviation_excel
-		project_id = params[:project_id]
-		deviation_spider_id = params[:deviation_spider_id]
-		@milestone_name = params[:milestone_name]
-
-		all_activities 	= SvtDeviationActivity.find(:all, :conditions=>["is_active = ?", true])
-		deviation_spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", deviation_spider_id])
-    	parameters = deviation_spider.get_parameters
-    	deliverables 		= Array.new
-    	deviation_spider.svt_deviation_spider_deliverables.all(
-    	    :joins =>["JOIN svt_deviation_deliverables ON svt_deviation_spider_deliverables.svt_deviation_deliverable_id = svt_deviation_deliverables.id"],
-    	    :conditions => ["svt_deviation_deliverables.is_active = ?", true], 
-    	    :order => ["svt_deviation_deliverables.name"]).each do |spider_deliverable|
-    		deliverables << spider_deliverable.svt_deviation_deliverable
-    	end
-
-		@project = Project.find(:first, :conditions => ["id = ?", project_id])
-		if @project
-			begin
-				@xml = Builder::XmlMarkup.new(:indent => 1)
-
-				@lifecycle = Lifecycle.find(:first, :conditions=>["id = ?", @project.lifecycle_id])
-				filename = @project.name+"_"+@lifecycle.name+"_DeviationMeasurement_Spiders_v1.0.xls"
-
-				@first_milestone_name = ""
-				if @lifecycle.id == 4 or @lifecycle.id == 5 or @lifecycle.id == 6 or @lifecycle.id == 9
-					@first_milestone_name = "G2"
-				else
-					@first_milestone_name = "M3"
-				end
-
-				@consolidations = Consolidation_export.new
-				@consolidations = get_consolidations(deviation_spider, all_activities, deliverables, parameters, true, true)
-
-				headers['Content-Type']         = "application/vnd.ms-excel"
-		        headers['Content-Disposition']  = 'attachment; filename="'+filename+'"'
-		        headers['Cache-Control']        = ''
-		        render "devia.erb", :layout=>false
-			rescue Exception => e
-	        	render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
-	        end
-		end
 	end
 
 	def get_deliverable_activity_applicable(project_id, deliverable, activity, milestone, psu_imported=true)
@@ -503,7 +459,7 @@ class SvtDeviationSpidersController < ApplicationController
 
 			    # Insert in history_counter
 			    streamRef = Stream.find_with_workstream(project.workstream)
-			    streamRef.set_spider_history_counter(current_user,deviation_spider)
+			    streamRef.set_spider_history_counter(current_user, deviation_spider)
 
 			    # Increment counter
 			    project.spider_count = project.spider_count + 1
