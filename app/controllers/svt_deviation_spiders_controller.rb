@@ -322,7 +322,8 @@ class SvtDeviationSpidersController < ApplicationController
 	    		@maturity_deliverables << maturity
 	    	end
 
-	    	@activities_partially_realised = @activities_not_realised = Array.new
+	    	@activities_partially_realised = Array.new
+	    	@activities_not_realised = Array.new
 	    	@activities_partially_realised, @activities_not_realised = get_activities_realisation(@maturity_deliverables)
 	    	
 			@maturity = @deviation_spider.get_deviation_maturity
