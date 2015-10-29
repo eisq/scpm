@@ -14,9 +14,6 @@ function change_score(maturity_id, value)
  		data: {svt_deviation_spider_maturity_id: maturity_id, svt_deviation_spider_maturity_achieved: value}
 	})
 	.done(function( msg ) {
-		var conso_id = "#" + maturity_id
-		$(conso_id).val('');
-
 		document.getElementById('pie_update_warning').style.visibility = 'visible';
 	})
 	.fail(function() 
@@ -33,9 +30,6 @@ function change_planned(maturity_id, value)
  		data: {svt_deviation_spider_maturity_id: maturity_id, svt_deviation_spider_maturity_planned: value}
 	})
 	.done(function( msg ) {
-		var conso_id = "#" + maturity_id
-		$(conso_id).val('');
-
 		document.getElementById('pie_update_warning').style.visibility = 'visible';
 	})
 	.fail(function() 
@@ -240,17 +234,6 @@ $( document ).ready(function() {
 			</div></td>
 	</tr>
 </table>
-<h3>Not achieved macro-objectives</h3>
-<ul>
-	<li>Project Planning, Scoping and Structuring</li>
-	<li>Req. Capture, Validation and Mgmt</li>
-</ul>
-<h3>Partially achieved macro-objectives</h3>
-<ul>
-	<li>Project Change Mgmt</li>
-	<li>Configuration Mgmt</li>
-	<li>Technical Solution Def</li>
-</ul>
 
 <br/>
 
