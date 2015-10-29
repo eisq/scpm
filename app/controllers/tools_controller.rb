@@ -2142,17 +2142,17 @@ class ToolsController < ApplicationController
     delay_to = params[:delay_to].to_s
     request = ""
 
-    if delay_from and !delay_to
+    if delay_from != "" and delay_to == ""
       request = "planned_date >= '" + delay_from + "'"
-    elsif !delay_from and delay_to
+    elsif delay_from == "" and delay_to != ""
       request = "planned_date <= '" + delay_to + "'"
-    elsif delay_from and delay_to
+    elsif delay_from != "" and delay_to != ""
       request = "planned_date between '" + delay_from + "' and '" + delay_to + "'"
     end
 
     @delays = Array.new
     MilestoneDelayRecord.find(:all, :conditions=>[request]).each do |delay|
-      if delay.project.id != 2480
+      if delay.project and delay.project.id != 2480
         @delays << delay
       end
     end
