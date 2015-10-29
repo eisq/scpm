@@ -150,7 +150,7 @@ end
             @xml.Data delay.current_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell 'ss:StyleID' => 'Blue' do
-            @xml.Data delay.delay_days, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data delay.delay_days, 'ss:Type' => 'Number'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data delay.get_reason_one, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'

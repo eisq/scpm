@@ -284,6 +284,11 @@ class SvtDeviationSpidersController < ApplicationController
 		    	redirect_to('/svt_deviation_spiders?milestone_id='+@deviation_spider.milestone_id.to_s+'&empty=1')
 			end
 
+			@editable = params[:editable]
+			if @editable == nil
+				@editable = false
+			end
+
 	    	@achieved_list = ["", "M&T", "Other"]
 	    	@maturity_deliverables = Array.new
 	    	@deviation_spider.svt_deviation_spider_deliverables.all(
@@ -301,8 +306,13 @@ class SvtDeviationSpidersController < ApplicationController
 		    		maturity.svt_deviation_spider_id = @deviation_spider.id
 		    		maturity.svt_deviation_deliverable_id = spider_deliverable.svt_deviation_deliverable.id
 		    		maturity.planned = maturity.get_planned
-		    		maturity.achieved = maturity.planned
-		    		maturity.comment = "This deliverable has been added after project customisation."
+		    		if maturity.planned == ""
+			    		maturity.achieved = ""
+			    		maturity.comment = "This deliverable has been added after project customisation"
+		    		else
+			    		maturity.achieved = maturity.planned
+			    		maturity.comment = ""
+		    		end
 		    		maturity.save
 	    		end
 	    		
@@ -315,9 +325,30 @@ class SvtDeviationSpidersController < ApplicationController
 			deviation_spiders = get_svt_deviation_spiders(@deviation_spider)
 			@maturities, @maturities_name = get_maturities(deviation_spiders)
 
+			@number_template_mnt, @number_template_mnt_should, @number_template_other, @number_template_other_should = get_number_template(@deviation_spider)
+
 	    else
 	    	redirect_to :controller=>:projects, :action=>:index
 	    end
+	end
+
+	def get_number_template(deviation_spider)
+		number_template_mnt = number_template_mnt_should = number_template_other = number_template_other_should = 0
+		SvtDeviationSpiderMaturity.find(:all, :conditions=>["svt_deviation_spider_id = ?", deviation_spider.id]).each do |maturity|
+			if maturity.achieved == "M&T"
+				number_template_mnt = number_template_mnt + 1
+			elsif maturity.achieved == "Other"
+				number_template_other = number_template_other + 1
+			end
+			
+			if maturity.planned == "M&T"
+				number_template_mnt_should = number_template_mnt_should + 1
+			elsif maturity.planned == "Other"
+				number_template_other_should = number_template_other_should + 1
+			end
+		end
+
+		return number_template_mnt, number_template_mnt_should, number_template_other, number_template_other_should
 	end
 
 	def get_svt_deviation_spiders(deviation_spider)

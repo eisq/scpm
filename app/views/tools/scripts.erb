@@ -4,6 +4,14 @@ Add id 30000 to svt_deviation_spiders and migrate spiders <!--<%= link_to('Add t
 Fill project_id in deviation_spider <!--<%= link_to('fill project_id', {:action=>'fill_project_id'}, {:class=>'btnlnk'}) %><br/>--><br/>
 Fill project_id in svt_deviation_spider <!--<%= link_to('fill project_id', {:action=>'fill_svt_project_id'}, {:class=>'btnlnk'}) %><br/>--><br/>
 Add standard project for the AVV module with id = 10000 <!--<%= link_to('add standard project', {:action=>'add_standard_project_for_avv'}, {:class=>'btnlnk'}) %><br/>--><br/>
-Replace "é" characters in the BDD, table Ci_projects <!--<%= link_to('replace é', {:action=>'replace_e'}, {:class=>'btnlnk'}) %><br/>--><br/><br/>
+Replace "é" characters in the BDD, table Ci_projects <!--<%= link_to('replace é', {:action=>'replace_e'}, {:class=>'btnlnk'}) %><br/>--><br/>
+Delete all temporary deviations from spiders v3 <!--<%= link_to('delete', {:action=>'delete_temp_deviation'}, {:class=>'btnlnk'}) %><br/>--><br/>
+
+<br/>
+
 Add milestone delays from google sheet in the DB <%= link_to('import', {:action=>'import_milestone_delays'}, {:class=>'btnlnk'}) %><br/><br/>
-Delete all temporary deviations from spiders v3 <%= link_to('delete', {:action=>'delete_temp_deviation'}, {:class=>'btnlnk'}) %><br/><br/>
+
+Display number of svt_spider_deliverables which have the interface removed <%= link_to('show', {:action=>'show_removed_spiders'}, {:class=>'btnlnk'}) %><br/>
+<% if params[:sp] %>
+	<%= "<strong>Svt Spiders removed: <span style='color:red'>" + params[:sp] + "</span></strong>" %>
+<% end %>

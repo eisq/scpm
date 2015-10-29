@@ -106,7 +106,7 @@ $( document ).ready(function() {
     <%= hidden_field_tag('redirect', 'index_history') %>
     <%= submit_tag "Save" %>
 </form>
-<p><%= button_to "Show deviation", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => false} %></p>
+<p><%= button_to "Show maturity", {:action => "consolidate_interface", :deviation_spider_id => @last_spider.id, :editable => false} %></p>
 <p><%= button_to "Delete Consolidated Spider & Deviation", {:action => "delete_consolidated_spider", :deviation_spider_id => @last_spider.id} %></p>
 
 <br/>
@@ -121,11 +121,6 @@ $( document ).ready(function() {
 	<td><input type="button" value="Export all" onclick="export_deliverables('<%= @last_spider.id.to_s %>');" /></td>
 	<td>To be added in Backup Slides</td>
 </tr>
-<!-- <tr>
-	<td>Result of GPP adherence: </td>
-	<td><%= button_to "Export", {:action => "export", :deviation_spider_id => @last_spider.id} %></td>
-	<td colspan=2>To be added to M3/G2 Quality Slide</td>
-</tr> -->
 </table>
 <br/><br/>
 

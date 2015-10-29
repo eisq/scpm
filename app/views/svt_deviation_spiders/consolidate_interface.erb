@@ -16,6 +16,8 @@ function change_score(maturity_id, value)
 	.done(function( msg ) {
 		var conso_id = "#" + maturity_id
 		$(conso_id).val('');
+
+		document.getElementById('pie_update_warning').style.visibility = 'visible';
 	})
 	.fail(function() 
 	{ 
@@ -33,6 +35,8 @@ function change_planned(maturity_id, value)
 	.done(function( msg ) {
 		var conso_id = "#" + maturity_id
 		$(conso_id).val('');
+
+		document.getElementById('pie_update_warning').style.visibility = 'visible';
 	})
 	.fail(function() 
 	{ 
@@ -123,11 +127,14 @@ function drawChartTwo() {
 
 function drawChartThree() {
 
+	var number_template_mnt = <%= @number_template_mnt.to_json %>;
+	var number_template_mnt_should = <%= @number_template_mnt_should.to_json %>;
+
 	var data_temp = [];
 	var Header = ['Deliverables', '', { role: 'style' }];
  	data_temp.push(Header);
- 	data_temp.push(["Number of deliverables done with templates from E-M&T Referential", 4, "#F5A9E1"]);
- 	data_temp.push(["Number of deliverables that should have been done with templates from E-M&T Referential", 3, "#A9D0F5"]);
+ 	data_temp.push(["Number of deliverables done with templates from E-M&T Referential", number_template_mnt, "#F5A9E1"]);
+ 	data_temp.push(["Number of deliverables that should have been done with templates from E-M&T Referential", number_template_mnt_should, "#A9D0F5"]);
 
 	var data = google.visualization.arrayToDataTable(data_temp);
 
@@ -141,8 +148,8 @@ function drawChartThree() {
 
 	var options = {
 	    title: "E-M&T Referential templates/tools used to perform the activities planned on the current phase",
-	    width: 500,
-	    height: 250,
+	    width: 600,
+	    height: 300,
 	    bar: {groupWidth: "70%"},
 	    legend: { position: "none" },
 		vAxis: { textPosition: 'none'}
@@ -160,11 +167,14 @@ function drawChartThree() {
 
 function drawChartFour() {
 
+	var number_template_other = <%= @number_template_other.to_json %>;
+	var number_template_other_should = <%= @number_template_other_should.to_json %>;
+
 	var data_temp = [];
 	var Header = ['Deliverables', '', { role: 'style' }];
  	data_temp.push(Header);
- 	data_temp.push(["Number of deliverables done with other templates", 2, "#F5A9E1"]);
- 	data_temp.push(["Number of deliverables that should have been done with other templates", 3, "#A9D0F5"]);
+ 	data_temp.push(["Number of deliverables done with other templates", number_template_other, "#F5A9E1"]);
+ 	data_temp.push(["Number of deliverables that should have been done with other templates", number_template_other_should, "#A9D0F5"]);
 
 	var data = google.visualization.arrayToDataTable(data_temp);
 
@@ -178,8 +188,8 @@ function drawChartFour() {
 
 	var options = {
 	    title: "Other templates/tools used to perform the activities planned on the current phase",
-	    width: 500,
-	    height: 250,
+	    width: 600,
+	    height: 300,
 	    bar: {groupWidth: "70%"},
 	    legend: { position: "none" },
 		vAxis: { textPosition: 'none'}
@@ -235,6 +245,11 @@ $( document ).ready(function() {
 	<li>act1</li>
 	<li>act2</li>
 </ul>
+<h3>Partially achieved macro-objectives</h3>
+<ul>
+	<li>act3</li>
+	<li>act4</li>
+</ul>
 
 <br/>
 
@@ -272,17 +287,23 @@ $( document ).ready(function() {
 <br/><br/>
 
 <h2>Templates/Tools used to perform the activities planned on the current phase</h2>
+<div class="pie_update_warning" id="pie_update_warning">
+	The current graphs are not up to date, please click on the submit to refresh it.
+	<%= button_to "Refresh", {:action => "consolidate_interface", :deviation_spider_id => @deviation_spider.id, :editable => @editable} %>
+</div>
 <table>
 	<tr><td align=center style="border:1px outset black;">
-			<div id="piechartthree" style="width: 500px; height: 250px;"></div>
+			<div id="piechartthree" style="width: 600px; height: 300px;"></div>
 		</td>
 		<td align=center style="border:1px outset black;">
-			<div id="piechartfour" style="width: 500px; height: 250px;"></div>
+			<div id="piechartfour" style="width: 600px; height: 300px;"></div>
 		</td>
 	</tr>
 </table>
 
 <br/>
 
-<h2>Consolidation process</h2>
-<%= button_to "Consolidate", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
+<% if @editable %>
+	<h2>Consolidation process</h2>
+	<%= button_to "Consolidate", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
+<% end %>
