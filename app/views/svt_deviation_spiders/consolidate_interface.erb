@@ -235,6 +235,24 @@ $( document ).ready(function() {
 	</tr>
 </table>
 
+<% if @activities_not_realised.count > 0 %>
+<h3>Not achieved macro-objectives</h3>
+<ul>
+	<% @activities_not_realised.each do |activity| %>
+		<li><%= activity.name %></li>
+	<% end %>
+</ul>
+<% end %>
+
+<% if @activities_partially_realised.count > 0 %>
+<h3>Partially achieved macro-objectives</h3>
+<ul>
+	<% @activities_partially_realised.each do |activity| %>
+		<li><%= activity.name %></li>
+	<% end %>
+</ul>
+<% end %>
+
 <br/>
 
 <h2>Deliverables: Planned vs Achieved</h2>

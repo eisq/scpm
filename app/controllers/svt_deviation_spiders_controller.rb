@@ -322,8 +322,8 @@ class SvtDeviationSpidersController < ApplicationController
 	    		@maturity_deliverables << maturity
 	    	end
 
-	    	#@activities_partially_realised = @activities_not_realised = Array.new
-	    	#@activities_partially_realised, @activities_not_realised = get_activities_realisation(@maturity_deliverables)
+	    	@activities_partially_realised = @activities_not_realised = Array.new
+	    	@activities_partially_realised, @activities_not_realised = get_activities_realisation(@maturity_deliverables)
 	    	
 			@maturity = @deviation_spider.get_deviation_maturity
 			#get all svt deviation spiders linked to this project
@@ -339,11 +339,13 @@ class SvtDeviationSpidersController < ApplicationController
 	end
 
 	def get_activities_realisation(maturity_deliverables)
-		activities_partially_realised = activities_not_realised = Array.new
-		activity_realisations = all_activities = Array.new
+		activities_partially_realised = Array.new
+		activities_not_realised = Array.new
+		activity_realisations = Array.new
+		all_activities = Array.new
 
 		maturity_deliverables.each do |maturity_deliverable|
-			spider_deliverable = SvtDeviationSpiderDeliverable.find(:first, :conditions=>["svt_deviatio_spider_id = ? and svt_deviation_deliverable_id = ?", maturity_deliverable.svt_deviatio_spider_id, maturity_deliverable.svt_deviation_deliverable_id])
+			spider_deliverable = SvtDeviationSpiderDeliverable.find(:first, :conditions=>["svt_deviation_spider_id = ? and svt_deviation_deliverable_id = ?", maturity_deliverable.svt_deviation_spider_id, maturity_deliverable.svt_deviation_deliverable_id])
 			if spider_deliverable
 				SvtDeviationSpiderValue.find(:all, :conditions=>["svt_deviation_spider_deliverable_id = ?", spider_deliverable.id]).each do |value|
 					question = SvtDeviationQuestion.find(:first, :conditions=>["id = ?", value.svt_deviation_question_id])
@@ -351,7 +353,6 @@ class SvtDeviationSpidersController < ApplicationController
 						activity_realisation = Activity_realisation.new #Activity_realisation = Struct.new(:activity, :answer)
 						activity_realisation.activity = question.svt_deviation_activity
 						activity_realisation.answer = value.answer
-
 						activity_realisations << activity_realisation
 
 						all_activities << question.svt_deviation_activity
@@ -361,24 +362,30 @@ class SvtDeviationSpidersController < ApplicationController
 		end
 
 		all_activities = all_activities.uniq
-		all_activities.each do |activity|
+		all_activities.each { |activity|
 			activity_struct = Activity_struct.new #Activity_struct = Struct.new(:activity, :no, :total)
-			activity_realisations.each do |realisation|
-				if realisation.activity.name == activity.name
-					if realisation.answer == No
+			activity_struct.activity = activity
+			activity_struct.no = 0
+			activity_struct.total = 0
+			activity_realisations.each { |realisation|
+				if activity.name == realisation.activity.name
+					if realisation.answer == false
 						activity_struct.no = activity_struct.no + 1
 					end
 					activity_struct.total = activity_struct.total + 1
 				end
-			end
+			}
 
-			percent = activity_struct.no / activity_struct.total * 100
-			if percent < 70
-				activities_not_realised << activity_struct.activity
-			elsif percent >= 70 and percent < 90
-				activities_partially_realised << activity_struct.activity
+			if activity_struct.total != 0
+				percent = activity_struct.no.to_f / activity_struct.total.to_f * 100
+				percent_ok = 100 - percent
+				if percent_ok < 70
+					activities_not_realised << activity_struct.activity
+				elsif percent_ok >= 70 and percent_ok < 90
+					activities_partially_realised << activity_struct.activity
+				end
 			end
-		end
+		}
 
 		return activities_partially_realised, activities_not_realised
 	end
