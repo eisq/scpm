@@ -12,7 +12,14 @@ function reason_two_select(reason_two_id)
 
 <h2>Delay export</h2>
 
-<table><tr><td>Bilan milestone delays: </td><td><%= button_to "Excel export", {:action => "export_delays_excel"} %></td></tr></table>
+Select a period, to let empty for overall view (yyyy-mm-dd).<br/>
+<% form_tag(:action=>'export_delays_excel') do %>
+<table><tr><td>
+From <%= text_field 'delay_from', '', {:style=>"width:100px"} %></td><td>
+To <%= text_field 'delay_to', '', {:style=>"width:100px"} %></td><td>
+<%= submit_tag "Excel export", :name => 'export' %>
+</td></tr></table>
+<% end %>
 
 <h2>Delay reasons - Admin module for Milestone Delays</h2>
 
