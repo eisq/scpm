@@ -38,10 +38,9 @@ module DeviationSvt
     elsif doc.worksheet "PSU_Agile" and lifecycle_id == 8
       psu = doc.worksheet "PSU_Agile"
       sheet_rows = self.parse_excel_content(psu)
-    end
-
-    if doc.worksheet "PSU_GPP"
-      Rails.logger.info("%%%%%%%%%% " + lifecycle_id.to_s)
+    elsif doc.worksheet "PSU_Agile" and lifecycle_id == 7
+      psu = doc.worksheet "PSU_Suite"
+      sheet_rows = self.parse_excel_content(psu)
     end
 
     return sheet_rows

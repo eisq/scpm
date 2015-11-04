@@ -124,6 +124,7 @@
         <li><%= link_to('Cumul KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
         <li><%= link_to('Configure export excel columns', {:controller=>'pm_type_axe_excels', :action=>'index'}) %></li>
 	      <li class="hsep">Spider administration</li>
+        <li><%= link_to('Manage spiders version',                     {:controller=>'tools', :action=>'manage_project_version'}) %></li>
         <li><%= link_to('Import',       						  {:controller=>'spiders', :action=>'project_spider_import'}) %></li>
         <li><%= link_to('Manage Axes',        				{:controller=>'pm_type_axes', :action=>'index'}) %></li>
         <li><%= link_to('Manage Questions',        		{:controller=>'lifecycle_questions', :action=>'index'}) %></li>

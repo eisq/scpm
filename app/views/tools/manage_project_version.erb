@@ -1,0 +1,19 @@
+<%= form_tag :action=>'set_project_version' %>
+	Project id: <%= text_field_tag('project_id', '', {:size=>15}) %>
+	<%= select_tag ("version_chosen",options_for_select(@list_choices, @list_choices_index))  %>
+	<%= submit_tag "Send" %>
+</form>
+
+<% if params[:result] and params[:result] == "true" %>
+<br/>
+<strong><span style="color:green">Project updated</span></strong>
+<% elsif params[:result] and params[:result] == "false" %>
+<br/>
+<strong><span style="color:red">Project not updated</span></strong>
+<% elsif params[:result] and params[:result] == "wrong_version" %>
+<br/>
+<strong><span style="color:red">Wrong version chosen</span></strong>
+<% elsif params[:result] and params[:result] == "wrong_project_id" %>
+<br/>
+<strong><span style="color:red">Wrong project id</span></strong>
+<% end %>

@@ -2171,6 +2171,42 @@ class ToolsController < ApplicationController
     end
   end
 
+  def manage_project_version
+    @list_choices = ['', '1', '2', '3']
+    @list_choices_index = [0, 1, 2, 3]
+  end
+
+  def set_project_version
+    project_id = params[:project_id]
+    version_chosen = params[:version_chosen].to_i
+    result = 'false'
+
+    if version_chosen != 0 and project_id != ""
+      project = Project.find(:first, :conditions=>["id = ?", project_id])
+
+      if project
+        case version_chosen
+        when 1
+          project.deviation_spider = false
+          project.deviation_spider_svt = false
+        when 2
+          project.deviation_spider = true
+          project.deviation_spider_svt = false
+        when 3
+          project.deviation_spider = false
+          project.deviation_spider_svt = true
+        end
+        project.save
+        result = 'true'
+      end
+    elsif version_chosen == 0
+      result = 'wrong_version'
+    elsif project_id == ""
+      result = 'wrong_project_id'
+    end
+    redirect_to('/tools/manage_project_version?result='+result)
+  end
+
 private
 
   def round_to_hour(f)
