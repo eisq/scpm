@@ -2152,6 +2152,7 @@ class ToolsController < ApplicationController
     @delays = Array.new
     MilestoneDelayRecord.find(:all, :conditions=>[request]).each do |delay|
       if delay.project and delay.project.id != 2480
+        raise delay.planned_date.to_s
         date = Date.strptime(delay.planned_date.to_s, '%Y-%m-%d').strftime('%d-%m-%Y')
         delay.planned_date = date
         @delays << delay
