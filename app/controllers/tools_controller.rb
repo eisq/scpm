@@ -2036,7 +2036,7 @@ class ToolsController < ApplicationController
     end
 
     @spiders_removed = spiders_removed.uniq
-    @number_of_spiders_removed = spiders_removed.count
+    @number_of_spiders_removed = @spiders_removed.count
   end
 
   def milestone_delay_config
