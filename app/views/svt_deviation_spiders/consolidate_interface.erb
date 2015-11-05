@@ -236,19 +236,33 @@ $( document ).ready(function() {
 </table>
 
 <% if @activities_not_realised.count > 0 %>
-<h3>Not achieved macro-objectives</h3>
+<h3>Not achieved macro-objectives - macro-activities</h3>
 <ul>
-	<% @activities_not_realised.each do |activity| %>
-		<li><%= activity.name %></li>
+	<% @activities_not_realised.each do |activity_struct| %>
+		<li><%= activity_struct.activity.name %></li>
+		<% if activity_struct.macro_activities.count > 0 %>
+			<ul>
+				<% activity_struct.macro_activities.each do |macro_activity| %>
+				<li>-> <%= macro_activity.name %></li>
+				<% end %>
+			</ul>
+		<% end %>
 	<% end %>
 </ul>
 <% end %>
 
 <% if @activities_partially_realised.count > 0 %>
-<h3>Partially achieved macro-objectives</h3>
+<h3>Partially achieved macro-objectives - macro-activities</h3>
 <ul>
-	<% @activities_partially_realised.each do |activity| %>
-		<li><%= activity.name %></li>
+	<% @activities_partially_realised.each do |activity_struct| %>
+		<li><%= activity_struct.activity.name %></li>
+		<% if activity_struct.macro_activities.count > 0 %>
+			<ul>
+				<% activity_struct.macro_activities.each do |macro_activity| %>
+				<li>-> <%= macro_activity.name %></li>
+				<% end %>
+			</ul>
+		<% end %>
 	<% end %>
 </ul>
 <% end %>

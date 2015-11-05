@@ -8,8 +8,8 @@ class SvtDeviationSpidersController < ApplicationController
 	Devia_status_saved = Struct.new(:deliverable_id, :status_number)
 	Customization_deliverable_status = Struct.new(:deliverable_name, :status_number)
 	Maturity = Struct.new(:name, :percent)
-	Activity_realisation = Struct.new(:activity, :answer)
-	Activity_struct = Struct.new(:activity, :no, :total)
+	Activity_realisation = Struct.new(:activity, :answer, :deliverable)
+	Activity_struct = Struct.new(:activity, :no, :total, :macro_activities)
 
 	SPIDER_CONSO_AQ = 1
 	SPIDER_CONSO_COUNTER = 2
@@ -351,9 +351,10 @@ class SvtDeviationSpidersController < ApplicationController
 				SvtDeviationSpiderValue.find(:all, :conditions=>["svt_deviation_spider_deliverable_id = ?", spider_deliverable.id]).each do |value|
 					question = SvtDeviationQuestion.find(:first, :conditions=>["id = ?", value.svt_deviation_question_id])
 					if question
-						activity_realisation = Activity_realisation.new #Activity_realisation = Struct.new(:activity, :answer)
+						activity_realisation = Activity_realisation.new #Activity_realisation = Struct.new(:activity, :answer, :deliverable)
 						activity_realisation.activity = question.svt_deviation_activity
 						activity_realisation.answer = value.answer
+						activity_realisation.deliverable = maturity_deliverable.svt_deviation_deliverable
 						activity_realisations << activity_realisation
 
 						all_activities << question.svt_deviation_activity
@@ -364,26 +365,39 @@ class SvtDeviationSpidersController < ApplicationController
 
 		all_activities = all_activities.uniq
 		all_activities.each { |activity|
-			activity_struct = Activity_struct.new #Activity_struct = Struct.new(:activity, :no, :total)
+			deliverables = Array.new
+			activity_struct = Activity_struct.new #Activity_struct = Struct.new(:activity, :no, :total, :macro_activities)
 			activity_struct.activity = activity
 			activity_struct.no = 0
 			activity_struct.total = 0
 			activity_realisations.each { |realisation|
 				if activity.name == realisation.activity.name
 					if realisation.answer == false
+						deliverables << realisation.deliverable
 						activity_struct.no = activity_struct.no + 1
 					end
 					activity_struct.total = activity_struct.total + 1
 				end
 			}
 
+			macro_activities = Array.new
+			deliverables.each do |deliv|
+				SvtDeviationMacroActivity.find(:all, :conditions=>["svt_deviation_activity_id = ?", activity_struct.activity.id]).each do |macro_activity|
+					macro_activity_deliverable = SvtDeviationMacroActivityDeliverable.find(:first, :conditions=>["svt_deviation_macro_activity_id = ? and svt_deviation_deliverable_id = ?", macro_activity.id, deliv.id])
+					if macro_activity_deliverable
+						macro_activities << macro_activity
+					end
+				end
+			end
+			activity_struct.macro_activities = macro_activities
+
 			if activity_struct.total != 0
 				percent = activity_struct.no.to_f / activity_struct.total.to_f * 100
 				percent_ok = 100 - percent
 				if percent_ok < 70
-					activities_not_realised << activity_struct.activity
+					activities_not_realised << activity_struct
 				elsif percent_ok >= 70 and percent_ok < 90
-					activities_partially_realised << activity_struct.activity
+					activities_partially_realised << activity_struct
 				end
 			end
 		}
