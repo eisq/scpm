@@ -11,7 +11,7 @@
 <% @consos_freelance.each do |conso| %>
 	<strong><%= conso.svt_deviation_spider_id.to_s %></strong>
 	 <% if conso.svt_deviation_deliverable_id %>- Deliverable:<%= conso.svt_deviation_deliverable.name %> <% end %>
-	 <% if conso.svt_deviation_activity_id %><%= conso.svt_deviation_activity.name %>- Macro-obective: <% end %>
+	 <% if conso.svt_deviation_activity_id %>- Macro-obective:<%= conso.svt_deviation_activity.name %> <% end %>
 	 <% if conso.score %>- Score:<%= conso.score.to_s %> <% end %>
 	 <% if conso.justification %>- Justification:<%= conso.justification %> <% end %>
 	 - Created:<%= conso.created_at.to_s %><br/>
