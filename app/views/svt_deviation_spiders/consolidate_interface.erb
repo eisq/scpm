@@ -269,7 +269,9 @@ $( document ).ready(function() {
 
 <br/>
 
+<% number_rows = actual_number_maturities = 0 %>
 <h2>Deliverables: Planned vs Achieved</h2>
+<table><tr><td>
 <table class="consolidation_table">
 
 <tr class="consolidation_tr_activity">
@@ -280,6 +282,8 @@ $( document ).ready(function() {
 </tr>
 <% @maturity_deliverables.each do |maturity| %>
 <tr class="consolidation_tr_deliverable">
+	<% number_rows = number_rows + 1 %>
+	<% actual_number_maturities = actual_number_maturities + 1 %>
 	<td class="consolidation_td_deliverable">
 		<%= maturity.svt_deviation_deliverable.name %>
 	</td>
@@ -297,8 +301,22 @@ $( document ).ready(function() {
 		<%= text_area_tag('comment', maturity.comment, :cols=>21, :rows=>1, :id=>"#{maturity.id.to_s}", :class=>"conso_tf") %>
 	</td>
 </tr>
+<% if number_rows == 8 and @maturity_deliverables.count > actual_number_maturities %>
+	<% number_rows = 0 %>
+	</table>
+</td><td>
+	<table class="consolidation_table">
+
+	<tr class="consolidation_tr_activity">
+		<td class="consolidation_td_activity"><bold>Deliverable</bold></td>
+		<td class="consolidation_td_activity"><bold>Planned</bold></td>
+		<td class="consolidation_td_activity"><bold>Achieved</bold></td>
+		<td class="consolidation_td_activity"><bold>Comments</bold></td>
+	</tr>
+<% end %>
 <% end %>
 </table>
+</td></tr></table>
 
 <br/><br/>
 

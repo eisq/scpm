@@ -444,7 +444,7 @@ class SvtDeviationSpidersController < ApplicationController
 		mat = Maturity.new # Maturity = Struct.new(:name, :percent)
 		if deviation_spiders.count > 0
 			deviation_spiders.each do |ds|
-				if ds.milestone.done == 1
+				if ds.milestone and ds.milestone.done == 1
 					maturities << ds.get_deviation_maturity
 					maturities_name << ds.milestone.name
 				end
