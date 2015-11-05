@@ -271,7 +271,7 @@ $( document ).ready(function() {
 
 <% number_rows = actual_number_maturities = 0 %>
 <h2>Deliverables: Planned vs Achieved</h2>
-<table><tr><td>
+<table><tr valign="top"><td>
 <table class="consolidation_table">
 
 <tr class="consolidation_tr_activity">
@@ -301,7 +301,7 @@ $( document ).ready(function() {
 		<%= text_area_tag('comment', maturity.comment, :cols=>21, :rows=>1, :id=>"#{maturity.id.to_s}", :class=>"conso_tf") %>
 	</td>
 </tr>
-<% if number_rows == 8 and @maturity_deliverables.count > actual_number_maturities %>
+<% if number_rows == 12 and @maturity_deliverables.count > actual_number_maturities %>
 	<% number_rows = 0 %>
 	</table>
 </td><td>
