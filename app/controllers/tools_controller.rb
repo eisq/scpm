@@ -2020,24 +2020,23 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
-  def show_removed_spiders
+  def script_check_svt_spiders_interfaces
     spiders_removed = Array.new
-    show = "/tools/scripts"
+    @spiders_removed = Array.new
+    @number_of_spider_removed = 0
+    @consos_freelance = Array.new
 
     SvtDeviationSpiderConsolidation.find(:all).each do |conso|
       spider = nil
       spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", conso.svt_deviation_spider_id])
       if !spider
         spiders_removed << conso.svt_deviation_spider_id
+        @consos_freelance << conso
       end
     end
 
-    spiders_removed = spiders_removed.uniq
-    if spiders_removed.count > 0
-      show = show + "?sp=" + spiders_removed.count.to_s
-    end
-
-    redirect_to show
+    @spiders_removed = spiders_removed.uniq
+    @number_of_spiders_removed = spiders_removed.count
   end
 
   def milestone_delay_config

@@ -10,7 +10,4 @@ Add milestone delays from google sheet in the DB <!--<%= link_to('import', {:act
 
 <br/>
 
-Display number of svt_spider_deliverables which have the interface removed <%= link_to('show', {:action=>'show_removed_spiders'}, {:class=>'btnlnk'}) %><br/>
-<% if params[:sp] %>
-	<%= "<strong>Svt Spiders removed: <span style='color:red'>" + params[:sp] + "</span></strong>" %>
-<% end %>
+Display number of svt_spider_deliverables which have the interface removed <%= link_to('show', {:action=>'script_check_svt_spiders_interfaces'}, {:class=>'btnlnk'}) %><br/>
