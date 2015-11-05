@@ -4,11 +4,11 @@
 <h2>Spiders removed</h2>
 
 <% if @number_of_spiders_removed > 0 %>
-	<%= "<strong>Svt Spiders removed: <span style='color:red'>" + @number_of_spiders_removed.to_s + "</span></strong>" %>
+	<%= "<strong>Svt Spiders removed: " + @number_of_spiders_removed.to_s + "</strong>" %>
 <% end %>
 <br/><br/>
 <% if @consos_freelance and @consos_freelance.count > 0 %>
 <% @consos_freelance.each do |conso| %>
-	<%= conso.score.to_s %> - <%= conso.justification %> - <%= conso.created_at.to_s %><br/>
+	<strong><%= conso.svt_deviation_spider_id.to_s %></strong> - score:<%= conso.score.to_s %> - justif:<%= conso.justification %> - created_at:<%= conso.created_at.to_s %><br/>
 <% end %>
 <% end %>
