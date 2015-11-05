@@ -9,6 +9,6 @@
 <br/><br/>
 <% if @consos_freelance and @consos_freelance.count > 0 %>
 <% @consos_freelance.each do |conso| %>
-	<strong><%= conso.svt_deviation_spider_id.to_s %></strong> - Deliverable:<%= conso.svt_deviation_deliverable.name %> - Macro-obective:<%= conso.svt_deviation_activity.name %> - Score:<%= conso.score.to_s %> - Justification:<%= conso.justification %> - Created:<%= conso.created_at.to_s %><br/>
+	<strong><%= conso.svt_deviation_spider_id.to_s %></strong> - Deliverable:<%= conso.svt_deviation_deliverable_id.to_s %> - Macro-obective:<%= conso.svt_deviation_activity_id.to_s %> - Score:<%= conso.score.to_s %> - Justification:<%= conso.justification %> - Created:<%= conso.created_at.to_s %><br/>
 <% end %>
 <% end %>
