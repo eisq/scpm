@@ -46,6 +46,10 @@
     @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#000000'
     @xml.Interior 'ss:Color'=>"#b6dde8", 'ss:Pattern'=>'Solid'
   end
+  @xml.Style 'ss:ID' => 'Grey', 'ss:Name' => 'Grey' do
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#000000'
+    @xml.Interior 'ss:Color'=>"#D8D8D8", 'ss:Pattern'=>'Solid'
+  end
   @xml.Style 'ss:ID' => 'Header3bold', 'ss:Name' => 'Header3bold' do
     @xml.Font  'ss:Bold'=>"1"
   end
@@ -144,26 +148,59 @@ end
             @xml.Data delay.get_milestone_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data delay.planned_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            date_split = delay.planned_date.to_s.split("-")
+            date = date_split[2]+"-"+date_split[1]+"-"+date_split[0]
+            @xml.Data date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data delay.current_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            date_split = delay.current_date.to_s.split("-")
+            date = date_split[2]+"-"+date_split[1]+"-"+date_split[0]
+            @xml.Data date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell 'ss:StyleID' => 'Blue' do
             @xml.Data delay.delay_days, 'ss:Type' => 'Number'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
-          @xml.Cell do
-            @xml.Data delay.get_reason_one, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+
+          if delay.get_reason_one and delay.get_reason_one != ""
+            @xml.Cell do
+              @xml.Data delay.get_reason_one, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
+          else
+            @xml.Cell 'ss:StyleID' => 'Grey' do
+              @xml.Data delay.get_reason_one, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
-          @xml.Cell do
-            @xml.Data delay.get_reason_two, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+
+          if delay.get_reason_two and delay.get_reason_two != ""
+            @xml.Cell do
+              @xml.Data delay.get_reason_two, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
+          else
+            @xml.Cell 'ss:StyleID' => 'Grey' do
+              @xml.Data delay.get_reason_two, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
-          @xml.Cell do
-            @xml.Data delay.get_reason_three, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+
+          if delay.get_reason_three and delay.get_reason_three != ""
+            @xml.Cell do
+              @xml.Data delay.get_reason_three, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
+          else
+            @xml.Cell 'ss:StyleID' => 'Grey' do
+              @xml.Data delay.get_reason_three, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
-          @xml.Cell do
-            @xml.Data delay.reason_other, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+
+          if delay.reason_other
+            @xml.Cell do
+              @xml.Data delay.reason_other, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
+          else
+            @xml.Cell 'ss:StyleID' => 'Grey' do
+              @xml.Data delay.reason_other, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
+
           @xml.Cell 'ss:StyleID' => 'borderleft' do
             @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
