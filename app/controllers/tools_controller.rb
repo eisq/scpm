@@ -2152,9 +2152,9 @@ class ToolsController < ApplicationController
     @delays = Array.new
     MilestoneDelayRecord.find(:all, :conditions=>[request]).each do |delay|
       if delay.project and delay.project.id != 2480
-        date = delay.planned_date.split("-")
+        date = delay.planned_date.to_s.split("-")
         delay.planned_date = date[2]+"-"+date[1]+"-"+date[0]
-        date = delay.current_date.split("-")
+        date = delay.current_date.to_s.split("-")
         delay.current_date = date[2]+"-"+date[1]+"-"+date[0]
         @delays << delay
       end
