@@ -301,7 +301,7 @@ $( document ).ready(function() {
 		<%= text_area_tag('comment', maturity.comment, :cols=>21, :rows=>1, :id=>"#{maturity.id.to_s}", :class=>"conso_tf") %>
 	</td>
 </tr>
-<% if number_rows == 12 and @maturity_deliverables.count > actual_number_maturities %>
+<% if number_rows == 20 and @maturity_deliverables.count > actual_number_maturities %>
 	<% number_rows = 0 %>
 	</table>
 </td><td>
