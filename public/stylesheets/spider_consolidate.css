@@ -1,6 +1,7 @@
 .consolidation_table {
   	border-collapse: collapse;
 	border: 1px solid blue;
+	width: 450px;
 }
 .consolidation_tr_activity {
 	border: 1px solid blue;
