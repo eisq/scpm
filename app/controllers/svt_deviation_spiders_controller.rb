@@ -325,6 +325,8 @@ class SvtDeviationSpidersController < ApplicationController
 	    	@activities_partially_realised = Array.new
 	    	@activities_not_realised = Array.new
 	    	@activities_partially_realised, @activities_not_realised = get_activities_realisation(@maturity_deliverables)
+	    	@activities_partially_realised = @activities_partially_realised.uniq
+	    	@activities_not_realised = @activities_not_realised.uniq
 	    	
 			@maturity = @deviation_spider.get_deviation_maturity
 			#get all svt deviation spiders linked to this project

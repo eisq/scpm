@@ -282,13 +282,18 @@ class ProjectsController < ApplicationController
     if delay_reason_id
       case level
       when 1
-        description = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", delay_reason_id]).reason_description
+        reason = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", delay_reason_id])
       when 2
-        description = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", delay_reason_id]).reason_description
+        reason = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", delay_reason_id])
       when 3
-        description = MilestoneDelayReasonThree.find(:first, :conditions=>["id = ?", delay_reason_id]).reason_description
+        reason = MilestoneDelayReasonThree.find(:first, :conditions=>["id = ?", delay_reason_id])
       end
     end
+
+    if reason
+      description = reason.reason_description
+    end
+
     return description
   end
 
@@ -1076,10 +1081,7 @@ class ProjectsController < ApplicationController
       new_project.lifecycle = lifecycle_id
       new_project.lifecycle_id = lifecycle_id
       new_project.lifecycle_object = lifecycle
-      # Lifecycle is not a Suite lifecycle
-      if lifecycle_id != "7"
-        new_project.deviation_spider_svt = true
-      end
+      new_project.deviation_spider_svt = true
       new_project.save
 
       project.is_running = 0
