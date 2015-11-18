@@ -38,7 +38,7 @@ module DeviationSvt
     elsif doc.worksheet "PSU_Agile" and lifecycle_id == 8
       psu = doc.worksheet "PSU_Agile"
       sheet_rows = self.parse_excel_content(psu)
-    elsif doc.worksheet "PSU_Agile" and lifecycle_id == 7
+    elsif doc.worksheet "PSU_Suite" and lifecycle_id == 7
       psu = doc.worksheet "PSU_Suite"
       sheet_rows = self.parse_excel_content(psu)
     end

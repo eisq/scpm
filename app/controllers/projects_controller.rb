@@ -252,6 +252,8 @@ class ProjectsController < ApplicationController
       @new_spider_to_show = @project.get_before_G5
     elsif @project.lifecycle_id == 10 or @project.lifecycle_id == 8
       @new_spider_to_show = @project.get_before_M5
+    elsif @project.lifecycle_id == 7
+      @new_spider_to_show = @project.get_before_sM5
     end
 
     @milestone_delays = Array.new

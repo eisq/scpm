@@ -870,6 +870,18 @@ class Project < ActiveRecord::Base
     return before
   end
 
+  def get_before_sM5
+    before = true
+    self.milestones.each { |m|
+      if (m.name != "sM1" and m.name != "sM3" and m.done != 0 and m.is_virtual != 1)
+        if(m.done != 2)
+          before = false
+        end
+      end
+    }
+    return before
+  end
+
   def suggested_status
     rv = 1
     self.risks.each { |r|
