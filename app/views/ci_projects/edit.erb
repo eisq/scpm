@@ -1,11 +1,28 @@
 <SCRIPT language="Javascript">
 function dateChanged(date_title, date_objective, date)
 {
+	if(date_title == "sqli_justif"){
+		var old_date1 = new Date("<%= @project.sqli_validation_date %>")
+		var old_date2 = new Date("<%= @project.sqli_validation_date_objective %>")
+	} else if(date_title == "airbus_justif"){
+		var old_date1 = new Date("<%= @project.airbus_validation_date %>")
+		var old_date2 = new Date("<%= @project.airbus_validation_date_objective %>")
+	} else if(date_title == "deployment_justif"){
+		var old_date1 = new Date("<%= @project.deployment_date %>")
+		var old_date2 = new Date("<%= @project.deployment_date_objective %>")
+	}
+
 	var date1 = new Date(date)
 	var date2 = new Date(date_objective)
 
-	if (date1 > date2){
-		$(date_title).style.display='table-row';
+	if(old_date1 == ""){
+		if (date1 > date2){
+			$(date_title).style.display='table-row';
+		}
+	} else if(old_date1 != ""){
+		if (date1 > old_date1){
+			$(date_title).style.display='table-row';
+		}
 	}
 }
 </SCRIPT>
