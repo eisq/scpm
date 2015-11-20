@@ -268,53 +268,36 @@ class CiProjectsController < ApplicationController
     validators = siglum + APP_CONFIG['ci_date_to_validate_destination'] #-> modifier dans config.yml : "jmondy@sqli.com,ngagnaire@sqli.com,dadupont@sqli.com"
 
     #if a date has changed, an alert is raised
-    if old_p.sqli_validation_date and p.sqli_validation_date and (old_p.sqli_validation_date != p.sqli_validation_date) and (old_p.sqli_validation_date > p.sqli_validation_date)
-      p.sqli_date_alert = 1
-      date_validation_mail(validators, p, p.justification_sqli_retard)
+    if old_p.sqli_validation_date and p.sqli_validation_date and p.sqli_validation_date_objective
+      if old_p.sqli_validation_date == "" and (p.sqli_validation_date > p.sqli_validation_date_objective)
+        p.sqli_date_alert = 1
+        date_validation_mail(validators, p, p.justification_sqli_retard)
+      elsif old_p.sqli_validation_date != "" and (p.sqli_validation_date > old_p.sqli_validation_date)
+        p.sqli_date_alert = 1
+        date_validation_mail(validators, p, p.justification_sqli_retard)
+      end
     end
-    if old_p.airbus_validation_date and p.airbus_validation_date and (old_p.airbus_validation_date != p.airbus_validation_date) and (old_p.airbus_validation_date > p.airbus_validation_date)
-      p.airbus_date_alert = 1
-      date_validation_mail(validators, p, p.justification_airbus_retard)
+    if old_p.airbus_validation_date and p.airbus_validation_date and p.airbus_validation_date_objective
+      if old_p.airbus_validation_date == "" and (p.airbus_validation_date > p.airbus_validation_date_objective)
+        p.airbus_date_alert = 1
+        date_validation_mail(validators, p, p.justification_airbus_retard)
+      elsif old_p.airbus_validation_date != "" and (p.airbus_validation_date > old_p.airbus_validation_date)
+        p.airbus_date_alert = 1
+        date_validation_mail(validators, p, p.justification_airbus_retard)
+      end
     end
-    if old_p.deployment_date and p.deployment_date and (old_p.deployment_date != p.deployment_date) and (old_p.deployment_date > p.deployment_date)
-      p.deployment_date_alert = 1
-      date_validation_mail(validators, p, p.justification_deployment_retard)
+    if old_p.deployment_date and p.deployment_date and p.deployment_date_objective
+      if old_p.deployment_date == "" and (p.deployment_date > p.deployment_date_objective)
+        p.deployment_date_alert = 1
+        date_validation_mail(validators, p, p.justification_deployment_retard)
+      elsif old_p.deployment_date != "" and (p.deployment_date > old_p.deployment_date)
+        p.deployment_date_alert = 1
+        date_validation_mail(validators, p, p.justification_deployment_retard)
+      end
     end
-
-    airbus_date_delay = nil
-    sqli_date_delay = nil
-    deployment_date_delay = nil
 
     #if a date is committed, the delay and it's justification is recorded
     if old_p.airbus_date_alert == 1 and p.airbus_date_alert == 0
-      if p.airbus_validation_date and p.airbus_validation_date_objective
-        if old_p.airbus_validation_date == "" and (p.airbus_validation_date > p.airbus_validation_date_objective)
-          airbus_date_delay = true
-        elsif old_p.airbus_validation_date != "" and (p.airbus_validation_date > old_p.airbus_validation_date)
-          airbus_date_delay = true
-        end
-      end
-    end
-    if old_p.sqli_date_alert == 1 and p.sqli_date_alert == 0
-      if p.sqli_validation_date and p.sqli_validation_date_objective
-        if old_p.sqli_validation_date == "" and (p.sqli_validation_date > p.sqli_validation_date_objective)
-          sqli_date_delay = true
-        elsif old_p.sqli_validation_date != "" and (p.sqli_validation_date > old_p.sqli_validation_date)
-          sqli_date_delay = true
-        end
-      end
-    end
-    if old_p.deployment_date_alert == 1 and p.deployment_date_alert == 0
-      if p.deployment_date and p.deployment_date_objective
-        if old_p.deployment_date == "" and (p.deployment_date > p.deployment_date_objective)
-          deployment_date_delay = true
-        elsif old_p.deployment_date != "" and (p.deployment_date > old_p.deployment_date)
-          deployment_date_delay = true
-        end
-      end
-    end
-
-    if airbus_date_delay
       delay = CiProjectDelay.new
       delay.ci_project_id = p.id
       delay.title = "Airbus validation date"
@@ -325,7 +308,7 @@ class CiProjectsController < ApplicationController
       p.airbus_commit_author = current_user.rmt_user
       delay.save
     end
-    if sqli_date_delay
+    if old_p.sqli_date_alert == 1 and p.sqli_date_alert == 0
       delay = CiProjectDelay.new
       delay.ci_project_id = p.id
       delay.title = "SQLI validation date"
@@ -336,7 +319,7 @@ class CiProjectsController < ApplicationController
       p.sqli_commit_author = current_user.rmt_user
       delay.save
     end
-    if deployment_date_delay
+    if old_p.deployment_date_alert == 1 and p.deployment_date_alert == 0
       delay = CiProjectDelay.new
       delay.ci_project_id = p.id
       delay.title = "Deployment date"
