@@ -281,45 +281,71 @@ class CiProjectsController < ApplicationController
       date_validation_mail(validators, p, p.justification_deployment_retard)
     end
 
+    airbus_date_delay = nil
+    sqli_date_delay = nil
+    deployment_date_delay = nil
+
     #if a date is committed, the delay and it's justification is recorded
     if old_p.airbus_date_alert == 1 and p.airbus_date_alert == 0
-      if p.airbus_validation_date and p.airbus_validation_date_objective and (p.airbus_validation_date > p.airbus_validation_date_objective)
-        delay = CiProjectDelay.new
-        delay.ci_project_id = p.id
-        delay.title = "Airbus validation date"
-        delay.justification = p.justification_airbus_retard
-        delay.new_date = p.airbus_validation_date
-        delay.old_date = old_p.airbus_validation_date
-        p.justification_airbus_retard = nil
-        p.airbus_commit_author = current_user.rmt_user
-        delay.save
+      if p.airbus_validation_date and p.airbus_validation_date_objective
+        if old_p.airbus_validation_date == "" and (p.airbus_validation_date > p.airbus_validation_date_objective)
+          airbus_date_delay = true
+        elsif old_p.airbus_validation_date != "" and (p.airbus_validation_date > old_p.airbus_validation_date)
+          airbus_date_delay = true
+        end
       end
     end
     if old_p.sqli_date_alert == 1 and p.sqli_date_alert == 0
-      if p.sqli_validation_date and p.sqli_validation_date_objective and (p.sqli_validation_date > p.sqli_validation_date_objective)
-        delay = CiProjectDelay.new
-        delay.ci_project_id = p.id
-        delay.title = "SQLI validation date"
-        delay.justification = p.justification_sqli_retard
-        delay.new_date = p.sqli_validation_date
-        delay.old_date = old_p.sqli_validation_date
-        p.justification_sqli_retard = nil
-        p.sqli_commit_author = current_user.rmt_user
-        delay.save
+      if p.sqli_validation_date and p.sqli_validation_date_objective
+        if old_p.sqli_validation_date == "" and (p.sqli_validation_date > p.sqli_validation_date_objective)
+          sqli_date_delay = true
+        elsif old_p.sqli_validation_date != "" and (p.sqli_validation_date > old_p.sqli_validation_date)
+          sqli_date_delay = true
+        end
       end
     end
     if old_p.deployment_date_alert == 1 and p.deployment_date_alert == 0
-      if p.deployment_date and p.deployment_date_objective and (p.deployment_date > p.deployment_date_objective)
-        delay = CiProjectDelay.new
-        delay.ci_project_id = p.id
-        delay.title = "Deployment date"
-        delay.justification = p.justification_deployment_retard
-        delay.new_date = p.deployment_date
-        delay.old_date = old_p.deployment_date
-        p.justification_deployment_retard = nil
-        p.deployment_commit_author = current_user.rmt_user
-        delay.save
+      if p.deployment_date and p.deployment_date_objective
+        if old_p.deployment_date == "" and (p.deployment_date > p.deployment_date_objective)
+          deployment_date_delay = true
+        elsif old_p.deployment_date != "" and (p.deployment_date > old_p.deployment_date)
+          deployment_date_delay = true
+        end
       end
+    end
+
+    if airbus_date_delay
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "Airbus validation date"
+      delay.justification = p.justification_airbus_retard
+      delay.new_date = p.airbus_validation_date
+      delay.old_date = old_p.airbus_validation_date
+      p.justification_airbus_retard = nil
+      p.airbus_commit_author = current_user.rmt_user
+      delay.save
+    end
+    if sqli_date_delay
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "SQLI validation date"
+      delay.justification = p.justification_sqli_retard
+      delay.new_date = p.sqli_validation_date
+      delay.old_date = old_p.sqli_validation_date
+      p.justification_sqli_retard = nil
+      p.sqli_commit_author = current_user.rmt_user
+      delay.save
+    end
+    if deployment_date_delay
+      delay = CiProjectDelay.new
+      delay.ci_project_id = p.id
+      delay.title = "Deployment date"
+      delay.justification = p.justification_deployment_retard
+      delay.new_date = p.deployment_date
+      delay.old_date = old_p.deployment_date
+      p.justification_deployment_retard = nil
+      p.deployment_commit_author = current_user.rmt_user
+      delay.save
     end
 
     if p.sqli_validation_done == 1
