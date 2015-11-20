@@ -2,14 +2,17 @@
 function dateChanged(date_title, date_objective, date)
 {
 	if(date_title == "sqli_justif"){
-		var old_date1 = new Date("<%= @project.sqli_validation_date %>")
-		var old_date2 = new Date("<%= @project.sqli_validation_date_objective %>")
+		var old_date = "<%= @project.sqli_validation_date.to_s %>"
 	} else if(date_title == "airbus_justif"){
-		var old_date1 = new Date("<%= @project.airbus_validation_date %>")
-		var old_date2 = new Date("<%= @project.airbus_validation_date_objective %>")
+		var old_date = "<%= @project.airbus_validation_date.to_s %>"
 	} else if(date_title == "deployment_justif"){
-		var old_date1 = new Date("<%= @project.deployment_date %>")
-		var old_date2 = new Date("<%= @project.deployment_date_objective %>")
+		var old_date = "<%= @project.deployment_date.to_s %>"
+	}
+
+	if(old_date == ""){
+		var old_date1 = ""
+	} else {
+		var old_date1 = new Date(old_date)
 	}
 
 	var date1 = new Date(date)
