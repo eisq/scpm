@@ -2,7 +2,7 @@
 <br/>
 
 <h2>Spiders removed</h2>
-
+<%= link_to('Clean-up lost svt_spiders', {:action=>'clean_up_lost_svt_spiders'}, {:class=>'btnlnk'}) %><br/><br/>
 <% if @number_of_spiders_removed > 0 %>
 	<%= "<strong>Svt Spiders removed: " + @number_of_spiders_removed.to_s + "</strong>" %>
 <% end %>

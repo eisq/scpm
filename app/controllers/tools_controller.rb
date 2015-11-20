@@ -2039,6 +2039,18 @@ class ToolsController < ApplicationController
     @number_of_spiders_removed = @spiders_removed.count
   end
 
+  def clean_up_lost_svt_spiders
+    SvtDeviationSpiderConsolidation.find(:all).each do |conso|
+      spider = nil
+      spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", conso.svt_deviation_spider_id])
+      if !spider
+        conso.delete
+      end
+    end
+
+    redirect_to '/tools/script_check_svt_spiders_interfaces'
+  end
+
   def milestone_delay_config
     @reason_one_selected = @reason_two_selected = nil
 
