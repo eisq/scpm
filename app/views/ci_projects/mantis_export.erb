@@ -1,11 +1,12 @@
 <h2>Mantis export</h2>
 
 <h3>All CI except delivered/closed/rejected</h3>
-<p> <% if @export_mantis_count > 0 %>
+<p> 
 	<%= @export_mantis_count %> new project(s) to be implemented</p>
 <textarea rows="18" cols="150" readonly>
 	<%= @export_mantis_formula %>
 </textarea>
 <br/><br/>
+<% if @export_mantis_count > 0 %>
 <span style="color:red;">Click here after having imported from BAM to Mantis</span> <%= link_to('Implemented', {:action=>'mantis_implemented'}, {:class=>'btnlnk'}) %>
 <% end %>
