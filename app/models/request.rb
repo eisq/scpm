@@ -74,6 +74,44 @@ class Request < ActiveRecord::Base
   "WP7.2.4 - Expertise Activities for Project: Change Management"                         => "Proj. Change", #NEW
   "WP7.2.5 - Expertise Activities for Project: Lessons Learnt"                            => "Proj. Lessons", #NEW
   "WP7.2.6 - Expertise Activities for Project: Configuration Management"                  => "Proj. Conf.", #NEW
+
+  "2016-WP1.1.1 - Quality Gate"                                     => "2016 Quality Gate",
+  "2016-WP1.1.2 - Milestone / CCB review preparation"               => "2016 Milestone / CCB review preparation",
+  "2016-WP1.1.3 - Process Adherence Measurement"                    => "2016 Process Adherence Measurement",
+  "2016-WP1.1.4 - Quality Status of a Project"                      => "2016 Quality status of a Project",
+  "2016-WP1.1.5 - Quality of Product Document"                      => "2016 Quality of Product Document",
+  "2016-WP1.1.6 - Quality of the Configuration Management"          => "2016 Quality of the Configuration Management",
+  "2016-WP1.1.7 - Quality of the Code Static Review"                => "2016 Quality of the Code Static Review",
+  "2016-WP1.1.8 - Quality of the Test Dossier"                      => "2016 Quality of the Test Dossier",
+  "2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5"        => "2016 Quality Assurance M3-M5",
+  "2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6"                 => "2016 Quality Assurance M5-M10",
+  "2016-WP1.2.3 - Quality Assurance Post M10 / Post G6"             => "2016 Quality Assurance Post M10",
+  "2016-WP1.2.4 - Quality Assurance Agile Sprint 0"                 => "2016 Quality Assurance Agile Sprint 0",
+  "2016-WP1.2.5 - Quality Assurance Agile Sprints"                  => "2016 Quality Assurance Agile Sprints",
+  "2016-WP1.3.1 - DW/PLM Quality Plan"                              => "2016 DW/PLM Quality Plan",
+  "2016-WP1.3.2 - Support, KPI and Reporting"                       => "2016 Support, KPI and Reporting",
+  "2016-WP1.3.4 - PSU (GPP, LBIP, Suite)"                           => "2016 PSU",
+  "2016-WP1.3.5 - LL"                                               => "2016 LL",
+  "2016-WP2.1 - Business Process Layout"                            => "2016 Business Process Layout",
+  "2016-WP2.2 - Functional Layout (Use Cases)"                      => "2016 Functional Layout",
+  "2016-WP2.3 - Information Layout (Data Model)"                    => "2016 Information Layout",
+  "2016-WP2.4 - Modeling Update"                                    => "2016 Modeling Update",
+  "2016-WP3.1.1 - Root Cause Analysis (Classic Approach)"           => "2016 Root Cause Analysis Classic",
+  "2016-WP3.1.2 - Root Cause Analysis (Seminar Approach)"           => "2016 Root Cause Analysis Seminar",
+  "2016-WP3.2 - Action Plan of the Root Cause Analysis"             => "2016 Action Plan of the Root Cause Analysis",
+  "2016-WP4.1 - Coaching Project Plan"                              => "2016 Coaching Project Plan",
+  "2016-WP4.2 - Coaching BRD"                                       => "2016 Coaching BRD",
+  "2016-WP4.3 - Coaching V&V"                                       => "2016 Coaching V&V",
+  "2016-WP4.4 - Coaching CMP"                                       => "2016 Coaching CMP",
+  "2016-WP4.5 - Coaching HLR"                                       => "2016 Coaching HLR",
+  "2016-WP4.6 - Coaching Use Case"                                  => "2016 Coaching Use Case",
+  "2016-WP4.7.1 - Diagnosis and Project Launch"                     => "2016 Diagnosis and Project Launch",
+  "2016-WP4.7.2 - Sprint 0 Support"                                 => "2016 Sprint 0 Support",
+  "2016-WP4.7.3 - Sprint Coaching"                                  => "2016 Sprint Coaching",
+  "2016-WP4.8 - Risk Management"                                    => "2016 Risk Management",
+  "2016-WP4.9 - E-M&T Referential"                                  => "2016 E-M&T Referential",
+  "2016-WP5.1 - Light Expertise"                                    => "2016 Light Expertise",
+  "2016-WP5.2 - Complete Expertise"                                 => "2016 Complete Expertise"
   }
 
 

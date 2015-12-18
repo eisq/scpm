@@ -2020,6 +2020,232 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def add_workpackages_2016
+    wp = Workpackage.new
+    wp.title = "2016-WP1.1.1 - Quality Gate"
+    wp.shortname = "2016 Quality Gate"
+    wp.code = "2016-1.1.1"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.1.2 - Milestone / CCB review preparation"
+    wp.shortname = "2016 Milestone / CCB review preparation"
+    wp.code = "2016-1.1.2"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.1.3 - Process Adherence Measurement"
+    wp.shortname = "2016 Process Adherence Measurement"
+    wp.code = "2016-1.1.3"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.1.4 - Quality Status of a Project"
+    wp.shortname = "2016 Quality status of a Project"
+    wp.code = "2016-1.1.4"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.1.5 - Quality of Product Document"
+    wp.shortname = "2016 Quality of Product Document"
+    wp.code = "2016-1.1.5"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.1.6 - Quality of the Configuration Management"
+    wp.shortname = "2016 Quality of the Configuration Management"
+    wp.code = "2016-1.1.6"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.1.7 - Quality of the Code Static Review"
+    wp.shortname = "2016 Quality of the Code Static Review"
+    wp.code = "2016-1.1.7"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.1.8 - Quality of the Test Dossier"
+    wp.shortname = "2016 Quality of the Test Dossier"
+    wp.code = "2016-1.1.8"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5"
+    wp.shortname = "2016 Quality Assurance M3-M5"
+    wp.code = "2016-1.2.1"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6"
+    wp.shortname = "2016 Quality Assurance M5-M10"
+    wp.code = "2016-1.2.2"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.2.3 - Quality Assurance Post M10 / Post G6"
+    wp.shortname = "2016 Quality Assurance Post M10"
+    wp.code = "2016-1.2.3"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.2.4 - Quality Assurance Agile Sprint 0"
+    wp.shortname = "2016 Quality Assurance Agile Sprint 0"
+    wp.code = "2016-1.2.4"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.2.5 - Quality Assurance Agile Sprints"
+    wp.shortname = "2016 Quality Assurance Agile Sprints"
+    wp.code = "2016-1.2.5"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.3.1 - DW/PLM Quality Plan"
+    wp.shortname = "2016 DW/PLM Quality Plan"
+    wp.code = "2016-1.3.1"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.3.2 - Support, KPI and Reporting"
+    wp.shortname = "2016 Support, KPI and Reporting"
+    wp.code = "2016-1.3.2"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.3.4 - PSU (GPP, LBIP, Suite)"
+    wp.shortname = "2016 PSU"
+    wp.code = "2016-1.3.4"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.3.5 - LL"
+    wp.shortname = "2016 LL"
+    wp.code = "2016-1.3.5"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP2.1 - Business Process Layout"
+    wp.shortname = "2016 Business Process Layout"
+    wp.code = "2016-2.1"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP2.2 - Functional Layout (Use Cases)"
+    wp.shortname = "2016 Functional Layout"
+    wp.code = "2016-2.2"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP2.3 - Information Layout (Data Model)"
+    wp.shortname = "2016 Information Layout"
+    wp.code = "2016-2.3"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP2.4 - Modeling Update"
+    wp.shortname = "2016 Modeling Update"
+    wp.code = "2016-2.4"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP3.1.1 - Root Cause Analysis (Classic Approach)"
+    wp.shortname = "2016 Root Cause Analysis Classic"
+    wp.code = "2016-3.1.1"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP3.1.2 - Root Cause Analysis (Seminar Approach)"
+    wp.shortname = "2016 Root Cause Analysis Seminar"
+    wp.code = "2016-3.1.2"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP3.2 - Action Plan of the Root Cause Analysis"
+    wp.shortname = "2016 Action Plan of the Root Cause Analysis"
+    wp.code = "2016-3.2"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.1 - Coaching Project Plan"
+    wp.shortname = "2016 Coaching Project Plan"
+    wp.code = "2016-4.1"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.2 - Coaching BRD"
+    wp.shortname = "2016 Coaching BRD"
+    wp.code = "2016-4.2"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.3 - Coaching V&V"
+    wp.shortname = "2016 Coaching V&V"
+    wp.code = "2016-4.3"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.4 - Coaching CMP"
+    wp.shortname = "2016 Coaching CMP"
+    wp.code = "2016-4.4"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.5 - Coaching HLR"
+    wp.shortname = "2016 Coaching HLR"
+    wp.code = "2016-4.5"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.6 - Coaching Use Case"
+    wp.shortname = "2016 Coaching Use Case"
+    wp.code = "2016-4.6"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.7.1 - Diagnosis and Project Launch"
+    wp.shortname = "2016 Diagnosis and Project Launch"
+    wp.code = "2016-4.7.1"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.7.2 - Sprint 0 Support"
+    wp.shortname = "2016 Sprint 0 Support"
+    wp.code = "2016-4.7.2"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.7.3 - Sprint Coaching"
+    wp.shortname = "2016 Sprint Coaching"
+    wp.code = "2016-4.7.3"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.8 - Risk Management"
+    wp.shortname = "2016 Risk Management"
+    wp.code = "2016-4.8"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP4.9 - E-M&T Referential"
+    wp.shortname = "2016 E-M&T Referential"
+    wp.code = "2016-4.9"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP5.1 - Light Expertise"
+    wp.shortname = "2016 Light Expertise"
+    wp.code = "2016-5.1"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP5.2 - Complete Expertise"
+    wp.shortname = "2016 Complete Expertise"
+    wp.code = "2016-5.2"
+    wp.save
+
+    redirect_to '/tools/scripts'
+  end
+
   def delete_temp_deviation
     SvtDeviationSpiderConsolidationTemp.find(:all).each do |conso_temp|
       conso_temp.delete
