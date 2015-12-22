@@ -249,7 +249,6 @@ class Request < ActiveRecord::Base
     "WP4.2 - Surveillance Root cause"                     => 47,
     "WP4.3 - Actions Implementation & Control"            => 48,
     "WP4.4 - Fast Root Cause Analysis"                    => 49,
-
     "WP5 - Change Accompaniment"                          => 50,
     "WP5.1 - Change: Diagnosis & Action Plan"             => 51,
     "WP5.2 - Change : Implementation Support & Follow-up" => 52,
@@ -286,42 +285,42 @@ class Request < ActiveRecord::Base
 
   Wp_index_RFP2016 = {
     "2016-WP1.1.1 - Quality Gate"                                     => 0,
-    "2016-WP1.1.2 - Milestone / CCB review preparation"               => 8,
-    "2016-WP1.1.3 - Process Adherence Measurement"                    => 16,
-    "2016-WP1.1.4 - Quality Status of a Project"                      => 20,
-    "2016-WP1.1.5 - Quality of Product Document"                      => 24,
-    "2016-WP1.1.6 - Quality of the Configuration Management"          => 28,
-    "2016-WP1.1.7 - Quality of the Code Static Review"                => 29,
-    "2016-WP1.1.8 - Quality of the Test Dossier"                      => 30,
-    "2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5"        => 31,
-    "2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6"                 => 32,
-    "2016-WP1.2.3 - Quality Assurance Post M10 / Post G6"             => 33,
-    "2016-WP1.2.4 - Quality Assurance Agile Sprint 0"                 => 34,
-    "2016-WP1.2.5 - Quality Assurance Agile Sprints"                  => 35,
-    "2016-WP1.3.1 - DW/PLM Quality Plan"                              => 36,
-    "2016-WP1.3.2 - Support, KPI and Reporting"                       => 37,
-    "2016-WP1.3.4 - PSU (GPP, LBIP, Suite)"                           => 38,
-    "2016-WP1.3.5 - LL"                                               => 39,
-    "2016-WP2.1 - Business Process Layout"                            => 40,
-    "2016-WP2.2 - Functional Layout (Use Cases)"                      => 41,
-    "2016-WP2.3 - Information Layout (Data Model)"                    => 42,
-    "2016-WP2.4 - Modeling Update"                                    => 43,
-    "2016-WP3.1.1 - Root Cause Analysis (Classic Approach)"           => 44,
-    "2016-WP3.1.2 - Root Cause Analysis (Seminar Approach)"           => 45,
-    "2016-WP3.2 - Action Plan of the Root Cause Analysis"             => 46,
-    "2016-WP4.1 - Coaching Project Plan"                              => 47,
-    "2016-WP4.2 - Coaching BRD"                                       => 48,
-    "2016-WP4.3 - Coaching V&V"                                       => 49,
-    "2016-WP4.4 - Coaching CMP"                                       => 50,
-    "2016-WP4.5 - Coaching HLR"                                       => 51,
-    "2016-WP4.6 - Coaching Use Case"                                  => 52,
-    "2016-WP4.7.1 - Diagnosis and Project Launch"                     => 53,
-    "2016-WP4.7.2 - Sprint 0 Support"                                 => 54,
-    "2016-WP4.7.3 - Sprint Coaching"                                  => 55,
-    "2016-WP4.8 - Risk Management"                                    => 56,
-    "2016-WP4.9 - E-M&T Referential"                                  => 57,
-    "2016-WP5.1 - Light Expertise"                                    => 58,
-    "2016-WP5.2 - Complete Expertise"                                 => 59
+    "2016-WP1.1.2 - Milestone / CCB review preparation"               => 1,
+    "2016-WP1.1.3 - Process Adherence Measurement"                    => 2,
+    "2016-WP1.1.4 - Quality Status of a Project"                      => 3,
+    "2016-WP1.1.5 - Quality of Product Document"                      => 4,
+    "2016-WP1.1.6 - Quality of the Configuration Management"          => 5,
+    "2016-WP1.1.7 - Quality of the Code Static Review"                => 6,
+    "2016-WP1.1.8 - Quality of the Test Dossier"                      => 7,
+    "2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5"        => 8,
+    "2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6"                 => 9,
+    "2016-WP1.2.3 - Quality Assurance Post M10 / Post G6"             => 10,
+    "2016-WP1.2.4 - Quality Assurance Agile Sprint 0"                 => 11,
+    "2016-WP1.2.5 - Quality Assurance Agile Sprints"                  => 12,
+    "2016-WP1.3.1 - DW/PLM Quality Plan"                              => 13,
+    "2016-WP1.3.2 - Support, KPI and Reporting"                       => 14,
+    "2016-WP1.3.4 - PSU (GPP, LBIP, Suite)"                           => 15,
+    "2016-WP1.3.5 - LL"                                               => 16,
+    "2016-WP2.1 - Business Process Layout"                            => 17,
+    "2016-WP2.2 - Functional Layout (Use Cases)"                      => 18,
+    "2016-WP2.3 - Information Layout (Data Model)"                    => 19,
+    "2016-WP2.4 - Modeling Update"                                    => 20,
+    "2016-WP3.1.1 - Root Cause Analysis (Classic Approach)"           => 21,
+    "2016-WP3.1.2 - Root Cause Analysis (Seminar Approach)"           => 22,
+    "2016-WP3.2 - Action Plan of the Root Cause Analysis"             => 23,
+    "2016-WP4.1 - Coaching Project Plan"                              => 24,
+    "2016-WP4.2 - Coaching BRD"                                       => 25,
+    "2016-WP4.3 - Coaching V&V"                                       => 26,
+    "2016-WP4.4 - Coaching CMP"                                       => 27,
+    "2016-WP4.5 - Coaching HLR"                                       => 28,
+    "2016-WP4.6 - Coaching Use Case"                                  => 29,
+    "2016-WP4.7.1 - Diagnosis and Project Launch"                     => 30,
+    "2016-WP4.7.2 - Sprint 0 Support"                                 => 31,
+    "2016-WP4.7.3 - Sprint Coaching"                                  => 32,
+    "2016-WP4.8 - Risk Management"                                    => 33,
+    "2016-WP4.9 - E-M&T Referential"                                  => 34,
+    "2016-WP5.1 - Light Expertise"                                    => 35,
+    "2016-WP5.2 - Complete Expertise"                                 => 36
   }
 
   Comp_index = {
@@ -339,85 +338,84 @@ class Request < ActiveRecord::Base
   "N/A" 		  => 0
   }
 
-  # reminder: minus 10% for operational meetings
+  # reminder: minus 2,5% for operational meetings
   LoadsRFP2016 = [
     #2016-WP1.1.1 - Quality Gate
-    [1.875, 2,  2.375], #0
-    [3.125, 3.75, 5.25],
-    [2.375, 3.25, 5.5],
-    [3.75,  4.5,  6.5],
+    [0.875, 1.25,  1.75],
     #2016-WP1.1.2 - Milestone / CCB review preparation
-    [0.375, 0.375,  0.625], #4
-    [0.875, 0.875,  1.25],
-    [0.375, 0.375,  0.3750],
-    [1.75,  2.125,  2.5],
+    [0.625, 0.875,  1],
     #2016-WP1.1.3 - Process Adherence Measurement
-    [2.875, 3.25, 3.75], #8
-    [5.375, 6.875,  9.25],
-    [5.25,  5.75, 6.625],
-    [5.125, 6.5,  8.625],
+    [2.5, 12.5, 0],
     #2016-WP1.1.4 - Quality Status of a Project
-    [0.375, 0.375,  0.375], #12
-    [1.75,  2.125,  2.5],
-    [1.75,  2.5,  3.375],
-    [2.5, 3.375,  4.25],
+    [3.75, 18.75,  0],
     #2016-WP1.1.5 - Quality of Product Document
-    [0, 0, 0], # no M1-M3 #16
-    [2.125, 3,  3.875], 
-    [0.625, 0.875,  1.25],
-    [1.75,  2.375,  3.625],
+    [0.5, 1, 1.5],
     #2016-WP1.1.6 - Quality of the Configuration Management
-    [0, 0, 0], # no M1-M3 #20
-    [5.375, 6.875,  9.25], 
-    [1.125, 2,  2.75],
-    [1.75,  2.5,  3.5],
+    [0.5, 1, 1.5],
     #2016-WP1.1.7 - Quality of the Code Static Review
-    [ 0, 0, 4.375], #24  # WARNING N/A
-    [ 0, 2.5, 5.125],
-    [ 0, 2.5, 7],
-    [ 0, 0, 7.75],
+    [1, 2, 3.75],
     #2016-WP1.1.8 - Quality of the Test Dossier
-    [1.25,  2.5,  4.375], #28
+    [0.875,  1.25,  1.75],
     #2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5
-    [3.375, 4.25, 5], #29
+    [5, 6.5, 8.75],
     #2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6
-    [5.875, 7.75, 10.375], #30
+    [4.5, 5.25, 6.375],
     #2016-WP1.2.3 - Quality Assurance Post M10 / Post G6
-    [3.25,  16.25,  32.375], #31
+    [4.5,  6,  8],
     #2016-WP1.2.4 - Quality Assurance Agile Sprint 0
-    [3.25,  13, 25.875], #32
+    [4.5,  6, 8],
+    #2016-WP1.2.5 - Quality Assurance Agile Sprints
+    [1.125,  2, 2.75],
+    #2016-WP1.3.1 - DW/PLM Quality Plan
+    [1.25,2,2.75],
+    #2016-WP1.3.2 - Support, KPI and Reporting
+    [5,6,8],
+    #2016-WP1.3.3 - PSU (GPP, LBIP, Suite)
+    [3,3.75,4.125],
+    #2016-WP1.3.4 - LL
+    [1,1.25,1.5],
+    #2016-WP1.3.5 - E-M&T Referential Change Management
+    [1.5,3,0],
+    #2016-WP2.1 – Business Process Layout
+    [6.875,20.625,26.625],
+    #2016-WP2.2 – Functional Layout (Use Cases)
+    [7.5,13.75,18.625],
+    #2016-WP2.3 – Information Layout (Data Model)
+    [6.75,12.5,18.125],
+    #2016-WP2.4 – Modeling Update
+    [4,0,0],
     #2016-WP3.1.1 - Root Cause Analysis (Classic Approach)
-    [0.875, 1.25, 1.75], #33
+    [8.25,12.5,0],
     #2016-WP3.1.2 - Root Cause Analysis (Seminar Approach)
-    [0.875, 1.25, 1.75], #34
+    [5.25,8,0],
     #2016-WP3.2 - Action Plan of the Root Cause Analysis
-    [1, 1.25, 1.375], #35
+    [4,8,0],
     #2016-WP4.1 - Coaching Project Plan
-    [4.875, 7.25, 11.25], #36
+    [1.5,3.5,0],
     #2016-WP4.2 - Coaching BRD
-    [9.310, 17.640, 24.990], #37
+    [1,5,0],
     #2016-WP4.3 - Coaching V&V
-    [8.5, 16.25,  22.5], #38
+    [1,6,0],
     #2016-WP4.4 - Coaching CMP
-    [18.5, 42.75, 58.75], #39
+    [2,5,0],
     #2016-WP4.5 - Coaching HLR
-    [6.875, 20.625, 26.625], #40
+    [1,2,0],
     #2016-WP4.6 - Coaching Use Case
-    [7.5, 13.75,  18.625], #41
+    [1.5,4.5,0],
     #2016-WP4.7.1 - Diagnosis and Project Launch
-    [6.75,  12.5, 18.125], #42
+    [3.375,5.125,5.125],
     #2016-WP4.7.2 - Sprint 0 Support
-    [3.625, 6.25, 10], #43
+    [6.75,10.25,17],
     #2016-WP4.7.3 - Sprint Coaching
-    [7.625, 14, 19.375], #44
+    [3.375,6.75,13.625],
     #2016-WP4.8 - Risk Management
-    [5.125, 7.25, 11.375], #45
+    [1.25,2.5,0],
     #2016-WP4.9 - E-M&T Referential
-    [13,  17.25,  26], #46
+    [1.25,3,0],
     #2016-WP5.1 - Light Expertise
-    [8.625, 13, 21.625], #47
+    [4.875,7.25,9.625],
     #2016-WP5.2 - Complete Expertise
-    [4.375, 8.625,  17.250]
+    [16,22.75,31.75],
   ]
 
  # reminder: minus 10% for operational meetings
