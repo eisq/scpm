@@ -62,7 +62,47 @@ module SdpDB
     "WP7.2.3 - Expertise Activities for Multi Projects: Test Management"              => [35828,34869], #
     "WP7.2.4 - Expertise Activities for Multi Projects: Change Management"            => [35829,34869], #
     "WP7.2.5 - Expertise Activities for Multi Projects: Lessons Learnt"               => [35830,34869], #
-    "WP7.2.6 - Expertise Activities for Multi Projects: Configuration Management"     => [35831,34869]  #
+    "WP7.2.6 - Expertise Activities for Multi Projects: Configuration Management"     => [35831,34869],  #
+
+    #2016
+    "2016-WP1.1.1 - Quality Gate" => [00000,00000],
+    "2016-WP1.1.1 - Quality Gate" => [00000,00000],
+    "2016-WP1.1.2 - Milestone / CCB review preparation" => [00000,00000],
+    "2016-WP1.1.3 - Process Adherence Measurement" => [00000,00000],
+    "2016-WP1.1.4 - Quality Status of a Project" => [00000,00000],
+    "2016-WP1.1.5 - Quality of Product Document" => [00000,00000],
+    "2016-WP1.1.6 - Quality of the Configuration Management" => [00000,00000],
+    "2016-WP1.1.7 - Quality of the Code Static Review" => [00000,00000],
+    "2016-WP1.1.8 - Quality of the Test Dossier" => [00000,00000],
+    "2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5" => [00000,00000],
+    "2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6" => [00000,00000],
+    "2016-WP1.2.3 - Quality Assurance Post M10 / Post G6" => [00000,00000],
+    "2016-WP1.2.4 - Quality Assurance Agile Sprint 0" => [00000,00000],
+    "2016-WP1.2.5 - Quality Assurance Agile Sprints" => [00000,00000],
+    "2016-WP1.3.1 - DW/PLM Quality Plan" => [00000,00000],
+    "2016-WP1.3.2 - Support, KPI and Reporting" => [00000,00000],
+    "2016-WP1.3.4 - PSU (GPP, LBIP, Suite)" => [00000,00000],
+    "2016-WP1.3.5 - LL" => [00000,00000],
+    "2016-WP2.1 - Business Process Layout" => [00000,00000],
+    "2016-WP2.2 - Functional Layout (Use Cases)" => [00000,00000],
+    "2016-WP2.3 - Information Layout (Data Model)" => [00000,00000],
+    "2016-WP2.4 - Modeling Update" => [00000,00000],
+    "2016-WP3.1.1 - Root Cause Analysis (Classic Approach)" => [00000,00000],
+    "2016-WP3.1.2 - Root Cause Analysis (Seminar Approach)" => [00000,00000],
+    "2016-WP3.2 - Action Plan of the Root Cause Analysis" => [00000,00000],
+    "2016-WP4.1 - Coaching Project Plan" => [00000,00000],
+    "2016-WP4.2 - Coaching BRD" => [00000,00000],
+    "2016-WP4.3 - Coaching V&V" => [00000,00000],
+    "2016-WP4.4 - Coaching CMP" => [00000,00000],
+    "2016-WP4.5 - Coaching HLR" => [00000,00000],
+    "2016-WP4.6 - Coaching Use Case" => [00000,00000],
+    "2016-WP4.7.1 - Diagnosis and Project Launch" => [00000,00000],
+    "2016-WP4.7.2 - Sprint 0 Support" => [00000,00000],
+    "2016-WP4.7.3 - Sprint Coaching" => [00000,00000],
+    "2016-WP4.8 - Risk Management" => [00000,00000],
+    "2016-WP4.9 - E-M&T Referential" => [00000,00000],
+    "2016-WP5.1 - Light Expertise" => [00000,00000],
+    "2016-WP5.2 - Complete Expertise" => [00000,00000]
   }
 
 
@@ -174,7 +214,47 @@ module SdpDB
       
       # WP4
       ['Processes Evaluation',nil]=>158166,
-      ['Root Causes Analysis',nil]=>158167
+      ['Root Causes Analysis',nil]=>158167,
+
+      #2016
+      ['All','2016-WP1.1.1 - Quality Gate']=>000000,
+      ['All','2016-WP1.1.1 - Quality Gate']=>000000,
+      ['All','2016-WP1.1.2 - Milestone / CCB review preparation']=>000000,
+      ['All','2016-WP1.1.3 - Process Adherence Measurement']=>000000,
+      ['All','2016-WP1.1.4 - Quality Status of a Project']=>000000,
+      ['All','2016-WP1.1.5 - Quality of Product Document']=>000000,
+      ['All','2016-WP1.1.6 - Quality of the Configuration Management']=>000000,
+      ['All','2016-WP1.1.7 - Quality of the Code Static Review']=>000000,
+      ['All','2016-WP1.1.8 - Quality of the Test Dossier']=>000000,
+      ['All','2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5']=>000000,
+      ['All','2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6']=>000000,
+      ['All','2016-WP1.2.3 - Quality Assurance Post M10 / Post G6']=>000000,
+      ['All','2016-WP1.2.4 - Quality Assurance Agile Sprint 0']=>000000,
+      ['All','2016-WP1.2.5 - Quality Assurance Agile Sprints']=>000000,
+      ['All','2016-WP1.3.1 - DW/PLM Quality Plan']=>000000,
+      ['All','2016-WP1.3.2 - Support, KPI and Reporting']=>000000,
+      ['All','2016-WP1.3.4 - PSU (GPP, LBIP, Suite)']=>000000,
+      ['All','2016-WP1.3.5 - LL']=>000000,
+      ['All','2016-WP2.1 - Business Process Layout']=>000000,
+      ['All','2016-WP2.2 - Functional Layout (Use Cases)']=>000000,
+      ['All','2016-WP2.3 - Information Layout (Data Model)']=>000000,
+      ['All','2016-WP2.4 - Modeling Update']=>000000,
+      ['All','2016-WP3.1.1 - Root Cause Analysis (Classic Approach)']=>000000,
+      ['All','2016-WP3.1.2 - Root Cause Analysis (Seminar Approach)']=>000000,
+      ['All','2016-WP3.2 - Action Plan of the Root Cause Analysis']=>000000,
+      ['All','2016-WP4.1 - Coaching Project Plan']=>000000,
+      ['All','2016-WP4.2 - Coaching BRD']=>000000,
+      ['All','2016-WP4.3 - Coaching V&V']=>000000,
+      ['All','2016-WP4.4 - Coaching CMP']=>000000,
+      ['All','2016-WP4.5 - Coaching HLR']=>000000,
+      ['All','2016-WP4.6 - Coaching Use Case']=>000000,
+      ['All','2016-WP4.7.1 - Diagnosis and Project Launch']=>000000,
+      ['All','2016-WP4.7.2 - Sprint 0 Support']=>000000,
+      ['All','2016-WP4.7.3 - Sprint Coaching']=>000000,
+      ['All','2016-WP4.8 - Risk Management']=>000000,
+      ['All','2016-WP4.9 - E-M&T Referential']=>000000,
+      ['All','2016-WP5.1 - Light Expertise']=>000000,
+      ['All','2016-WP5.2 - Complete Expertise']=>000000
       }
 
   # SDP Doamin
