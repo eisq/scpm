@@ -143,7 +143,7 @@ module SdpDB
       ['All','WP6.10.3 - Coaching Agility: Sprint Support']       =>192676, # Coaching10
       
       ['All','WP7.1 - Light Expertise']                           =>192677, # LightExper
-      ['All','WP7.2 - Complete Expertise']                        =>192678 # ComplExp
+      ['All','WP7.2 - Complete Expertise']                        =>192678, # ComplExp
       
       # BUNDLE MANAGEMENT
       ['Bundle Management','']              =>192718, # BMP

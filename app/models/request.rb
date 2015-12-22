@@ -415,7 +415,7 @@ class Request < ActiveRecord::Base
     #2016-WP5.1 - Light Expertise
     [4.875,7.25,9.625],
     #2016-WP5.2 - Complete Expertise
-    [16,22.75,31.75],
+    [16,22.75,31.75]
   ]
 
  # reminder: minus 10% for operational meetings
