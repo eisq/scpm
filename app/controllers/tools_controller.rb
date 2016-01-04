@@ -853,7 +853,7 @@ class ToolsController < ApplicationController
     streams.each{ |s| 
       @streams_array << [s.name, s.id]
     }
-    requests          = Request.find(:all, :conditions=>["status != 'removed' and work_package LIKE ? or work_package LIKE ?", "%"+WORKPACKAGE_QS+"%","%"+WORKPACKAGE_SPIDERS+"%"], :order=>"request_id")
+    requests          = Request.find(:all, :conditions=>["status != 'removed' and work_package IN (?) or work_package LIKE ?", "%"+WORKPACKAGE_QS+"%","%"+WORKPACKAGE_SPIDERS+"%"], :order=>"request_id")
     @requests_array   = [] 
     requests.each{ |r| 
       @requests_array << [r.request_id.to_s+" "+r.summary, r.id ]
@@ -2028,8 +2028,8 @@ class ToolsController < ApplicationController
     wp.save
 
     wp = Workpackage.new
-    wp.title = "2016-WP1.1.2 - Milestone / CCB review preparation"
-    wp.shortname = "2016 Milestone / CCB review preparation"
+    wp.title = "2016-WP1.1.2 - Milestone - CCB review preparation"
+    wp.shortname = "2016 Milestone - CCB review preparation"
     wp.code = "2016-1.1.2"
     wp.save
 
@@ -2070,19 +2070,19 @@ class ToolsController < ApplicationController
     wp.save
 
     wp = Workpackage.new
-    wp.title = "2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5"
+    wp.title = "2016-WP1.2.1 - Quality Assurance M3-M5 - G2-G5 - sM3-sM5"
     wp.shortname = "2016 Quality Assurance M3-M5"
     wp.code = "2016-1.2.1"
     wp.save
 
     wp = Workpackage.new
-    wp.title = "2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6"
+    wp.title = "2016-WP1.2.2 - Quality Assurance M5-M10 - G5-G6"
     wp.shortname = "2016 Quality Assurance M5-M10"
     wp.code = "2016-1.2.2"
     wp.save
 
     wp = Workpackage.new
-    wp.title = "2016-WP1.2.3 - Quality Assurance Post M10 / Post G6"
+    wp.title = "2016-WP1.2.3 - Quality Assurance Post M10 - Post G6"
     wp.shortname = "2016 Quality Assurance Post M10"
     wp.code = "2016-1.2.3"
     wp.save
@@ -2100,8 +2100,8 @@ class ToolsController < ApplicationController
     wp.save
 
     wp = Workpackage.new
-    wp.title = "2016-WP1.3.1 - DW/PLM Quality Plan"
-    wp.shortname = "2016 DW/PLM Quality Plan"
+    wp.title = "2016-WP1.3.1 - DW-PLM Quality Plan"
+    wp.shortname = "2016 DW-PLM Quality Plan"
     wp.code = "2016-1.3.1"
     wp.save
 

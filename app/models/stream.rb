@@ -111,7 +111,7 @@ class Stream < ActiveRecord::Base
   def get_qs_counter
     total = 0
     self.requests.sort_by{|r| r.start_date }.each { |r|
-      if ((WORKPACKAGE_QS == r.work_package[0..6]) and (r.counter_log) and (r.counter_log.validity))
+      if ((WORKPACKAGE_QS.include?(r.work_package[0..6])) and (r.counter_log) and (r.counter_log.validity))
          total = total + r.counter_log.counter_value
       end
     }
@@ -121,7 +121,7 @@ class Stream < ActiveRecord::Base
   def get_spider_counter
     total = 0
     self.requests.sort_by{|r| r.start_date }.each { |r|
-      if ((WORKPACKAGE_SPIDERS == r.work_package[0..6]) and (r.counter_log) and (r.counter_log.validity))
+      if ((WORKPACKAGE_SPIDERS.include?(r.work_package[0..6])) and (r.counter_log) and (r.counter_log.validity))
          total = total + r.counter_log.counter_value
       end
     }
@@ -207,7 +207,7 @@ class Stream < ActiveRecord::Base
 
     # loop on requests of this stream by date
     self.spider_requests_sorted_by_counters.each { |r|
-      if ((WORKPACKAGE_SPIDERS == r.work_package[0..6]) and (r.counter_log) and (r.counter_log.validity) and (r.assigned_to == author.rmt_user))
+      if ((WORKPACKAGE_SPIDERS.include?(r.work_package[0..6])) and (r.counter_log) and (r.counter_log.validity) and (r.assigned_to == author.rmt_user))
         if (get_consumed_spider_counter_for_request(r) < r.counter_log.counter_value)
           last_request = r
           found = true
@@ -231,7 +231,7 @@ class Stream < ActiveRecord::Base
     last_request = nil
     found = false
     self.qs_requests_sorted_by_counters.each { |r|
-       if ((WORKPACKAGE_QS == r.work_package[0..6]) and (r.counter_log) and (r.counter_log.validity) and (r.assigned_to == author.rmt_user))
+       if ((WORKPACKAGE_QS.include?(r.work_package[0..6])) and (r.counter_log) and (r.counter_log.validity) and (r.assigned_to == author.rmt_user))
           if (get_consumed_qs_counter_for_request(r) < r.counter_log.counter_value)
             last_request = r
             found = true

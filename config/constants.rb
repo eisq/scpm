@@ -27,8 +27,8 @@ SDP_PROJECT_MANAGEMENT_MONTHLY_IMPORT_Agency_ID      		= 13 # Toulouse
 SDP_PROJECT_MANAGEMENT_MONTHLY_IMPORT_Proposal_Phase_ID 	= 34939 # Bundle Management #BM
 SDP_PROJECT_MANAGEMENT_MONTHLY_IMPORT_Comments 				= "Internal SQLI Meetings (imported from BAM)"
 
-WORKPACKAGE_COUNTERS         								= ["2016-1.1.4","2016-WP1.1.3"]
-WORKPACKAGE_QS               								= "2016-1.1.4"
-WORKPACKAGE_QS_RMT_NAME      								= "2016-WP1.1.4 - Quality Status of a Project"
-WORKPACKAGE_SPIDERS          								= "2016-1.1.3"
-WORKPACKAGE_SPIDERS_RMT_NAME 								= "2016-WP1.1.3 - Process Adherence Measurement"
+WORKPACKAGE_COUNTERS         								= ["2016-1.1.4","2016-1.1.3"]
+WORKPACKAGE_QS               								= ["WP1.6.4","2016-1.1.4"]
+WORKPACKAGE_QS_RMT_NAME      								= ["WP1.6.4 - QWR Quality Status","2016-WP1.1.4 - Quality Status of a Project"]
+WORKPACKAGE_SPIDERS          								= ["WP1.6.5","2016-1.1.3"]
+WORKPACKAGE_SPIDERS_RMT_NAME 								= ["WP1.6.5 - QWR Spiders","2016-WP1.1.3 - Process Adherence Measurement"]
