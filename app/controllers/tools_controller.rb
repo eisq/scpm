@@ -855,7 +855,7 @@ class ToolsController < ApplicationController
     }
     array_qs = ["%"+WORKPACKAGE_QS[0]+"%","%"+WORKPACKAGE_QS[1]+"%"]
     array_spiders = ["%"+WORKPACKAGE_SPIDERS[0]+"%","%"+WORKPACKAGE_SPIDERS[1]+"%"]
-    requests          = Request.find(:all, :conditions=>["status != 'removed' and work_package IN (?) or work_package IN (?)", array_qs,array_spiders], :order=>"request_id")
+    requests          = Request.find(:all, :conditions=>["status != 'removed' and work_package contains (?) or work_package contains (?)", array_qs,array_spiders], :order=>"request_id")
     @requests_array   = [] 
     requests.each{ |r| 
       @requests_array << [r.request_id.to_s+" "+r.summary, r.id ]
