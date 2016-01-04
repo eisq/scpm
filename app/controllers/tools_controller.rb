@@ -853,9 +853,9 @@ class ToolsController < ApplicationController
     streams.each{ |s| 
       @streams_array << [s.name, s.id]
     }
-    spiders_array = [WORKPACKAGE_SPIDERS[0], WORKPACKAGE_SPIDERS[1]]
-    qs_array = [WORKPACKAGE_QS[0], WORKPACKAGE_QS[1]]
-    requests          = Request.find(:all, :conditions=>["status != 'removed' and work_package IN (?) or work_package IN (?)", "%"+qs_array+"%","%"+spiders_array+"%"], :order=>"request_id")
+    array_qs = ["%"+WORKPACKAGE_QS[0]+"%","%"+WORKPACKAGE_QS[1]+"%"]
+    array_spiders = ["%"+WORKPACKAGE_SPIDERS[0]+"%","%"+WORKPACKAGE_SPIDERS[1]+"%"]
+    requests          = Request.find(:all, :conditions=>["status != 'removed' and work_package IN (?) or work_package IN (?)", array_qs,array_spiders], :order=>"request_id")
     @requests_array   = [] 
     requests.each{ |r| 
       @requests_array << [r.request_id.to_s+" "+r.summary, r.id ]
