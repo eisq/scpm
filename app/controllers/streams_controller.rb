@@ -124,7 +124,7 @@ class StreamsController < ApplicationController
         qr_qwr_data["qs_y"]     = 0 
         request_qs_array        = Array.new
 
-        Request.find(:all,:include=>[:counter_log],:conditions => ["work_package IN (?) and assigned_to = ? and is_stream = 'Yes' and stream_id = ? and counter_logs.validity = 1", WORKPACKAGE_QS_RMT_NAME, qr.rmt_user, @stream.id]).each do |req|
+        Request.find(:all,:include=>[:counter_log],:conditions => ["work_package IN (?) and assigned_to = ? and is_stream = 'Yes' and stream_id = ? and counter_logs.validity = 1", WORKPACKAGE_QS_RMT_NAME[0..1], qr.rmt_user, @stream.id]).each do |req|
           qr_qwr_data["qs_y"] = qr_qwr_data["qs_y"].to_i + req.counter_log.counter_value.to_i
           request_qs_array    << req.id
         end
@@ -138,7 +138,7 @@ class StreamsController < ApplicationController
         qr_qwr_data["spider_y"] = 0 
         request_spider_array    = Array.new
 
-        Request.find(:all,:include=>[:counter_log],:conditions => ["work_package IN (?) and assigned_to = ? and is_stream = 'Yes' and stream_id = ? and counter_logs.validity = 1", WORKPACKAGE_SPIDERS_RMT_NAME, qr.rmt_user, @stream.id]).each do |req|
+        Request.find(:all,:include=>[:counter_log],:conditions => ["work_package IN (?) and assigned_to = ? and is_stream = 'Yes' and stream_id = ? and counter_logs.validity = 1", WORKPACKAGE_SPIDERS_RMT_NAME[0..1], qr.rmt_user, @stream.id]).each do |req|
           qr_qwr_data["spider_y"] = qr_qwr_data["spider_y"].to_i + req.counter_log.counter_value.to_i
           request_spider_array    << req.id
         end
