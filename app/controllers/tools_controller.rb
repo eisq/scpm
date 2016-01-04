@@ -853,7 +853,7 @@ class ToolsController < ApplicationController
     streams.each{ |s| 
       @streams_array << [s.name, s.id]
     }
-    requests          = Request.find(:all, :conditions=>["status != 'removed' and work_package IN (?) or work_package LIKE ?", "%"+WORKPACKAGE_QS[0..1]+"%","%"+WORKPACKAGE_SPIDERS[0..1]+"%"], :order=>"request_id")
+    requests          = Request.find(:all, :conditions=>["status != 'removed' and work_package IN (?) or work_package IN (?)", "%"+WORKPACKAGE_QS[0..1]+"%","%"+WORKPACKAGE_SPIDERS[0..1]+"%"], :order=>"request_id")
     @requests_array   = [] 
     requests.each{ |r| 
       @requests_array << [r.request_id.to_s+" "+r.summary, r.id ]
