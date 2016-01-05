@@ -2125,7 +2125,7 @@ class ToolsController < ApplicationController
 
     wp = Workpackage.new
     wp.title = "2016-WP1.3.5 - E-M&T Referential Change Management"
-    wp.shortname = "2016 LL"
+    wp.shortname = "2016 E-M&T Referential Change Management"
     wp.code = "2016-1.3.5"
     wp.save
 
