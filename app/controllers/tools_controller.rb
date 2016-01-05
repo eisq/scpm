@@ -2106,19 +2106,25 @@ class ToolsController < ApplicationController
     wp.save
 
     wp = Workpackage.new
-    wp.title = "2016-WP1.3.2 - Support, KPI and Reporting"
+    wp.title = "2016-WP1.3.2 - Support KPI and Reporting"
     wp.shortname = "2016 Support, KPI and Reporting"
     wp.code = "2016-1.3.2"
     wp.save
 
     wp = Workpackage.new
-    wp.title = "2016-WP1.3.4 - PSU (GPP, LBIP, Suite)"
+    wp.title = "2016-WP1.3.3 - PSU (GPP LBIP Suite)"
     wp.shortname = "2016 PSU"
+    wp.code = "2016-1.3.3"
+    wp.save
+
+    wp = Workpackage.new
+    wp.title = "2016-WP1.3.4 - LL"
+    wp.shortname = "2016 LL"
     wp.code = "2016-1.3.4"
     wp.save
 
     wp = Workpackage.new
-    wp.title = "2016-WP1.3.5 - LL"
+    wp.title = "2016-WP1.3.5 - E-M&T Referential Change Management"
     wp.shortname = "2016 LL"
     wp.code = "2016-1.3.5"
     wp.save

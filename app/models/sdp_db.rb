@@ -66,8 +66,8 @@ module SdpDB
     "2016-WP1.2.4 - Quality Assurance Agile Sprint 0"         => [44797,41669],
     "2016-WP1.2.5 - Quality Assurance Agile Sprints"          => [44798,41669],
     "2016-WP1.3.1 - DW/PLM Quality Plan"                      => [44799,41669],
-    "2016-WP1.3.2 - Support, KPI and Reporting"               => [44800,41669],
-    "2016-WP1.3.3 - PSU (GPP, LBIP, Suite)"                   => [44801,41669],
+    "2016-WP1.3.2 - Support KPI and Reporting"                => [44800,41669],
+    "2016-WP1.3.3 - PSU (GPP LBIP Suite)"                     => [44801,41669],
     "2016-WP1.3.4 - LL"                                       => [44802,41669],
     "2016-WP1.3.5 - E-M&T Referential Change Management"      => [44803,41669],
     "2016-WP2.1 - Business Process Layout"                    => [44804,41670],
@@ -173,8 +173,8 @@ module SdpDB
       ['All','2016-WP1.2.4 - Quality Assurance Agile Sprint 0']         =>192690, # QAASO
       ['All','2016-WP1.2.5 - Quality Assurance Agile Sprints']          =>192691, # QAAS
       ['All','2016-WP1.3.1 - DW/PLM Quality Plan']                      =>192692, # DWPLMQAP
-      ['All','2016-WP1.3.2 - Support, KPI and Reporting']               =>192693, # WSSupport
-      ['All','2016-WP1.3.3 - PSU (GPP, LBIP, Suite)']                   =>192694, # PjtSetup
+      ['All','2016-WP1.3.2 - Support KPI and Reporting']                =>192693, # WSSupport
+      ['All','2016-WP1.3.3 - PSU (GPP LBIP Suite)']                     =>192694, # PjtSetup
       ['All','2016-WP1.3.4 - LL']                                       =>192695, # LL
       ['All','2016-WP1.3.5 - E-M&T Referential Change Management']      =>192696, #RefCM
       ['All','2016-WP2.1 - Business Process Layout']                    =>192697, # ModBPL
