@@ -66,7 +66,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 		Rails.logger.info("%%%%%%%%%%%%%%%%% Deliverable: " + deliverable.name)
 		Rails.logger.info("%%%%%%%%%%%%%%%%% NB Activites: " + activities.count.to_s)
 		activities.each do |activityy|
-			Rails.logger.info("%%%%%%%%%%%%%%%%% Activity: " + activityy.id.to_s)
+			Rails.logger.info("%%%%%%%%%%%%%%%%% Activity name: " + activityy.name)
 		end
 
 		if activities and activities.count > 0
