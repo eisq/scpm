@@ -22,7 +22,7 @@
 <%= import.workstream %>
 <%= import.summary %>
 
-<%  if WORKPACKAGE_COUNTERS.include?(import.work_package[0..6])
+<%  if (WORKPACKAGE_COUNTERS.include?(import.work_package[0..6]) or WORKPACKAGE_COUNTERS.include?(import.work_package[0..11]))
 		# Check if an objet is already 
 		counterLogObj = import.counter_log #counterLogObj = CounterLog.find_by_request_id(import.id)
 		if (counterLogObj) 

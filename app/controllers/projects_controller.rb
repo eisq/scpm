@@ -616,7 +616,7 @@ class ProjectsController < ApplicationController
       if (r.project and r.project.project and r.project.project.name != r.project_name)
         @text << "FYI #{r.project.project.name} != #{r.project_name} (#{r.request_id})<br/>"
       end
-      if (r.milestone != 'N/A' and (r.work_package[0..2]=="WP2" or r.work_package[0..2]=="WP3" or r.work_package[0..2]=="WP4" or r.work_package[0..2]=="WP5" or r.work_package[0..2]=="WP6"))
+      if (r.milestone != 'N/A' and (r.work_package[0..2]=="WP2" or r.work_package[0..2]=="WP3" or r.work_package[0..2]=="WP4" or r.work_package[0..2]=="WP5" or r.work_package[0..2]=="WP6" or r.work_package[0..7]=="2016-WP2" or r.work_package[0..7]=="2016-WP3" or r.work_package[0..7]=="2016-WP4" or r.work_package[0..7]=="2016-WP5"))
         @text << "not N/A for <a href='http://toulouse.sqli.com/EMN/view.php?id=#{r.request_id}'>#{r.project_name}</a><br/>"
       end
     end

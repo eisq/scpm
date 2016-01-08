@@ -56,7 +56,7 @@ class WelcomeController < ApplicationController
         r.save
 
         # Create or update the counter log of this request
-        if WORKPACKAGE_COUNTERS.include?(r.work_package[0..6])
+        if (WORKPACKAGE_COUNTERS.include?(r.work_package[0..6]) or WORKPACKAGE_COUNTERS.include?(r.work_package[0..11]))
           r.update_ticket_counters
         end
       }
