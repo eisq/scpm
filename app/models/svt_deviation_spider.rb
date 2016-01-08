@@ -63,8 +63,10 @@ class SvtDeviationSpider < ActiveRecord::Base
 		project_id = self.milestone.project_id
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
 
+		Rails.logger.info("%%%%%%%%%%%%%%%%% Deliverable: " + deliverable.name)
 		if activities and activities.count > 0
 			activities.each do |activity|
+				Rails.logger.info("%%%%%%%%%%%%%%%%% Activity: " + activity.name)
 				to_add = false
 				setting = SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 				if setting and setting.count == 1
