@@ -124,15 +124,13 @@ class SvtDeviationSpider < ActiveRecord::Base
 			                   	"JOIN svt_deviation_question_milestone_names ON svt_deviation_question_milestone_names.svt_deviation_question_id = svt_deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = svt_deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN svt_deviation_question_lifecycles ON svt_deviation_question_lifecycles.svt_deviation_question_id = svt_deviation_questions.id"],
-			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_activities.is_active = ? and svt_deviation_activities.name = ?", self.project.lifecycle_object.id, self.milestone.name, true, setting.activity_name],
-			                   	:group => "svt_deviation_questions.svt_deviation_activity_id")
+			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_activities.is_active = ? and svt_deviation_activities.name = ?", self.project.lifecycle_object.id, self.milestone.name, true, setting.activity_name])
 				deliverable_parameter = SvtDeviationDeliverable.find(:all,
 			                   :joins => ["JOIN svt_deviation_questions ON svt_deviation_questions.svt_deviation_deliverable_id = svt_deviation_deliverables.id",
 			                   	"JOIN svt_deviation_question_milestone_names ON svt_deviation_question_milestone_names.svt_deviation_question_id = svt_deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = svt_deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN svt_deviation_question_lifecycles ON svt_deviation_question_lifecycles.svt_deviation_question_id = svt_deviation_questions.id"],
-			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_deliverables.is_active = ? and svt_deviation_deliverables.name = ?", self.project.lifecycle_object.id, self.milestone.name, true, setting.deliverable_name],
-			                   	:group => "svt_deviation_questions.svt_deviation_deliverable_id")
+			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_deliverables.is_active = ? and svt_deviation_deliverables.name = ?", self.project.lifecycle_object.id, self.milestone.name, true, setting.deliverable_name])
 				
 				psu_imported = true
 			end
