@@ -64,6 +64,7 @@ class SvtDeviationSpider < ActiveRecord::Base
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
 
 		Rails.logger.info("%%%%%%%%%%%%%%%%% Deliverable: " + deliverable.name)
+		Rails.logger.info("%%%%%%%%%%%%%%%%% NB Activites: " + activities.count.to_s)
 		if activities and activities.count > 0
 			activities.each do |activity|
 				Rails.logger.info("%%%%%%%%%%%%%%%%% Activity: " + activity.name)
