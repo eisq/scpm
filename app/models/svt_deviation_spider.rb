@@ -63,15 +63,8 @@ class SvtDeviationSpider < ActiveRecord::Base
 		project_id = self.milestone.project_id
 		last_reference = SvtDeviationSpiderReference.find(:last, :conditions => ["project_id = ?", project_id], :order => "version_number asc")
 
-		Rails.logger.info("%%%%%%%%%%%%%%%%% Deliverable: " + deliverable.name)
-		Rails.logger.info("%%%%%%%%%%%%%%%%% NB Activites: " + activities.count.to_s)
-		activities.each do |activityy|
-			Rails.logger.info("%%%%%%%%%%%%%%%%% Activity name: " + activityy.name)
-		end
-
 		if activities and activities.count > 0
 			activities.each do |activity|
-				Rails.logger.info("%%%%%%%%%%%%%%%%% Activity: " + activity.name)
 				to_add = false
 				setting = SvtDeviationSpiderSetting.find(:all, :conditions=>["svt_deviation_spider_reference_id = ? and deliverable_name = ? and activity_name = ?", last_reference, deliverable.name, activity.name])
 				if setting and setting.count == 1
@@ -131,25 +124,17 @@ class SvtDeviationSpider < ActiveRecord::Base
 			                   	"JOIN svt_deviation_question_milestone_names ON svt_deviation_question_milestone_names.svt_deviation_question_id = svt_deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = svt_deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN svt_deviation_question_lifecycles ON svt_deviation_question_lifecycles.svt_deviation_question_id = svt_deviation_questions.id"],
-			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_activities.is_active = ? and svt_deviation_activities.name = ?", self.project.lifecycle_object.id, self.milestone.name, true, setting.activity_name])
-				deliverable_parameter = SvtDeviationDeliverable.find(:first,
+			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_activities.is_active = ? and svt_deviation_activities.name = ?", self.project.lifecycle_object.id, self.milestone.name, true, setting.activity_name],
+			                   	:group => "svt_deviation_questions.svt_deviation_activity_id")
+				deliverable_parameter = SvtDeviationDeliverable.find(:all,
 			                   :joins => ["JOIN svt_deviation_questions ON svt_deviation_questions.svt_deviation_deliverable_id = svt_deviation_deliverables.id",
 			                   	"JOIN svt_deviation_question_milestone_names ON svt_deviation_question_milestone_names.svt_deviation_question_id = svt_deviation_questions.id",
 			                   	"JOIN milestone_names ON milestone_names.id = svt_deviation_question_milestone_names.milestone_name_id",
 			                   	"JOIN svt_deviation_question_lifecycles ON svt_deviation_question_lifecycles.svt_deviation_question_id = svt_deviation_questions.id"],
-			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_deliverables.is_active = ? and svt_deviation_deliverables.name = ?", self.project.lifecycle_object.id, self.milestone.name, true, setting.deliverable_name])
-				if activity_parameter and deliverable_parameter
-					if !activities.include? activity_parameter
-						activities << activity_parameter
-					end
-
-					if setting.answer_1 == "Yes" or setting.answer_3 == "Another template is used"
-						if !deliverables.include? deliverable_parameter
-							deliverables << deliverable_parameter
-						end
-					end
-					psu_imported = true
-				end
+			                   	:conditions => ["svt_deviation_question_lifecycles.lifecycle_id = ? and milestone_names.title = ? and svt_deviation_deliverables.is_active = ? and svt_deviation_deliverables.name = ?", self.project.lifecycle_object.id, self.milestone.name, true, setting.deliverable_name],
+			                   	:group => "svt_deviation_questions.svt_deviation_deliverable_id")
+				
+				psu_imported = true
 			end
 		else
 			deliverables = SvtDeviationDeliverable.find(:all,
