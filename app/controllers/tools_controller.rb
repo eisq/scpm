@@ -926,7 +926,7 @@ class ToolsController < ApplicationController
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
     test_counter = 0
     @qs_counter.each do |test|
-      if @qs_counter.request_id == 8485
+      if test.request_id == 8485
         test_counter = test_counter + 1
         Rails.logger.info("%%%%%%%% : test_counter++")
       end
