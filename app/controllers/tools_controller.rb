@@ -919,6 +919,15 @@ class ToolsController < ApplicationController
     end
 
     @table_spider_counter = table_spider_counter_temp.sort_by { |tsc| [tsc.historycounter.request_id, tsc.historycounter.action_date]}
+    
+#test
+    test_counter = 0
+    @table_spider_counter.each do |iter|
+      if iter.historycounter.request_id == 8485
+        test_counter = test_counter + 1
+      end
+    end
+    raise test_counter.to_s
 
     @qs_counter     = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id", 

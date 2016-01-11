@@ -341,11 +341,11 @@ strong {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f6', endColorstr='#c8d7dc',GradientType=0 ); /* IE6-9 */
 }
 
-.status_list_choice, .spider_list_choice {
+.status_list_choice_2, .spider_list_choice_2 {
   cursor: pointer;
   vertical-align: middle;
   width: 500px;
-  height: 180px;
+  height: 100px;
   padding: 10px 20px 0px 20px;
   -moz-border-radius: 15px;
   border-radius: 15px;
