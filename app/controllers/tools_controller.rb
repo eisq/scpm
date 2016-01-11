@@ -928,7 +928,7 @@ class ToolsController < ApplicationController
     @qs_counter.each do |test|
       if test.request_id == 8485
         test_counter = test_counter + 1
-        Rails.logger.info("%%%%%%%% : " + test.request_id.to_s)
+        Rails.logger.info("%%%%%%%% : " + test.concerned_status_id.to_s)
       end
     end
     Rails.logger.info("")
