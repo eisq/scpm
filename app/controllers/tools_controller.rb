@@ -334,7 +334,7 @@ class ToolsController < ApplicationController
       @operational2012_10percent         = round_to_hour(op2012*0.11111111111)
       @operational2013_10percent         = round_to_hour(op2013*0.11111111111)
       @operational2014_10percent         = round_to_hour(op2014*0.11111111111)
-      @operational2016_10percent         = round_to_hour(op2016*0.02040816) # reciprocal of 2,5% (~2% on total budget)
+      @operational2016_10percent         = 0 # round_to_hour(op2016*0.02040816) # reciprocal of 2,5% (~2% on total budget)
       @operational_percent_total         = @operational2011_10percent + @operational2012_10percent + @operational2013_10percent + @operational2014_10percent + @operational2016_10percent
       @operational_total_2011            = op2010 + op2011 + @operational2011_10percent
       @operational_total_2012            = op2012 + @operational2012_10percent
@@ -549,7 +549,7 @@ class ToolsController < ApplicationController
       @operational2012_10percent_by_type         = round_to_hour(op2012*0.11111111111)
       @operational2013_10percent_by_type         = round_to_hour(op2013*0.11111111111)
       @operational2014_10percent_by_type         = round_to_hour(op2014*0.11111111111)
-      @operational2016_10percent_by_type         = round_to_hour(op2016*0.02040816)
+      @operational2016_10percent_by_type         = 0 # round_to_hour(op2016*0.02040816)
       @operational_percent_total_by_type         = @operational2011_10percent_by_type + @operational2012_10percent_by_type + @operational2013_10percent_by_type + @operational2014_10percent_by_type + @operational2016_10percent_by_type
       @operational_total_2011_by_type            = op2010 + op2011 + @operational2011_10percent_by_type
       @operational_total_2012_by_type            = op2012 + @operational2012_10percent_by_type
@@ -2511,7 +2511,7 @@ private
       when 'Risks'
         p.difference = round_to_hour(total2011*factor*0.04) + round_to_hour(total2012*factor*0.02) + round_to_hour(total2013*factor*0.02) + round_to_hour(total2014*factor*0.02) + round_to_hour(total2016*factor*0.01) - p.initial + rk_provision_adjustment.constant_value
       when 'Operational Management'
-        p.difference = operational_percent - p.initial + op_provision_adjustment.constant_value
+        p.difference = operational_percent + round_to_hour(total2016*factor*0.09) - p.initial + op_provision_adjustment.constant_value
       when '(OLD) Quality Assurance'
         p.difference = 0
       when 'Quality Assurance'
