@@ -918,17 +918,22 @@ class ToolsController < ApplicationController
       table_spider_counter_temp << count_struct
     end
 
-    @table_spider_counter = table_spider_counter_temp.sort_by { |tsc| [tsc.historycounter.request_id, tsc.historycounter.action_date]}
-    @table_spider_counter.each do |tt|
-      Rails.logger.info("%%%%%%%%%%%%%%%%% : " + tt.spider_version.to_s)
-    end
-
-    @qs_counter     = HistoryCounter.find(:all,:conditions=>[qs_condition],
+    @qs_counter = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id", 
                                           "JOIN statuses ON statuses.id = history_counters.concerned_status_id",
                                           "JOIN projects ON projects.id = statuses.project_id",
                                           "JOIN projects as parent ON parent.id = projects.project_id"],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
+    test_counter = 0
+    @qs_counter.each do |test|
+      if @qs_counter.request_id == 8485
+        test_counter = test_counter + 1
+        Rails.logger.info("%%%%%%%% : test_counter++")
+      end
+    end
+    Rails.logger.info("%%%%%%%% : final counter" + test_counter.to_s)
+    raise "test"
+
   end
   
   def show_counter_history_without_rmt
