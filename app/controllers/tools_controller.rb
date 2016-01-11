@@ -2507,11 +2507,11 @@ private
     factor = 1.25 # 20% of PM (reciprocal)
     case p.title
       when 'Project Management'
-        p.difference = round_to_hour(total2011*factor*0.09) + round_to_hour(total2012*factor*0.12) + round_to_hour(total2013*factor*0.12) + round_to_hour(total2014*factor*0.12) + round_to_hour(total2016*factor*0.8) - p.initial + pm_provision_adjustment.constant_value
+        p.difference = round_to_hour(total2011*factor*0.09) + round_to_hour(total2012*factor*0.12) + round_to_hour(total2013*factor*0.12) + round_to_hour(total2014*factor*0.12) + round_to_hour(total2016*factor*0.08) - p.initial + pm_provision_adjustment.constant_value
       when 'Risks'
         p.difference = round_to_hour(total2011*factor*0.04) + round_to_hour(total2012*factor*0.02) + round_to_hour(total2013*factor*0.02) + round_to_hour(total2014*factor*0.02) + round_to_hour(total2016*factor*0.01) - p.initial + rk_provision_adjustment.constant_value
       when 'Operational Management'
-        p.difference = operational_percent - p.initial      + op_provision_adjustment.constant_value
+        p.difference = operational_percent - p.initial + op_provision_adjustment.constant_value
       when '(OLD) Quality Assurance'
         p.difference = 0
       when 'Quality Assurance'
