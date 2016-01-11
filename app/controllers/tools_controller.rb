@@ -929,7 +929,7 @@ class ToolsController < ApplicationController
       end
     end
     Rails.logger.info("%%%%%%%%%%%%%%%%%%%% finaly: " + test_counter.to_s )
-    raise test_counter.to_s
+    #raise test_counter.to_s
 
     @qs_counter     = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id", 
