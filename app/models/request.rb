@@ -1230,7 +1230,7 @@ class Request < ActiveRecord::Base
     # Get the new value for this request
     newCounterValue = 0
     counterBase = CounterBaseValue.first(
-		:conditions => ["complexity = ? and sdp_iteration = ? and workpackage = ?",self.complexity,self.sdpiteration,self.work_package])
+		:conditions => ["complexity = ? and sdp_iteration = ? and workpackage = ?",self.complexity, self.sdpiteration, self.work_package])
 		if counterBase
 		  newCounterValue = counterBase.value
     end

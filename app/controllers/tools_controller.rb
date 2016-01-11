@@ -2252,6 +2252,38 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def add_counter_value_2016
+    cbv = CounterBaseValue.new
+    cbv.complexity = "Easy"
+    cbv.sdp_iteration = "2016"
+    cbv.workpackage = "2016-WP1.1.4 - Quality Status of a Project"
+    cbv.value = 10
+    cbv.save
+
+    cbv = CounterBaseValue.new
+    cbv.complexity = "Medium"
+    cbv.sdp_iteration = "2016"
+    cbv.workpackage = "2016-WP1.1.4 - Quality Status of a Project"
+    cbv.value = 50
+    cbv.save
+
+    cbv = CounterBaseValue.new
+    cbv.complexity = "Easy"
+    cbv.sdp_iteration = "2016"
+    cbv.workpackage = "2016-WP1.1.3 - Process Adherence Measurement"
+    cbv.value = 10
+    cbv.save
+
+    cbv = CounterBaseValue.new
+    cbv.complexity = "Medium"
+    cbv.sdp_iteration = "2016"
+    cbv.workpackage = "2016-WP1.1.3 - Process Adherence Measurement"
+    cbv.value = 50
+    cbv.save
+
+    redirect_to '/tools/scripts'
+  end
+
   def delete_temp_deviation
     SvtDeviationSpiderConsolidationTemp.find(:all).each do |conso_temp|
       conso_temp.delete
