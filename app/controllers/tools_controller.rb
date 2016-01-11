@@ -334,7 +334,7 @@ class ToolsController < ApplicationController
       @operational2012_10percent         = round_to_hour(op2012*0.11111111111)
       @operational2013_10percent         = round_to_hour(op2013*0.11111111111)
       @operational2014_10percent         = round_to_hour(op2014*0.11111111111)
-      @operational2016_10percent         = round_to_hour(op2016*0.02333333333) # reciprocal of 2,5% (~2% on total budget)
+      @operational2016_10percent         = round_to_hour(op2016*0.023333333) # reciprocal of 2,5% (~2% on total budget)
       @operational_percent_total         = @operational2011_10percent + @operational2012_10percent + @operational2013_10percent + @operational2014_10percent + @operational2016_10percent
       @operational_total_2011            = op2010 + op2011 + @operational2011_10percent
       @operational_total_2012            = op2012 + @operational2012_10percent
@@ -549,7 +549,7 @@ class ToolsController < ApplicationController
       @operational2012_10percent_by_type         = round_to_hour(op2012*0.11111111111)
       @operational2013_10percent_by_type         = round_to_hour(op2013*0.11111111111)
       @operational2014_10percent_by_type         = round_to_hour(op2014*0.11111111111)
-      @operational2016_10percent_by_type         = round_to_hour(op2016*0.02333333333)
+      @operational2016_10percent_by_type         = round_to_hour(op2016*0.023333333)
       @operational_percent_total_by_type         = @operational2011_10percent_by_type + @operational2012_10percent_by_type + @operational2013_10percent_by_type + @operational2014_10percent_by_type + @operational2016_10percent_by_type
       @operational_total_2011_by_type            = op2010 + op2011 + @operational2011_10percent_by_type
       @operational_total_2012_by_type            = op2012 + @operational2012_10percent_by_type
