@@ -925,8 +925,10 @@ class ToolsController < ApplicationController
     @table_spider_counter.each do |iter|
       if iter.historycounter.request_id == 8485
         test_counter = test_counter + 1
+        Rails.logger.info("%%%%%%%%%%%%%%%%%%%%% " + iter.historycounter.id.to_s)
       end
     end
+    Rails.logger.info("%%%%%%%%%%%%%%%%%%%% finaly: " + test_counter.to_s )
     raise test_counter.to_s
 
     @qs_counter     = HistoryCounter.find(:all,:conditions=>[qs_condition],
