@@ -923,7 +923,7 @@ class ToolsController < ApplicationController
 #test
     test_counter = 0
     @table_spider_counter.each do |iter|
-      if iter.historycounter.request_id == 8485
+      if iter.historycounter.request.id == 8485
         test_counter = test_counter + 1
         Rails.logger.info("%%%%%%%%%%%%%%%%%%%%% " + iter.historycounter.id.to_s)
       end
