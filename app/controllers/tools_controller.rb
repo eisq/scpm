@@ -861,11 +861,11 @@ class ToolsController < ApplicationController
     
     spider_condition  = "concerned_spider_id IS NOT NULL"
     qs_condition      = "concerned_status_id IS NOT NULL"
-    if @stream_id and @stream_id!= "0"
+    if @stream_id and @stream_id != "0"
       spider_condition = spider_condition+" and history_counters.stream_id="+@stream_id.to_s
       qs_condition     = qs_condition+" and history_counters.stream_id="+@stream_id.to_s
     end
-    if @request_id and @request_id!= "0"
+    if @request_id and @request_id != "0"
       spider_condition = spider_condition+" and history_counters.request_id="+@request_id.to_s
       qs_condition     = qs_condition+" and history_counters.request_id="+@request_id.to_s
     end
