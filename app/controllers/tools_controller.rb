@@ -862,12 +862,12 @@ class ToolsController < ApplicationController
     spider_condition  = "concerned_spider_id IS NOT NULL"
     qs_condition      = "concerned_status_id IS NOT NULL"
     if @stream_id and @stream_id != "0"
-      spider_condition = spider_condition+" and history_counters.stream_id="+@stream_id.to_s
-      qs_condition     = qs_condition+" and history_counters.stream_id="+@stream_id.to_s
+      spider_condition = spider_condition + " and history_counters.stream_id = " + @stream_id.to_s
+      qs_condition     = qs_condition + " and stream_id = " + @stream_id.to_s
     end
     if @request_id and @request_id != "0"
-      spider_condition = spider_condition+" and history_counters.request_id="+@request_id.to_s
-      qs_condition     = qs_condition+" and history_counters.request_id="+@request_id.to_s
+      spider_condition = spider_condition + " and history_counters.request_id = " + @request_id.to_s
+      qs_condition     = qs_condition + " and request_id = " + @request_id.to_s
     end
     spider_condition_vt = spider_condition + " and (concerned_spider_id BETWEEN 10000 and 30000)"
     spider_condition_vtt = spider_condition + " and concerned_spider_id > 30000"
