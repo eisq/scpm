@@ -863,11 +863,11 @@ class ToolsController < ApplicationController
     qs_condition      = "concerned_status_id IS NOT NULL"
     if @stream_id and @stream_id != "0"
       spider_condition = spider_condition + " and history_counters.stream_id = " + @stream_id.to_s
-      qs_condition     = qs_condition + " and stream_id = " + @stream_id.to_s
+      qs_condition     = qs_condition + " and history_counters.stream_id = " + @stream_id.to_s
     end
     if @request_id and @request_id != "0"
       spider_condition = spider_condition + " and history_counters.request_id = " + @request_id.to_s
-      qs_condition     = qs_condition + " and request_id = " + @request_id.to_s
+      qs_condition     = qs_condition + " and history_counters.request_id = " + @request_id.to_s
     end
     spider_condition_vt = spider_condition + " and (concerned_spider_id BETWEEN 10000 and 30000)"
     spider_condition_vtt = spider_condition + " and concerned_spider_id > 30000"
@@ -924,17 +924,6 @@ class ToolsController < ApplicationController
                                           "JOIN projects ON projects.id = statuses.project_id",
                                           "JOIN projects as parent ON parent.id = projects.project_id"],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
-    test_counter = 0
-    @qs_counter.each do |test|
-      if test.request_id == 8485
-        test_counter = test_counter + 1
-        Rails.logger.info("%%%%%%%% : " + test.concerned_status_id.to_s)
-      end
-    end
-    Rails.logger.info("")
-    Rails.logger.info("%%%%%%%% : final counter" + test_counter.to_s)
-    raise "test"
-
   end
   
   def show_counter_history_without_rmt
