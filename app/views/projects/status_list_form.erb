@@ -7,12 +7,13 @@
 	<!-- CHOICE 1 -->
 	<div class="status_list_choice" id="choice1" >
 		<div class="status_list_choice_text" >
-			<%= my_simple_format("From a request belonging to one of these WP:
-			2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5
-			2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6
-			2016-WP1.2.3 - Quality Assurance Post M10 / Post G6
-			2016-WP1.2.4 - Quality Assurance Agile Sprint 0
-			2016-WP1.2.5 - Quality Assurance Agile Sprints") %>
+			<%= my_simple_format("With a request belonging to one of these WP:
+						WP1.2 / WP1.4 / WP1.5 / WP1.6.2
+						2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5
+						2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6
+						2016-WP1.2.3 - Quality Assurance Post M10 / Post G6
+						2016-WP1.2.4 - Quality Assurance Agile Sprint 0
+						2016-WP1.2.5 - Quality Assurance Agile Sprints") %>
 		</div>
 		<img class="status_list_choice_img" src='/images/right.png'>      
 	</div>
@@ -31,7 +32,7 @@
 	</div>
 	<br />
 	<!-- CHOICE 3 -->
-	<div  class="status_list_choice" id="choice3" >
+	<div  class="status_list_choice_2" id="choice3" >
 		<div class="status_list_choice_text" >
 			<% if @project.get_last_qs_increment %>
 				<%= my_simple_format('During a "Standard Support" activity and you <strong>do not want</strong> to increment the QS counter.
