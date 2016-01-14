@@ -924,6 +924,8 @@ class ToolsController < ApplicationController
                                           "JOIN projects ON projects.id = statuses.project_id",
                                           "JOIN projects as parent ON parent.id = projects.project_id"],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
+
+    @table_spider_counter = table_spider_counter_temp.uniq
   end
   
   def show_counter_history_without_rmt
