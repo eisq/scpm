@@ -918,14 +918,14 @@ class ToolsController < ApplicationController
       table_spider_counter_temp << count_struct
     end
 
+    @table_spider_counter = table_spider_counter_temp.sort_by { |tsc| [tsc.historycounter.request_id, tsc.historycounter.action_date]}
+    
     @qs_counter = HistoryCounter.find(:all,:conditions=>[qs_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id", 
                                           "JOIN statuses ON statuses.id = history_counters.concerned_status_id",
                                           "JOIN projects ON projects.id = statuses.project_id",
                                           "JOIN projects as parent ON parent.id = projects.project_id"],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
-
-    @table_spider_counter = table_spider_counter_temp.uniq
   end
   
   def show_counter_history_without_rmt
