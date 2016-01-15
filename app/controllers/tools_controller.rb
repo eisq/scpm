@@ -2284,6 +2284,142 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def add_stream_review_types
+    rt = ReviewType.new
+    rt.title = "2016-WP1.3.1"
+    rt.description = "DW-PLM Quality Plan"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP1.3.5"
+    rt.description = "E-M&T Referential Change Management"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP2.1"
+    rt.description = "Business Process Layout"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP2.2"
+    rt.description = "Functional Layout (Use Cases)"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP2.3"
+    rt.description = "Information Layout (Data Model)"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP2.4"
+    rt.description = "Modeling Update"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP3.1.1"
+    rt.description = "Root Cause Analysis (Classic Approach)"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP3.1.2"
+    rt.description = "Root Cause Analysis (Seminar Approach)"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP3.2"
+    rt.description = "Action Plan of the Root Cause Analysis"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.1"
+    rt.description = "Coaching Project Plan"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.2"
+    rt.description = "Coaching BRD"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.3"
+    rt.description = "Coaching V&V"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.4"
+    rt.description = "Coaching CMP"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.5"
+    rt.description = "Coaching HLR"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.6"
+    rt.description = "Coaching Use Case"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.7.1"
+    rt.description = "Diagnosis and Project Launch"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.7.2"
+    rt.description = "Sprint 0 Support"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.7.3"
+    rt.description = "Sprint Coaching"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.8"
+    rt.description = "Risk Management"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP4.9"
+    rt.description = "E-M&T Referential"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP5.1"
+    rt.description = "Light Expertise"
+    rt.is_active = true
+    rt.save
+
+    rt = ReviewType.new
+    rt.title = "2016-WP5.2"
+    rt.description = "Complete Expertise"
+    rt.is_active = true
+    rt.save
+
+    redirect_to '/tools/scripts'
+  end
+
   def delete_temp_deviation
     SvtDeviationSpiderConsolidationTemp.find(:all).each do |conso_temp|
       conso_temp.delete
