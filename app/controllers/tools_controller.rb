@@ -696,7 +696,7 @@ class ToolsController < ApplicationController
 
   def requests_by_year
     @requests = Request.find(:all, :conditions=>"status='to be validated'", :order=>"workstream, summary, milestone")
-    @years = [2011, 2012, 2013, 2014]
+    @years = [2011, 2012, 2013, 2014, 2016]
   end
 
   def projects_length
