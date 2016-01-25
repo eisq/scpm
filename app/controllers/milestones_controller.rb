@@ -178,13 +178,11 @@ class MilestonesController < ApplicationController
     @delay_days = params[:delay_days]
 
     @reason_one_selected = @reason_two_selected = nil
-    @other_disabled = true
 
     milestone_delay_reasons_init
     if params[:select_reason_one] and params[:select_reason_one] != "" and (!params[:select_reason_two] or params[:select_reason_two] == "")
       @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:select_reason_one]])
       if @reason_one_selected.reason_description == "Other reason"
-        @other_disabled = false
       else
         @reason_twos = milestone_delay_get_reason_twos(params[:select_reason_one])
       end
@@ -194,7 +192,6 @@ class MilestonesController < ApplicationController
       @reason_two_selected = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", params[:select_reason_two]])
       @reason_twos = milestone_delay_get_reason_twos(params[:select_reason_one])
       if @reason_two_selected.reason_description == "Other reason"
-        @other_disabled = false
       else
         @reason_threes = milestone_delay_get_reason_threes(params[:select_reason_two])
       end
