@@ -159,19 +159,19 @@ module SdpDB
       ['Autre',nil]                         =>192641, # AUT
 
       #2016
-      ['All','2016-WP1.1.1 - Quality Gate']                             =>192679, # QG
-      ['All','2016-WP1.1.2 - Milestone / CCB review preparation']       =>192680, # MPrepa
-      ['All','2016-WP1.1.3 - Process Adherence Measurement']            =>192681, # PAM
-      ['All','2016-WP1.1.4 - Quality Status of a Project']              =>192682, # QSP
-      ['All','2016-WP1.1.5 - Quality of Product Document']              =>192683, # QPD
-      ['All','2016-WP1.1.6 - Quality of the Configuration Management']  =>192684, # QCM
-      ['All','2016-WP1.1.7 - Quality of the Code Static Review']        =>192685, # QCSR
-      ['All','2016-WP1.1.8 - Quality of the Test Dossier']              =>192686, # QTD
-      ['All','2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5']=>192687, # QAM3M5
-      ['All','2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6']         =>192688, # QAM5M10
-      ['All','2016-WP1.2.3 - Quality Assurance Post M10 / Post G6']     =>192689, # QAPostM10
-      ['All','2016-WP1.2.4 - Quality Assurance Agile Sprint 0']         =>192690, # QAASO
-      ['All','2016-WP1.2.5 - Quality Assurance Agile Sprints']          =>192691, # QAAS
+      ['All','2016-WP1.1.1 - Quality Gate']                                =>192679, # QG
+      ['All','2016-WP1.1.2 - Milestone / CCB review preparation']          =>192680, # MPrepa
+      ['All','2016-WP1.1.3 - Process Adherence Measurement']               =>192681, # PAM
+      ['All','2016-WP1.1.4 - Quality Status of a Project']                 =>192682, # QSP
+      ['All','2016-WP1.1.5 - Quality of Product Document']                 =>192683, # QPD
+      ['All','2016-WP1.1.6 - Quality of the Configuration Management']     =>192684, # QCM
+      ['All','2016-WP1.1.7 - Quality of the Code Static Review']           =>192685, # QCSR
+      ['All','2016-WP1.1.8 - Quality of the Test Dossier']                 =>192686, # QTD
+      ['M3-M5','2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5'] =>192687, # QAM3M5
+      ['M5-M10','2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6']         =>192688, # QAM5M10
+      ['Post-M10','2016-WP1.2.3 - Quality Assurance Post M10 / Post G6']     =>192689, # QAPostM10
+      ['M3-M5','2016-WP1.2.4 - Quality Assurance Agile Sprint 0']         =>192690, # QAASO
+      ['M5-M10','2016-WP1.2.5 - Quality Assurance Agile Sprints']          =>192691, # QAAS
       ['All','2016-WP1.3.1 - DW/PLM Quality Plan']                      =>192692, # DWPLMQAP
       ['All','2016-WP1.3.2 - Support KPI and Reporting']                =>192693, # WSSupport
       ['All','2016-WP1.3.3 - PSU (GPP LBIP Suite)']                     =>192694, # PjtSetup
