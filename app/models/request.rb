@@ -83,7 +83,7 @@ class Request < ActiveRecord::Base
   "2016-WP1.1.6 - Quality of the Configuration Management"          => "2016 Quality of the Configuration Management",
   "2016-WP1.1.7 - Quality of the Code Static Review"                => "2016 Quality of the Code Static Review",
   "2016-WP1.1.8 - Quality of the Test Dossier"                      => "2016 Quality of the Test Dossier",
-  "2016-WP1.2.1 - Quality Assurance M3-M5 - G2-G5 / sM3-sM5"        => "2016 Quality Assurance M3-M5",
+  "2016-WP1.2.1 - Quality Assurance M3-M5 - G2-G5 - sM3-sM5"        => "2016 Quality Assurance M3-M5",
   "2016-WP1.2.2 - Quality Assurance M5-M10 - G5-G6"                 => "2016 Quality Assurance M5-M10",
   "2016-WP1.2.3 - Quality Assurance Post M10 - Post G6"             => "2016 Quality Assurance Post M10",
   "2016-WP1.2.4 - Quality Assurance Agile Sprint 0"                 => "2016 Quality Assurance Agile Sprint 0",
