@@ -362,7 +362,14 @@ strong {
 .status_list_choice_text, .spider_list_choice_text {
   width : 400px;
   float:left;
-  height:160px;
+  height:90px;
+  vertical-align: middle;
+}
+
+.status_list_choice_text_2, .spider_list_choice_text_2 {
+  width : 400px;
+  float:left;
+  height: 80px;
   vertical-align: middle;
 }
 

@@ -20,7 +20,7 @@
 	<br />
 	<!-- CHOICE 2 -->
 	<div  class="status_list_choice_2" id="choice2" >
-		<div class="status_list_choice_text" >
+		<div class="status_list_choice_text_2" >
 			<% if @project.get_last_qs_increment %>
 				<%= my_simple_format('During a "Standard Support" activity and you <strong>want to</strong> increment the QS counter.
 				Last QS counter update for this project: "'+ @project.get_last_qs_increment.to_s + ' (<span class="descr">' + time_ago_in_words(@project.get_last_qs_increment) + '</span>)') %> 
@@ -33,7 +33,7 @@
 	<br />
 	<!-- CHOICE 3 -->
 	<div  class="status_list_choice_2" id="choice3" >
-		<div class="status_list_choice_text" >
+		<div class="status_list_choice_text_2" >
 			<% if @project.get_last_qs_increment %>
 				<%= my_simple_format('During a "Standard Support" activity and you <strong>do not want</strong> to increment the QS counter.
 			Last QS counter update for this project: "'+ @project.get_last_qs_increment.to_s + ' (<span class="descr">' + time_ago_in_words(@project.get_last_qs_increment) + '</span>)') %> 
