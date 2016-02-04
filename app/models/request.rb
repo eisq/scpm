@@ -358,66 +358,66 @@ class Request < ActiveRecord::Base
     [1, 2, 3.75],
     #2016-WP1.1.8 - Quality of the Test Dossier
     [0.875,  1.25,  1.75],
-    #2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5
+    #2016-WP1.2.1 - Quality Assurance M3-M5 - G2-G5 - sM3-sM5
     [5, 6.5, 8.75],
-    #2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6
+    #2016-WP1.2.2 - Quality Assurance M5-M10 - G5-G6
     [4.5, 5.25, 6.375],
-    #2016-WP1.2.3 - Quality Assurance Post M10 / Post G6
+    #2016-WP1.2.3 - Quality Assurance Post M10 - Post G6
     [4.5,  6,  8],
     #2016-WP1.2.4 - Quality Assurance Agile Sprint 0
     [4.5,  6, 8],
     #2016-WP1.2.5 - Quality Assurance Agile Sprints
     [1.125,  2, 2.75],
-    #2016-WP1.3.1 - DW/PLM Quality Plan
-    [1.25,2,2.75],
+    #2016-WP1.3.1 - DW-PLM Quality Plan
+    [1.25, 2, 2.75],
     #2016-WP1.3.2 - Support KPI and Reporting
-    [5,6,8],
+    [5, 6, 8],
     #2016-WP1.3.3 - PSU (GPP LBIP Suite)
-    [3,3.75,4.125],
+    [3, 3.75, 4.125],
     #2016-WP1.3.4 - LL
-    [1,1.25,1.5],
+    [1, 1.25, 1.5],
     #2016-WP1.3.5 - E-M&T Referential Change Management
-    [1.5,3,0],
+    [1.5, 3, 0],
     #2016-WP2.1 – Business Process Layout
-    [6.875,20.625,26.625],
+    [6.875, 20.625, 26.625],
     #2016-WP2.2 – Functional Layout (Use Cases)
-    [7.5,13.75,18.625],
+    [7.5, 13.75, 18.625],
     #2016-WP2.3 – Information Layout (Data Model)
-    [6.75,12.5,18.125],
+    [6.75, 12.5, 18.125],
     #2016-WP2.4 – Modeling Update
-    [4,0,0],
+    [4, 0, 0],
     #2016-WP3.1.1 - Root Cause Analysis (Classic Approach)
-    [8.25,12.5,0],
+    [8.25, 12.5, 0],
     #2016-WP3.1.2 - Root Cause Analysis (Seminar Approach)
-    [5.25,8,0],
+    [5.25, 8, 0],
     #2016-WP3.2 - Action Plan of the Root Cause Analysis
-    [4,8,0],
+    [4, 8, 0],
     #2016-WP4.1 - Coaching Project Plan
-    [1.5,3.5,0],
+    [1.5, 3.5, 0],
     #2016-WP4.2 - Coaching BRD
-    [1,5,0],
+    [1, 5, 0],
     #2016-WP4.3 - Coaching V&V
-    [1,6,0],
+    [1, 6, 0],
     #2016-WP4.4 - Coaching CMP
-    [2,5,0],
+    [2, 5, 0],
     #2016-WP4.5 - Coaching HLR
-    [1,2,0],
+    [1, 2, 0],
     #2016-WP4.6 - Coaching Use Case
-    [1.5,4.5,0],
+    [1.5, 4.5, 0],
     #2016-WP4.7.1 - Diagnosis and Project Launch
-    [3.375,5.125,5.125],
+    [3.375, 5.125, 5.125],
     #2016-WP4.7.2 - Sprint 0 Support
-    [6.75,10.25,17],
+    [6.75, 10.25, 17],
     #2016-WP4.7.3 - Sprint Coaching
-    [3.375,6.75,13.625],
+    [3.375, 6.75, 13.625],
     #2016-WP4.8 - Risk Management
-    [1.25,2.5,0],
+    [1.25, 2.5, 0],
     #2016-WP4.9 - E-M&T Referential
-    [1.25,3,0],
+    [1.25, 3, 0],
     #2016-WP5.1 - Light Expertise
-    [4.875,7.25,9.625],
+    [4.875, 7.25, 9.625],
     #2016-WP5.2 - Complete Expertise
-    [16,22.75,31.75]
+    [16, 22.75, 31.75]
   ]
 
  # reminder: minus 10% for operational meetings
@@ -1003,7 +1003,7 @@ class Request < ActiveRecord::Base
 
   def workload2
     if self.sdpiteration    == "2016"
-      return LoadsRFP2016[wp_index_RFP2016(self.work_package, self.contre_visite)+milestone_index(self.milestone)][comp_index(self.complexity)]
+      return LoadsRFP2016[wp_index_RFP2016(self.work_package, self.contre_visite)][comp_index(self.complexity)]
     elsif self.sdpiteration == "2014"
       return LoadsRFP2014[wp_index_RFP2014(self.work_package, self.contre_visite)+milestone_index(self.milestone)][comp_index(self.complexity)]
     elsif self.sdpiteration == "2013-Y3"
