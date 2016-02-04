@@ -418,7 +418,7 @@ class CiProjectsController < ApplicationController
   end
 
   def date_validation_mail(validators, project, justification)
-      Mailer::deliver_ci_date_change(validators, project, justification)
+      #Mailer::deliver_ci_date_change(validators, project, justification)
   end
 
   def dashboard

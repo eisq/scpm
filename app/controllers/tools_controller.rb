@@ -65,7 +65,7 @@ class ToolsController < ApplicationController
   end
 
   def test_email
-    Mailer::deliver_mail(APP_CONFIG['test_email_address'])
+    #Mailer::deliver_mail(APP_CONFIG['test_email_address'])
   end
 
   def scripts
@@ -298,7 +298,7 @@ class ToolsController < ApplicationController
       history_comparison
       @sdp_index_by_mail = true    
       body = render_to_string(:action=>'sdp_index', :layout=>false) + render_to_string(:action=>'sdp_index_by_type', :layout=>false)
-      Mailer::deliver_mail(APP_CONFIG['sdp_import_email_destination'],APP_CONFIG['sdp_import_email_object'],"<b>SDP has been updated by #{current_user.name}</b><br/><br/>"+body)
+      #Mailer::deliver_mail(APP_CONFIG['sdp_import_email_destination'],APP_CONFIG['sdp_import_email_object'],"<b>SDP has been updated by #{current_user.name}</b><br/><br/>"+body)
       redirect_to '/tools/sdp_index'
     rescue Exception => e
       render(:text=>e)
