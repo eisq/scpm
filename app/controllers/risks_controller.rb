@@ -16,7 +16,7 @@ class RisksController < ApplicationController
       render :action => 'new', :project_id=>params[:risk][:project_id]
       return
     end
-    #Mailer::deliver_risk_change(@risk)
+    Mailer::deliver_risk_change(@risk)
     redirect_to("/projects/show/#{@risk.project_id}")
   end
   
@@ -50,7 +50,7 @@ class RisksController < ApplicationController
   def update
     r = Risk.find(params[:id])
     r.update_attributes(params[:risk])
-    #Mailer::deliver_risk_change(r)
+    Mailer::deliver_risk_change(r)
     redirect_to "/projects/show/#{r.project_id}"
   end
   

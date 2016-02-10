@@ -703,7 +703,7 @@ class WorkloadsController < ApplicationController
         backup = WlBackup.find(:all, :conditions=>["person_id = ? and week = ?", line.person.id.to_s, @wlweek])
         # Send email
         backup.each do |b|
-         #Mailer::deliver_backup_delete(b)
+        Mailer::deliver_backup_delete(b)
         end
         backup.each(&:destroy)
       end
