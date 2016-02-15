@@ -1,0 +1,32 @@
+<SCRIPT language="Javascript">
+
+function create_new_deliverable() {
+	location.replace(generate_url("new_deliverable"));
+}
+
+function generate_url(action_name) {
+  if(location.toString().indexOf("index_deliverable") !== -1)
+  {
+	return action_name;
+  }
+  else
+  {
+	return "svf_deviation_tools/" + action_name;
+  }
+}
+</SCRIPT>
+
+
+<input type="button", :id="add_deliverable", onclick="create_new_deliverable();" value="New deliverable" />
+<div id="deliverable_list">
+
+<% @deliverables.each do |d| %>
+  <p>
+      <div style="float: left; width: auto;">
+      <%= d.name %> [Is Active : <%= d.is_active %>]
+      &nbsp;
+    </div>    
+    <%= button_to "Detail", {:action => "detail_deliverable", :deliverable_id => d.id }, {:method => :post} %>
+  </p>
+<% end %>
+</div>

@@ -259,6 +259,11 @@ class Milestone < ActiveRecord::Base
       if deviation_spider_svt and deviation_spider_svt.is_not_consolidated?
         result = true
       end
+    elsif self.project.deviation_spider_svf and self.project.deviation_spider_svf != 0
+      deviation_spider_svf = SvfDeviationSpider.find(:first, :conditions=>["milestone_id = ?", self.id])
+      if deviation_spider_svf and deviation_spider_svf.is_not_consolidated?
+        result = true
+      end
     else
       self.spiders.each do |s|
         if !s.is_consolidated?

@@ -135,6 +135,13 @@ $j(document).ready(function (){
       <% end %>
       <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.historycounter.svt_deviation_spider.project.id}) %></td>
       <td><%= sc.historycounter.svt_deviation_spider.milestone.to_s %></td>
+    <% elsif sc.spider_version == 4 %>
+      <% project_name = sc.historycounter.svf_deviation_spider.project.name %>
+      <% if sc.historycounter.svf_deviation_spider.project.project %>
+        <% project_name = sc.historycounter.svf_deviation_spider.milestone.project.name + " > " + sc.historycounter.svf_deviation_spider.project.name %>
+      <% end %>
+      <td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc.historycounter.svf_deviation_spider.project.id}) %></td>
+      <td><%= sc.historycounter.svf_deviation_spider.milestone.to_s %></td>
     <% end %>
 
     <% if (current_user.has_role?('Admin')) %>
@@ -156,6 +163,10 @@ $j(document).ready(function (){
         if (sc.historycounter.svt_deviation_spider.file_link)
           file_link = sc.historycounter.svt_deviation_spider.file_link
         end
+      elsif sc.spider_version == 4
+        if (sc.historycounter.svf_deviation_spider.file_link)
+          file_link = sc.historycounter.svf_deviation_spider.file_link
+        end
       end       
     %>
   <tr><td class="tr_bottom"></td><td class="tr_bottom" COLSPAN="5">
@@ -165,6 +176,8 @@ $j(document).ready(function (){
       <div><%= link_to(file_link, {:controller=>'deviation_spiders', :action=>'update_spider_file_name_form', :id=>sc.historycounter.deviation_spider.id}) %></div>
     <% elsif sc.spider_version == 3 %>
       <div><%= link_to(file_link, {:controller=>'svt_deviation_spiders', :action=>'update_spider_file_name_form', :id=>sc.historycounter.svt_deviation_spider.id}) %></div>
+    <% elsif sc.spider_version == 4 %>
+      <div><%= link_to(file_link, {:controller=>'svf_deviation_spiders', :action=>'update_spider_file_name_form', :id=>sc.historycounter.svf_deviation_spider.id}) %></div>
     <% end %>
   </td></tr>
 <% end %>

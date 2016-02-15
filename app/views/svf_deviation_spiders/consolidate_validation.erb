@@ -1,0 +1,60 @@
+<!-- List -->
+	<!-- CHOICE 1 -->
+	<script type="text/javascript">
+	    $(document).ready(function (){
+			$("#form_choice_1").click(function() {
+				$(this).submit();
+			});
+			$("#form_choice_2").click(function() {
+				$(this).submit();
+			});
+		});
+	</script>
+
+	<div><%= link_to "Back to project", {:controller=>'projects', :action => "show", :id => @project.id} %></div>
+
+	<h3>You are working on this project: <u><%= @project.name %></u></h3>
+
+	<% if params[:error] %>
+		<br/><br/>
+		<strong><span style='color:red;'> Error during the consolidation. </span></strong>
+		<br/><br/>
+	<% end %>
+
+	<% form_tag({:action => "consolidate"}, :method => "post", :id => 'form_choice_1') do %>
+		<%= hidden_field_tag('list_choice', 1) %>
+		<%= hidden_field_tag('deviation_spider_id', @deviation_spider.id) %>
+
+		<div class="spider_list_choice" id="choice1" >
+			<div class="spider_list_choice_text" >
+					<%= my_simple_format("With a request belonging to one of these WP:
+						WP1.2 / WP1.4 / WP1.5 / WP1.6.2
+						2016-WP1.2.1 - Quality Assurance M3-M5 / G2-G5 / sM3-sM5
+						2016-WP1.2.2 - Quality Assurance M5-M10 / G5-G6
+						2016-WP1.2.3 - Quality Assurance Post M10 / Post G6
+						2016-WP1.2.4 - Quality Assurance Agile Sprint 0
+						2016-WP1.2.5 - Quality Assurance Agile Sprints") %>
+			</div>
+			<img class="spider_list_choice_img" src="/images/right.png">
+		</div>
+	<% end %>
+
+	<!-- CHOICE 2 -->
+	<% form_tag({:action => "consolidate"}, :method => "post", :id => 'form_choice_2') do %>
+		<%= hidden_field_tag('list_choice', 2) %>
+		<%= hidden_field_tag('deviation_spider_id', @deviation_spider.id) %>
+
+		<div  class="spider_list_choice_2" id="choice2">
+		<% choice_2_text = '<div class="spider_list_choice_text_2" >' %>
+		<% if @project.get_last_spider_increment %>
+			<% choice_2_text += my_simple_format("In a Standard Support mode and you want to increment the Spider counter.
+				Last Spider counter update for this project: " + @project.get_last_spider_increment.to_s + " (<span class=\"descr\">" + time_ago_in_words(@project.get_last_spider_increment) + "</span>)") %>
+		<% else %>
+			<% choice_2_text +=  my_simple_format('In a Standard Support mode and you want to increment the Spider counter.') %> 
+		<% end %>
+		<% choice_2_text +='</div><img class="spider_list_choice_img" src="/images/right.png">' %>
+		<%= choice_2_text %>
+
+		</div>
+	<% end %>
+	<br />

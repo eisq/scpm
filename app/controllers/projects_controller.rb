@@ -435,7 +435,7 @@ class ProjectsController < ApplicationController
     project_id = params[:project_id]
     project = Project.find(:first, :conditions=>["id= ?", project_id])
     begin
-      if project and project.deviation_spider == true and project.deviation_spider_svt == false
+      if project and project.deviation_spider and !project.deviation_spider_svt and !project.deviation_spider_svf
         file = params[:upload]
         if file
           file_name =  file['datafile'].original_filename
@@ -485,7 +485,7 @@ class ProjectsController < ApplicationController
         else
           redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"3"
         end
-      elsif project and project.deviation_spider_svt == true
+      elsif project and project.deviation_spider_svt and !project.deviation_spider_svf
         file = params[:upload]
         if file
           file_name =  file['datafile'].original_filename
@@ -554,6 +554,74 @@ class ProjectsController < ApplicationController
         else
           redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"3"
         end
+      elsif project and !project.deviation_spider_svt and project.deviation_spider_svf
+        file = params[:upload]
+        if file
+          file_name =  file['datafile'].original_filename
+          file_ext  = File.extname(file_name)
+          if (file_ext == ".xls")
+            psu_file_hash = DeviationSvf.import(file, project.lifecycle_id)
+            if psu_file_hash == "tab_error"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"4"
+            elsif psu_file_hash == "empty_value"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5"
+            elsif psu_file_hash == "wrong_value_formula"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"6"
+            elsif psu_file_hash == "wrong_psu_file"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"7"
+            else
+                # Save psu reference
+              deviation_spider_reference = SvfDeviationSpiderReference.new
+              deviation_spider_reference.version_number = 1
+              SvfDeviationSpiderReference.find(:all, :conditions=>["project_id = ?", project_id], :order=>"version_number asc").each do |devia|
+                deviation_spider_reference.version_number = devia.version_number + 1
+              end
+              deviation_spider_reference.project_id = project_id
+              deviation_spider_reference.created_at = DateTime.now
+              deviation_spider_reference.updated_at = DateTime.now
+              deviation_spider_reference.save
+
+              # Save psu settings
+              psu_file_hash.each do |psu|
+                deviation_spider_setting = SvfDeviationSpiderSetting.new
+                deviation_spider_setting.svf_deviation_spider_reference_id  = deviation_spider_reference.id
+                deviation_spider_setting.activity_name                  = psu["activity"]
+                deviation_spider_setting.macro_activity_name            = psu["macro_activity"]
+                deviation_spider_setting.deliverable_name               = psu["deliverable"]
+                deviation_spider_setting.answer_1                       = psu["methodology_template"]
+                deviation_spider_setting.answer_2                       = psu["is_justified"]
+                deviation_spider_setting.answer_3                       = psu["other_template"]
+                deviation_spider_setting.justification                  = psu["justification"]
+                deviation_spider_setting.created_at                     = DateTime.now
+                deviation_spider_setting.updated_at                     = DateTime.now
+                deviation_spider_setting.save
+
+                #if a macro_activity or a deliverable from a row  is not know in the database, it's a flight one and it's saved.
+                #it will be used for the deviation extract.
+                macro_activity_to_add_in_flight_table = deliverable_to_add_in_flight_table = nil
+                macro_activity_to_add_in_flight_table = SvfDeviationMacroActivity.find(:first, :conditions=>["name = ?", psu["macro_activity"]])
+                deliverable_to_add_in_flight_table = SvfDeviationDeliverable.find(:first, :conditions=>["name = ?", psu["deliverable"]])
+                if !macro_activity_to_add_in_flight_table or !deliverable_to_add_in_flight_table
+                  svf_deviation_flight = SvfDeviationMacroActivityDeliverableFlight.new
+                  svf_deviation_flight.svf_deviation_macro_activity_name  = psu["macro_activity"]
+                  svf_deviation_flight.svf_deviation_deliverable_name     = psu["deliverable"]
+                  svf_deviation_flight.svf_deviation_activity_name        = psu["activity"]
+                  svf_deviation_flight.project_id                         = project.id
+                  svf_deviation_flight.answer_1                           = psu["methodology_template"]
+                  svf_deviation_flight.answer_2                           = psu["is_justified"]
+                  svf_deviation_flight.answer_3                           = psu["other_template"]
+                  svf_deviation_flight.justification                      = psu["justification"]
+                  svf_deviation_flight.save
+                end
+              end
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"1"
+            end
+          else
+            redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"0"
+          end
+        else
+          redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"3"
+        end
       else
         redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"2"
       end
@@ -590,12 +658,12 @@ class ProjectsController < ApplicationController
           parent = Project.find(:first, :conditions=>"name='#{r.project_name}'")
           if not parent
             # create parent
-            parent_id = Project.create(:project_id=>nil, :name=>r.project_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider_svt=>true).id
+            parent_id = Project.create(:project_id=>nil, :name=>r.project_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider=>false, :deviation_spider_svt=>false, :deviation_spider_svf=>true).id
           else
             parent_id = parent.id
           end
           #create wp
-          p = Project.create(:project_id=>parent_id, :name=>r.workpackage_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider_svt=>true)
+          p = Project.create(:project_id=>parent_id, :name=>r.workpackage_name, :workstream=>r.workstream, :lifecycle_object=>Lifecycle.first, :deviation_spider=>false, :deviation_spider_svt=>false, :deviation_spider_svf=>true)
           if r.project.requests.size == 1 # if that was the only request move all statuts and actions, etc.. to new project
             @text << "<u>#{r.project.full_name}</u>: #{r.workpackage_name} (new) != #{r.project.name} (old) => creating and moving ALL<br/>"
             r.project.move_all(p)
@@ -643,7 +711,7 @@ class ProjectsController < ApplicationController
 
     project = Project.find_by_name(project_name)
     if not project
-      project = Project.create(:name=>project_name, :deviation_spider_svt=>true)
+      project = Project.create(:name=>project_name, :deviation_spider=>false, :deviation_spider_svt=>false, :deviation_spider_svf=>true)
       project.workstream = request.workstream
       lifecycle_name = request.lifecycle_name_for_request_type()
       lifecycle = nil
@@ -660,7 +728,7 @@ class ProjectsController < ApplicationController
 
     wp = Project.find_by_name(workpackage_name, :conditions=>["project_id=?",project.id])
     if not wp
-      wp = Project.create(:name=>workpackage_name, :deviation_spider_svt=>true)
+      wp = Project.create(:name=>workpackage_name, :deviation_spider=>false, :deviation_spider_svt=>false, :deviation_spider_svf=>true)
       wp.workstream = request.workstream
       wp.brn        = brn
       wp.project_id = project.id
@@ -1083,7 +1151,9 @@ class ProjectsController < ApplicationController
       new_project.lifecycle = lifecycle_id
       new_project.lifecycle_id = lifecycle_id
       new_project.lifecycle_object = lifecycle
-      new_project.deviation_spider_svt = true
+      new_project.deviation_spider = false
+      new_project.deviation_spider_svt = false
+      new_project.deviation_spider_svf = true
       new_project.save
 
       project.is_running = 0
@@ -1265,10 +1335,12 @@ class ProjectsController < ApplicationController
     @milestone_index = @project.get_current_milestone_index
 
     @last_import_date = "N/A"
-    if @project.deviation_spider == true
+    if @project.deviation_spider and !@project.deviation_spider_svt
       @last_import = DeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
-    elsif @project.deviation_spider_svt == true
+    elsif @project.deviation_spider_svt and !@project.deviation_spider_svf
       @last_import = SvtDeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
+    elsif !@project.deviation_spider_svt and @project.deviation_spider_svf
+      @last_import = SvfDeviationSpiderReference.find(:first, :conditions => ["project_id = ?", project_id], :order => "version_number desc")
     end
 
     if @last_import

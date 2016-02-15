@@ -142,6 +142,13 @@
         <li><%= link_to('Manage Deliverables',{:controller=>'svt_deviation_tools', :action=>'index_deliverable'}) %></li>
         <li><%= link_to('Manage Questions',{:controller=>'svt_deviation_tools', :action=>'index_question'}) %></li>
         <li><%= link_to('Custo/Devia export',{:controller=>'svt_deviation_spiders', :action=>'index_export_all'}) %></li>
+        <li class="hsep">Deviation Spiders v4</li>
+        <li><%= link_to('Manage Operational Activities',{:controller=>'svf_deviation_tools', :action=>'index_meta_activity'}) %></li>
+        <li><%= link_to('Manage Macro-Objectives',{:controller=>'svf_deviation_tools', :action=>'index_activity'}) %></li>
+        <li><%= link_to('Manage Macro-Activities',{:controller=>'svf_deviation_tools', :action=>'index_macro_activity'}) %></li>
+        <li><%= link_to('Manage Deliverables',{:controller=>'svf_deviation_tools', :action=>'index_deliverable'}) %></li>
+        <li><%= link_to('Manage Questions',{:controller=>'svf_deviation_tools', :action=>'index_question'}) %></li>
+        <li><%= link_to('Custo/Devia export',{:controller=>'svf_deviation_spiders', :action=>'index_export_all'}) %></li>
       </ul>
     </li>
 		<% end %>

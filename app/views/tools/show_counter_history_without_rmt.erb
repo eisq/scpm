@@ -60,6 +60,13 @@ $j(document).ready(function (){
 			<% end %>
 			<td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc_no_req.historycounter.svt_deviation_spider.project.id}) %></td>
 			<td><%= sc_no_req.historycounter.svt_deviation_spider.milestone.to_s %></td>
+		<% elsif sc_no_req.spider_version == 4 %>
+			<% project_name = sc_no_req.historycounter.svf_deviation_spider.project.name %>
+			<% if sc_no_req.historycounter.svf_deviation_spider.project.project %>
+				<% project_name = sc_no_req.historycounter.svf_deviation_spider.project.project.name + " > " + sc_no_req.historycounter.svf_deviation_spider.project.name %>
+			<% end %>
+			<td><%= link_to(project_name, {:controller=>'projects', :action=>'show', :id=>sc_no_req.historycounter.svf_deviation_spider.project.id}) %></td>
+			<td><%= sc_no_req.historycounter.svf_deviation_spider.milestone.to_s %></td>
 		<% end %>
 
 		<td style="width:250px;" id=<%="req_#{sc_no_req.historycounter.id}" %>>

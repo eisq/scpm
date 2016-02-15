@@ -1,0 +1,14 @@
+
+<%= button_to "New", {:action => "new_meta_activity"}, {:method => :post} %>
+
+<div id="meta_activity_list">
+	<% @meta_activities.each do |a| %>
+		<p>
+	    	<div style="float: left; width: auto;">
+	      		<%= a.name %> [Is Active : <%= a.is_active %>]
+	      		&nbsp;
+	    	</div>    
+	    	<%= button_to "Detail", {:action => "detail_meta_activity", :meta_activity_id => a.id }, {:method => :post} %>
+	  	</p>
+	<% end %>
+</div>

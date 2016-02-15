@@ -1,0 +1,343 @@
+
+<SCRIPT language="Javascript">
+google.load("visualization", "1", {packages:["corechart"]});
+google.setOnLoadCallback(drawChart);
+google.setOnLoadCallback(drawChartTwo);
+google.setOnLoadCallback(drawChartThree);
+google.setOnLoadCallback(drawChartFour);
+
+function change_score(maturity_id, value)
+{
+	$.ajax({
+		type: "POST",
+		url: "/svf_deviation_spiders/update_score",
+ 		data: {svf_deviation_spider_maturity_id: maturity_id, svf_deviation_spider_maturity_achieved: value}
+	})
+	.done(function( msg ) {
+		document.getElementById('pie_update_warning').style.visibility = 'visible';
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+
+function change_planned(maturity_id, value)
+{
+	$.ajax({
+		type: "POST",
+		url: "/svf_deviation_spiders/update_planned",
+ 		data: {svf_deviation_spider_maturity_id: maturity_id, svf_deviation_spider_maturity_planned: value}
+	})
+	.done(function( msg ) {
+		document.getElementById('pie_update_warning').style.visibility = 'visible';
+	})
+	.fail(function() 
+	{ 
+		alert("Error");
+	})
+}
+
+function drawChart() {
+
+	var maturity = <%= @maturity %>
+	var rest = 100 - maturity
+
+	var data = google.visualization.arrayToDataTable([
+	  ['Maturity', 'Percent'],
+	  ['Projects/Suite activities maturity reached for the current phase', maturity],
+	  ['Delta', rest]
+	]);
+
+	var options = {
+	  title: 'Activities maturity reached for the current phase',
+	  pieHole: 0.5,
+	  'width':450,
+	  'height':350,
+	  slices: {
+	    0: { color: '#82FA58' },
+	    1: { color: 'orange' }
+	  },
+	  pieSliceTextStyle: {
+            color: 'black',
+          }
+	};
+
+	var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+	google.visualization.events.addListener(chart, 'ready', function () {
+	    piechart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+	    console.log(piechart.innerHTML);
+	  });
+
+
+	chart.draw(data, options);
+}
+
+function drawChartTwo() {
+
+	var maturities = <%= @maturities.to_json %>;
+	var maturities_name = <%= @maturities_name.to_json %>;
+	var maturitieslength = maturities.length;
+
+	if (maturitieslength > 0) {
+		var data_temp = [];
+		var Header = ['Percentage', 'Milestone', { role: 'style' }];
+	 	data_temp.push(Header);
+
+	 	for (var i=0; i < maturitieslength; i++) {
+	 		data_temp.push([maturities_name[i], maturities[i], "#82FA58"]);
+	 	}
+
+		var data = google.visualization.arrayToDataTable(data_temp);
+
+		var view = new google.visualization.DataView(data);
+		view.setColumns([0, 1,
+		                   { calc: "stringify",
+		                     sourceColumn: 1,
+		                     type: "string",
+		                     role: "annotation" },
+		                   2]);
+
+		var options = {
+		    title: "Reminders on previous phases activities maturity status (by %)",
+		    width: 600,
+		    height: 80,
+		    bar: {groupWidth: "25%"},
+		    legend: { position: "none" },
+		    vAxis: { minValue: '0', maxValue: '100'}
+		  };
+
+		var chart = new google.visualization.ColumnChart(document.getElementById("histochart"));
+
+		google.visualization.events.addListener(chart, 'ready', function () {
+		    histochart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+		    console.log(histochart.innerHTML);
+		  });
+
+		chart.draw(view, options);
+	}
+}
+
+function drawChartThree() {
+
+	var number_template_mnt = <%= @number_template_mnt.to_json %>;
+	var number_template_mnt_should = <%= @number_template_mnt_should.to_json %>;
+
+	var data_temp = [];
+	var Header = ['Deliverables', '', { role: 'style' }];
+ 	data_temp.push(Header);
+ 	data_temp.push(["Number of deliverables done with templates from E-M&T Referential", number_template_mnt, "#F5A9E1"]);
+ 	data_temp.push(["Number of deliverables that should have been done with templates from E-M&T Referential", number_template_mnt_should, "#A9D0F5"]);
+
+	var data = google.visualization.arrayToDataTable(data_temp);
+
+	var view = new google.visualization.DataView(data);
+	view.setColumns([0, 1,
+	                   { calc: "stringify",
+	                     sourceColumn: 1,
+	                     type: "string",
+	                     role: "annotation" },
+	                   2]);
+
+	var options = {
+	    title: "E-M&T Referential templates/tools used to perform the activities planned on the current phase",
+	    width: 600,
+	    height: 300,
+	    bar: {groupWidth: "70%"},
+	    legend: { position: "none" },
+		vAxis: { textPosition: 'none'}
+	  };
+
+	var chart = new google.visualization.ColumnChart(document.getElementById("piechartthree"));
+
+	google.visualization.events.addListener(chart, 'ready', function () {
+	    piechartthree.innerHTML = '<img src="' + chart.getImageURI() + '">';
+	    console.log(piechartthree.innerHTML);
+	  });
+
+	chart.draw(view, options);
+}
+
+function drawChartFour() {
+
+	var number_template_other = <%= @number_template_other.to_json %>;
+	var number_template_other_should = <%= @number_template_other_should.to_json %>;
+
+	var data_temp = [];
+	var Header = ['Deliverables', '', { role: 'style' }];
+ 	data_temp.push(Header);
+ 	data_temp.push(["Number of deliverables done with other templates", number_template_other, "#F5A9E1"]);
+ 	data_temp.push(["Number of deliverables that should have been done with other templates", number_template_other_should, "#A9D0F5"]);
+
+	var data = google.visualization.arrayToDataTable(data_temp);
+
+	var view = new google.visualization.DataView(data);
+	view.setColumns([0, 1,
+	                   { calc: "stringify",
+	                     sourceColumn: 1,
+	                     type: "string",
+	                     role: "annotation" },
+	                   2]);
+
+	var options = {
+	    title: "Other templates/tools used to perform the activities planned on the current phase",
+	    width: 600,
+	    height: 300,
+	    bar: {groupWidth: "70%"},
+	    legend: { position: "none" },
+		vAxis: { textPosition: 'none'}
+	  };
+
+	var chart = new google.visualization.ColumnChart(document.getElementById("piechartfour"));
+
+	google.visualization.events.addListener(chart, 'ready', function () {
+	    piechartfour.innerHTML = '<img src="' + chart.getImageURI() + '">';
+	    console.log(piechartfour.innerHTML);
+	  });
+
+	chart.draw(view, options);
+}
+
+//Open
+$( document ).ready(function() {
+	$(".conso_tf").focusout(function() {
+		$.ajax({
+			type: "POST",
+			url: "/svf_deviation_spiders/update_comment",
+	 		data: {deviation_spider_maturity_id: $(this).attr('id'), deviation_spider_maturity_comment: $(this).val()}
+		})
+		.done(function( msg ) {
+		})
+		.fail(function() 
+		{ 
+			alert("Error");
+		})
+	});
+});
+
+</SCRIPT>
+
+<div><%= link_to "Back to spider", {:action => "index", :milestone_id => @deviation_spider.milestone_id} %></div>
+
+<h2>Export Maturity <span style="font-weight:normal; font-size:13px">- To be added to Quality Slide</span></h2>
+<table>
+	<tr><td style="border:1px outset black;">
+			<div id="piechart" style="width: 450px; height: 350px;"></div>
+		</td>
+		<td align=center style="border:1px outset black;">
+			<div id="histochart" style="width: 600px; height: 80px;">
+				<% if @maturities.count == 0 %>
+					<h3>Reminders on previous phases activities maturity status</h3>
+					None of your previous milestones has been consolidated.
+				<% end %>
+			</div></td>
+	</tr>
+</table>
+
+<% if @activities_not_realised.count > 0 %>
+<h3>Not achieved macro-objectives - macro-activities</h3>
+<ul>
+	<% @activities_not_realised.each do |activity_struct| %>
+		<li><%= activity_struct.activity.name %></li>
+		<% if activity_struct.macro_activities.count > 0 %>
+			<ul>
+				<% activity_struct.macro_activities.each do |macro_activity| %>
+				<li>-> <%= macro_activity.name %></li>
+				<% end %>
+			</ul>
+		<% end %>
+	<% end %>
+</ul>
+<% end %>
+
+<% if @activities_partially_realised.count > 0 %>
+<h3>Partially achieved macro-objectives - macro-activities</h3>
+<ul>
+	<% @activities_partially_realised.each do |activity_struct| %>
+		<li><%= activity_struct.activity.name %></li>
+		<% if activity_struct.macro_activities.count > 0 %>
+			<ul>
+				<% activity_struct.macro_activities.each do |macro_activity| %>
+				<li>-> <%= macro_activity.name %></li>
+				<% end %>
+			</ul>
+		<% end %>
+	<% end %>
+</ul>
+<% end %>
+
+<br/>
+
+<% number_rows = actual_number_maturities = 0 %>
+<h2>Deliverable: Planned vs Achieved</h2>
+<table><tr valign="top"><td>
+<table class="consolidation_table">
+
+<tr class="consolidation_tr_activity">
+	<td class="consolidation_td_activity"><bold>Deliverable</bold></td>
+	<td class="consolidation_td_activity"><bold>Planned</bold></td>
+	<td class="consolidation_td_activity"><bold>Achieved</bold></td>
+	<td class="consolidation_td_activity"><bold>Comments</bold></td>
+</tr>
+<% @maturity_deliverables.each do |maturity| %>
+<tr class="consolidation_tr_deliverable">
+	<% number_rows = number_rows + 1 %>
+	<% actual_number_maturities = actual_number_maturities + 1 %>
+	<td class="consolidation_td_deliverable">
+		<%= maturity.svf_deviation_deliverable.name %>
+	</td>
+	<td class="consolidation_td_deliverable_left_maturity">
+		<% if maturity.planned != "" %>
+			<%= maturity.planned %>
+		<% else %>
+			<%= select_tag('planned', options_for_select(@achieved_list, maturity.planned), {:onchange=>"change_planned(#{maturity.id.to_s}, this.value);"}) %>
+		<% end %>
+	</td>
+	<td class="consolidation_td_deliverable_left_maturity">
+		<%= select_tag('achieved', options_for_select(@achieved_list, maturity.achieved), {:onchange=>"change_score(#{maturity.id.to_s}, this.value);"}) %>
+	</td>
+	<td class="consolidation_td_deliverable_right_maturity">
+		<%= text_area_tag('comment', maturity.comment, :cols=>21, :rows=>1, :id=>"#{maturity.id.to_s}", :class=>"conso_tf") %>
+	</td>
+</tr>
+<% if number_rows == 20 and @maturity_deliverables.count > actual_number_maturities %>
+	<% number_rows = 0 %>
+	</table>
+</td><td>
+	<table class="consolidation_table">
+
+	<tr class="consolidation_tr_activity">
+		<td class="consolidation_td_activity"><bold>Deliverable</bold></td>
+		<td class="consolidation_td_activity"><bold>Planned</bold></td>
+		<td class="consolidation_td_activity"><bold>Achieved</bold></td>
+		<td class="consolidation_td_activity"><bold>Comments</bold></td>
+	</tr>
+<% end %>
+<% end %>
+</table>
+</td></tr></table>
+
+<br/><br/>
+
+<h2>Templates/Tools used to perform the activities planned on the current phase</h2>
+<div class="pie_update_warning" id="pie_update_warning">
+	The current graphs are not up to date, please click on the submit to refresh it.
+	<%= button_to "Refresh", {:action => "consolidate_interface", :deviation_spider_id => @deviation_spider.id, :editable => @editable} %>
+</div>
+<table>
+	<tr><td align=center style="border:1px outset black;">
+			<div id="piechartthree" style="width: 600px; height: 300px;"></div>
+		</td>
+		<td align=center style="border:1px outset black;">
+			<div id="piechartfour" style="width: 600px; height: 300px;"></div>
+		</td>
+	</tr>
+</table>
+
+<br/>
+
+<% if @editable %>
+	<h2>Consolidation process</h2>
+	<%= button_to "Consolidate", {:action => "consolidate_validation", :deviation_spider_id => @deviation_spider.id} %>
+<% end %>

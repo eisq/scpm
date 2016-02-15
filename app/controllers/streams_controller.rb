@@ -335,7 +335,7 @@ class StreamsController < ApplicationController
       
       project = Project.find_by_name(project_name)
       if not project
-        project = Project.create(:name=>project_name, :deviation_spider_svt=>true)
+        project = Project.create(:name=>project_name, :deviation_spider=>false, :deviation_spider_svt=>false, :deviation_spider_svf=>true)
         project.workstream        = workstream.name
         project.lifecycle_object  = lifecycle_selected
         project.lifecycle_id = lifecycle_selected.id
@@ -347,7 +347,7 @@ class StreamsController < ApplicationController
 
       wp = Project.find_by_name(workpackage_name, :conditions=>["project_id=?",project.id])
       if not wp
-        wp = Project.create(:name=>workpackage_name, :deviation_spider_svt=>true)
+        wp = Project.create(:name=>workpackage_name, :deviation_spider=>false, :deviation_spider_svt=>false, :deviation_spider_svf=>true)
         wp.workstream       = workstream.name
         wp.brn              = brn
         wp.lifecycle_object = lifecycle_selected

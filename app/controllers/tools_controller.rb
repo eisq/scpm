@@ -227,6 +227,56 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def change_svf_id
+    #Create the new starting reference
+    svf_spider = SvfDeviationSpider.new
+    svf_spider.id = 60000
+    svf_spider.save
+
+    #migrate all existing svf_spiders
+    i = 0
+    SvfDeviationSpider.find(:all, :conditions=>["id < 60000"]).each do |spider|
+      i = i + 1
+      new_spider = SvfDeviationSpider.new
+      new_spider.id = (60000 + i)
+      new_spider.milestone_id = spider.milestone_id
+      new_spider.impact_count = spider.impact_count
+      new_spider.created_at = spider.created_at
+      new_spider.updated_at = spider.updated_at
+      new_spider.file_link = spider.file_link
+      new_spider.save
+
+      SvfDeviationSpiderConsolidation.find(:all, :conditions=>["svf_deviation_spider_id = ?", spider.id]).each do |conso|
+        conso.svf_deviation_spider_id = new_spider.id
+        conso.save
+      end
+
+      SvfDeviationSpiderDeliverable.find(:all, :conditions=>["svf_deviation_spider_id = ?", spider.id]).each do |deliv|
+        deliv.svf_deviation_spider_id = new_spider.id
+        deliv.save
+      end
+
+      SvfDeviationSpiderActivityValue.find(:all, :conditions=>["svf_deviation_spider_id = ?", spider.id]).each do |activ_val|
+        activ_val.svf_deviation_spider_id = new_spider.id
+        activ_val.save
+      end
+
+      SvfDeviationSpiderDeliverableValue.find(:all, :conditions=>["svf_deviation_spider_id = ?", spider.id]).each do |deliv_val|
+        deliv_val.svf_deviation_spider_id = new_spider.id
+        deliv_val.save
+      end
+
+      SvfDeviationSpiderConsolidationTemp.find(:all, :conditions=>["svf_deviation_spider_id = ?", spider.id]).each do |conso_temp|
+        conso_temp.svf_deviation_spider_id = new_spider.id
+        conso_temp.save
+      end
+
+      spider.delete
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
   def fill_project_id
     DeviationSpider.find(:all).each do |spider|
       if spider.id > 10000 and spider.id < 30000 and spider.milestone
@@ -870,7 +920,8 @@ class ToolsController < ApplicationController
       qs_condition     = qs_condition + " and history_counters.request_id = " + @request_id.to_s
     end
     spider_condition_vt = spider_condition + " and (concerned_spider_id BETWEEN 10000 and 30000)"
-    spider_condition_vtt = spider_condition + " and concerned_spider_id > 30000"
+    spider_condition_vtt = spider_condition + " and (concerned_spider_id BETWEEN 30000 and 60000)"
+    spider_condition_vf = spider_condition + " and concerned_spider_id > 60000"
     
     spider_counter = HistoryCounter.find(:all,:conditions=>[spider_condition],
                                           :joins => ["JOIN requests ON requests.id = history_counters.request_id",
@@ -895,6 +946,13 @@ class ToolsController < ApplicationController
                                           "JOIN projects as parent ON parent.id = projects.project_id"
                                           ],
                                           :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
+    spider_counter_vf = HistoryCounter.find(:all,:conditions=>[spider_condition_vf],
+                                          :joins => ["JOIN requests ON requests.id = history_counters.request_id",
+                                          "JOIN svf_deviation_spiders ON svf_deviation_spiders.id = history_counters.concerned_spider_id",
+                                          "JOIN projects ON projects.id = svf_deviation_spiders.project_id",
+                                          "JOIN projects as parent ON parent.id = projects.project_id"
+                                          ],
+                                          :order=>"requests.request_id ASC, parent.name ASC, projects.name ASC, history_counters.action_date ASC")
 
     table_spider_counter_temp = Array.new
     @table_spider_counter = Array.new
@@ -915,6 +973,12 @@ class ToolsController < ApplicationController
       count_struct = Spider_counter_struct.new
       count_struct.historycounter = counter_vtt
       count_struct.spider_version = 3
+      table_spider_counter_temp << count_struct
+    end
+    spider_counter_vf.each do |counter_vf|
+      count_struct = Spider_counter_struct.new
+      count_struct.historycounter = counter_vf
+      count_struct.spider_version = 4
       table_spider_counter_temp << count_struct
     end
 
@@ -943,7 +1007,8 @@ class ToolsController < ApplicationController
       qs_condition     = qs_condition+" and history_counters.stream_id="+@stream_id.to_s
     end
     spider_condition_vt = spider_condition + " and (concerned_spider_id BETWEEN 10000 and 30000)"
-    spider_condition_vtt = spider_condition + " and concerned_spider_id > 30000"
+    spider_condition_vtt = spider_condition + " and (concerned_spider_id BETWEEN 30000 and 60000)"
+    spider_condition_vf = spider_condition + " and concerned_spider_id > 60000"
       
     spider_counter = HistoryCounter.find(:all,:conditions=>[spider_condition],
                                           :joins => ["JOIN spiders ON spiders.id = history_counters.concerned_spider_id",
@@ -960,6 +1025,12 @@ class ToolsController < ApplicationController
     spider_counter_vtt = HistoryCounter.find(:all,:conditions=>[spider_condition_vtt],
                                           :joins => ["JOIN svt_deviation_spiders ON svt_deviation_spiders.id = history_counters.concerned_spider_id",
                                           "JOIN projects ON projects.id = svt_deviation_spiders.project_id",
+                                          "JOIN projects as parent ON parent.id = projects.project_id"
+                                          ],
+                                          :order=>"parent.name ASC, projects.name ASC")
+    spider_counter_vf = HistoryCounter.find(:all,:conditions=>[spider_condition_vf],
+                                          :joins => ["JOIN svf_deviation_spiders ON svf_deviation_spiders.id = history_counters.concerned_spider_id",
+                                          "JOIN projects ON projects.id = svf_deviation_spiders.project_id",
                                           "JOIN projects as parent ON parent.id = projects.project_id"
                                           ],
                                           :order=>"parent.name ASC, projects.name ASC")
@@ -992,6 +1063,12 @@ class ToolsController < ApplicationController
       count_struct.spider_version = 3
       tmp_spider_counter_no_request << count_struct
     end
+    spider_counter_vf.each do |counter_vf|
+      count_struct = Spider_counter_struct.new
+      count_struct.historycounter = counter_vf
+      count_struct.spider_version = 4
+      tmp_spider_counter_no_request << count_struct
+    end
 
     # For each spider counter
     tmp_spider_counter_no_request.each do |s_req|
@@ -1007,6 +1084,8 @@ class ToolsController < ApplicationController
         stream_found  = Stream.find_with_workstream(s_req.historycounter.deviation_spider.project.workstream)
       elsif s_req.spider_version == 3
         stream_found  = Stream.find_with_workstream(s_req.historycounter.svt_deviation_spider.project.workstream)
+      elsif s_req.spider_version == 4
+        stream_found  = Stream.find_with_workstream(s_req.historycounter.svf_deviation_spider.project.workstream)
       end
       if ((stream_found) and (current_user.id.to_i == current_spider_user.id.to_i))
         request_found = stream_found.get_current_spider_counter_request(current_spider_user)
@@ -1066,8 +1145,13 @@ class ToolsController < ApplicationController
         if (spider and spider.project)
           project_object = spider.project
         end
-      elsif history_object.concerned_spider_id > 30000
+      elsif history_object.concerned_spider_id > 30000 and history_object.concerned_spider_id < 60000
         spider = history_object.svt_deviation_spider
+        if (spider and spider.project)
+          project_object = spider.project
+        end
+      elsif history_object.concerned_spider_id > 60000
+        spider = history_object.svf_deviation_spider
         if (spider and spider.project)
           project_object = spider.project
         end
@@ -2608,12 +2692,19 @@ class ToolsController < ApplicationController
         when 1
           project.deviation_spider = false
           project.deviation_spider_svt = false
+          project.deviation_spider_svf = false
         when 2
           project.deviation_spider = true
           project.deviation_spider_svt = false
+          project.deviation_spider_svf = false
         when 3
           project.deviation_spider = false
           project.deviation_spider_svt = true
+          project.deviation_spider_svf = false
+        when 4
+          project.deviation_spider = false
+          project.deviation_spider_svt = false
+          project.deviation_spider_svf = true
         end
         project.save
         result = 'true'

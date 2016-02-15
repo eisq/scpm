@@ -6,11 +6,13 @@
     <% end %>
 	<% milestone_name_id = MilestoneName.first(:conditions => ["title= ?", milestone.name]) %>
 
-	<% if ((milestone_name_id!= nil) and (milestone.is_eligible_for_spider? or (@project.deviation_spider and milestone.name == "G9") or (@project.deviation_spider_svt and milestone.name == "G9")) and (milestone.name[0..1]!='QG')) and milestone.is_virtual == false %>
+	<% if ((milestone_name_id!= nil) and (milestone.is_eligible_for_spider? or (@project.deviation_spider and milestone.name == "G9") or (@project.deviation_spider_svt and milestone.name == "G9") or (@project.deviation_spider_svf and milestone.name == "G9")) and (milestone.name[0..1]!='QG')) and milestone.is_virtual == false %>
 		<% if @project.deviation_spider and (@project.lifecycle_id == 7 or @project.lifecycle_id == 8 or @project.lifecycle_id == 9 or @project.lifecycle_id == 10) %>
       <%= link_to image_tag('spider_icon.png'), :controller=>'deviation_spiders', :action=>'index', :milestone_id=>milestone %>
     <% elsif @project.deviation_spider_svt and (@project.lifecycle_id == 7 or @project.lifecycle_id == 8 or @project.lifecycle_id == 9 or @project.lifecycle_id == 10) %>
       <%= link_to image_tag('spider_icon.png'), :controller=>'svt_deviation_spiders', :action=>'index', :milestone_id=>milestone %>
+    <% elsif @project.deviation_spider_svf and (@project.lifecycle_id == 7 or @project.lifecycle_id == 8 or @project.lifecycle_id == 9 or @project.lifecycle_id == 10) %>
+      <%= link_to image_tag('spider_icon.png'), :controller=>'svf_deviation_spiders', :action=>'index', :milestone_id=>milestone %>
     <% else %>
       <%= link_to image_tag('spider_icon.png'), :controller=>'spiders', :action=>'project_spider', :project_id=>milestone.project_id, :milestone_id=>milestone, :create_spider=>0, :editable=>editable %>
     <% end %>

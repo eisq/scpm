@@ -1,0 +1,14 @@
+
+<%= button_to "New", {:action => "new_macro_activity"}, {:method => :post} %>
+
+<div id="macro_activity_list">
+	<% @macro_activities.each do |ma| %>
+		<p>
+	    	<div style="float: left; width: auto;">
+	      		<%= ma.svf_deviation_activity.name if ma.svf_deviation_activity %> - <%= ma.name %> [Is Active : <%= ma.is_active %>]
+	      		&nbsp;
+	    	</div>    
+	    	<%= button_to "Detail", {:action => "detail_macro_activity", :macro_activity_id => ma.id }, {:method => :post} %>
+	  	</p>
+	<% end %>
+</div>
