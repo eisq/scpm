@@ -2717,6 +2717,93 @@ class ToolsController < ApplicationController
     redirect_to('/tools/manage_project_version?result='+result)
   end
 
+  def spider_migration_vt_to_vf
+    SvtDeviationActivity.find(:all).each do |vt|
+     vf = SvfDeviationActivity.new
+     vf.name = vt.name
+     vf.is_active = vt.is_active
+     vf.svf_deviation_meta_activity_id = vt.svt_deviation_meta_activity_id
+     vf.save
+    end
+
+    SvtDeviationActivityDeliverable.find(:all).each do |vt|
+     vf = SvfDeviationActivityDeliverable.new
+     vf.svf_deviation_activity_id = vt.svt_deviation_activity_id
+     vf.svf_deviation_deliverable_id = vt.svt_deviation_deliverable_id
+     vf.save
+    end
+
+    SvtDeviationDeliverable.find(:all).each do |vt|
+     vf = SvfDeviationDeliverable.new
+     vf.name = vt.name
+     vf.is_active = vt.is_active
+     vf.save
+    end
+
+    SvtDeviationMacroActivity.find(:all).each do |vt|
+     vf = SvfDeviationMacroActivity.new
+     vf.svf_deviation_activity_id = vt
+     vf.name = vt.name
+     vf.is_active = vt.is_active
+     vf.save
+    end
+
+    SvtDeviationMacroActivityDeliverableFlight.find(:all).each do |vt|
+     vf = SvfDeviationMacroActivityDeliverableFlight.new
+     vf.svf_deviation_macro_activity_name = vt.svt_deviation_macro_activity_name
+     vf.svf_deviation_deliverable_name = vt.svt_deviation_deliverable_name
+     vf.svf_deviation_activity_name = vt.svt_deviation_activity_name
+     vf.project_id = vt.project_id
+     vf.answer_1 = vt.answer_1
+     vf.answer_2 = vt.answer_2
+     vf.answer_3 = vt.answer_3
+     vf.justification = vt.justification
+     vf.is_active = vt.is_active
+     vf.save
+    end
+
+    SvtDeviationMacroActivityDeliverable.find(:all).each do |vt|
+     vf = SvfDeviationMacroActivityDeliverable.new
+     vf.svf_deviation_macro_activity_id = vt.svt_deviation_macro_activity_id
+     vf.svf_deviation_deliverable_id = vt.svt_deviation_deliverable_id
+     vf.save
+    end
+
+    SvtDeviationMetaActivity.find(:all).each do |vt|
+     vf = SvfDeviationMetaActivity.new
+     vf.name = vt.name
+     vf.is_active = vt.is_active
+     vf.meta_index = vt.meta_index
+     vf.save
+    end
+
+    SvtDeviationQuestionLifecycle.find(:all).each do |vt|
+     vf = SvfDeviationQuestionLifecycle.new
+     vf.svf_deviation_question_id = vt.svt_deviation_question_id
+     vf.lifecycle_id = vt.lifecycle_id
+     vf.save
+    end
+
+    SvtDeviationQuestionMilestoneName.find(:all).each do |vt|
+     vf = SvfDeviationQuestionMilestoneName.new
+     vf.svf_deviation_question_id = vt.svt_deviation_question_id
+     vf.milestone_name_id = vt.milestone_name_id
+     vf.save
+    end
+
+    SvtDeviationQuestion.find(:all).each do |vt|
+     vf = SvfDeviationQuestion.new
+     vf.svf_deviation_deliverable_id = vt.svt_deviation_deliverable_id
+     vf.svf_deviation_activity_id = vt.svt_deviation_activity_id
+     vf.question_text = vt.question_text
+     vf.is_active = vt.is_active
+     vf.answer_reference = vt.answer_reference
+     vf.save
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
 private
 
   def round_to_hour(f)
