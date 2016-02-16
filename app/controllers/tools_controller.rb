@@ -2675,8 +2675,8 @@ class ToolsController < ApplicationController
   end
 
   def manage_project_version
-    @list_choices = ['', '1', '2', '3']
-    @list_choices_index = [0, 1, 2, 3]
+    @list_choices = ['', '1', '2', '3', '4']
+    @list_choices_index = [0, 1, 2, 3, 4]
   end
 
   def set_project_version
@@ -2720,6 +2720,7 @@ class ToolsController < ApplicationController
   def spider_migration_vt_to_vf
     SvtDeviationActivity.find(:all).each do |vt|
      vf = SvfDeviationActivity.new
+     vf.id = vt.id
      vf.name = vt.name
      vf.is_active = vt.is_active
      vf.svf_deviation_meta_activity_id = vt.svt_deviation_meta_activity_id
@@ -2728,6 +2729,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationActivityDeliverable.find(:all).each do |vt|
      vf = SvfDeviationActivityDeliverable.new
+     vf.id = vt.id
      vf.svf_deviation_activity_id = vt.svt_deviation_activity_id
      vf.svf_deviation_deliverable_id = vt.svt_deviation_deliverable_id
      vf.save
@@ -2735,6 +2737,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationDeliverable.find(:all).each do |vt|
      vf = SvfDeviationDeliverable.new
+     vf.id = vt.id
      vf.name = vt.name
      vf.is_active = vt.is_active
      vf.save
@@ -2742,6 +2745,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationMacroActivity.find(:all).each do |vt|
      vf = SvfDeviationMacroActivity.new
+     vf.id = vt.id
      vf.svf_deviation_activity_id = vt
      vf.name = vt.name
      vf.is_active = vt.is_active
@@ -2750,6 +2754,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationMacroActivityDeliverableFlight.find(:all).each do |vt|
      vf = SvfDeviationMacroActivityDeliverableFlight.new
+     vf.id = vt.id
      vf.svf_deviation_macro_activity_name = vt.svt_deviation_macro_activity_name
      vf.svf_deviation_deliverable_name = vt.svt_deviation_deliverable_name
      vf.svf_deviation_activity_name = vt.svt_deviation_activity_name
@@ -2764,6 +2769,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationMacroActivityDeliverable.find(:all).each do |vt|
      vf = SvfDeviationMacroActivityDeliverable.new
+     vf.id = vt.id
      vf.svf_deviation_macro_activity_id = vt.svt_deviation_macro_activity_id
      vf.svf_deviation_deliverable_id = vt.svt_deviation_deliverable_id
      vf.save
@@ -2771,6 +2777,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationMetaActivity.find(:all).each do |vt|
      vf = SvfDeviationMetaActivity.new
+     vf.id = vt.id
      vf.name = vt.name
      vf.is_active = vt.is_active
      vf.meta_index = vt.meta_index
@@ -2779,6 +2786,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationQuestionLifecycle.find(:all).each do |vt|
      vf = SvfDeviationQuestionLifecycle.new
+     vf.id = vt.id
      vf.svf_deviation_question_id = vt.svt_deviation_question_id
      vf.lifecycle_id = vt.lifecycle_id
      vf.save
@@ -2786,6 +2794,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationQuestionMilestoneName.find(:all).each do |vt|
      vf = SvfDeviationQuestionMilestoneName.new
+     vf.id = vt.id
      vf.svf_deviation_question_id = vt.svt_deviation_question_id
      vf.milestone_name_id = vt.milestone_name_id
      vf.save
@@ -2793,6 +2802,7 @@ class ToolsController < ApplicationController
 
     SvtDeviationQuestion.find(:all).each do |vt|
      vf = SvfDeviationQuestion.new
+     vf.id = vt.id
      vf.svf_deviation_deliverable_id = vt.svt_deviation_deliverable_id
      vf.svf_deviation_activity_id = vt.svt_deviation_activity_id
      vf.question_text = vt.question_text
