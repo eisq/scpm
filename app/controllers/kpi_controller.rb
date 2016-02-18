@@ -5,7 +5,7 @@ class KpiController < ApplicationController
 	layout 'tools'
   	include WelcomeHelper
 
-	Setting_info    = Struct.new(:activity_name, :deliverable_name, :plan_to_do)
+	Setting_info    = Struct.new(:lifecycle, :workstream, :plm, :activity_name, :deliverable_name, :plan_to_do)
 
 	def index
 	end
@@ -15,6 +15,9 @@ class KpiController < ApplicationController
 
 		DeviationSpiderSetting.find(:all).each do |setting|
 			setting_info = Setting_info.new
+			setting_info.lifecycle = setting.deviation_reference.project.lifecycle
+			setting_info.workstream = setting.deviation_reference.project.workstream.name
+			setting_info.plm = setting.deviation_reference.project.suite_tag.name
 			setting_info.activity_name = setting.activity_name
 			setting_info.deliverable_name = setting.deliverable_name
 			setting_info.plan_to_do = setting.answer_1
@@ -23,6 +26,9 @@ class KpiController < ApplicationController
 
 		SvtDeviationSpiderSetting.find(:all).each do |setting|
 			setting_info = Setting_info.new
+			setting_info.lifecycle = setting.deviation_reference.project.lifecycle
+			setting_info.workstream = setting.deviation_reference.project.workstream.name
+			setting_info.plm = setting.deviation_reference.project.suite_tag.name
 			setting_info.activity_name = setting.activity_name
 			setting_info.deliverable_name = setting.deliverable_name
 			setting_info.plan_to_do = setting.answer_1
@@ -31,6 +37,9 @@ class KpiController < ApplicationController
 
 		SvfDeviationSpiderSetting.find(:all).each do |setting|
 			setting_info = Setting_info.new
+			setting_info.lifecycle = setting.deviation_reference.project.lifecycle
+			setting_info.workstream = setting.deviation_reference.project.workstream.name
+			setting_info.plm = setting.deviation_reference.project.suite_tag.name
 			setting_info.activity_name = setting.activity_name
 			setting_info.deliverable_name = setting.deliverable_name
 			setting_info.plan_to_do = setting.answer_1
