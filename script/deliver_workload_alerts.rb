@@ -1,1 +1,1 @@
-#Mailer::deliver_workload_alerts
+Mailer::deliver_workload_alerts

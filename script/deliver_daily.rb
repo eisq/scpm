@@ -21,5 +21,5 @@ for p in Person.find(:all, :conditions=>"is_supervisor=0 and has_left=0 and is_t
   end
   
   
-  #Mailer::deliver_daily(p,n,r,am,ac, open_milestones, tbv, wl_to_plan, wl_percent_planned) if n.size > 0 or r.size > 0 or am.size > 0 or ac.size > 0 or open_milestones.size > 0 or tbv.size > 0 or wl_percent_planned < 80
+  Mailer::deliver_daily(p,n,r,am,ac, open_milestones, tbv, wl_to_plan, wl_percent_planned) if n.size > 0 or r.size > 0 or am.size > 0 or ac.size > 0 or open_milestones.size > 0 or tbv.size > 0 or wl_percent_planned < 80
 end
