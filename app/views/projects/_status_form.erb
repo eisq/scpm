@@ -1,15 +1,70 @@
 <table class="edit">
-<tr><td class="descr">Status</td><td><%= select(:status, :status, options_with_colors(@status.status, [["Unknown",0, "#DDD"], ["GREEN",1, "#5F5"], ["AMBER",2, "#FA0"], ["RED",3, "#F00"]]), {}, {:style=>"font-size: 1.5em", :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">Status Explanation</td><td><%= text_area(:status, :reason, {:cols=>100, :rows=>5, :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">Risks</td><td><%= @risks %></td></tr>
-<tr><td class="descr">Status mitigation actions<br/>(impact analysis done or not?)</td><td><%= text_area(:status, :actions, {:cols=>100, :rows=>3, :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">Reporting Quality Activities</td><td><%= text_area(:status, :last_change, {:cols=>100, :rows=>5, :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">Reporting except Quality Activities</td><td><%= text_area(:status, :reporting, {:cols=>100, :rows=>3, :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">Operational Alert</td><td><%= text_area(:status, :operational_alert, {:cols=>100, :rows=>3, :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">Last UP3P verification:</td><td><%= text_field(:status, :ereporting_date, :onchange=>"formChanged();") %>yyyy-mm-dd</td></tr>
-<tr><td class="descr">Details</td><td><%= text_area(:status, :explanation, {:cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">PM Practices - Justification of last Milestone gaps with "ref" in Spider</td><td><%= text_area(:status, :pratice_spider_gap, {:cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">Deliverables Completion - Justification of last Milestone gaps with "ref" in Spider</td><td><%= text_area(:status, :deliverable_spider_gap, {:cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td></tr>
-<tr><td class="descr">Supervisor Feedback</td><td><%= text_area(:status, :feedback, {:cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td></tr>
+	<tr>
+		<td colspan="2" class="sets">
+			<table style="width:100%">
+				<tr>
+					<td class="descr">Status</td>
+					<td class="descr">Status Explanation</td>
+				</tr>
+				<tr>
+					<td><%= select(:status, :status, options_with_colors(@status.status, [["Unknown",0, "#DDD"], ["GREEN",1, "#5F5"], ["AMBER",2, "#FA0"], ["RED",3, "#F00"]]), {}, {:style=>"font-size: 1.5em", :onchange=>"formChanged();"}) %></td>
+					<td><%= text_area(:status, :reason, {:style=>"width:100%", :cols=>100, :rows=>5, :onchange=>"formChanged();"}) %></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="descr sets"><%= @risks %></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="sets">
+			<table style="width:100%">
+				<tr>
+					<td class="descr">Status mitigation actions (impact analysis done or not?)</td>
+				<tr>
+				</tr>
+					<td><%= text_area(:status, :actions, {:style=>"width:100%", :cols=>100, :rows=>3, :onchange=>"formChanged();"}) %></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="sets">
+			<table>
+				<tr>
+					<td class="descr">Reporting Quality Activities</td>
+					<td class="descr">Reporting except Quality Activities</td>
+				</tr>
+				<tr>
+					<td><%= text_area(:status, :last_change, {:style=>"width:100%", :cols=>100, :rows=>15, :onchange=>"formChanged();"}) %></td>
+					<td><%= text_area(:status, :reporting, {:style=>"width:100%", :cols=>100, :rows=>15, :onchange=>"formChanged();"}) %></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td class="descr">Operational Alert</td>
+		<td><%= text_area(:status, :operational_alert, {:style=>"width:100%", :cols=>100, :rows=>3, :onchange=>"formChanged();"}) %></td>
+	</tr>
+	<tr>
+		<td class="descr">Last UP3P verification:</td>
+		<td><%= text_field(:status, :ereporting_date, :onchange=>"formChanged();") %>yyyy-mm-dd</td>
+	</tr>
+	<tr>
+		<td class="descr">Details</td>
+		<td><%= text_area(:status, :explanation, {:style=>"width:100%", :cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td>
+	</tr>
+	<tr>
+		<td class="descr">PM Practices - Justification of last Milestone gaps with "ref" in Spider</td>
+		<td><%= text_area(:status, :pratice_spider_gap, {:cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td>
+	</tr>
+	<tr>
+		<td class="descr">Deliverables Completion - Justification of last Milestone gaps with "ref" in Spider</td>
+		<td><%= text_area(:status, :deliverable_spider_gap, {:cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td>
+	</tr>
+	<tr>
+		<td class="descr">Supervisor Feedback</td>
+		<td><%= text_area(:status, :feedback, {:cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td>
+	</tr>
 </table>
 <%= hidden_field :status, :project_id, :value=>@project.id %>

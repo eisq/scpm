@@ -256,7 +256,10 @@ strong {
 }
 .descr {
   font-weight: bold;
-  }
+}
+.edit .sets {
+  padding-bottom: 2em;
+}
 
 
 /* STATUSES */
