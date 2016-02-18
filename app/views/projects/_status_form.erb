@@ -46,6 +46,8 @@
 		<td class="descr">Operational Alert</td>
 		<td><%= text_area(:status, :operational_alert, {:style=>"width:100%", :cols=>100, :rows=>3, :onchange=>"formChanged();"}) %></td>
 	</tr>
+	
+	<!--
 	<tr>
 		<td class="descr">Last UP3P verification:</td>
 		<td><%= text_field(:status, :ereporting_date, :onchange=>"formChanged();") %>yyyy-mm-dd</td>
@@ -66,5 +68,6 @@
 		<td class="descr">Supervisor Feedback</td>
 		<td><%= text_area(:status, :feedback, {:cols=>100, :rows=>7, :onchange=>"formChanged();"}) %></td>
 	</tr>
+	-->
 </table>
 <%= hidden_field :status, :project_id, :value=>@project.id %>
