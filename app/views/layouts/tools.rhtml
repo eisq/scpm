@@ -173,6 +173,7 @@
 	<% if current_user.has_role?('Admin') %>
 		<li><%= link_to('Background', {:controller=>'background', :action=>'index'}, {:class=>menu_style('background','index')}) %></li>
 	<% end %>
+  <li><%= link_to('KPI', {:controller=>'kpi', :action=>'index'}, {:class=>menu_style('background','index')}) %></li>
     <% if cu.id == 72 or cu.id == 73 %> <!-- button only seen by rbaillard and nmenvielle, BAM administrators -->
       <li><%= link_to('Scripts', {:controller=>'tools', :action=>'scripts'}, {:class=>menu_style('scripts','scripts')}) %></li>
     <% end %>
