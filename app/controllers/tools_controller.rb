@@ -2814,6 +2814,18 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def fix_deleted_quality_status_in_counters
+    HistoryCounter.find(:all).each do |history_counter|
+      status = nil
+      status = Status.find(:first, :conditions=>["id = ?", history_counter.concerned_spider_id])
+      if !status
+        history_counter.delete
+      end
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
 private
 
   def round_to_hour(f)
