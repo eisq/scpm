@@ -2816,10 +2816,12 @@ class ToolsController < ApplicationController
 
   def fix_deleted_quality_status_in_counters
     HistoryCounter.find(:all).each do |history_counter|
-      status = nil
-      status = Status.find(:first, :conditions=>["id = ?", history_counter.concerned_status_id])
-      if !status
-        history_counter.delete
+      if history_counter.concerned_status_id
+        status = nil
+        status = Status.find(:first, :conditions=>["id = ?", history_counter.concerned_status_id])
+        if !status
+          history_counter.delete
+        end
       end
     end
 
