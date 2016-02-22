@@ -1006,7 +1006,7 @@ class Project < ActiveRecord::Base
   # If specifics requests, return true
   def highlighted_in_summary?
     self.requests.each do |r|
-      wp = r.work_package.split('-')[0]
+      wp = r.work_package.split(' -')[0]
       wp = wp.delete(' ')
       if (wp != nil)
         if (APP_CONFIG['summary_workpackages_highlight'].include?(wp.to_s))
