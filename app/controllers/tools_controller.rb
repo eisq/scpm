@@ -2828,6 +2828,70 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def remove_all_is_active_false_from_spider_v4
+    SvfDeviationActivity.find(:all).each do |var|
+      if !var.is_active
+        var.delete
+      end
+    end
+
+    #SvfDeviationActivityDeliverable.find(:all).each do |var|
+    #  if !var.is_active
+    #    var.delete
+    #  end
+    #end
+
+    SvfDeviationDeliverable.find(:all).each do |var|
+      if !var.is_active
+        var.delete
+      end
+    end
+
+    SvfDeviationMacroActivity.find(:all).each do |var|
+      if !var.is_active
+        var.delete
+      end
+    end
+
+    SvfDeviationMacroActivityDeliverableFlight.find(:all).each do |var|
+      if !var.is_active
+        var.delete
+      end
+    end
+
+    #SvfDeviationMacroActivityDeliverable.find(:all).each do |var|
+    #  if !var.is_active
+    #    var.delete
+    #  end
+    #end
+
+    SvfDeviationMetaActivity.find(:all).each do |var|
+      if !var.is_active
+        var.delete
+      end
+    end
+
+    #SvfDeviationQuestionLifecycle.find(:all).each do |var|
+    #  if !var.is_active
+    #    var.delete
+    #  end
+    #end
+
+    #SvfDeviationQuestionMilestoneName.find(:all).each do |var|
+    #  if !var.is_active
+    #    var.delete
+    #  end
+    #end
+
+    SvfDeviationQuestion.find(:all).each do |var|
+      if !var.is_active
+        var.delete
+      end
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
 private
 
   def round_to_hour(f)

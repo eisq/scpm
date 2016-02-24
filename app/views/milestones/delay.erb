@@ -31,6 +31,6 @@ function reason_two_select(reason_two_id)
 <%= text_area_tag('reason_other', '', {:cols=>21, :rows=>1, :id=>"reason_other"}) %></p>
 
 <p><%= label_tag '&nbsp;' %>
-<%= submit_tag 'Save' %></p>
+<%= submit_tag 'Save' %> <% if params[:error] %><span style="color:red">Error, please select a reason</span><% end %></p>
 
 </form>

@@ -218,7 +218,7 @@ class MilestonesController < ApplicationController
       redirect_to "/projects/show/#{project_id}"
     else
       #error
-      redirect_to "/milestones/delay?milestone_id=#{milestone_delay.milestone_id}&planned_date=#{milestone_delay.planned_date}&current_date=#{milestone_delay.current_date}&delay_days=#{milestone_delay.delay_days}"
+      redirect_to "/milestones/delay?milestone_id=#{params[:milestone_id]}&planned_date=#{params[:planned_date]}&current_date=#{params[:current_date]}&delay_days=#{params[:delay_days]}&error=1"
     end
   end
 
