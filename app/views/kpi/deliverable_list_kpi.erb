@@ -37,6 +37,7 @@ end
       @xml.Column 1, {'ss:Width' => 80}
       @xml.Column 2, {'ss:Width' => 70}
       @xml.Column 3, {'ss:Width' => 200}
+      @xml.Column 3, {'ss:Width' => 200}
       @xml.Column 4, {'ss:Width' => 200}
       @xml.Column 5, {'ss:Width' => 70}
 
@@ -52,7 +53,10 @@ end
           @xml.Data "Suite", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitlePink' do
-          @xml.Data "Activity", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Macro-Objective", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+          @xml.Data "Macro-Activity", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitlePink' do
           @xml.Data "Deliverable", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -76,6 +80,9 @@ end
           end
           @xml.Cell do
             @xml.Data setting.activity_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data setting.macro_activity_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data setting.deliverable_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
