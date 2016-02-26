@@ -117,13 +117,7 @@
 		<% if (cu.has_role?('Admin') or (cu.is_cpdp==1) or cu.has_role?('ServiceLineResp'))  %>
 		<li><%= link_to('Spider', "", {:class=>menu_style('workstreams','*')}) %>
       <ul>
-        <li class="hsep">KPI</li>
-        <li><%= link_to('KPI by PM Types',        {:controller=>'spider_kpis', :action=>'kpi_charts_by_pm_types', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
-        <li><%= link_to('KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
-        <li><%= link_to('Cumul KPI by PM Types',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_pm_types', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
-        <li><%= link_to('Cumul KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
-        <li><%= link_to('Configure export excel columns', {:controller=>'pm_type_axe_excels', :action=>'index'}) %></li>
-	      <li class="hsep">Spider administration</li>
+        <li class="hsep">Spider administration</li>
         <li><%= link_to('Manage spiders version',                     {:controller=>'tools', :action=>'manage_project_version'}) %></li>
         <li><%= link_to('Import',       						  {:controller=>'spiders', :action=>'project_spider_import'}) %></li>
         <li><%= link_to('Manage Axes',        				{:controller=>'pm_type_axes', :action=>'index'}) %></li>
@@ -173,11 +167,27 @@
 	<% if current_user.has_role?('Admin') %>
 		<li><%= link_to('Background', {:controller=>'background', :action=>'index'}, {:class=>menu_style('background','index')}) %></li>
 	<% end %>
-  <li><%= link_to('KPI', {:controller=>'kpi', :action=>'index'}, {:class=>menu_style('background','index')}) %></li>
-    <% if cu.id == 72 or cu.id == 73 %> <!-- button only seen by rbaillard and nmenvielle, BAM administrators -->
-      <li><%= link_to('Scripts', {:controller=>'tools', :action=>'scripts'}, {:class=>menu_style('scripts','scripts')}) %></li>
-    <% end %>
+
+  <!-- KPI MENU -->
+  <li><%= link_to('KPI', "", {:class=>menu_style('kpis','index')}) %>
+    <ul>
+      <li class="hsep">KPI</li>
+      <li><%= link_to('KPI', {:controller=>'kpi', :action=>'index'}) %></li>
+      <li class="hsep">Spiders KPI</li>
+      <li><%= link_to('KPI by PM Types',        {:controller=>'spider_kpis', :action=>'kpi_charts_by_pm_types', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
+      <li><%= link_to('KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
+      <li><%= link_to('Cumul KPI by PM Types',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_pm_types', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
+      <li><%= link_to('Cumul KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
+      <li><%= link_to('Configure export excel columns', {:controller=>'pm_type_axe_excels', :action=>'index'}) %></li>
     </ul>
+  </li>
+
+
+  <% if cu.id == 72 or cu.id == 73 %> <!-- button only seen by rbaillard and nmenvielle, BAM administrators -->
+    <li><%= link_to('Scripts', {:controller=>'tools', :action=>'scripts'}, {:class=>menu_style('scripts','scripts')}) %></li>
+  <% end %>
+       
+  </ul>
   </div>
 
 </div>
