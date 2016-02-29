@@ -1,6 +1,6 @@
 require 'spreadsheet'
 
-module DeviationSvt
+module DeviationSvf
 
   include ApplicationHelper
 
