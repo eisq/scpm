@@ -2914,6 +2914,15 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def fix_wrong_svf_projects
+    Project.find(:all, :conditions=>["deviation_spider_svf = ?", true]).each do |project|
+      project.deviation_spider_svf = false
+      project.save
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
 private
 
   def round_to_hour(f)
