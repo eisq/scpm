@@ -27,23 +27,23 @@ module DeviationSvt
     doc           = DeviationSvt.load_deviation_excel_file(file)
     file_name     = DeviationSvt.get_file_name(file)
 
-    sheet_rows = "tab_error"
+    sheet_error_type = "tab_error"
 
     if doc.worksheet "PSU_GPP" and lifecycle_id == 10
       psu = doc.worksheet "PSU_GPP"
-      sheet_rows = self.parse_excel_content(psu)
+      sheet_rows, sheet_error_type, sheet_error_lines = self.parse_excel_content(psu)
     elsif doc.worksheet "PSU_LBIP" and lifecycle_id ==  9
       psu = doc.worksheet "PSU_LBIP"
-      sheet_rows = self.parse_excel_content(psu)
+      sheet_rows, sheet_error_type, sheet_error_lines = self.parse_excel_content(psu)
     elsif doc.worksheet "PSU_Agile" and lifecycle_id == 8
       psu = doc.worksheet "PSU_Agile"
-      sheet_rows = self.parse_excel_content(psu)
+      sheet_rows, sheet_error_type, sheet_error_lines = self.parse_excel_content(psu)
     elsif doc.worksheet "PSU_Suite" and lifecycle_id == 7
       psu = doc.worksheet "PSU_Suite"
-      sheet_rows = self.parse_excel_content(psu)
+      sheet_rows, sheet_error_type, sheet_error_lines = self.parse_excel_content(psu)
     end
 
-    return sheet_rows
+    return sheet_rows, sheet_error_type, sheet_error_lines
   end
 
   # ------------------------------------------------------------------------------------
@@ -63,11 +63,21 @@ module DeviationSvt
 
   def self.parse_excel_content(sheet)
     content_array = Array.new
+    error_type = ""
+    error_lines = Array.new
     into_deliverables = true
     wrong_lifecycle = false
     activity_temp = activity = ""
     # Loop sheet
+
+    #PSU line number
+    line_number = 0
+
     sheet.each do |sheet_row|
+    
+      #Next line
+      line_number += 1
+
       #We are in a row Activity
       if((into_deliverables==false) and sheet_row[CELL_0] and !sheet_row[CELL_1])
         activity_temp = sheet_row[CELL_0]
@@ -78,7 +88,7 @@ module DeviationSvt
         activity = activity_temp
       end
       #We are in a row deliverable
-      if (into_deliverables==true and sheet_row[CELL_1])
+      if (into_deliverables==true and sheet_row[CELL_1] or sheet_row[CELL_2])
         if sheet_row[CELL_0] != "Macro-Activities"
           row_hash = Hash.new
           row_hash[CELL_ACTIVITY_LABEL]               = activity
@@ -88,6 +98,17 @@ module DeviationSvt
           row_hash[CELL_IS_JUSTIFIED_LABEL]           = sheet_row[CELL_3].to_s
           row_hash[CELL_OTHER_TEMPLATE_LABEL]         = sheet_row[CELL_4].to_s
           row_hash[CELL_JUSTIFICATION_LABEL]          = sheet_row[CELL_5].to_s
+
+          #Check for any empty cell among the first three
+          if sheet_row[CELL_0].to_s == "" or sheet_row[CELL_1].to_s == "" or sheet_row[CELL_2].to_s == ""
+            error_type = "empty_value"
+            error_lines << line_number
+          #Check for any formula error among the first three
+          elsif sheet_row[CELL_0].to_s =~ /#(.*)/ or sheet_row[CELL_1].to_s =~ /#(.*)/ or sheet_row[CELL_2].to_s =~ /#(.*)/
+            error_type = "wrong_value_formula"
+            break
+          end
+
           content_array << row_hash
         end
       else
@@ -96,22 +117,10 @@ module DeviationSvt
       end
 
       if sheet_row[CELL_0] == "Objective"
-        content_array = "wrong_psu_file"
+        error_type = "wrong_psu_file"
       end
     end
 
-    if content_array != "wrong_psu_file"
-      content_array.each do |psu|
-        if psu[CELL_DELIVERABLE_LABEL] == "" or psu[CELL_METHODOLOGY_TEMPLATE_LABEL] == "" or psu[CELL_MACRO_ACTIVITY_LABEL] == ""
-          content_array = "empty_value"
-          break
-        elsif psu[CELL_METHODOLOGY_TEMPLATE_LABEL] =~ /#(.*)/ or psu[CELL_DELIVERABLE_LABEL] =~ /#(.*)/ or psu[CELL_MACRO_ACTIVITY_LABEL] =~ /#(.*)/
-          content_array = "wrong_value_formula"
-          break
-        end
-      end
-    end
-
-    return content_array
+    return content_array, error_type, error_lines
   end
 end

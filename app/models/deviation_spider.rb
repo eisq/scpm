@@ -44,6 +44,17 @@ class DeviationSpider < ActiveRecord::Base
 		return questions
 	end
 
+	def has_no_psu_imported
+		reference = DeviationSpiderReference.find(:first, :conditions=>["project_id = ?", self.milestone.project_id])
+		var = true
+
+		if reference
+			var = false
+		end
+		
+		return var
+	end
+
 	def add_deliverable(questions, deliverable, activities, psu_imported, is_added_by_hand=false, init_answers=false)
 		#check if we didn't already recorded this deliverable for this spider
 		new_spider_deliverable = DeviationSpiderDeliverable.find(:first, :conditions=>["deviation_spider_id = ? and deviation_deliverable_id = ?", self.id, deliverable.id])
