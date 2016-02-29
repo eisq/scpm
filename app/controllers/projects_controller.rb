@@ -560,14 +560,14 @@ class ProjectsController < ApplicationController
           file_name =  file['datafile'].original_filename
           file_ext  = File.extname(file_name)
           if (file_ext == ".xls")
-            psu_file_hash = DeviationSvf.import(file, project.lifecycle_id)
-            if psu_file_hash == "tab_error"
+            psu_file_hash, psu_file_error_type, psu_file_error_lines = DeviationSvf.import(file, project.lifecycle_id)
+            if psu_file_error_type == "tab_error"
               redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"4"
-            elsif psu_file_hash == "empty_value"
-              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5"
-            elsif psu_file_hash == "wrong_value_formula"
+            elsif psu_file_error_type == "empty_value"
+              redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"5", :error_lines=>psu_file_error_lines
+            elsif psu_file_error_type == "wrong_value_formula"
               redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"6"
-            elsif psu_file_hash == "wrong_psu_file"
+            elsif psu_file_error_type == "wrong_psu_file"
               redirect_to :action=>:spider_configuration, :project_id=>project_id, :status_import=>"7"
             else
                 # Save psu reference
