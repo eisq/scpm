@@ -2828,6 +2828,28 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def fix_deleted_quality_spiders_in_counters
+    HistoryCounter.find(:all).each do |history_counter|
+      if history_counter.concerned_spider_id
+        spider = nil
+        if history_counter.concerned_spider_id < 10000
+          spider = Spider.find(:first, :conditions=>["id = ?", history_counter.concerned_spider_id])
+        elsif history_counter.concerned_spider_id > 10000 and history_counter.concerned_spider_id < 30000
+          spider = DeviationSpider.find(:first, :conditions=>["id = ?", history_counter.concerned_spider_id])
+        elsif history_counter.concerned_spider_id > 30000 and history_counter.concerned_spider_id < 60000
+          spider = SvtDeviationSpider.find(:first, :conditions=>["id = ?", history_counter.concerned_spider_id])
+        elsif history_counter.concerned_spider_id > 60000
+          spider = SvfDeviationSpider.find(:first, :conditions=>["id = ?", history_counter.concerned_spider_id])
+        end
+        if !spider
+          history_counter.delete
+        end
+      end
+    end
+
+    redirect_to '/tools/scripts'
+  end
+
   def remove_all_is_active_false_from_spider_v4
     SvfDeviationActivity.find(:all).each do |var|
       if !var.is_active
