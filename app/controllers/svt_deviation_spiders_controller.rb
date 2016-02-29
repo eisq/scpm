@@ -371,7 +371,7 @@ class SvtDeviationSpidersController < ApplicationController
 			activity_struct.no = 0
 			activity_struct.total = 0
 			activity_realisations.each { |realisation|
-				if activity.name == realisation.activity.name
+				if activity and realisation.activity and (activity.name == realisation.activity.name)
 					if realisation.answer == false
 						deliverables << realisation.deliverable
 						activity_struct.no = activity_struct.no + 1
