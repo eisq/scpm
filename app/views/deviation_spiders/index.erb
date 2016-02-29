@@ -215,7 +215,12 @@ $( document ).ready(function() {
 	</tr>
 	<tr>
 		<td>Bilan Customization assessment: </td>
-		<td><%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project_id, :milestone_name => @milestone.name} %></td>
+		<td>
+			<%= button_to "Excel export", {:action => "export_customization_excel", :project_id => @milestone.project_id, :milestone_name => @milestone.name}, :disabled => @has_no_psu_imported %>
+			<% if @has_no_psu_imported %>
+				PSU file not yet imported
+			<% end %>
+		</td>
 	</tr>
 	</table>
 	<% end %>

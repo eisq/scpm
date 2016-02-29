@@ -34,8 +34,10 @@ class DeviationSpidersController < ApplicationController
 		    @show_bilan_custo = get_show_bilan_custo(@milestone)
 		    
 	   		@last_spider = DeviationSpider.last(:conditions => ["milestone_id= ?", milestone_id])
+
 	   		if @last_spider
 	   			@pie_chart = @last_spider.generate_pie_chart.to_url
+				@has_no_psu_imported = @last_spider.has_no_psu_imported
 	   		end
 
 	    	# If spider currently edited
