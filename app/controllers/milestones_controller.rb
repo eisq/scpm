@@ -23,6 +23,7 @@ class MilestonesController < ApplicationController
   def edit
     id = params[:id]
     @milestone = Milestone.find(id)
+    @quality_status = @milestone.project.get_quality_status
 
     @date_error = params[:date_error]
     params[:date_error] ? @date_error = params[:date_error] : @date_error = 0
@@ -126,8 +127,14 @@ class MilestonesController < ApplicationController
       m.actual_milestone_date = nil
     end
 
+    #check if the milestone is done, is the current quality status selected
+    if ((params[:milestone][:done].to_i == 1) and (params[:milestone][:current_quality_status].to_s == "Unknown"))
+      error = 3
+    end
+
     # If no date error
     if error == 0
+
       if params[:milestone][:name]
         m.name = params[:milestone][:name]
       end
@@ -146,6 +153,10 @@ class MilestonesController < ApplicationController
 
       if params[:milestone][:checklist_not_applicable]
         m.checklist_not_applicable = params[:milestone][:checklist_not_applicable]
+      end
+
+      if params[:milestone][:current_quality_status]
+        m.current_quality_status = params[:milestone][:current_quality_status]
       end
 
       # Save

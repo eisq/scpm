@@ -3,8 +3,8 @@
 		<td colspan="2" class="sets">
 			<table style="width:100%">
 				<tr>
-					<td class="descr">Status</td>
-					<td class="descr">Status Explanation</td>
+					<td class="descr">Quality Status</td>
+					<td class="descr">Quality Status Explanation</td>
 				</tr>
 				<tr>
 					<td><%= select(:status, :status, options_with_colors(@status.status, [["Unknown",0, "#DDD"], ["GREEN",1, "#5F5"], ["AMBER",2, "#FA0"], ["RED",3, "#F00"]]), {}, {:style=>"font-size: 1.5em", :onchange=>"formChanged();"}) %></td>

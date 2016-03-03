@@ -120,10 +120,8 @@
       else
         percent_planned = (((@workload.planned_total / sdp_total)*100)/0.1).round * 0.1
       end
-      if percent_planned < 95
       %>
         You have <%= @workload.sdp_remaining_total %> remaining days in SDP but only <strong><%= @workload.planned_total %></strong> days planned in your workload (<%=percent_planned%>%).<br/>
-      <% end %>
 
       <% if @backup_holidays and @backup_holidays.count > 0 %>
         <strong>Warning, within the next 2 weeks, you backup: </strong>

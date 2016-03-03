@@ -42,6 +42,24 @@ class Project < ActiveRecord::Base
   has_many    :deviation_spider_references
   has_many    :current_delays, :class_name=>'MilestoneDelayRecord'
 
+  def get_quality_status
+    quality_status = ""
+    status = Status.find(:first, :conditions=>["project_id=?", self.id], :order=>"id desc")
+
+    case status.to_i
+    when 0
+      quality_status = "Unknown"
+    when 1
+      quality_status = "Green"
+    when 2
+      quality_status = "Amber"
+    when 3
+      quality_status = "Red"
+    end
+
+    return quality_status
+  end
+
   def planning
     planning = Planning.find(:first, :conditions=>["project_id=#{self.id}"])
     return planning

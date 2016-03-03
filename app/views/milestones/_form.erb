@@ -13,7 +13,12 @@
 </p>
 
 <p><%= label_tag 'status' %>
-<%= select(:milestone, :status, [['no request',-1], ['unknown',0], ['GO',1], ['GO w/a',2], ['NO GO',3]]) %>
+<%= select(:milestone, :status, [['no request',-1], ['unknown',0], ['GO',1], ['GO w/a',2], ['NO GO',3]]) %></p>
+
+<p><%= label_tag 'current quality status' %>
+<%= select(:milestone, :current_quality_status, [['Unknown'], ['Green'], ['Amber'], ['Red']]) %>
+Actual quality status: <%= @quality_status%>
+</p>
 
 <p><%= label_tag 'comments' %>
 <%= text_area :milestone, :comments, {:rows=>3} %></p>
