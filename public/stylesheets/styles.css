@@ -437,6 +437,17 @@ strong {
 .milestone_cl.done{background-color: #3A3}
 .milestone_cl.alert{background-color: #A33}
 
+.milestone_current_quality_status {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -moz-border-radius-bottomright: 5px;
+}
+.milestone_current_quality_status.Unknown {background-color: #FFF}
+.milestone_current_quality_status.Green {background-color: #5A5}
+.milestone_current_quality_status.Amber {background-color: #FA0}
+.milestone_current_quality_status.Red {background-color: #F00}
+
 .notif {
   display: inline;
   border:1px solid #999;

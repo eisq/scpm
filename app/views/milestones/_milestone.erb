@@ -24,7 +24,7 @@
     <%= milestone.delay_in_words %>
   </div>
 
-  <%= milestone.checklist_div(current_user) %>
+  <%= milestone.show_current_quality_status %>
   <% if milestone.name[0..1]!='QG' and milestone.status==2 and milestone.amendments.size == 0 %>
     <strong>No amend.</strong><br/>
   <% end %>

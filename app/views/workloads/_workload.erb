@@ -123,9 +123,9 @@
 
       if percent_planned > 95
       %>
-        You have <%= @workload.sdp_remaining_total %> remaining days in SDP and <strong><span style="color:green"><%= @workload.planned_total %></span></strong> days planned in your workload (<%=percent_planned%>%).<br/>
+        You have <%= @workload.sdp_remaining_total %> remaining days in SDP and <strong><span style="color:green"><%= @workload.planned_total %></span></strong> days planned in your workload (<span style="color:green"><%=percent_planned%>%</span>).<br/>
       <% else %>
-        You have <%= @workload.sdp_remaining_total %> remaining days in SDP but only <strong><%= @workload.planned_total %></strong> days planned in your workload (<%=percent_planned%>%).<br/>
+        You have <%= @workload.sdp_remaining_total %> remaining days in SDP but only <strong><%= @workload.planned_total %></strong> days planned in your workload (<span style="color:red"><%=percent_planned%>%</span>).<br/>
 
       <% 
       end

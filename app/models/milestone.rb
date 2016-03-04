@@ -228,6 +228,20 @@ class Milestone < ActiveRecord::Base
     "<div class='#{css_class}' onclick='open_checklist(#{self.id})'>Checks: #{non_zero.size}/#{items.size}</div>"
   end
 
+  def show_current_quality_status
+    css = ""
+
+    if !self.current_quality_status
+      current_quality_status = " Unknown"
+    else
+      current_quality_status = " " + self.current_quality_status
+    end
+
+    css = "<div class='milestone_current_quality_status#{current_quality_status}'>&nbsp;</div>"
+
+    return css
+  end
+
   def delay_in_words
     begin
     return "" if !self.milestone_date or self.milestone_date=="" or
