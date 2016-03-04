@@ -24,6 +24,10 @@ class MilestonesController < ApplicationController
     id = params[:id]
     @milestone = Milestone.find(id)
     @quality_status = @milestone.project.get_quality_status
+    @quality_status_color = @quality_status
+    if @quality_status_color == "Amber"
+      @quality_status_color = "Orange"
+    end
 
     @date_error = params[:date_error]
     params[:date_error] ? @date_error = params[:date_error] : @date_error = 0

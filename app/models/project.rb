@@ -43,18 +43,20 @@ class Project < ActiveRecord::Base
   has_many    :current_delays, :class_name=>'MilestoneDelayRecord'
 
   def get_quality_status
-    quality_status = ""
+    quality_status = "Unknown"
     status = Status.find(:first, :conditions=>["project_id=?", self.id], :order=>"id desc")
 
-    case status.to_i
-    when 0
-      quality_status = "Unknown"
-    when 1
-      quality_status = "Green"
-    when 2
-      quality_status = "Amber"
-    when 3
-      quality_status = "Red"
+    if status
+      case status.status
+      when 0, nil
+        quality_status = "Unknown"
+      when 1
+        quality_status = "Green"
+      when 2
+        quality_status = "Amber"
+      when 3
+        quality_status = "Red"
+      end
     end
 
     return quality_status

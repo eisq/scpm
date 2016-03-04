@@ -17,7 +17,7 @@
 
 <p><%= label_tag 'current quality status' %>
 <%= select(:milestone, :current_quality_status, [['Unknown'], ['Green'], ['Amber'], ['Red']]) %>
-Actual quality status: <%= @quality_status%>
+Actual quality status: <span style="color:<%= @quality_status_color %>;"><%= @quality_status %></span>
 </p>
 
 <p><%= label_tag 'comments' %>
