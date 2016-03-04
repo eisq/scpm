@@ -438,6 +438,7 @@ strong {
 .milestone_cl.alert{background-color: #A33}
 
 .milestone_current_quality_status {
+  border-top:black solid 1px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
