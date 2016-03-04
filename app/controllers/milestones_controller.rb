@@ -191,6 +191,7 @@ class MilestonesController < ApplicationController
     @planned_date = params[:planned_date]
     @current_date = params[:current_date]
     @delay_days = params[:delay_days]
+    @reason_other = params[:reason_other]
 
     @reason_one_selected = @reason_two_selected = nil
 
