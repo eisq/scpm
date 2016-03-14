@@ -136,6 +136,7 @@ $( document ).ready(function() {
 		spider_name << "] [Consolidated the "
 		spider_name << s.svt_deviation_spider_consolidations.first().created_at.to_s
 		spider_name << "]"
+		spider_name << " in "+s.which_mode+" mode"
 	%>
 		<%= link_to spider_name, :action => "index_history", :deviation_spider_id => s.id %><br />
 	<% } %>

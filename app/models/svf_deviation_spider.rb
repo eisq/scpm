@@ -45,6 +45,13 @@ class SvfDeviationSpider < ActiveRecord::Base
 		return questions
 	end
 
+	def which_mode
+		if self.impact_count
+			return "Support"
+		end
+		return "Assurance"
+	end
+
 	def add_deliverable(questions, deliverable, activities, psu_imported, is_added_by_hand=false, init_answers=false)
 		#check if we didn't already recorded this deliverable for this spider
 		new_spider_deliverable = SvfDeviationSpiderDeliverable.find(:first, :conditions=>["svf_deviation_spider_id = ? and svf_deviation_deliverable_id = ?", self.id, deliverable.id])

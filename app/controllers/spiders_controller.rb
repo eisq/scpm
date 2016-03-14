@@ -258,7 +258,7 @@ class SpidersController < ApplicationController
   def create_spider_history(projectSpider,milestoneSpider)
     @history = Array.new
     Spider.find(:all,
-    :select => "DISTINCT(spiders.id),spiders.created_at",
+    :select => "DISTINCT(spiders.id),spiders.created_at, spiders.impact_count",
     :joins => 'JOIN spider_consolidations ON spiders.id = spider_consolidations.spider_id',
     :conditions => ["milestone_id= ?", milestoneSpider.id]).each { |s|
       @history.push(s)

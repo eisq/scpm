@@ -331,6 +331,7 @@ function getDocHeight() {
 	spider_name << "] [Consolidated the "
 	spider_name << s.spider_consolidations.first().created_at.to_s
 	spider_name << "]"
+	spider_name << " in "+s.which_mode+" mode"
 %>
 	<%= link_to spider_name, :action => "project_spider_history", :spider_id => s.id, :editable => @is_editable %><br />
 

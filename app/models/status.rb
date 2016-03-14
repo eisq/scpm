@@ -39,5 +39,13 @@ class Status < ActiveRecord::Base
     Status.record_timestamps  = true
   end
 
+  def which_mode
+    hc = HistoryCounter.find(:first, :conditions=>["concerned_status_id = ?", self.id])
+    if hc
+      return "Support"
+    end
+    return "Assurance"
+  end
+
 end
 

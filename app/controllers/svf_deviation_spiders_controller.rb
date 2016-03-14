@@ -906,7 +906,7 @@ class SvfDeviationSpidersController < ApplicationController
 	def generate_spider_history(milestone)
 		@history = Array.new
 		SvfDeviationSpider.find(:all,
-		    :select => "DISTINCT(svf_deviation_spiders.id),svf_deviation_spiders.created_at",
+		    :select => "DISTINCT(svf_deviation_spiders.id),svf_deviation_spiders.created_at, spiders.impact_count",
     		:joins => 'JOIN svf_deviation_spider_consolidations ON svf_deviation_spiders.id = svf_deviation_spider_consolidations.svf_deviation_spider_id',
     		:conditions => ["milestone_id = ?", milestone.id]).each { |s| @history.push(s) }
 	end

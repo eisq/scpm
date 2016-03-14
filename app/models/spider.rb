@@ -53,6 +53,13 @@ def self.spider_export_by_projects_and_milestones(projects)
 	return resultArray
 end
 
+def which_mode
+	if self.impact_count
+		return "Support"
+	end
+	return "Assurance"
+end
+
 def is_consolidated?
 	if self.spider_consolidations.count == 0
 		return false;
