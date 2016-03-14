@@ -30,13 +30,6 @@ Dear <%= @person.name %>,<br/>
   </ul>
 <% end %>
 
-<% if @milestones_with_open_checklists.size > 0 %>
-  You have <%= @milestones_with_open_checklists.size %> open checklists.<br/>
-  <ul>
-    <%= render(:partial=>'milestones/text_milestone', :collection=>@milestones_with_open_checklists, :as=>:m) %>
-  </ul>
-<% end %>
-
 <% if @tbv.size > 0 %>
   You have <%= @tbv.size %> requests to validate (based on your workload).<br/>
   <br/>
