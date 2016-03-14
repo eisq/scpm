@@ -126,15 +126,6 @@
   <div id="tabscontent">
     <div id="tabContent1" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="1"? "block" : "none"%>;">
         <br />
-        <% 
-          checklists_size_str = ""
-          if(@checklist_milestone_size.to_i > 0)
-            checklists_size_str = "[<strong>#{@checklist_milestone_size.to_s}</strong>]"
-          else
-            checklists_size_str = "[#{@checklist_milestone_size.to_s}]"
-          end
-        %>
-        <%= link_to('Checklists '+checklists_size_str, {:action=>'show_checklists', :projects=>@wps, :mode=>1}, {:class=>'btnlnk'}) %>
         <div style="display:inline;">
         <%= render(:file=>'projects/index_projects') %>
         </div>
