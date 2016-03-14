@@ -178,7 +178,7 @@ function add(id, nb_months, has_requests, has_rights) {
                   <td class="delay_td_reason"><%= delay.other_reason %></td>
                   <td class="delay_td"><%= delay.last_update %></td>
                   <td class="delay_td"><%= delay.person %></td>
-                  <td class="delay_td"><%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'delay_delete', :delay_id=>delay.delay_id}, :success=>"$('delay_#{delay.id}').hide();") %></td>
+                  <td class="delay_td"><%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'delay_delete', :delay_id=>delay.delay_id}, :confirm=>"Are you sure?", :success=>"$('delay_#{delay.id}').hide();") %></td>
                 </tr>
               <% end %>
             </table>
