@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160210115900) do
+ActiveRecord::Schema.define(:version => 20160328135900) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -665,7 +665,7 @@ ActiveRecord::Schema.define(:version => 20160210115900) do
     t.integer  "reason_first_id"
     t.integer  "reason_second_id"
     t.integer  "reason_third_id"
-    t.string   "reason_other"
+    t.text     "reason_other"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "updated_by"
@@ -693,6 +693,7 @@ ActiveRecord::Schema.define(:version => 20160210115900) do
     t.integer  "index_order"
     t.boolean  "is_virtual",               :default => false
     t.boolean  "to_export",                :default => false
+    t.text     "current_quality_status"
   end
 
   add_index "milestones", ["project_id"], :name => "IDX_MILESTONES"
@@ -761,6 +762,13 @@ ActiveRecord::Schema.define(:version => 20160210115900) do
   end
 
   add_index "person_roles", ["person_id"], :name => "IDX_PERSON_ROLES_PERSON_ID"
+
+  create_table "person_squads", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "squad_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "plannings", :force => true do |t|
     t.string   "name"
@@ -1216,6 +1224,13 @@ ActiveRecord::Schema.define(:version => 20160210115900) do
 
   add_index "spiders", ["milestone_id"], :name => "IDX_SPIDERS"
 
+  create_table "squads", :force => true do |t|
+    t.string   "name"
+    t.string   "supervisor"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "statuses", :force => true do |t|
     t.integer  "project_id",                                                :null => false
     t.integer  "status",                 :default => 0
@@ -1239,6 +1254,7 @@ ActiveRecord::Schema.define(:version => 20160210115900) do
     t.datetime "reporting_at",           :default => '2011-07-19 09:15:21'
     t.text     "pratice_spider_gap"
     t.text     "deliverable_spider_gap"
+    t.boolean  "is_support"
   end
 
   add_index "statuses", ["project_id"], :name => "IDX_STATUSES"

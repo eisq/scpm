@@ -1,3 +1,4 @@
+<table><tr><td>
 <p><%= label_tag 'name' %>
 <%= text_field :person, :name %></p>
 
@@ -68,5 +69,13 @@
 <%= radio_button :role, r.name.to_sym, 1, {:checked=>@person.has_role?(r.name)} %> Yes
 </p>
 <% } %>
-
 <% end %>
+</td><td valign=top>
+
+<%= label_tag 'Squads' %>
+<p>
+<% for squad in @squads %>
+	<%= check_box_tag('squads[]', squad.id, true) %><%= "#{squad.name}" %><br/>
+<% end %>
+</p>
+</td></tr></table>

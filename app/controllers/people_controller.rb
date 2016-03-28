@@ -66,6 +66,7 @@ class PeopleController < ApplicationController
     @tbp_collabs = TbpCollab.all
     @companies = Company.all(:order=>'name')
     cost_profiles = CostProfile.all(:order=>'company_id, name')
+    @squads = Squad.all
     @profiles = []
     if cost_profiles
       @profiles = cost_profiles.map {|u| [u.company.name + ' - ' + u.name,u.id]}

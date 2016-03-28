@@ -181,7 +181,7 @@
       <li><%= link_to('Configure export excel columns', {:controller=>'pm_type_axe_excels', :action=>'index'}) %></li>
     </ul>
   </li>
-
+  <li><%= link_to('Squads', {:controller=>'tools', :action=>'squads'}, {:class=>menu_style('squads','squads')}) %></li>
 
   <% if cu.id == 72 or cu.id == 73 %> <!-- button only seen by rbaillard and nmenvielle, BAM administrators -->
     <li><%= link_to('Scripts', {:controller=>'tools', :action=>'scripts'}, {:class=>menu_style('scripts','scripts')}) %></li>
