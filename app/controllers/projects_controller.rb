@@ -392,6 +392,11 @@ class ProjectsController < ApplicationController
     end
 
     status.last_modifier = current_user.id
+    if status_type.to_i == 2 || status_type.to_i == 3
+      status.is_support = true
+    else
+      status.is_support = false
+    end
     status.save
     p.update_attribute('read_date', Time.now) if current_user.has_role?('Admin')
     p.update_status(params[:status][:status])

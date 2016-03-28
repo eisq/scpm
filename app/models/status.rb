@@ -40,11 +40,15 @@ class Status < ActiveRecord::Base
   end
 
   def which_mode
-    hc = HistoryCounter.find(:first, :conditions=>["concerned_status_id = ?", self.id])
-    if hc
-      return "Support"
+    var = "in Assurance"
+    is_support = false
+    is_support = self.is_support
+
+    if is_support
+      var = "in Support"
     end
-    return "Assurance"
+
+    return var
   end
 
 end
