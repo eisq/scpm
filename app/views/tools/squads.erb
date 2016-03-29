@@ -2,7 +2,7 @@
 <%= form_tag({:action => 'squad_add'}, :multipart => true) %>
 <table><tr><td>
 	Name: </td><td><%= text_field_tag('squad_name', '') %></td></tr><tr><td>
-	Supervisor: </td><td><%= text_field_tag('squad_supervisor', '') %></td></tr><tr><td colspan=2>
+	Supervisor: </td><td><%= select_tag('squad_supervisor', options_for_select(@supervisors.map{|s| [s.name,s.id]})) %></td></tr><tr><td colspan=2>
 	<%= submit_tag "Add" %></td></tr>
 </table>
 </form>
@@ -12,7 +12,7 @@
 	<%= form_tag({:action => 'squad_update'}, :multipart => true) %>
 		<%= hidden_field_tag('squad_id', squad.id) %>
 		<%= text_field_tag('squad_name', squad.name) %>
-		<%= text_field_tag('squad_supervisor', squad.supervisor) %>
+		<%= select_tag('squad_supervisor', options_for_select(@supervisors.map{|s| [s.name,s.id]}, :selected => squad.supervisor.to_i)) %>
 		<%= submit_tag "Save" %>
 		<%= submit_tag "Delete" %>
 	</form>

@@ -21,7 +21,10 @@ class SquadsController < ApplicationController
   	#Get current squad informations
   	@persons = Array.new
   	PersonSquad.find(:all, :conditions=>["squad_id = ?", @current_squad.id]).each do |person_squad|
-  		@persons << Person.find(:first, :conditions=>["id = ?", person_squad.person_id])
+      person = Person.find(:first, :conditions=>["id = ?", person_squad.person_id])
+      if person and person.is_transverse != 0 and has_left != 0
+  		  @persons << person
+      end
   	end
 
 

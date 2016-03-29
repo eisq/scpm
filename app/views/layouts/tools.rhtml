@@ -74,6 +74,7 @@
     </li>
     <li><%= link_to('Requests', {:controller=>'welcome', :action=>'index'}, {:class=>menu_style('welcome','index')}) %></li>
     <li><%= link_to('People', {:controller=>'people', :action=>'index'}, {:class=>menu_style('people','*')}) %></li>
+  <li><%= link_to('Squads', {:controller=>'tools', :action=>'squads'}, {:class=>menu_style('squads','squads')}) %></li>
     <li><%= link_to('Reminders', {:controller=>'welcome', :action=>'reminders'}, {:class=>menu_style('welcome','reminders')}) %></li>
     <li><%= link_to('Bandeaux', {:controller=>'bandeaus', :action=>'index'}, {:class=>menu_style('bandeaus','*')}) %></li>
 
@@ -181,7 +182,6 @@
       <li><%= link_to('Configure export excel columns', {:controller=>'pm_type_axe_excels', :action=>'index'}) %></li>
     </ul>
   </li>
-  <li><%= link_to('Squads', {:controller=>'tools', :action=>'squads'}, {:class=>menu_style('squads','squads')}) %></li>
 
   <% if cu.id == 72 or cu.id == 73 %> <!-- button only seen by rbaillard and nmenvielle, BAM administrators -->
     <li><%= link_to('Scripts', {:controller=>'tools', :action=>'scripts'}, {:class=>menu_style('scripts','scripts')}) %></li>

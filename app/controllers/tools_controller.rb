@@ -18,6 +18,7 @@ class ToolsController < ApplicationController
 
   def squads
     @squads = Squad.all
+    @supervisors = Person.find(:all, :conditions=>["is_supervisor = 1"])
   end
 
   def squad_update
