@@ -90,3 +90,7 @@ div#banner {
 strong {
   color: black;
 }
+
+.pdc_tr_separator {
+  border: 1px solid black;
+}
