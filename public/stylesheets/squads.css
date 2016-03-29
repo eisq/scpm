@@ -1,0 +1,26 @@
+div#banner {
+  background: #00CC66; /* #0C6 */
+  border-bottom: 1px solid #000;
+  }
+
+#title {
+  color: #707;
+  }
+
+.menu:hover {
+  background: #EEE;
+  box-shadow: inset 4px 4px 4px #89A;
+  -moz-box-shadow: inset 4px 4px 4px #89A;
+  -webkit-box-shadow: inset 4px 4px 4px #89A;
+  }
+
+.menu.active {
+  background: #F8F;
+  }
+
+.menu.active:hover {
+  background: #F8F;
+  box-shadow: inset 4px 4px 4px #F6F;
+  -moz-box-shadow: inset 4px 4px 4px #F6F;
+  -webkit-box-shadow: inset 4px 4px 4px #F6F;
+  }
