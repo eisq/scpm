@@ -13,4 +13,43 @@ function change_squad(squad_id) {
 
 </script>
 
-<h3>Squad <%= select_tag('Squad', options_for_select(@squads.map{|s| [s.name,s.id]}, :selected => @current_squad.id), {:onchange=>"change_squad(this.value);"}) %></h3>
+<h2>Squad <%= select_tag('Squad', options_for_select(@squads.map{|s| [s.name,s.id]}, :selected => @current_squad.id), {:onchange=>"change_squad(this.value);"}) %></h2>
+
+<br/>
+<h3>Workload view</h3>
+
+<p>Number of person linked to this squad: <strong><%= @persons.size.to_s %></strong></p>
+
+<table class="pdc_table">
+
+<tr>
+	<th>Name</th>
+	<th>Next 5 weeks</th>
+	<th>Next 3 months</th>
+	<th>Avail 8w</th>
+</tr>
+
+<% @persons.each do |person| %>
+<tr class="pdc_tr">
+	<td class="pdc_td"><a href='/workloads/?person_id=<%= person.id %>'><%= person.name %></a></td>
+	<td class="pdc_td"></td>
+	<td class="pdc_td"></td>
+	<td class="pdc_td"></td>
+</tr>
+<% end %>
+
+<tr class="pdc_tr">
+	<td class="pdc_td_total">Total</td>
+	<td class="pdc_td_total"></td>
+	<td class="pdc_td_total"></td>
+	<td class="pdc_td_total"></td>
+</tr>
+
+<tr class="pdc_tr">
+	<td class="pdc_td_total">Capped total</td>
+	<td class="pdc_td_total"></td>
+	<td class="pdc_td_total"></td>
+	<td class="pdc_td_total"></td>
+</tr>
+
+</table>

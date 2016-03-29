@@ -24,3 +24,27 @@ div#banner {
   -moz-box-shadow: inset 4px 4px 4px #F6F;
   -webkit-box-shadow: inset 4px 4px 4px #F6F;
   }
+
+.pdc_table {
+  border-collapse: collapse;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+.pdc_tr {
+  border: 1px solid black;
+}
+
+.pdc_td {
+  width: 120px;
+}
+
+.pdc_td_total {
+  width: 120px;
+  font-weight: bold;
+}
+
+strong {
+  color: black;
+}
