@@ -29,27 +29,34 @@ function change_squad(squad_id) {
 	<th>Avail 8w</th>
 </tr>
 
-<% @persons.each do |person| %>
+<% @workloads.each do |workload| %>
 <tr class="pdc_tr">
-	<td class="pdc_td"><a href='/workloads/?person_id=<%= person.id %>'><%= person.name %></a></td>
-	<td class="pdc_td"></td>
-	<td class="pdc_td"></td>
-	<td class="pdc_td"></td>
+	<td class="pdc_td_title"><a href='/workloads/?person_id=<%= workload.person.id %>'><%= workload.person.name %></a></td>
+	<td class="pdc_td"><%= workload.next_month_percents %>%</td>
+	<td class="pdc_td"><%= workload.three_next_months_percents %>%</td>
+	<td class="pdc_td"><%= workload.sum_availability.round %></td>
 </tr>
 <% end %>
 
-<tr class="pdc_tr">
-	<td class="pdc_td_total">Total</td>
-	<td class="pdc_td_total"></td>
-	<td class="pdc_td_total"></td>
+<tr class="pdc_tr"> <!-- Next 5 weeks -->
+	<td class="pdc_td_total_title">Total</td>
+	<td class="pdc_td_total"><%= @totals_5_weeks %>%</td>
+	<td class="pdc_td_total"><%= @cap_totals_5_weeks %>%</td>
 	<td class="pdc_td_total"></td>
 </tr>
 
-<tr class="pdc_tr">
-	<td class="pdc_td_total">Capped total</td>
+<tr class="pdc_tr"> <!-- Next 3 months -->
+	<td class="pdc_td_total_title">Capped total</td>
+	<td class="pdc_td_total"><%= @totals_3_months %>%</td>
+	<td class="pdc_td_total"><%= @cap_totals_3_months %>%</td>
+	<td class="pdc_td_total"></td>
+</tr>
+
+<tr class="pdc_tr"> <!-- Next 8 weeks -->
+	<td class="pdc_td_total_title">Availability</td>
 	<td class="pdc_td_total"></td>
 	<td class="pdc_td_total"></td>
-	<td class="pdc_td_total"></td>
+	<td class="pdc_td_total"><%= @avail_totals %></td>
 </tr>
 
 </table>

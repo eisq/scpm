@@ -36,13 +36,24 @@ div#banner {
   border: 1px solid black;
 }
 
+.pdc_td_title {
+  width: 120px;
+}
+
 .pdc_td {
   width: 120px;
+  text-align: center;
+}
+
+.pdc_td_total_title {
+  width: 120px;
+  font-weight: bold;
 }
 
 .pdc_td_total {
   width: 120px;
   font-weight: bold;
+  text-align: center;
 }
 
 strong {
