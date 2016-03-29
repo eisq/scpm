@@ -16,7 +16,7 @@ class SquadsController < ApplicationController
   	 		#@squads << squad
   	 	end
   	end
-    @squads = Squad.all
+    @squads = Squad.find(:all, :order => "name")
 
   	#Get current squad informations
   	@persons = Array.new
@@ -51,12 +51,26 @@ class SquadsController < ApplicationController
 
     # next 5 weeks
     @totals_5_weeks << (@workloads.inject(0) { |sum,w| sum += w.next_month_percents} / size).round
+    if @totals_5_weeks[0].to_i > 105
+      @totals_color = "_red"
+    elsif @totals_5_weeks[0].to_i < 90
+      @totals_color = "_orange"
+    else
+      @totals_color = ""
+    end
     @cap_totals_5_weeks << (@workloads.inject(0) { |sum,w| sum += cap(w.next_month_percents)} / size).round
+    if @cap_totals_5_weeks[0].to_i > 105
+      @cap_totals_color = "_red"
+    elsif @cap_totals_5_weeks[0].to_i < 90
+      @cap_totals_color = "_orange"
+    else
+      @cap_totals_color = ""
+    end
     # next 3 months
     @totals_3_months << (@workloads.inject(0) { |sum,w| sum += w.three_next_months_percents} / size).round
     @cap_totals_3_months << (@workloads.inject(0) { |sum,w| sum += cap(w.three_next_months_percents)} / size).round
     # next 8 weeks
-    @avail_totals << (@workloads.inject(0) { |sum,w| sum += w.sum_availability })
+    @avail_totals << (@workloads.inject(0) { |sum,w| sum += w.sum_availability }).round
 
   end
 

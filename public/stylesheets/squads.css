@@ -37,12 +37,28 @@ div#banner {
 }
 
 .pdc_td_title {
-  width: 120px;
+  width: 150px;
 }
 
 .pdc_td {
-  width: 120px;
+  width: 90px;
   text-align: center;
+}
+
+.pdc_td_red {
+  width: 90px;
+  text-align: center;
+  background-color: #ff6666;
+  color: white;
+  font-weight: bold;
+}
+
+.pdc_td_orange {
+  width: 90px;
+  text-align: center;
+  background-color: #ffb84d;
+  color: white;
+  font-weight: bold;
 }
 
 .pdc_td_total_title {
@@ -51,9 +67,24 @@ div#banner {
 }
 
 .pdc_td_total {
-  width: 120px;
   font-weight: bold;
   text-align: center;
+}
+
+.pdc_td_total_red {
+  font-weight: bold;
+  text-align: center;
+  background-color: #ff6666;
+  color: white;
+  font-weight: bold;
+}
+
+.pdc_td_total_orange {
+  font-weight: bold;
+  text-align: center;
+  background-color: #ffb84d;
+  color: white;
+  font-weight: bold;
 }
 
 strong {
