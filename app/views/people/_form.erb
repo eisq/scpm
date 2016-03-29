@@ -74,8 +74,8 @@
 
 <%= label_tag 'Squads' %>
 <p>
-<% for squad in @squads %>
-	<%= check_box_tag('squads[]', squad.id, true) %><%= "#{squad.name}" %><br/>
+<% @squads.each do |squad| %>
+	<%= check_box_tag('squad_ids[]', squad.id, @person.has_squad(squad.id)) %><%= "#{squad.name}" %><br/>
 <% end %>
 </p>
 </td></tr></table>

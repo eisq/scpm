@@ -1,0 +1,19 @@
+<h3>Add a Squad</h3>
+<%= form_tag({:action => 'squad_add'}, :multipart => true) %>
+<table><tr><td>
+	Name: </td><td><%= text_field_tag('squad_name', '') %></td></tr><tr><td>
+	Supervisor: </td><td><%= text_field_tag('squad_supervisor', '') %></td></tr><tr><td colspan=2>
+	<%= submit_tag "Add" %></td></tr>
+</table>
+</form>
+
+<h3>Edit Squads</h3>
+<% @squads.each do |squad| %>
+	<%= form_tag({:action => 'squad_update'}, :multipart => true) %>
+		<%= hidden_field_tag('squad_id', squad.id) %>
+		<%= text_field_tag('squad_name', squad.name) %>
+		<%= text_field_tag('squad_supervisor', squad.supervisor) %>
+		<%= submit_tag "Save" %>
+		<%= submit_tag "Delete" %>
+	</form>
+<% end %>

@@ -393,6 +393,17 @@ class Person < ActiveRecord::Base
     return returnHash;
   end
 
+  def has_squad(squad_id)
+    var = false
+    person_squad = nil
+    person_squad = PersonSquad.find(:first, :conditions=>["person_id = ? and squad_id = ?", self.id, squad_id])
+    if person_squad
+      var = true
+    end
+    
+    return var
+  end
+
 protected
 
   # before filter

@@ -16,6 +16,32 @@ class ToolsController < ApplicationController
   def index
   end
 
+  def squads
+    @squads = Squad.all
+  end
+
+  def squad_update
+    squad = Squad.find(:first, :conditions=>["id = ?", params[:squad_id]])
+    if params[:commit] == "Delete"
+      squad.delete
+    else
+      squad.name = params[:squad_name]
+      squad.supervisor = params[:squad_supervisor]
+      squad.save
+    end
+    
+    redirect_to '/tools/squads'
+  end
+
+  def squad_add
+    squad = Squad.new
+    squad.name = params[:squad_name]
+    squad.supervisor = params[:squad_supervisor]
+    squad.save
+
+    redirect_to '/tools/squads'
+  end
+
   def stats_open_projects
     @xml = Builder::XmlMarkup.new(:indent => 1)
     @stats = []

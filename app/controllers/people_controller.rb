@@ -86,7 +86,29 @@ class PeopleController < ApplicationController
         else
           @person.remove_role(r.name)
         end
-        }
+      }
+
+      squads_checked = Array.new
+      if params[:squad_ids] and params[:squad_ids].size > 0
+        params[:squad_ids].each do |squad_id|
+          squad = Squad.find(:first, :conditions=>["id = ?", squad_id])
+          person_squad_exists = PersonSquad.find(:first, :conditions=>["person_id = ? and squad_id = ?", @person.id, squad.id])
+          if !person_squad_exists
+            person_squad = PersonSquad.new
+            person_squad.squad_id = squad.id
+            person_squad.person_id = @person.id
+            person_squad.save
+          end
+          squads_checked << squad_id.to_s
+        end
+      end
+
+      PersonSquad.find(:all, :conditions=>["person_id = ?", @person.id]).each do |person_squad|
+        if !squads_checked.include? person_squad.squad_id.to_s
+          person_squad.delete
+        end
+      end
+
       login = params[:person][:login]
       p = Person.find(:all, :conditions=>["login=?", login]) 
       if p.size > 1
