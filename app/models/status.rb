@@ -40,12 +40,12 @@ class Status < ActiveRecord::Base
   end
 
   def which_mode
-    var = "in Assurance"
+    var = "Assurance"
     is_support = false
     is_support = self.is_support
 
     if is_support
-      var = "in Support"
+      var = "Support"
     end
 
     return var
