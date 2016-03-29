@@ -48,9 +48,9 @@ class Status < ActiveRecord::Base
       history_counter = nil
       history_counter = HistoryCounter.find(:first, :conditions=>["concerned_status_id = ?", self.id])
       if history_counter
-        var = "Support with counter increment"
+        var = "Support - Counter Incremented"
       else
-        var = "Support without counter increment"
+        var = "Support - Counter not Incremented"
       end
     end
 
