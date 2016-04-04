@@ -3,7 +3,7 @@
 	<%= hidden_field_tag('id', @project.id) %>
 	<%= hidden_field_tag('list_choice',"0") %>
 	<!-- List -->
-	<h3>You are reporting on this project: </h3>
+	<h3>You are reporting on this project: <u><%= @project.name %></u></h3>
 	<!-- CHOICE 1 -->
 	<div class="status_list_choice" id="choice1" >
 		<div class="status_list_choice_text" >
@@ -19,6 +19,7 @@
 	</div>
 	<br />
 	<!-- CHOICE 2 -->
+	<% if @project.is_qr_qwr %>
 	<div  class="status_list_choice_2" id="choice2" >
 		<div class="status_list_choice_text_2" >
 			<% if @project.get_last_qs_increment %>
@@ -43,6 +44,7 @@
 		</div>
 		<img class="status_list_choice_img" src='/images/right.png'>      
 	</div>
+	<% end %>
 </form>
 
 
