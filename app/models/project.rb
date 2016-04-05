@@ -1037,6 +1037,9 @@ class Project < ActiveRecord::Base
       if number_missing_increment > 0
         color = "red"
       end
+    else
+      color = "red"
+      number_missing_increment = 1
     end
 
     return color, number_missing_increment

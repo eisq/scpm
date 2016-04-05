@@ -19,19 +19,26 @@
 	</div>
 	<br />
 	<!-- CHOICE 2 -->
-	<% if @project.is_qr_qwr %>
-	<div  class="status_list_choice_2" id="choice2" >
-		<div class="status_list_choice_text_2" >
-			<% if @project.get_last_qs_increment %>
-				<%= my_simple_format('During a "Standard Support" activity and you <strong>want to</strong> increment the QS counter.
-				Last QS counter update for this project: "'+ @project.get_last_qs_increment.to_s + ' (<span class="descr">' + time_ago_in_words(@project.get_last_qs_increment) + '</span>)') %> 
-			<% else %>
-				<%= my_simple_format('During a "Standard Support" activity and you <strong>want to</strong> increment the QS counter.') %> 
-			<% end %>
-		</div>
-		<img class="status_list_choice_img" src='/images/right.png'>      
-	</div>
-	<br />
+	<%
+	temp = nil
+	number_missing_increment = 0
+	temp, number_missing_increment = @project.get_counter_should_have_been_incremented
+
+	if @project.is_qr_qwr 
+		if number_missing_increment > 0 %>
+			<div  class="status_list_choice_2" id="choice2" >
+				<div class="status_list_choice_text_2" >
+					<% if @project.get_last_qs_increment %>
+						<%= my_simple_format('During a "Standard Support" activity and you <strong>want to</strong> increment the QS counter.
+						Last QS counter update for this project: "'+ @project.get_last_qs_increment.to_s + ' (<span class="descr">' + time_ago_in_words(@project.get_last_qs_increment) + '</span>)') %> 
+					<% else %>
+						<%= my_simple_format('During a "Standard Support" activity and you <strong>want to</strong> increment the QS counter.') %> 
+					<% end %>
+				</div>
+				<img class="status_list_choice_img" src='/images/right.png'>      
+			</div>
+			<br />
+		<% end %>
 	<!-- CHOICE 3 -->
 	<div  class="status_list_choice_2" id="choice3" >
 		<div class="status_list_choice_text_2" >

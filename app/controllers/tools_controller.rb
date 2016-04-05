@@ -56,6 +56,13 @@ class ToolsController < ApplicationController
   end
 
   def break_update
+    on_hold_project = OnHoldProject.find(:first, :conditions=>["id = ?", params[:break_id]])
+    if params[:commit] == "Delete"
+      on_hold_project.delete
+    else
+      on_hold_project.total = params[:break_days].to_i
+      on_hold_project.save
+    end
     
     redirect_to '/tools/breaks'
   end
