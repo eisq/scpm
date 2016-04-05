@@ -13,7 +13,7 @@
 <tr><td>BPL</td><td>				<%= text_field :project, :bpl %></td></tr>
 <tr><td>ISPL</td><td>				<%= text_field :project, :ispl %></td></tr>
 <tr><td>ISPM</td><td>				<%= text_field :project, :ispm %></td></tr>
-<tr><td>Is active QR/QWR ?</td><td><%= check_box :project, :is_qr_qwr,:onclick=>"check_is_qr_qwr();" %></td></tr>
+<tr><td>Is active Support Activities</td><td><%= check_box :project, :is_qr_qwr,:onclick=>"check_is_qr_qwr();" %></td></tr>
 <tr><td>QR</td><td>					<%= select(:project, :qr_qwr_id, @qr.map {|p| [p.name, p.id]}, :include_blank=>true) %></td></tr>
 <tr><td>DWR</td><td>				<%= text_field :project, :dwr %></td></tr>
 <tr><td>Supervisor</td><td>	<%= select(:project, :supervisor_id, @supervisors.map {|p| [p.name, p.id]}, :include_blank=>true) %></td></tr>

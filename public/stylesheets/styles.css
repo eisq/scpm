@@ -217,12 +217,18 @@ a {text-decoration:none;}
   background: #FDC;
   border: 1px solid #CBA;
   }
-.btnlnk.special {
-  background: #FDC;
-  border: 1px solid #CBA;
+.btnlnk.special2 {
+  background:   #ffcc99;
+  border: 1px solid #ffb399;
   }
 .btnlnk.special:hover {
   background: #FCB;
+  box-shadow: inset 2px 2px 2px #876;
+  -moz-box-shadow: inset 2px 2px 2px #876;
+  -webkit-box-shadow: inset 2px 2px 2px #876;
+  }
+  .btnlnk.special2:hover {
+  background: #ffb399;
   box-shadow: inset 2px 2px 2px #876;
   -moz-box-shadow: inset 2px 2px 2px #876;
   -webkit-box-shadow: inset 2px 2px 2px #876;

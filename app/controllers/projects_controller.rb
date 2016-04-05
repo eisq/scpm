@@ -104,6 +104,44 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def set_on_hold
+    project = Project.find(params[:id])
+    project.is_on_hold = true
+    project.save
+
+    on_hold_project = OnHoldProject.find(:first, :conditions=>["project_id = ?", params[:id]])
+    if !on_hold_project
+      on_hold_project = OnHoldProject.new
+      on_hold_project.project_id = params[:id]
+    end
+    on_hold_project.on_hold = true
+    on_hold_project.save
+
+    redirect_to :action=>:show, :id=>project.id
+  end
+
+  def remove_on_hold
+    total = 0
+    project = Project.find(params[:id])
+    project.is_on_hold = false
+    project.save
+
+    on_hold_project = OnHoldProject.find(:first, :conditions=>["project_id = ?", project.id])
+    if project.is_qr_qwr
+      date_on_hold = on_hold_project.updated_at
+      if date_on_hold
+        date_split = date_on_hold.to_s.split("-")
+        date_on_hold = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+      end
+      days_on_hold = Date.today - date_on_hold
+      on_hold_project.total = on_hold_project.total + days_on_hold
+    end
+    on_hold_project.on_hold = false
+    on_hold_project.save
+
+    redirect_to :action=>:show, :id=>project.id
+  end
+
   def show_project_list
     get_projects_without_wps
     sort_projects_without_wps
@@ -347,6 +385,27 @@ class ProjectsController < ApplicationController
       project.qr_qwr_id = nil
     end
     project.save
+
+    #if the project is set as AQ after Support, it creates a virtual "on hold" to stop the automatic check on number of QS should be incremented
+    if old_is_qr_qwr_param and !project.is_qr_qwr
+      on_hold_project = OnHoldProject.find(:first, :conditions=>["project_id = ?", project.id])
+      if !on_hold_project
+        on_hold_project = OnHoldProject.new
+        on_hold_project.project_id = project.id
+      end
+      on_hold_project.aq_mode = true
+      on_hold_project.save
+    elsif !old_is_qr_qwr_param and project.is_qr_qwr
+      on_hold_project = OnHoldProject.find(:first, :conditions=>["project_id = ?", project.id])
+      if on_hold_project and on_hold_project.aq_mode
+        date_split = on_hold_project.updated_at.to_s.split("-")
+        date_creation = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+        on_hold_project.total = (Date.today - date_creation) + on_hold_project.total
+        on_hold_project.aq_mode = false
+        on_hold_project.save
+      end
+    end
+
     check_qr_qwr_pdc(project)
     #check_qr_qwr_activated(project,old_is_qr_qwr_param)
     redirect_to :action=>:show, :id=>project.id
@@ -888,7 +947,7 @@ class ProjectsController < ApplicationController
   def summary
     begin
       @xml = Builder::XmlMarkup.new(:indent => 1) #Builder::XmlMarkup.new(:target => $stdout, :indent => 1)
-      get_projects
+      get_projects_without_on_hold
       saveWps = @wps
       @wps = @wps.sort_by { |w|
         [w.supervisor_name, w.workstream, w.project_name, w.name]
@@ -1416,6 +1475,26 @@ private
     cond_wps << "suite_tag_id in #{session[:project_filter_suiteTags]}" if session[:project_filter_suiteTags] != nil
     cond_wps << "project_people.person_id in #{session[:project_filter_qr]}" if session[:project_filter_qr] != nil
     cond_wps << "is_running = 1"
+    cond_wps << "projects.project_id IS NOT NULL"
+    cond_wps << "projects.name IS NOT NULL"
+
+    @wps = Project.find(:all, :joins => ["LEFT OUTER JOIN project_people ON project_people.project_id = projects.id"], :conditions=>cond_wps.join(" and "), :group => "projects.id")
+  end
+
+  def get_projects_without_on_hold
+    # Text filtering
+    if session[:project_filter_text] != "" and session[:project_filter_text] != nil
+      @wps = Project.get_projects_with_text(session[:project_filter_text], false)
+      return
+    end
+    cond_wps = []
+    cond_wps << "workstream in #{session[:project_filter_workstream]}" if session[:project_filter_workstream] != nil
+    cond_wps << "last_status in #{session[:project_filter_status]}" if session[:project_filter_status] != nil
+    cond_wps << "supervisor_id in #{session[:project_filter_supervisor]}" if session[:project_filter_supervisor] != nil
+    cond_wps << "suite_tag_id in #{session[:project_filter_suiteTags]}" if session[:project_filter_suiteTags] != nil
+    cond_wps << "project_people.person_id in #{session[:project_filter_qr]}" if session[:project_filter_qr] != nil
+    cond_wps << "is_running = 1"
+    cond_wps << "is_on_hold = 0"
     cond_wps << "projects.project_id IS NOT NULL"
     cond_wps << "projects.name IS NOT NULL"
 

@@ -13,6 +13,9 @@
   if date
     days = time_ago_in_words(date) %>
     (<%= days %> - w<%= date.to_date.cweek %>)
+  <% end 
+  if project.is_on_hold %>
+    <span style="color:red;">(On Hold)</span>
   <% end %>
 
   <% if project.read_date and current_user.has_role?('Admin')%>

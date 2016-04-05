@@ -4,6 +4,7 @@ require 'spreadsheet'
 class ToolsController < ApplicationController
 
   Spider_counter_struct    = Struct.new(:historycounter, :spider_version)
+  On_hold_project_struct    = Struct.new(:project, :on_hold_project)
 
   if APP_CONFIG['project_name']=='EISQ'
     layout 'tools'
@@ -41,6 +42,40 @@ class ToolsController < ApplicationController
     squad.save
 
     redirect_to '/tools/squads'
+  end
+
+  def breaks
+    @on_hold_projects = Array.new
+    OnHoldProject.find(:all, :order => "project_id").each do |on_hold_project|
+      # On_hold_project_struct    = Struct.new(:project, :on_hold_project)
+      on_hold_project_struct = On_hold_project_struct.new
+      on_hold_project_struct.project = Project.find(:first, :conditions=>["id = ?", on_hold_project.project_id])
+      on_hold_project_struct.on_hold_project = on_hold_project
+      @on_hold_projects << on_hold_project_struct
+    end
+  end
+
+  def break_update
+    
+    redirect_to '/tools/breaks'
+  end
+
+  def break_add
+    project_id = params[:project_id]
+    project = Project.find(:first, :conditions=>["id = ?", project_id])
+    if project and params[:break_days_number]
+      on_hold_project = OnHoldProject.find(:first, :conditions=>["project_id = ?", project.id])
+      if on_hold_project
+        on_hold_project.total = params[:break_days_number].to_i + on_hold_project.total
+      else
+        on_hold_project = OnHoldProject.new
+        on_hold_project.project_id = project.id
+        on_hold_project.total = params[:break_days_number]
+      end
+    end
+    on_hold_project.save
+
+    redirect_to '/tools/breaks'
   end
 
   def stats_open_projects

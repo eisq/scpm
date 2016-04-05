@@ -23,7 +23,11 @@ function add(id, nb_months, has_requests, has_rights) {
 
 <div id="submenu">
   <%= @project.icon_status %>
-  <h2><%= @project.full_name %></h2>
+  <h2><%= @project.full_name %>
+    <% if @project.is_on_hold %>
+      <span style="color:red;">(On Hold)</span>
+    <% end %>
+  </h2>
 </div>
 <div id="subcontent">
   <div id="tabs">
@@ -45,6 +49,11 @@ function add(id, nb_months, has_requests, has_rights) {
             <% if !@project.deviation_spider or !@project.deviation_spider_svt or !@project.deviation_spider_svf %>
             <div style="float:left;">
               <%= link_to('Export All Spiders', {:controller=>'spiders', :action=>'project_spider_export', :project_id=>@project.id}, {:class=>'btnlnk'}) %>
+              <% if !@project.is_on_hold %>
+                <%= link_to('Set on hold', {:action=>'set_on_hold', :id=>@project.id}, {:class=>'btnlnk special2'}) %>
+              <% else %>
+                <%= link_to('Remove on hold', {:action=>'remove_on_hold', :id=>@project.id}, {:class=>'btnlnk special2'}) %>
+              <% end %>
             </div>
             <% end %>
             <% if @project.is_qr_qwr %>
@@ -264,7 +273,7 @@ function add(id, nb_months, has_requests, has_rights) {
             <b>Request resp:</b> <%=@project.assignees.join(', ')%><br/>
             <b>Associations:</b> <%=@project.responsibles.map{|r| r.name}.join(', ')%><br/>
             <b>QR/QWR</b>: <%= @project.qr_qwr.name if @project.qr_qwr %><br/>
-						<b>Is QR/QWR active</b>: <%= @project.is_qr_qwr %><br />
+						<b>Is Support active</b>: <%= @project.is_qr_qwr %><br />
             <b>DWR</b>: <%= @project.dwr %><br/>
       			<b>Is Running:</b> <%= @project.is_running.to_s %>
             <% if @project.is_running == false and @has_sibling == false %>
