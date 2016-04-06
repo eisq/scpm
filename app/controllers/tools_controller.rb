@@ -6,6 +6,7 @@ class ToolsController < ApplicationController
   Spider_counter_struct    = Struct.new(:historycounter, :spider_version)
   On_hold_project_struct    = Struct.new(:project, :on_hold_project)
   Aq_project_with_virtual_break_to_add = Struct.new(:project, :last_increment_date_to_consider)
+  Project_qs_to_increment_struct = Struct.new(:project, :number_qs_to_increment)
 
   if APP_CONFIG['project_name']=='EISQ'
     layout 'tools'
@@ -53,6 +54,18 @@ class ToolsController < ApplicationController
       on_hold_project_struct.project = Project.find(:first, :conditions=>["id = ?", on_hold_project.project_id])
       on_hold_project_struct.on_hold_project = on_hold_project
       @on_hold_projects << on_hold_project_struct
+    end
+
+    @projects_qs_to_increment = Array.new
+    Project.find(:all, :conditions=>["is_running = true"]).each do |project|
+      temp, number = project.get_counter_should_have_been_incremented
+      if number < 0 or number > 2
+        # Project_qs_to_increment_struct = Struct.new(:project, :number_qs_to_increment)
+        project_qs_to_increment_struct = Project_qs_to_increment_struct.new
+        project_qs_to_increment_struct.project = project
+        project_qs_to_increment_struct.number_qs_to_increment = number
+        @projects_qs_to_increment << project_qs_to_increment_struct
+      end
     end
   end
 
