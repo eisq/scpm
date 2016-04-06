@@ -5,6 +5,7 @@ class ToolsController < ApplicationController
 
   Spider_counter_struct    = Struct.new(:historycounter, :spider_version)
   On_hold_project_struct    = Struct.new(:project, :on_hold_project)
+  Aq_project_with_virtual_break_to_add = Struct.new(:project, :last_increment_date_to_consider)
 
   if APP_CONFIG['project_name']=='EISQ'
     layout 'tools'
@@ -83,6 +84,56 @@ class ToolsController < ApplicationController
     on_hold_project.save
 
     redirect_to '/tools/breaks'
+  end
+
+  def create_aq_breaks
+    last_date_to_consider = last_counter_date = nil
+    projects_struct = Array.new
+    add_new_on_hold = true
+
+    HistoryCounter.find(:all, :conditions=>["concerned_status_id IS NOT NULL"]).each do |history_counter|
+      if !history_counter.status.project.is_qr_qwr
+        projects_struct.each do |struct|
+          if history_counter.status.project.id == struct.project.id
+            date_split = history_counter.created_at.to_s.split("-")
+            date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+            if struct.last_increment_date_to_consider < date
+              struct.last_increment_date_to_consider = date
+            end
+            add_new_on_hold = false
+          end
+        end
+
+        if add_new_on_hold
+          # Aq_project_with_virtual_break_to_add = Struct.new(:project, :last_increment_date_to_consider)
+          aq_project_with_virtual_break_to_add = Aq_project_with_virtual_break_to_add.new
+          aq_project_with_virtual_break_to_add.project = history_counter.status.project
+          date_split = history_counter.created_at.to_s.split("-")
+          date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+          aq_project_with_virtual_break_to_add.last_increment_date_to_consider = date
+          projects_struct << aq_project_with_virtual_break_to_add
+        end
+      end
+    end
+
+    projects_struct.each do |struct|
+      break_days = 0
+      on_hold_project = nil
+      on_hold_project = OnHoldProject.find(:first, :conditions=>["project_id = ?", struct.project.id])
+      if !on_hold_project
+        on_hold_project = OnHoldProject.new
+        on_hold_project.project_id = struct.project.id
+        on_hold_project.total = 0
+        on_hold_project.on_hold = false
+      end
+
+      break_days = (Date.today - struct.last_increment_date_to_consider) - 30
+      on_hold_project.total = on_hold_project.total + break_days
+      on_hold_project.aq_mode = true
+      on_hold_project.save
+    end
+
+    redirect_to '/tools/scripts'
   end
 
   def stats_open_projects
