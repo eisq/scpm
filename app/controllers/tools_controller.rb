@@ -92,26 +92,28 @@ class ToolsController < ApplicationController
     add_new_on_hold = true
 
     HistoryCounter.find(:all, :conditions=>["concerned_status_id IS NOT NULL"]).each do |history_counter|
-      if !history_counter.status.project.is_qr_qwr
-        projects_struct.each do |struct|
-          if history_counter.status.project.id == struct.project.id
+      if history_counter.status
+        if !history_counter.status.project.is_qr_qwr
+          projects_struct.each do |struct|
+            if history_counter.status.project.id == struct.project.id
+              date_split = history_counter.created_at.to_s.split("-")
+              date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+              if struct.last_increment_date_to_consider < date
+                struct.last_increment_date_to_consider = date
+              end
+              add_new_on_hold = false
+            end
+          end
+
+          if add_new_on_hold
+            # Aq_project_with_virtual_break_to_add = Struct.new(:project, :last_increment_date_to_consider)
+            aq_project_with_virtual_break_to_add = Aq_project_with_virtual_break_to_add.new
+            aq_project_with_virtual_break_to_add.project = history_counter.status.project
             date_split = history_counter.created_at.to_s.split("-")
             date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
-            if struct.last_increment_date_to_consider < date
-              struct.last_increment_date_to_consider = date
-            end
-            add_new_on_hold = false
+            aq_project_with_virtual_break_to_add.last_increment_date_to_consider = date
+            projects_struct << aq_project_with_virtual_break_to_add
           end
-        end
-
-        if add_new_on_hold
-          # Aq_project_with_virtual_break_to_add = Struct.new(:project, :last_increment_date_to_consider)
-          aq_project_with_virtual_break_to_add = Aq_project_with_virtual_break_to_add.new
-          aq_project_with_virtual_break_to_add.project = history_counter.status.project
-          date_split = history_counter.created_at.to_s.split("-")
-          date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
-          aq_project_with_virtual_break_to_add.last_increment_date_to_consider = date
-          projects_struct << aq_project_with_virtual_break_to_add
         end
       end
     end
