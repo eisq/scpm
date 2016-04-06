@@ -1050,7 +1050,7 @@ class Project < ActiveRecord::Base
     if first_inc_date and number_increment
       days = (Date.today - first_inc_date - on_hold_days)
       number_should_have_been_incremented = (days / 30).floor
-      number_missing_increment = number_should_have_been_incremented - number_increment
+      number_missing_increment = number_should_have_been_incremented - number_increment + 1
       if number_missing_increment > 0
         color = "red"
       end
