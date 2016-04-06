@@ -992,6 +992,23 @@ class Project < ActiveRecord::Base
       end
     end
 
+    return final_last_inc
+  end
+
+  def get_last_qs_increment_show
+    last_inc = last_inc_sibling = final_last_inc = nil
+    last_inc =  HistoryCounter.last(:include => :status, :conditions=>["concerned_status_id IS NOT NULL and statuses.project_id = ?" ,self.id])
+    if last_inc
+      final_last_inc = last_inc.created_at
+    else
+      if self.sibling_id
+        last_inc_sibling = HistoryCounter.last(:include => :status, :conditions=>["concerned_status_id IS NOT NULL and statuses.project_id = ?" ,self.sibling_id])
+        if last_inc_sibling
+          final_last_inc = last_inc_sibling.created_at
+        end
+      end
+    end
+
     if final_last_inc
       date_split = final_last_inc.to_s.split("-")
       final_last_inc = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)

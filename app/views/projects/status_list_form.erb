@@ -18,12 +18,11 @@
 		<img class="status_list_choice_img" src='/images/right.png'>      
 	</div>
 	<br />
-	<%
-	temp = nil
-	number_missing_increment = 0
-	temp, number_missing_increment = @project.get_counter_should_have_been_incremented
+	<% if @project.is_qr_qwr
+		temp = nil
+		number_missing_increment = 0
+		temp, number_missing_increment = @project.get_counter_should_have_been_incremented
 
-	if @project.is_qr_qwr 
 		if number_missing_increment > 0 %>
 			<!-- CHOICE 2 -->
 			<div  class="status_list_choice_2" id="choice2" >
@@ -62,12 +61,19 @@
  	$("list_choice").setValue("1");
  	$("form_status_list").submit();
  });
+ </script>
+<% if @project.is_qr_qwr and (number_missing_increment > 0) %>
+ <script type="text/javascript">
  $("choice2").observe('click', function() {			
  	$("list_choice").setValue("2");
  	$("form_status_list").submit();
  });
+ </script>
+<% elsif @project.is_qr_qwr and (number_missing_increment <= 0) %>
+ <script type="text/javascript">
  $("choice3").observe('click', function() {			
  	$("list_choice").setValue("3");
  	$("form_status_list").submit();
  });
 </script>
+<% end %>

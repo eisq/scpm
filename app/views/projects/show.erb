@@ -60,7 +60,7 @@ function add(id, nb_months, has_requests, has_rights) {
               <div style="float:Right;">
                 Remaining QS :            <%= @project.calcul_qs_previsional.to_s %><br />
                 Remaining Spiders :       <%= @project.calcul_spider_previsional  %><br />
-                Last QS Incrementation :  <%= @project.get_last_qs_increment.to_s if @project.get_last_qs_increment %>
+                Last QS Incrementation :  <%= @project.get_last_qs_increment_show.to_s if @project.get_last_qs_increment_show %>
                 <%
                 color, number = @project.get_counter_should_have_been_incremented
                 %>
