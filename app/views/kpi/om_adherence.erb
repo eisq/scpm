@@ -1,0 +1,257 @@
+<%=
+@xml.instruct! :xml, :version=>"1.0", :encoding=>"UTF-8"
+@xml.Workbook({
+  'xmlns'      => "urn:schemas-microsoft-com:office:spreadsheet",
+  'xmlns:o'    => "urn:schemas-microsoft-com:office:office",
+  'xmlns:x'    => "urn:schemas-microsoft-com:office:excel",
+  'xmlns:html' => "http://www.w3.org/TR/REC-html40",
+  'xmlns:ss'   => "urn:schemas-microsoft-com:office:spreadsheet"
+  }) do
+
+
+@xml.Styles do
+  @xml.Style 'ss:ID' => 'Default', 'ss:Name' => 'Normal' do
+    @xml.Alignment 'ss:Vertical' => 'Top', 'ss:WrapText' => '1'
+    @xml.Borders
+    @xml.Font 'ss:FontName' => 'Verdana'
+    @xml.Interior
+    @xml.NumberFormat
+    @xml.Protection 
+  end
+  @xml.Style 'ss:ID' => 'TitleBlack', 'ss:Name' => 'TitleBlack' do
+    @xml.Font  'x:Family'=>'Swiss', 'ss:Color'=>'#ffffff', 'ss:Bold'=>"1"
+    @xml.Interior 'ss:Color'=>"#000000", 'ss:Pattern'=>'Solid'
+  end
+end
+  
+  @xml.Worksheet 'ss:Name' => 'Deliverables list' do
+    @xml.Table do
+      # Columns width
+      @xml.Column 0, {'ss:Width' => 50}
+      @xml.Column 1, {'ss:Width' => 80}
+      @xml.Column 2, {'ss:Width' => 100}
+      @xml.Column 3, {'ss:Width' => 100}
+      @xml.Column 4, {'ss:Width' => 200}
+      @xml.Column 5, {'ss:Width' => 50}
+      @xml.Column 6, {'ss:Width' => 50}
+      @xml.Column 7, {'ss:Width' => 50}
+      @xml.Column 8, {'ss:Width' => 50}
+      @xml.Column 9, {'ss:Width' => 50}
+      @xml.Column 10, {'ss:Width' => 50}
+      @xml.Column 11, {'ss:Width' => 50}
+      @xml.Column 12, {'ss:Width' => 50}
+      @xml.Column 13, {'ss:Width' => 50}
+      @xml.Column 14, {'ss:Width' => 50}
+      @xml.Column 15, {'ss:Width' => 50}
+      @xml.Column 16, {'ss:Width' => 50}
+      @xml.Column 17, {'ss:Width' => 50}
+      @xml.Column 18, {'ss:Width' => 50}
+      @xml.Column 19, {'ss:Width' => 50}
+      @xml.Column 20, {'ss:Width' => 80}
+      @xml.Column 21, {'ss:Width' => 80}
+      @xml.Column 22, {'ss:Width' => 80}
+      @xml.Column 23, {'ss:Width' => 80}
+      @xml.Column 24, {'ss:Width' => 80}
+      @xml.Column 25, {'ss:Width' => 80}
+      @xml.Column 26, {'ss:Width' => 80}
+      @xml.Column 27, {'ss:Width' => 80}
+      @xml.Column 28, {'ss:Width' => 80}
+      @xml.Column 29, {'ss:Width' => 80}
+      @xml.Column 30, {'ss:Width' => 50}
+
+      # Header
+      @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "DWS", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Suite", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Lifecycle", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Project Name", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Workpackage", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Milestone", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Business and IS Modelling", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Change Management", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Configuration Management", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Continuous Improvement", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Integration, Verification and Validation", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Measurement Process and Quality Management", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Monitoring and Control", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Project Justification", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Project Planning Scoping and Structuring", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Risk and Opportunities Management", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Run Mode Preparation", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Solution Def.", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Subcontracting Management", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Risks Mgt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Planning", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Organisation", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Configuration", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Needs Mgt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Tests Mgt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Configuration", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Technical", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Architecture", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Integration", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Alert (Yes/No)", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+      end
+
+      # Rows
+      for data in @om
+        @xml.Row do
+          @xml.Cell do
+            @xml.Data data.dws, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.suite, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.lifecycle, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.project_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.workpackage, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.milestone, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.business_and_is_modelling, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.change_management, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.configuration_management, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.continuous_improvement, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.integration_v_and_v, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.measurement_process_and_qm, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.monitoring_and_control, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.project_justification, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.pp_scoping_and_structuring, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.risk_and_opportunities_management, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.run_mode_preparation, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.solution_definition, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.subcontracting_management, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.risks_management, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.planning, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.organisation, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.project_configuration, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.needs_management, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.tests_managements, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.product_configuration, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.technical, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.architecture, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.integration, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.alert, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+        end #End row
+      end #End for
+
+    end #End xml.table
+  end #End xml.worksheet
+
+end 
+
+%>

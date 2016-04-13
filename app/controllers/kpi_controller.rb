@@ -6,6 +6,7 @@ class KpiController < ApplicationController
   	include WelcomeHelper
 
 	Setting_info    = Struct.new(:lifecycle, :workstream, :plm, :activity_name, :macro_activity_name, :deliverable_name, :plan_to_do)
+	OM_info    = Struct.new(:dws, :suite, :lifecycle, :project_name, :workpackage, :milestone, :business_and_is_modelling, :change_management, :configuration_management, :continuous_improvement, :integration_v_and_v, :measurement_process_and_qm, :monitoring_and_control, :project_justification, :pp_scoping_and_structuring, :risk_and_opportunities_management, :run_mode_preparation, :solution_definition, :subcontracting_management, :risks_management, :planning, :organisation, :project_configuration, :needs_management, :tests_managements, :product_configuration, :technical, :architecture, :integration, :alert)
 
 	def index
 	end
@@ -69,8 +70,67 @@ class KpiController < ApplicationController
 	          render "deliverable_list_kpi.erb", :layout=>false
 	        rescue Exception => e
 	          render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
-        end
-    end
+	        end
+	    end
+
+	end
+
+    def extract_om_adherence
+		@om = Array.new
+
+		SvtDeviationSpiderSetting.find(:all).each do |spider|
+			om_info = OM_info.new
+
+			om_info.dws = ""
+			if spider.svt_deviation_spider_reference.project.suite_tag
+				om_info.suite = spider.svt_deviation_spider_reference.project.suite_tag.name
+			else
+				om_info.suite = ""
+			end
+			om_info.lifecycle = spider.svt_deviation_spider_reference.project.lifecycle_object.name
+			om_info.project_name = spider.svt_deviation_spider_reference.project.name
+			om_info.workpackage = ""
+			om_info.milestone = ""
+			om_info.business_and_is_modelling = ""
+			om_info.change_management = ""
+			om_info.configuration_management = ""
+			om_info.continuous_improvement = ""
+			om_info.integration_v_and_v = ""
+			om_info.measurement_process_and_qm = ""
+			om_info.monitoring_and_control = ""
+			om_info.project_justification = ""
+			om_info.pp_scoping_and_structuring = ""
+			om_info.risk_and_opportunities_management = ""
+			om_info.run_mode_preparation = ""
+			om_info.solution_definition = ""
+			om_info.subcontracting_management = ""
+			om_info.risks_management = ""
+			om_info.planning = ""
+			om_info.organisation = ""
+			om_info.project_configuration = ""
+			om_info.needs_management = ""
+			om_info.tests_managements = ""
+			om_info.product_configuration = ""
+			om_info.technical = ""
+			om_info.architecture = ""
+			om_info.integration = ""
+			om_info.alert = ""
+
+			@om << om_info
+		end
+
+		if @om.count > 0
+	        begin
+	          @xml = Builder::XmlMarkup.new(:indent => 1)
+
+	          headers['Content-Type']         = "application/vnd.ms-excel"
+	          headers['Content-Disposition']  = 'attachment; filename="E-M&T_Ref_&_OM_adherence_KPI Data_Adherence.xls"'
+	          headers['Cache-Control']        = ''
+	          render "om_adherence.erb", :layout=>false
+	        rescue Exception => e
+	          render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+	        end
+	    end
 
 	end
 
