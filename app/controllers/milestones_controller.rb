@@ -169,10 +169,12 @@ class MilestonesController < ApplicationController
       if delay_to_record
         old_date_bdd = get_date_from_bdd_date(old_date_bdd)
         new_date_bdd = get_date_from_bdd_date(new_date_bdd)
-        redirect_to :action=>:delay, :milestone_id=>m.id, :planned_date=>old_date_bdd, :current_date=>new_date_bdd, :delay_days=>delay_days
-      else
-        redirect_to "/projects/show/#{m.project_id}"
+        # Redirection to milestones delays box
+        # redirect_to :action=>:delay, :milestone_id=>m.id, :planned_date=>old_date_bdd, :current_date=>new_date_bdd, :delay_days=>delay_days
       end
+
+      redirect_to "/projects/show/#{m.project_id}"
+      
     else
       redirect_to("/milestones/edit?id=#{params[:id]}&date_error="+error.to_s)
     end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160328135900) do
+ActiveRecord::Schema.define(:version => 20160405180500) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -513,24 +513,6 @@ ActiveRecord::Schema.define(:version => 20160328135900) do
     t.datetime "updated_at"
   end
 
-  create_table "lesson_collect_axes", :force => true do |t|
-    t.string "name"
-  end
-
-  create_table "lesson_collect_file_analyzes", :force => true do |t|
-    t.integer  "person_id"
-    t.integer  "lesson_collect_file_id"
-    t.string   "comment"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "lesson_collect_file_downloads", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "lesson_collect_file_id"
-    t.datetime "download_date"
-  end
-
   create_table "lesson_collect_files", :force => true do |t|
     t.string   "pm"
     t.string   "qwr_sqr"
@@ -539,21 +521,6 @@ ActiveRecord::Schema.define(:version => 20160328135900) do
     t.string   "project_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "lesson_collect_template_type_id"
-    t.integer  "request_id"
-    t.string   "filename"
-    t.string   "mt_qr"
-    t.text     "comment"
-    t.boolean  "is_archived",                     :default => false
-  end
-
-  create_table "lesson_collect_sub_axes", :force => true do |t|
-    t.string  "name"
-    t.integer "lesson_collect_axe_id"
-  end
-
-  create_table "lesson_collect_template_types", :force => true do |t|
-    t.string "name"
   end
 
   create_table "lesson_collects", :force => true do |t|
@@ -568,16 +535,6 @@ ActiveRecord::Schema.define(:version => 20160328135900) do
     t.string   "sub_axes"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "lesson_collect_axe_id"
-    t.integer  "lesson_collect_sub_axe_id"
-    t.string   "escalate_next_level"
-    t.string   "project_name"
-    t.boolean  "action_plan"
-    t.boolean  "already_exist"
-    t.string   "redundancy"
-    t.boolean  "selected"
-    t.string   "status"
-    t.string   "raised_in_dws_plm"
   end
 
   create_table "lifecycle_milestones", :force => true do |t|
@@ -643,16 +600,6 @@ ActiveRecord::Schema.define(:version => 20160328135900) do
     t.string   "reason_description"
     t.integer  "reason_one_id"
     t.boolean  "is_active"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "milestone_delay_reasons", :force => true do |t|
-    t.string   "reason_description"
-    t.integer  "level_of_reason"
-    t.integer  "reason_first_id_link"
-    t.integer  "reason_second_id_link"
-    t.integer  "reason_third_id_link"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -729,6 +676,15 @@ ActiveRecord::Schema.define(:version => 20160328135900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "capi_axis_id", :default => -1
+  end
+
+  create_table "on_hold_projects", :force => true do |t|
+    t.integer  "project_id"
+    t.boolean  "on_hold"
+    t.integer  "total",      :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "aq_mode"
   end
 
   create_table "people", :force => true do |t|
@@ -878,7 +834,8 @@ ActiveRecord::Schema.define(:version => 20160328135900) do
     t.integer  "tbp_project_id"
     t.boolean  "deviation_spider",     :default => false
     t.boolean  "deviation_spider_svt", :default => false
-    t.boolean  "deviation_spider_svf", :default => false
+    t.boolean  "deviation_spider_svf", :default => true
+    t.boolean  "is_on_hold",           :default => false
   end
 
   add_index "projects", ["project_id"], :name => "IDX_PROJECTS_ON_PROJECT_ID"
@@ -1611,9 +1568,9 @@ ActiveRecord::Schema.define(:version => 20160328135900) do
     t.string   "planned"
     t.string   "achieved"
     t.string   "comment"
+    t.boolean  "is_consolidated",              :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "is_consolidated",              :limit => 1, :default => 0
   end
 
   create_table "svt_deviation_spider_references", :force => true do |t|
