@@ -5,7 +5,7 @@ class KpiController < ApplicationController
 	layout 'tools'
   	include WelcomeHelper
 
-	Setting_info    = Struct.new(:lifecycle, :workstream, :plm, :activity_name, :macro_activity_name, :deliverable_name, :plan_to_do)
+	Setting_info    = Struct.new(:project_name, :workpackage, :lifecycle, :workstream, :plm, :activity_name, :macro_activity_name, :deliverable_name, :plan_to_do)
 	OM_info    = Struct.new(:dws, :suite, :lifecycle, :project_name, :workpackage, :milestone, :business_and_is_modelling, :change_management, :configuration_management, :continuous_improvement, :integration_v_and_v, :measurement_process_and_qm, :monitoring_and_control, :project_justification, :pp_scoping_and_structuring, :risk_and_opportunities_management, :run_mode_preparation, :solution_definition, :subcontracting_management, :risks_management, :planning, :organisation, :project_configuration, :needs_management, :tests_managements, :product_configuration, :technical, :architecture, :integration, :alert)
 
 	def index
@@ -33,7 +33,8 @@ class KpiController < ApplicationController
 
 		SvtDeviationSpiderSetting.find(:all).each do |setting|
 			setting_info = Setting_info.new
-			setting_info.plm = ""
+			setting_info.project_name = setting.svt_deviation_spider_reference.project.project_name
+			setting_info.workpackage = setting.svt_deviation_spider_reference.project.full_wp_name
 			setting_info.lifecycle = setting.svt_deviation_spider_reference.project.lifecycle_object.name
 			setting_info.workstream = setting.svt_deviation_spider_reference.project.workstream
 			if setting.svt_deviation_spider_reference.project.suite_tag
@@ -81,15 +82,15 @@ class KpiController < ApplicationController
 		SvtDeviationSpiderSetting.find(:all).each do |spider|
 			om_info = OM_info.new
 
-			om_info.dws = ""
+			om_info.dws = spider.svt_deviation_spider_reference.project.workstream
 			if spider.svt_deviation_spider_reference.project.suite_tag
 				om_info.suite = spider.svt_deviation_spider_reference.project.suite_tag.name
 			else
 				om_info.suite = ""
 			end
 			om_info.lifecycle = spider.svt_deviation_spider_reference.project.lifecycle_object.name
-			om_info.project_name = spider.svt_deviation_spider_reference.project.name
-			om_info.workpackage = ""
+			om_info.project_name = spider.svt_deviation_spider_reference.project.project_name
+			om_info.workpackage = spider.svt_deviation_spider_reference.project.full_wp_name
 			om_info.milestone = ""
 			om_info.business_and_is_modelling = ""
 			om_info.change_management = ""

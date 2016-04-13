@@ -276,7 +276,7 @@ end
 
       # Header
       @xml.Row 'ss:StyleID' => 's62' do
-        for column in ['Supervisor', 'WS','Suite', 'Project', 'Workpackage', 'PM', 'BRN', 'Lifecycle', 'Old status', 'Current Status', 'Date', 'Status', 'Last change', 'Coaching/Expertise', 'Actions','Pratice spider GAP statuses', 'Deliverable Spider gap statuses', 'Operational Alert', 'Next milestone', 'Workpackages', 'Project ID', 'QR-QWR Name'] do
+        for column in ['Supervisor', 'WS','Suite', 'Project', 'Workpackage', 'PM', 'BRN', 'Lifecycle', 'Old status', 'Current Status', 'Date', 'Status', 'Last change', 'Coaching/Expertise', 'Actions','Pratice spider GAP statuses', 'Deliverable Spider gap statuses', 'Operational Alert', 'Next milestone', 'Workpackages', 'Project ID', 'QR-QWR Name', 'On-Hold'] do
           @xml.Cell do
             @xml.Data column, 'ss:Type' => 'String'
             @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -314,6 +314,7 @@ end
           @xml.Cell { @xml.Data excel_text(p.get_workpackages_from_requests.join(',').to_s),         'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
           @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.id.to_s); end;     @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
           @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.get_qr_qwr_name.to_s); end;     @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+          @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.get_on_hold_status.to_s); end;     @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
 
           p.sorted_milestones.select{|m| m.is_virtual == false or m.to_export == true}.each do |sm|
             status, style, decision = p.get_status_for_milestone(sm)

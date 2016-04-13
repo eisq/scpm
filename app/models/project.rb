@@ -1145,6 +1145,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  #return on hold status (for the summary display)
+  def get_on_hold_status
+    if (self.is_on_hold)
+      return "YES"
+    else
+      return "NO"
+    end
+  end
+
   def create_sibling(project)
     self.name           = project.name
     self.description    = project.description

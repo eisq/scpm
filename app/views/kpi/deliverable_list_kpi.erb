@@ -33,16 +33,24 @@ end
   @xml.Worksheet 'ss:Name' => 'Deliverables list' do
     @xml.Table do
       # Columns width
-      @xml.Column 0, {'ss:Width' => 80}
-      @xml.Column 1, {'ss:Width' => 80}
-      @xml.Column 2, {'ss:Width' => 70}
-      @xml.Column 3, {'ss:Width' => 200}
-      @xml.Column 3, {'ss:Width' => 200}
-      @xml.Column 4, {'ss:Width' => 200}
-      @xml.Column 5, {'ss:Width' => 70}
+      @xml.Column 0, {'ss:Width' => 100}
+      @xml.Column 1, {'ss:Width' => 100}
+      @xml.Column 2, {'ss:Width' => 80}
+      @xml.Column 3, {'ss:Width' => 80}
+      @xml.Column 4, {'ss:Width' => 70}
+      @xml.Column 5, {'ss:Width' => 200}
+      @xml.Column 6, {'ss:Width' => 200}
+      @xml.Column 7, {'ss:Width' => 200}
+      @xml.Column 8, {'ss:Width' => 70}
 
       # Header
       @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+          @xml.Data "Project", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+          @xml.Data "Workpackage", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
         @xml.Cell 'ss:StyleID' => 'TitlePink' do
           @xml.Data "Lifecycle", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
@@ -69,6 +77,12 @@ end
       # Rows
       for setting in @settings
         @xml.Row do
+          @xml.Cell do
+            @xml.Data setting.project_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data setting.workpackage, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
           @xml.Cell do
             @xml.Data setting.lifecycle, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
