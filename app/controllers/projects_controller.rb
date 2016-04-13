@@ -947,7 +947,9 @@ class ProjectsController < ApplicationController
   def summary
     begin
       @xml = Builder::XmlMarkup.new(:indent => 1) #Builder::XmlMarkup.new(:target => $stdout, :indent => 1)
-      get_projects_without_on_hold
+      # Hide "on hold" projects
+      #get_projects_without_on_hold
+      get_projects
       saveWps = @wps
       @wps = @wps.sort_by { |w|
         [w.supervisor_name, w.workstream, w.project_name, w.name]
