@@ -79,7 +79,6 @@ class KpiController < ApplicationController
 
     def extract_om_adherence
 
-    	
     	@om = Array.new
 
     	#LOOP ON CONSOLIDATED SPIDERS GROUP BY SPIDER (UNIQUE PARSING)
@@ -179,7 +178,7 @@ class KpiController < ApplicationController
 	          @xml = Builder::XmlMarkup.new(:indent => 1)
 
 	          headers['Content-Type']         = "application/vnd.ms-excel"
-	          headers['Content-Disposition']  = 'attachment; filename="E-M&T_Ref_&_OM_adherence_KPI Data_Adherence.xls"'
+	          headers['Content-Disposition']  = 'attachment; filename="E-M&T_Ref_&_OM_adherence_KPI Data_Adherence_SVF.xls"'
 	          headers['Cache-Control']        = ''
 	          render "om_adherence.erb", :layout=>false
 	        rescue Exception => e
