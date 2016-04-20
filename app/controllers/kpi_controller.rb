@@ -215,37 +215,41 @@ class KpiController < ApplicationController
     		#LOOP ON VALUES
     		SvtDeviationSpiderValue.find(:all).each do |answer|
 
-    			#IF ANSWER/VALUE BELONG TO A CONSOLIDATED SPIDER
-    			if answer.svt_deviation_spider_deliverable.svt_deviation_spider_id == consolidated.svt_deviation_spider_id
+    			unless answer.svt_deviation_spider_deliverable.svt_deviation_spider.nil? || answer.svt_deviation_spider_deliverable.svt_deviation_spider == 0
 
-    				#MANUALLY GRAB EACH ACTIVITY
-    				if answer.svt_deviation_question.svt_deviation_activity_id == 26 # business_and_is_modelling
-    					business_and_is_modelling << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 37 # change_management
-    					change_management << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 31 # configuration_management
-    					configuration_management << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 38 # continuous_improvement
-    					continuous_improvement << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 29 # integration_v_and_v
-    					integration_v_and_v << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 32 # measurement_process_and_qm
-    					measurement_process_and_qm << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 23 # monitoring_and_control
-    					monitoring_and_control << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 34 # project_justification
-    					project_justification << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 21 # pp_scoping_and_structuring
-    					pp_scoping_and_structuring << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 35 # risk_and_opportunities_management
-    					risk_and_opportunities_management << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 30 # run_mode_preparation
-    					run_mode_preparation << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 28 # solution_definition
-    					solution_definition << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 24 # subcontracting_management
-    					subcontracting_management << (answer.answer ? 1 : 0)
-    				end
+	    			#IF ANSWER/VALUE BELONG TO A CONSOLIDATED SPIDER
+	    			if answer.svt_deviation_spider_deliverable.svt_deviation_spider_id == consolidated.svt_deviation_spider_id
+
+	    				#MANUALLY GRAB EACH ACTIVITY
+	    				if answer.svt_deviation_question.svt_deviation_activity_id == 26 # business_and_is_modelling
+	    					business_and_is_modelling << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 37 # change_management
+	    					change_management << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 31 # configuration_management
+	    					configuration_management << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 38 # continuous_improvement
+	    					continuous_improvement << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 29 # integration_v_and_v
+	    					integration_v_and_v << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 32 # measurement_process_and_qm
+	    					measurement_process_and_qm << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 23 # monitoring_and_control
+	    					monitoring_and_control << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 34 # project_justification
+	    					project_justification << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 21 # pp_scoping_and_structuring
+	    					pp_scoping_and_structuring << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 35 # risk_and_opportunities_management
+	    					risk_and_opportunities_management << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 30 # run_mode_preparation
+	    					run_mode_preparation << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 28 # solution_definition
+	    					solution_definition << (answer.answer ? 1 : 0)
+	    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 24 # subcontracting_management
+	    					subcontracting_management << (answer.answer ? 1 : 0)
+	    				end
+
+	    			end
 
     			end
 
