@@ -243,7 +243,7 @@ class KpiController < ApplicationController
     					run_mode_preparation << (answer.answer ? 1 : 0)
     				elsif answer.svt_deviation_question.svt_deviation_activity_id == 28 # solution_definition
     					solution_definition << (answer.answer ? 1 : 0)
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 40 # subcontracting_management
+    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 24 # subcontracting_management
     					subcontracting_management << (answer.answer ? 1 : 0)
     				end
 
