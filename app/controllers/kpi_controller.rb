@@ -83,7 +83,7 @@ class KpiController < ApplicationController
     	@om = Array.new
 
     	#LOOP ON CONSOLIDATED GROUP BY SPIDER
-    	SvtDeviationSpiderConsolidation.find(:all, :group => ["svt_deviation_spider_id"]).each do |consolidated|
+    	SvfDeviationSpiderConsolidation.find(:all, :group => ["svf_deviation_spider_id"]).each do |consolidated|
 
 			business_and_is_modelling = Array.new
 			change_management = Array.new
@@ -100,60 +100,60 @@ class KpiController < ApplicationController
 			subcontracting_management = Array.new
 
     		#LOOP ON VALUES
-    		SvtDeviationSpiderValue.find(:all).each do |answer|
+    		SvfDeviationSpiderValue.find(:all).each do |answer|
 
     			#IF VALUE BELONG TO CONSOLIDATED
-    			if answer.svt_deviation_spider_deliverable.svt_deviation_spider_id == consolidated.svt_deviation_spider_id
+    			if answer.svf_deviation_spider_deliverable.svf_deviation_spider_id == consolidated.svf_deviation_spider_id
 
-    				if answer.svt_deviation_question.svt_deviation_activity_id == 26 # business_and_is_modelling
+    				if answer.svf_deviation_question.svf_deviation_activity_id == 26 # business_and_is_modelling
 
     					business_and_is_modelling << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 37 # change_management
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 37 # change_management
 
     					change_management << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 31 # configuration_management
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 31 # configuration_management
 
     					configuration_management << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 38 # continuous_improvement
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 38 # continuous_improvement
 
     					continuous_improvement << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 29 # integration_v_and_v
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 29 # integration_v_and_v
 
     					integration_v_and_v << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 32 # measurement_process_and_qm
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 32 # measurement_process_and_qm
 
     					measurement_process_and_qm << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 23 # monitoring_and_control
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 23 # monitoring_and_control
 
     					monitoring_and_control << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 34 # project_justification
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 34 # project_justification
 
     					project_justification << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 21 # pp_scoping_and_structuring
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 21 # pp_scoping_and_structuring
 
     					pp_scoping_and_structuring << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 35 # risk_and_opportunities_management
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 35 # risk_and_opportunities_management
 
     					risk_and_opportunities_management << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 30 # run_mode_preparation
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 30 # run_mode_preparation
 
     					run_mode_preparation << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 28 # solution_definition
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 28 # solution_definition
 
     					solution_definition << (answer.answer ? 1 : 0)
 
-    				elsif answer.svt_deviation_question.svt_deviation_activity_id == 40 # subcontracting_management
+    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 40 # subcontracting_management
 
     					subcontracting_management << (answer.answer ? 1 : 0)
 
@@ -165,17 +165,17 @@ class KpiController < ApplicationController
 
 			om_info = OM_info.new
 
-			om_info.dws = consolidated.svt_deviation_spider.project.workstream
-			if consolidated.svt_deviation_spider.project.suite_tag
-				om_info.suite = consolidated.svt_deviation_spider.project.suite_tag.name
+			om_info.dws = consolidated.svf_deviation_spider.project.workstream
+			if consolidated.svf_deviation_spider.project.suite_tag
+				om_info.suite = consolidated.svf_deviation_spider.project.suite_tag.name
 			else
 				om_info.suite = ""
 			end
 
-			om_info.lifecycle = consolidated.svt_deviation_spider.project.lifecycle_object.name
-			om_info.project_name = consolidated.svt_deviation_spider.project.project_name
-			om_info.workpackage = consolidated.svt_deviation_spider.project.full_wp_name
-			om_info.milestone = consolidated.svt_deviation_spider.milestone.name
+			om_info.lifecycle = consolidated.svf_deviation_spider.project.lifecycle_object.name
+			om_info.project_name = consolidated.svf_deviation_spider.project.project_name
+			om_info.workpackage = consolidated.svf_deviation_spider.project.full_wp_name
+			om_info.milestone = consolidated.svf_deviation_spider.milestone.name
 
 			om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? (business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size).round(2) : ""
 			om_info.change_management = !change_management.empty? ? (change_management.inject{ |sum, el| sum + el }.to_f / change_management.size).round(2) : ""
@@ -195,108 +195,6 @@ class KpiController < ApplicationController
 
 		end
 
-  #   	@om = Array.new
-
-  #   	SvtDeviationSpiderValue.find(:all).each do |answer|
-
-  #   		unless answer.svt_deviation_spider_deliverable.svt_deviation_spider.nil? || answer.svt_deviation_spider_deliverable.svt_deviation_spider == 0
-	    	
-	 #    		value = OM_info.new
-
-	 #    		value.dws = answer.svt_deviation_spider_deliverable.svt_deviation_spider.project.workstream
-
-	 #    		if answer.svt_deviation_spider_deliverable.svt_deviation_spider.project.suite_tag
-		#  			value.suite = answer.svt_deviation_spider_deliverable.svt_deviation_spider.project.suite_tag.name
-		# 	 	else
-		# 	 		value.suite = ""
-		# 	 	end
-	    		
-	 #    		value.lifecycle = answer.svt_deviation_spider_deliverable.svt_deviation_spider.project.lifecycle_object.name
-	 #    		value.project_name = answer.svt_deviation_spider_deliverable.svt_deviation_spider.project.project_name
-		# 	 	value.workpackage = answer.svt_deviation_spider_deliverable.svt_deviation_spider.project.full_wp_name
-	 #    		value.milestone = answer.svt_deviation_spider_deliverable.svt_deviation_spider.milestone.name
-	    		
-	 #    		#value.activity = answer.svt_deviation_question.svt_deviation_activity.name
-	 #    		#value.answer = answer.answer
-
-	 #    		value = answer.svt_deviation_question.svt_deviation_activity.name
-	    		
-	 #    		@om << value
-
-		# 	end
-
-		# end
-
-		#raise @values.inspect
-
-		#@om = Array.new
-		# SvtDeviationSpiderConsolidation.find(:all, :conditions => ["svt_deviation_activity_id != 0", "svt_deviation_activity_id != 0"]).each do |deviation_spider|
-			
-		# 	om_info = OM_info.new
-
-		# 	om_info.dws = deviation_spider.svt_deviation_spider.project.workstream
-		# 	if deviation_spider.svt_deviation_spider.project.suite_tag
-		# 		om_info.suite = deviation_spider.svt_deviation_spider.project.suite_tag.name
-		# 	else
-		# 		om_info.suite = ""
-		# 	end
-
-		# 	om_info.lifecycle = deviation_spider.svt_deviation_spider.project.lifecycle_object.name
-		# 	om_info.project_name = deviation_spider.svt_deviation_spider.project.project_name
-		# 	om_info.workpackage = deviation_spider.svt_deviation_spider.project.full_wp_name
-		# 	om_info.milestone = deviation_spider.svt_deviation_spider.milestone.name
-
-		# 	om_info.business_and_is_modelling = deviation_spider.svt_deviation_activity.name
-			
-		# 	@om << om_info
-
-		#end
-
-		
-		#raise @om.inspect
-
-
-#		SvtDeviationSpiderSetting.find(:all).each do |spider|
-#			om_info = OM_info.new
-#
-#			om_info.dws = spider.svt_deviation_spider_reference.project.workstream
-#			if spider.svt_deviation_spider_reference.project.suite_tag
-#				om_info.suite = spider.svt_deviation_spider_reference.project.suite_tag.name
-#			else
-#				om_info.suite = ""
-#			end
-#			om_info.lifecycle = spider.svt_deviation_spider_reference.project.lifecycle_object.name
-#			om_info.project_name = spider.svt_deviation_spider_reference.project.project_name
-#			om_info.workpackage = spider.svt_deviation_spider_reference.project.full_wp_name
-#			om_info.milestone = ""
-#			om_info.business_and_is_modelling = ""
-#			om_info.change_management = ""
-#			om_info.configuration_management = ""
-#			om_info.continuous_improvement = ""
-#			om_info.integration_v_and_v = ""
-#			om_info.measurement_process_and_qm = ""
-#			om_info.monitoring_and_control = ""
-#			om_info.project_justification = ""
-#			om_info.pp_scoping_and_structuring = ""
-#			om_info.risk_and_opportunities_management = ""
-#			om_info.run_mode_preparation = ""
-#			om_info.solution_definition = ""
-#			om_info.subcontracting_management = ""
-#			om_info.risks_management = ""
-#			om_info.planning = ""
-#			om_info.organisation = ""
-#			om_info.project_configuration = ""
-#			om_info.needs_management = ""
-#			om_info.tests_managements = ""
-#			om_info.product_configuration = ""
-#			om_info.technical = ""
-#			om_info.architecture = ""
-#			om_info.integration = ""
-#			om_info.alert = ""
-#
-#			@om << om_info
-#		end
-
 		if @om.count > 0
 	        begin
 	          @xml = Builder::XmlMarkup.new(:indent => 1)
@@ -308,6 +206,8 @@ class KpiController < ApplicationController
 	        rescue Exception => e
 	          render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
 	        end
+        else
+        	render(:text=>"<b>Error</b><br>No SVF spiders consolidated yet.")
 	    end
 
 	end
