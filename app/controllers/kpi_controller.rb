@@ -101,75 +101,79 @@ class KpiController < ApplicationController
 
     		#LOOP ON VALUES
     		SvfDeviationSpiderValue.find(:all).each do |answer|
+    			#PROJECT EXISTS
+    			unless answer.svt_deviation_spider_deliverable.svt_deviation_spider.nil? || answer.svt_deviation_spider_deliverable.svt_deviation_spider == 0
 
-    			#IF ANSWER/VALUE BELONG TO A CONSOLIDATED SPIDER
-    			if answer.svf_deviation_spider_deliverable.svf_deviation_spider_id == consolidated.svf_deviation_spider_id
+	    			#IF ANSWER/VALUE BELONG TO A CONSOLIDATED SPIDER
+	    			if answer.svf_deviation_spider_deliverable.svf_deviation_spider_id == consolidated.svf_deviation_spider_id
 
-    				#MANUALLY GRAB EACH ACTIVITY
-    				if answer.svf_deviation_question.svf_deviation_activity_id == 26 # business_and_is_modelling
-    					business_and_is_modelling << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 37 # change_management
-    					change_management << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 31 # configuration_management
-    					configuration_management << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 38 # continuous_improvement
-    					continuous_improvement << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 29 # integration_v_and_v
-    					integration_v_and_v << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 32 # measurement_process_and_qm
-    					measurement_process_and_qm << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 23 # monitoring_and_control
-    					monitoring_and_control << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 34 # project_justification
-    					project_justification << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 21 # pp_scoping_and_structuring
-    					pp_scoping_and_structuring << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 35 # risk_and_opportunities_management
-    					risk_and_opportunities_management << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 30 # run_mode_preparation
-    					run_mode_preparation << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 28 # solution_definition
-    					solution_definition << (answer.answer ? 1 : 0)
-    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 40 # subcontracting_management
-    					subcontracting_management << (answer.answer ? 1 : 0)
-    				end
+	    				#MANUALLY GRAB EACH ACTIVITY
+	    				if answer.svf_deviation_question.svf_deviation_activity_id == 26 # business_and_is_modelling
+	    					business_and_is_modelling << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 37 # change_management
+	    					change_management << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 31 # configuration_management
+	    					configuration_management << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 38 # continuous_improvement
+	    					continuous_improvement << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 29 # integration_v_and_v
+	    					integration_v_and_v << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 32 # measurement_process_and_qm
+	    					measurement_process_and_qm << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 23 # monitoring_and_control
+	    					monitoring_and_control << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 34 # project_justification
+	    					project_justification << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 21 # pp_scoping_and_structuring
+	    					pp_scoping_and_structuring << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 35 # risk_and_opportunities_management
+	    					risk_and_opportunities_management << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 30 # run_mode_preparation
+	    					run_mode_preparation << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 28 # solution_definition
+	    					solution_definition << (answer.answer ? 1 : 0)
+	    				elsif answer.svf_deviation_question.svf_deviation_activity_id == 40 # subcontracting_management
+	    					subcontracting_management << (answer.answer ? 1 : 0)
+	    				end
 
-    			end
+	    			end
+
+				end
+
+				om_info = OM_info.new
+
+				#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
+				om_info.dws = consolidated.svf_deviation_spider.project.workstream
+				if consolidated.svf_deviation_spider.project.suite_tag
+					om_info.suite = consolidated.svf_deviation_spider.project.suite_tag.name
+				else
+					om_info.suite = ""
+				end
+
+				#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
+				om_info.lifecycle = consolidated.svf_deviation_spider.project.lifecycle_object.name
+				om_info.project_name = consolidated.svf_deviation_spider.project.project_name
+				om_info.workpackage = consolidated.svf_deviation_spider.project.full_wp_name
+				om_info.milestone = consolidated.svf_deviation_spider.milestone.name
+
+				#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
+				om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? (business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size).round(2) : ""
+				om_info.change_management = !change_management.empty? ? (change_management.inject{ |sum, el| sum + el }.to_f / change_management.size).round(2) : ""
+				om_info.configuration_management = !configuration_management.empty? ? (configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size).round(2) : ""
+				om_info.continuous_improvement = !continuous_improvement.empty? ? (continuous_improvement.inject{ |sum, el| sum + el }.to_f / continuous_improvement.size).round(2) : ""
+				om_info.integration_v_and_v = !integration_v_and_v.empty? ? (integration_v_and_v.inject{ |sum, el| sum + el }.to_f / integration_v_and_v.size).round(2) : ""
+				om_info.measurement_process_and_qm = !measurement_process_and_qm.empty? ? (measurement_process_and_qm.inject{ |sum, el| sum + el }.to_f / measurement_process_and_qm.size).round(2) : ""
+				om_info.monitoring_and_control = !monitoring_and_control.empty? ? (monitoring_and_control.inject{ |sum, el| sum + el }.to_f / monitoring_and_control.size).round(2) : ""
+				om_info.project_justification = !project_justification.empty? ? (project_justification.inject{ |sum, el| sum + el }.to_f / project_justification.size).round(2) : ""
+				om_info.pp_scoping_and_structuring = !pp_scoping_and_structuring.empty? ? (pp_scoping_and_structuring.inject{ |sum, el| sum + el }.to_f / pp_scoping_and_structuring.size).round(2) : ""
+				om_info.risk_and_opportunities_management = !risk_and_opportunities_management.empty? ? (risk_and_opportunities_management.inject{ |sum, el| sum + el }.to_f / risk_and_opportunities_management.size).round(2) : ""
+				om_info.run_mode_preparation = !run_mode_preparation.empty? ? (run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size).round(2) : ""
+				om_info.solution_definition = !solution_definition.empty? ? (solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size).round(2) : ""
+				om_info.subcontracting_management = !subcontracting_management.empty? ? (subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size).round(2) : ""
+				
+				@om << om_info
 
 			end
-
-			om_info = OM_info.new
-
-			#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
-			om_info.dws = consolidated.svf_deviation_spider.project.workstream
-			if consolidated.svf_deviation_spider.project.suite_tag
-				om_info.suite = consolidated.svf_deviation_spider.project.suite_tag.name
-			else
-				om_info.suite = ""
-			end
-
-			#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
-			om_info.lifecycle = consolidated.svf_deviation_spider.project.lifecycle_object.name
-			om_info.project_name = consolidated.svf_deviation_spider.project.project_name
-			om_info.workpackage = consolidated.svf_deviation_spider.project.full_wp_name
-			om_info.milestone = consolidated.svf_deviation_spider.milestone.name
-
-			#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
-			om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? (business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size).round(2) : ""
-			om_info.change_management = !change_management.empty? ? (change_management.inject{ |sum, el| sum + el }.to_f / change_management.size).round(2) : ""
-			om_info.configuration_management = !configuration_management.empty? ? (configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size).round(2) : ""
-			om_info.continuous_improvement = !continuous_improvement.empty? ? (continuous_improvement.inject{ |sum, el| sum + el }.to_f / continuous_improvement.size).round(2) : ""
-			om_info.integration_v_and_v = !integration_v_and_v.empty? ? (integration_v_and_v.inject{ |sum, el| sum + el }.to_f / integration_v_and_v.size).round(2) : ""
-			om_info.measurement_process_and_qm = !measurement_process_and_qm.empty? ? (measurement_process_and_qm.inject{ |sum, el| sum + el }.to_f / measurement_process_and_qm.size).round(2) : ""
-			om_info.monitoring_and_control = !monitoring_and_control.empty? ? (monitoring_and_control.inject{ |sum, el| sum + el }.to_f / monitoring_and_control.size).round(2) : ""
-			om_info.project_justification = !project_justification.empty? ? (project_justification.inject{ |sum, el| sum + el }.to_f / project_justification.size).round(2) : ""
-			om_info.pp_scoping_and_structuring = !pp_scoping_and_structuring.empty? ? (pp_scoping_and_structuring.inject{ |sum, el| sum + el }.to_f / pp_scoping_and_structuring.size).round(2) : ""
-			om_info.risk_and_opportunities_management = !risk_and_opportunities_management.empty? ? (risk_and_opportunities_management.inject{ |sum, el| sum + el }.to_f / risk_and_opportunities_management.size).round(2) : ""
-			om_info.run_mode_preparation = !run_mode_preparation.empty? ? (run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size).round(2) : ""
-			om_info.solution_definition = !solution_definition.empty? ? (solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size).round(2) : ""
-			om_info.subcontracting_management = !subcontracting_management.empty? ? (subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size).round(2) : ""
-			
-			@om << om_info
 
 		end
 
@@ -215,6 +219,7 @@ class KpiController < ApplicationController
     		#LOOP ON VALUES
     		SvtDeviationSpiderValue.find(:all).each do |answer|
 
+    			#PROJECT EXISTS
     			unless answer.svt_deviation_spider_deliverable.svt_deviation_spider.nil? || answer.svt_deviation_spider_deliverable.svt_deviation_spider == 0
 
 	    			#IF ANSWER/VALUE BELONG TO A CONSOLIDATED SPIDER
@@ -253,40 +258,40 @@ class KpiController < ApplicationController
 
     			end
 
+				om_info = OM_info.new
+
+				#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
+				om_info.dws = consolidated.svt_deviation_spider.project.workstream
+				if consolidated.svt_deviation_spider.project.suite_tag
+					om_info.suite = consolidated.svt_deviation_spider.project.suite_tag.name
+				else
+					om_info.suite = ""
+				end
+
+				#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
+				om_info.lifecycle = consolidated.svt_deviation_spider.project.lifecycle_object.name
+				om_info.project_name = consolidated.svt_deviation_spider.project.project_name
+				om_info.workpackage = consolidated.svt_deviation_spider.project.full_wp_name
+				om_info.milestone = consolidated.svt_deviation_spider.milestone.name
+
+				#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
+				om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? (business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size).round(2) : ""
+				om_info.change_management = !change_management.empty? ? (change_management.inject{ |sum, el| sum + el }.to_f / change_management.size).round(2) : ""
+				om_info.configuration_management = !configuration_management.empty? ? (configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size).round(2) : ""
+				om_info.continuous_improvement = !continuous_improvement.empty? ? (continuous_improvement.inject{ |sum, el| sum + el }.to_f / continuous_improvement.size).round(2) : ""
+				om_info.integration_v_and_v = !integration_v_and_v.empty? ? (integration_v_and_v.inject{ |sum, el| sum + el }.to_f / integration_v_and_v.size).round(2) : ""
+				om_info.measurement_process_and_qm = !measurement_process_and_qm.empty? ? (measurement_process_and_qm.inject{ |sum, el| sum + el }.to_f / measurement_process_and_qm.size).round(2) : ""
+				om_info.monitoring_and_control = !monitoring_and_control.empty? ? (monitoring_and_control.inject{ |sum, el| sum + el }.to_f / monitoring_and_control.size).round(2) : ""
+				om_info.project_justification = !project_justification.empty? ? (project_justification.inject{ |sum, el| sum + el }.to_f / project_justification.size).round(2) : ""
+				om_info.pp_scoping_and_structuring = !pp_scoping_and_structuring.empty? ? (pp_scoping_and_structuring.inject{ |sum, el| sum + el }.to_f / pp_scoping_and_structuring.size).round(2) : ""
+				om_info.risk_and_opportunities_management = !risk_and_opportunities_management.empty? ? (risk_and_opportunities_management.inject{ |sum, el| sum + el }.to_f / risk_and_opportunities_management.size).round(2) : ""
+				om_info.run_mode_preparation = !run_mode_preparation.empty? ? (run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size).round(2) : ""
+				om_info.solution_definition = !solution_definition.empty? ? (solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size).round(2) : ""
+				om_info.subcontracting_management = !subcontracting_management.empty? ? (subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size).round(2) : ""
+				
+				@om << om_info
+
 			end
-
-			om_info = OM_info.new
-
-			#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
-			om_info.dws = consolidated.svt_deviation_spider.project.workstream
-			if consolidated.svt_deviation_spider.project.suite_tag
-				om_info.suite = consolidated.svt_deviation_spider.project.suite_tag.name
-			else
-				om_info.suite = ""
-			end
-
-			#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
-			om_info.lifecycle = consolidated.svt_deviation_spider.project.lifecycle_object.name
-			om_info.project_name = consolidated.svt_deviation_spider.project.project_name
-			om_info.workpackage = consolidated.svt_deviation_spider.project.full_wp_name
-			om_info.milestone = consolidated.svt_deviation_spider.milestone.name
-
-			#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
-			om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? (business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size).round(2) : ""
-			om_info.change_management = !change_management.empty? ? (change_management.inject{ |sum, el| sum + el }.to_f / change_management.size).round(2) : ""
-			om_info.configuration_management = !configuration_management.empty? ? (configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size).round(2) : ""
-			om_info.continuous_improvement = !continuous_improvement.empty? ? (continuous_improvement.inject{ |sum, el| sum + el }.to_f / continuous_improvement.size).round(2) : ""
-			om_info.integration_v_and_v = !integration_v_and_v.empty? ? (integration_v_and_v.inject{ |sum, el| sum + el }.to_f / integration_v_and_v.size).round(2) : ""
-			om_info.measurement_process_and_qm = !measurement_process_and_qm.empty? ? (measurement_process_and_qm.inject{ |sum, el| sum + el }.to_f / measurement_process_and_qm.size).round(2) : ""
-			om_info.monitoring_and_control = !monitoring_and_control.empty? ? (monitoring_and_control.inject{ |sum, el| sum + el }.to_f / monitoring_and_control.size).round(2) : ""
-			om_info.project_justification = !project_justification.empty? ? (project_justification.inject{ |sum, el| sum + el }.to_f / project_justification.size).round(2) : ""
-			om_info.pp_scoping_and_structuring = !pp_scoping_and_structuring.empty? ? (pp_scoping_and_structuring.inject{ |sum, el| sum + el }.to_f / pp_scoping_and_structuring.size).round(2) : ""
-			om_info.risk_and_opportunities_management = !risk_and_opportunities_management.empty? ? (risk_and_opportunities_management.inject{ |sum, el| sum + el }.to_f / risk_and_opportunities_management.size).round(2) : ""
-			om_info.run_mode_preparation = !run_mode_preparation.empty? ? (run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size).round(2) : ""
-			om_info.solution_definition = !solution_definition.empty? ? (solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size).round(2) : ""
-			om_info.subcontracting_management = !subcontracting_management.empty? ? (subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size).round(2) : ""
-			
-			@om << om_info
 
 		end
 
