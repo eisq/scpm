@@ -82,9 +82,10 @@ class KpiController < ApplicationController
     	
     	@om = Array.new
 
-    	#LOOP ON CONSOLIDATED GROUP BY SPIDER
+    	#LOOP ON CONSOLIDATED SPIDERS GROUP BY SPIDER (UNIQUE PARSING)
     	SvfDeviationSpiderConsolidation.find(:all, :group => ["svf_deviation_spider_id"]).each do |consolidated|
 
+    		#DECLARING ARRAYS TO STORE VALUES
 			business_and_is_modelling = Array.new
 			change_management = Array.new
 			configuration_management = Array.new
@@ -102,61 +103,36 @@ class KpiController < ApplicationController
     		#LOOP ON VALUES
     		SvfDeviationSpiderValue.find(:all).each do |answer|
 
-    			#IF VALUE BELONG TO CONSOLIDATED
+    			#IF ANSWER/VALUE BELONG TO A CONSOLIDATED SPIDER
     			if answer.svf_deviation_spider_deliverable.svf_deviation_spider_id == consolidated.svf_deviation_spider_id
 
+    				#MANUALLY GRAB EACH ACTIVITY
     				if answer.svf_deviation_question.svf_deviation_activity_id == 26 # business_and_is_modelling
-
     					business_and_is_modelling << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 37 # change_management
-
     					change_management << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 31 # configuration_management
-
     					configuration_management << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 38 # continuous_improvement
-
     					continuous_improvement << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 29 # integration_v_and_v
-
     					integration_v_and_v << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 32 # measurement_process_and_qm
-
     					measurement_process_and_qm << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 23 # monitoring_and_control
-
     					monitoring_and_control << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 34 # project_justification
-
     					project_justification << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 21 # pp_scoping_and_structuring
-
     					pp_scoping_and_structuring << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 35 # risk_and_opportunities_management
-
     					risk_and_opportunities_management << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 30 # run_mode_preparation
-
     					run_mode_preparation << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 28 # solution_definition
-
     					solution_definition << (answer.answer ? 1 : 0)
-
     				elsif answer.svf_deviation_question.svf_deviation_activity_id == 40 # subcontracting_management
-
     					subcontracting_management << (answer.answer ? 1 : 0)
-
     				end
 
     			end
@@ -165,6 +141,7 @@ class KpiController < ApplicationController
 
 			om_info = OM_info.new
 
+			#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
 			om_info.dws = consolidated.svf_deviation_spider.project.workstream
 			if consolidated.svf_deviation_spider.project.suite_tag
 				om_info.suite = consolidated.svf_deviation_spider.project.suite_tag.name
@@ -172,11 +149,13 @@ class KpiController < ApplicationController
 				om_info.suite = ""
 			end
 
+			#FOR EACH DATA, GET VALUE FROM CONSOLIDATED SPIDER
 			om_info.lifecycle = consolidated.svf_deviation_spider.project.lifecycle_object.name
 			om_info.project_name = consolidated.svf_deviation_spider.project.project_name
 			om_info.workpackage = consolidated.svf_deviation_spider.project.full_wp_name
 			om_info.milestone = consolidated.svf_deviation_spider.milestone.name
 
+			#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
 			om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? (business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size).round(2) : ""
 			om_info.change_management = !change_management.empty? ? (change_management.inject{ |sum, el| sum + el }.to_f / change_management.size).round(2) : ""
 			om_info.configuration_management = !configuration_management.empty? ? (configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size).round(2) : ""
