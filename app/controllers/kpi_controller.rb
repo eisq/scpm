@@ -77,7 +77,7 @@ class KpiController < ApplicationController
 
 	end
 
-    def extract_om_adherence
+    def extract_om_adherence_SVF
 
     	@om = Array.new
 
