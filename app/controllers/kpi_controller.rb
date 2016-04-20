@@ -102,7 +102,7 @@ class KpiController < ApplicationController
     		#LOOP ON VALUES
     		SvfDeviationSpiderValue.find(:all).each do |answer|
     			#PROJECT EXISTS
-    			unless answer.svt_deviation_spider_deliverable.svt_deviation_spider.nil? || answer.svt_deviation_spider_deliverable.svt_deviation_spider == 0
+    			unless answer.svf_deviation_spider_deliverable.svf_deviation_spider.nil? || answer.svf_deviation_spider_deliverable.svf_deviation_spider == 0
 
 	    			#IF ANSWER/VALUE BELONG TO A CONSOLIDATED SPIDER
 	    			if answer.svf_deviation_spider_deliverable.svf_deviation_spider_id == consolidated.svf_deviation_spider_id
