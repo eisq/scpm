@@ -251,7 +251,7 @@ class KpiController < ApplicationController
 
 			end
 
-			unless consolidated.svt_deviation_spider.nil? || consolidated.svt_deviation_spider == 0
+			unless consolidated.svt_deviation_spider.project.nil? || consolidated.svt_deviation_spider.project == 0
 
 				om_info = OM_info.new
 
