@@ -640,8 +640,15 @@ class Project < ActiveRecord::Base
   end
 
   def get_status_for_milestone(milestone)
-    status, style, decision = '',{}
+    qs, status, style, decision = '', '', {}
     if milestone
+      current_quality_status = milestone.current_quality_status
+
+      qs = ''
+      unless current_quality_status.nil?
+        qs = '$' + current_quality_status + '$ '
+      end
+
       status += milestone.name + ': '+milestone.comments.split("\n").join("\r\n")
       status += "\r\n" + milestone.date.to_s if milestone.date
       status += "\r\n"
@@ -663,7 +670,7 @@ class Project < ActiveRecord::Base
       end
 
     end
-    [status,style,decision]
+    [qs,status,style,decision]
   end
 
   # names is a array of names mutually exclusive (if we found M5 we should not be able to found a G5)

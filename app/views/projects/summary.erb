@@ -317,10 +317,10 @@ end
           @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.get_on_hold_status.to_s); end;     @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
 
           p.sorted_milestones.select{|m| m.is_virtual == false or m.to_export == true}.each do |sm|
-            status, style, decision = p.get_status_for_milestone(sm)
+            qs, status, style, decision = p.get_status_for_milestone(sm)
             @xml.Cell(style) do
               @xml.Data('ss:Type' => 'String') do
-                @xml << excel_text(decision + status)
+                @xml << excel_text(qs + decision + status)
               end
             @xml.NamedCell 'ss:Name' => 'FilterDatabase'
             end
