@@ -33,19 +33,25 @@ class KpiController < ApplicationController
 		#end
 
 		SvtDeviationSpiderSetting.find(:all).each do |setting|
-			setting_info = Setting_info.new
-			setting_info.project_name = setting.svt_deviation_spider_reference.project.project_name
-			setting_info.workpackage = setting.svt_deviation_spider_reference.project.full_wp_name
-			setting_info.lifecycle = setting.svt_deviation_spider_reference.project.lifecycle_object.name
-			setting_info.workstream = setting.svt_deviation_spider_reference.project.workstream
-			if setting.svt_deviation_spider_reference.project.suite_tag
-				setting_info.plm = setting.svt_deviation_spider_reference.project.suite_tag.name
+			
+			unless setting.svt_deviation_spider_reference.project.project.nil? || setting.svt_deviation_spider_reference.project == 0
+			
+				setting_info = Setting_info.new
+				setting_info.project_name = setting.svt_deviation_spider_reference.project.project_name
+				setting_info.workpackage = setting.svt_deviation_spider_reference.project.full_wp_name
+				setting_info.lifecycle = setting.svt_deviation_spider_reference.project.lifecycle_object.name
+				setting_info.workstream = setting.svt_deviation_spider_reference.project.workstream
+				if setting.svt_deviation_spider_reference.project.suite_tag
+					setting_info.plm = setting.svt_deviation_spider_reference.project.suite_tag.name
+				end
+				setting_info.activity_name = setting.activity_name
+				setting_info.macro_activity_name = setting.macro_activity_name
+				setting_info.deliverable_name = setting.deliverable_name
+				setting_info.plan_to_do = setting.answer_1
+				@settings << setting_info
+			
 			end
-			setting_info.activity_name = setting.activity_name
-			setting_info.macro_activity_name = setting.macro_activity_name
-			setting_info.deliverable_name = setting.deliverable_name
-			setting_info.plan_to_do = setting.answer_1
-			@settings << setting_info
+			
 		end
 
 		#SvfDeviationSpiderSetting.find(:all).each do |setting|
