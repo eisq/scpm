@@ -34,7 +34,7 @@ class KpiController < ApplicationController
 
 		SvtDeviationSpiderSetting.find(:all).each do |setting|
 			
-			unless setting.svt_deviation_spider_reference.project.project.nil? || setting.svt_deviation_spider_reference.project == 0
+			unless setting.svt_deviation_spider_reference.project.nil? || setting.svt_deviation_spider_reference.project == 0
 			
 				setting_info = Setting_info.new
 				setting_info.project_name = setting.svt_deviation_spider_reference.project.project_name
