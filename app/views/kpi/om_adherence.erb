@@ -27,9 +27,9 @@ end
   @xml.Worksheet 'ss:Name' => 'Deliverables list' do
     @xml.Table do
       # Columns width
-      @xml.Column 0, {'ss:Width' => 50} # DWS
+      @xml.Column 0, {'ss:Width' => 80} # DWS
       @xml.Column 1, {'ss:Width' => 80} # Suite
-      @xml.Column 2, {'ss:Width' => 80} # Lifecycle
+      @xml.Column 2, {'ss:Width' => 50} # Lifecycle
       @xml.Column 3, {'ss:Width' => 200} # PN
       @xml.Column 4, {'ss:Width' => 200} # WP
       @xml.Column 5, {'ss:Width' => 50} # MS
@@ -62,13 +62,13 @@ end
       # Header
       @xml.Row do
         @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Lifecycle", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
           @xml.Data "DWS", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitleBlack' do
           @xml.Data "Suite", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
-          @xml.Data "Lifecycle", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitleBlack' do
           @xml.Data "Project Name", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -157,13 +157,13 @@ end
       for data in @om
         @xml.Row do
           @xml.Cell do
+            @xml.Data data.lifecycle, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
             @xml.Data data.dws, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data data.suite, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-          end
-          @xml.Cell do
-            @xml.Data data.lifecycle, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data data.project_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
