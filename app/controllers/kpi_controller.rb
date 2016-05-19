@@ -178,19 +178,19 @@ class KpiController < ApplicationController
 				om_info.milestone = consolidated.svf_deviation_spider.milestone.name
 
 				#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
-				om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? (business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size).round(2) : ""
-				om_info.change_management = !change_management.empty? ? (change_management.inject{ |sum, el| sum + el }.to_f / change_management.size).round(2) : ""
-				om_info.configuration_management = !configuration_management.empty? ? (configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size).round(2) : ""
-				om_info.continuous_improvement = !continuous_improvement.empty? ? (continuous_improvement.inject{ |sum, el| sum + el }.to_f / continuous_improvement.size).round(2) : ""
-				om_info.integration_v_and_v = !integration_v_and_v.empty? ? (integration_v_and_v.inject{ |sum, el| sum + el }.to_f / integration_v_and_v.size).round(2) : ""
-				om_info.measurement_process_and_qm = !measurement_process_and_qm.empty? ? (measurement_process_and_qm.inject{ |sum, el| sum + el }.to_f / measurement_process_and_qm.size).round(2) : ""
-				om_info.monitoring_and_control = !monitoring_and_control.empty? ? (monitoring_and_control.inject{ |sum, el| sum + el }.to_f / monitoring_and_control.size).round(2) : ""
-				om_info.project_justification = !project_justification.empty? ? (project_justification.inject{ |sum, el| sum + el }.to_f / project_justification.size).round(2) : ""
-				om_info.pp_scoping_and_structuring = !pp_scoping_and_structuring.empty? ? (pp_scoping_and_structuring.inject{ |sum, el| sum + el }.to_f / pp_scoping_and_structuring.size).round(2) : ""
-				om_info.risk_and_opportunities_management = !risk_and_opportunities_management.empty? ? (risk_and_opportunities_management.inject{ |sum, el| sum + el }.to_f / risk_and_opportunities_management.size).round(2) : ""
-				om_info.run_mode_preparation = !run_mode_preparation.empty? ? (run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size).round(2) : ""
-				om_info.solution_definition = !solution_definition.empty? ? (solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size).round(2) : ""
-				om_info.subcontracting_management = !subcontracting_management.empty? ? (subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size).round(2) : ""
+				om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? ((business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size) * 100).round(2) : ""
+				om_info.change_management = !change_management.empty? ? ((change_management.inject{ |sum, el| sum + el }.to_f / change_management.size) * 100).round(2) : ""
+				om_info.configuration_management = !configuration_management.empty? ? ((configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size) * 100).round(2) : ""
+				om_info.continuous_improvement = !continuous_improvement.empty? ? ((continuous_improvement.inject{ |sum, el| sum + el }.to_f / continuous_improvement.size) * 100).round(2) : ""
+				om_info.integration_v_and_v = !integration_v_and_v.empty? ? ((integration_v_and_v.inject{ |sum, el| sum + el }.to_f / integration_v_and_v.size) * 100).round(2) : ""
+				om_info.measurement_process_and_qm = !measurement_process_and_qm.empty? ? ((measurement_process_and_qm.inject{ |sum, el| sum + el }.to_f / measurement_process_and_qm.size) * 100).round(2) : ""
+				om_info.monitoring_and_control = !monitoring_and_control.empty? ? ((monitoring_and_control.inject{ |sum, el| sum + el }.to_f / monitoring_and_control.size) * 100).round(2) : ""
+				om_info.project_justification = !project_justification.empty? ? ((project_justification.inject{ |sum, el| sum + el }.to_f / project_justification.size) * 100).round(2) : ""
+				om_info.pp_scoping_and_structuring = !pp_scoping_and_structuring.empty? ? ((pp_scoping_and_structuring.inject{ |sum, el| sum + el }.to_f / pp_scoping_and_structuring.size) * 100).round(2) : ""
+				om_info.risk_and_opportunities_management = !risk_and_opportunities_management.empty? ? ((risk_and_opportunities_management.inject{ |sum, el| sum + el }.to_f / risk_and_opportunities_management.size) * 100).round(2) : ""
+				om_info.run_mode_preparation = !run_mode_preparation.empty? ? ((run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size) * 100).round(2) : ""
+				om_info.solution_definition = !solution_definition.empty? ? ((solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size) * 100).round(2) : ""
+				om_info.subcontracting_management = !subcontracting_management.empty? ? ((subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size) * 100).round(2) : ""
 				
 				@om << om_info
 
@@ -295,19 +295,19 @@ class KpiController < ApplicationController
 				om_info.milestone = consolidated.svt_deviation_spider.milestone.name
 
 				#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
-				om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? (business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size).round(2) : ""
-				om_info.change_management = !change_management.empty? ? (change_management.inject{ |sum, el| sum + el }.to_f / change_management.size).round(2) : ""
-				om_info.configuration_management = !configuration_management.empty? ? (configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size).round(2) : ""
-				om_info.continuous_improvement = !continuous_improvement.empty? ? (continuous_improvement.inject{ |sum, el| sum + el }.to_f / continuous_improvement.size).round(2) : ""
-				om_info.integration_v_and_v = !integration_v_and_v.empty? ? (integration_v_and_v.inject{ |sum, el| sum + el }.to_f / integration_v_and_v.size).round(2) : ""
-				om_info.measurement_process_and_qm = !measurement_process_and_qm.empty? ? (measurement_process_and_qm.inject{ |sum, el| sum + el }.to_f / measurement_process_and_qm.size).round(2) : ""
-				om_info.monitoring_and_control = !monitoring_and_control.empty? ? (monitoring_and_control.inject{ |sum, el| sum + el }.to_f / monitoring_and_control.size).round(2) : ""
-				om_info.project_justification = !project_justification.empty? ? (project_justification.inject{ |sum, el| sum + el }.to_f / project_justification.size).round(2) : ""
-				om_info.pp_scoping_and_structuring = !pp_scoping_and_structuring.empty? ? (pp_scoping_and_structuring.inject{ |sum, el| sum + el }.to_f / pp_scoping_and_structuring.size).round(2) : ""
-				om_info.risk_and_opportunities_management = !risk_and_opportunities_management.empty? ? (risk_and_opportunities_management.inject{ |sum, el| sum + el }.to_f / risk_and_opportunities_management.size).round(2) : ""
-				om_info.run_mode_preparation = !run_mode_preparation.empty? ? (run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size).round(2) : ""
-				om_info.solution_definition = !solution_definition.empty? ? (solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size).round(2) : ""
-				om_info.subcontracting_management = !subcontracting_management.empty? ? (subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size).round(2) : ""
+				om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? ((business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size) * 100).round(2) : ""
+				om_info.change_management = !change_management.empty? ? ((change_management.inject{ |sum, el| sum + el }.to_f / change_management.size) * 100).round(2) : ""
+				om_info.configuration_management = !configuration_management.empty? ? ((configuration_management.inject{ |sum, el| sum + el }.to_f / configuration_management.size) * 100).round(2) : ""
+				om_info.continuous_improvement = !continuous_improvement.empty? ? ((continuous_improvement.inject{ |sum, el| sum + el }.to_f / continuous_improvement.size) * 100).round(2) : ""
+				om_info.integration_v_and_v = !integration_v_and_v.empty? ? ((integration_v_and_v.inject{ |sum, el| sum + el }.to_f / integration_v_and_v.size) * 100).round(2) : ""
+				om_info.measurement_process_and_qm = !measurement_process_and_qm.empty? ? ((measurement_process_and_qm.inject{ |sum, el| sum + el }.to_f / measurement_process_and_qm.size) * 100).round(2) : ""
+				om_info.monitoring_and_control = !monitoring_and_control.empty? ? ((monitoring_and_control.inject{ |sum, el| sum + el }.to_f / monitoring_and_control.size) * 100).round(2) : ""
+				om_info.project_justification = !project_justification.empty? ? ((project_justification.inject{ |sum, el| sum + el }.to_f / project_justification.size) * 100).round(2) : ""
+				om_info.pp_scoping_and_structuring = !pp_scoping_and_structuring.empty? ? ((pp_scoping_and_structuring.inject{ |sum, el| sum + el }.to_f / pp_scoping_and_structuring.size) * 100).round(2) : ""
+				om_info.risk_and_opportunities_management = !risk_and_opportunities_management.empty? ? ((risk_and_opportunities_management.inject{ |sum, el| sum + el }.to_f / risk_and_opportunities_management.size) * 100).round(2) : ""
+				om_info.run_mode_preparation = !run_mode_preparation.empty? ? ((run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size) * 100).round(2) : ""
+				om_info.solution_definition = !solution_definition.empty? ? ((solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size) * 100).round(2) : ""
+				om_info.subcontracting_management = !subcontracting_management.empty? ? ((subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size) * 100).round(2) : ""
 				
 				@om << om_info
 
