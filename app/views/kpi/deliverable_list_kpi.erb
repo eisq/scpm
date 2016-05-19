@@ -38,10 +38,13 @@ end
       @xml.Column 2, {'ss:Width' => 80}
       @xml.Column 3, {'ss:Width' => 80}
       @xml.Column 4, {'ss:Width' => 70}
-      @xml.Column 5, {'ss:Width' => 200}
+      @xml.Column 5, {'ss:Width' => 100}
       @xml.Column 6, {'ss:Width' => 200}
       @xml.Column 7, {'ss:Width' => 200}
       @xml.Column 8, {'ss:Width' => 70}
+      @xml.Column 9, {'ss:Width' => 200}
+      @xml.Column 10, {'ss:Width' => 200}
+      @xml.Column 11, {'ss:Width' => 70}
 
       # Header
       @xml.Row do
@@ -61,13 +64,22 @@ end
           @xml.Data "Suite", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitlePink' do
-          @xml.Data "Macro-Objective", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Typo", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitlePink' do
           @xml.Data "Macro-Activity", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitlePink' do
+          @xml.Data "Essential activity (yes/no)", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+          @xml.Data "Planned to be done", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
           @xml.Data "Deliverable", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+          @xml.Data "Essential deliverable (yes/no)", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitlePink' do
           @xml.Data "Planned to be done", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -93,13 +105,22 @@ end
             @xml.Data setting.plm, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data setting.activity_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data setting.typo, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data setting.macro_activity_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
+            @xml.Data setting.essential_activity, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data setting.plan_to_do_activity, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
             @xml.Data setting.deliverable_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data setting.essential_deliverable, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data setting.plan_to_do, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'

@@ -5,7 +5,7 @@ class KpiController < ApplicationController
 	layout 'tools'
   	include WelcomeHelper
 
-	Setting_info    = Struct.new(:project_name, :workpackage, :lifecycle, :workstream, :plm, :activity_name, :macro_activity_name, :deliverable_name, :plan_to_do)
+	Setting_info    = Struct.new(:project_name, :workpackage, :lifecycle, :workstream, :plm, :typo, :macro_activity_name, :essential_activity, :plan_to_do_activity, :deliverable_name, :essential_deliverable, :plan_to_do)
 	OM_info    = Struct.new(:dws, :suite, :lifecycle, :project_name, :workpackage, :milestone, :business_and_is_modelling, :change_management, :configuration_management, :continuous_improvement, :integration_v_and_v, :measurement_process_and_qm, :monitoring_and_control, :project_justification, :pp_scoping_and_structuring, :risk_and_opportunities_management, :run_mode_preparation, :solution_definition, :subcontracting_management, :risks_management, :planning, :organisation, :project_configuration, :needs_management, :tests_managements, :product_configuration, :technical, :architecture, :integration, :alert)
 	Value    = Struct.new(:dws, :suite, :lifecycle, :project_name, :workpackage, :milestone, :activity, :answer)
 
@@ -27,9 +27,9 @@ class KpiController < ApplicationController
 				if setting.svf_deviation_spider_reference.project.suite_tag
 					setting_info.plm = setting.svf_deviation_spider_reference.project.suite_tag.name
 				end
-				setting_info.activity_name = setting.activity_name
 				setting_info.macro_activity_name = setting.macro_activity_name
 				setting_info.deliverable_name = setting.deliverable_name
+				setting_info.plan_to_do_activity = setting.answer_1
 				setting_info.plan_to_do = setting.answer_1
 				@settings << setting_info
 			
@@ -69,9 +69,9 @@ class KpiController < ApplicationController
 				if setting.svt_deviation_spider_reference.project.suite_tag
 					setting_info.plm = setting.svt_deviation_spider_reference.project.suite_tag.name
 				end
-				setting_info.activity_name = setting.activity_name
 				setting_info.macro_activity_name = setting.macro_activity_name
 				setting_info.deliverable_name = setting.deliverable_name
+				setting_info.plan_to_do_activity = setting.answer_1
 				setting_info.plan_to_do = setting.answer_1
 				@settings << setting_info
 			
