@@ -1038,7 +1038,8 @@ class ProjectsController < ApplicationController
       @delays = Array.new
       MilestoneDelayRecord.find(:all).each do |delay|
         milestone = Milestone.find(:first, :conditions=>["id = ?", delay.milestone_id])
-        if milestone
+        #20160603-Bug of summary generation while a delay is bound to a nil project or a nil milestone
+        if milestone and delay.project != nil and delay.milestone != nil
           #if delay.project.is_running
             @delays << delay
           #end

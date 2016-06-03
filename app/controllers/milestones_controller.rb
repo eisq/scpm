@@ -190,30 +190,30 @@ class MilestonesController < ApplicationController
   def delay
     @milestone_id = params[:milestone_id]
     project_id = Milestone.find(:first, :conditions=>["id = ?", @milestone_id]).project_id
-    @planned_date = params[:planned_date]
-    @current_date = params[:current_date]
-    @delay_days = params[:delay_days]
-    @reason_other = params[:reason_other]
+      @planned_date = params[:planned_date]
+      @current_date = params[:current_date]
+      @delay_days = params[:delay_days]
+      @reason_other = params[:reason_other]
 
-    @reason_one_selected = @reason_two_selected = nil
+      @reason_one_selected = @reason_two_selected = nil
 
-    milestone_delay_reasons_init
-    if params[:select_reason_one] and params[:select_reason_one] != "" and (!params[:select_reason_two] or params[:select_reason_two] == "")
-      @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:select_reason_one]])
-      if @reason_one_selected.reason_description == "Other reason"
-      else
+      milestone_delay_reasons_init
+      if params[:select_reason_one] and params[:select_reason_one] != "" and (!params[:select_reason_two] or params[:select_reason_two] == "")
+        @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:select_reason_one]])
+        if @reason_one_selected.reason_description == "Other reason"
+        else
+          @reason_twos = milestone_delay_get_reason_twos(params[:select_reason_one])
+        end
+        @reason_one_selected = @reason_one_selected.id
+      elsif params[:select_reason_one] and params[:select_reason_one] != "" and params[:select_reason_two] and params[:select_reason_two] != 0
+        @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:select_reason_one]]).id
+        @reason_two_selected = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", params[:select_reason_two]])
         @reason_twos = milestone_delay_get_reason_twos(params[:select_reason_one])
-      end
-      @reason_one_selected = @reason_one_selected.id
-    elsif params[:select_reason_one] and params[:select_reason_one] != "" and params[:select_reason_two] and params[:select_reason_two] != 0
-      @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:select_reason_one]]).id
-      @reason_two_selected = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", params[:select_reason_two]])
-      @reason_twos = milestone_delay_get_reason_twos(params[:select_reason_one])
-      if @reason_two_selected.reason_description == "Other reason"
-      else
-        @reason_threes = milestone_delay_get_reason_threes(params[:select_reason_two])
-      end
-      @reason_two_selected = @reason_two_selected.id
+        if @reason_two_selected.reason_description == "Other reason"
+        else
+          @reason_threes = milestone_delay_get_reason_threes(params[:select_reason_two])
+        end
+        @reason_two_selected = @reason_two_selected.id
     end
   end
 

@@ -6,12 +6,10 @@ class MilestoneDelayRecord < ActiveRecord::Base
 	belongs_to	:project
 
 	def get_dws
-
-		return self.project.workstream
+		 return self.project.workstream
 	end
 
 	def get_parent
-
 		return self.project.project_name
 	end
 
