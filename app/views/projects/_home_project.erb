@@ -2,12 +2,14 @@
 <h3>
   <%= link_to('Open', {:action=>'show', :id=>project.id}, {:class=>'menu grey'}) %>
   <%= submit_tag 'Show Timeline', :class=>"menu grey", :onclick=>"show_timeline(" + project.id.to_s + ")" %>
-  <% next_m_date = project.next_milestone_date;  bool = (next_m_date and next_m_date-Date.today() <= 5) %>
-  <% if bool %><font color="red"><% end %>
+  <% next_m_date = project.next_milestone_date;  bool = (next_m_date and next_m_date-Date.today() <= 0)  %>
+  <!-- #Evol0616 - Distinct milestone outdated & milestone planned 7 days later-->
+  <% tobe = (next_m_date and next_m_date-Date.today() <= 7) %> 
+  <% if bool %><font color="red"><% elsif tobe %><font color="orange"><% else %><font color="black"><% end %>
   <%= next_m_date %>
   <%= project.workstream %>
   <%= project.full_name %>
-  <% if bool %></font><% end %>
+  <% if bool or tobe %></font><% end %>
   <%= html_status(project.last_status) %>
   <% date = project.last_status_date
   if date
