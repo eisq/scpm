@@ -1,11 +1,14 @@
-<span class="<%= request.sanitized_status %>">
+<span class="<%= request.sanitized_status %>">	
 <a target="_blank" href="http://toulouse.sqli.com/EMN/view.php?id=<%= request.request_id %>"><%= request.request_id %></a>
 <b><%= request.project.full_name if request.project %></b>
 <%= request.work_package %>
 <%= request.milestone %>
 <%= request.complexity %>
+<!-- #Evol0616 - Change displayed data for isolated requests-->
 (<%= request.workload2 %>)
-<%= request.assigned_to %>
+- Reporter: <%= request.reporter %>
+
+<!-- <%= request.assigned_to %>
 <%= request.status %>
 <%= request.resolution %>
 <%= request.foreseen_end_date_str %>
@@ -14,7 +17,7 @@
 <% end %>
 <% if request.resolution=="ended" and request.actual_m_date=="" %>
 <strong>No actual milestone date</strong>
-<% end %>
+<% end %> -->
 
 </span>
 <% if request.assigned_to != "" and request.project and not request.project.has_responsible([Person.find_by_rmt_user(request.assigned_to).id]) %>

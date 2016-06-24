@@ -7,6 +7,7 @@
   statusrequest = (wl_line.request == nil ? 'unknown' : wl_line.request.status) #return status if not nil else return blank value
   isrequest     = (wl_line.wl_type < 300 and remaining > 0)
   initwork      = (@workload.line_sums[wl_line.id][:init]=='no sdp'? 0 : @workload.line_sums[wl_line.id][:init]) #return 'init' value only if isnumeric, else return 0
+  actualplanned = (@workload.line_sums[wl_line.id][:sums].to_f ==''? 0 : @workload.line_sums[wl_line.id][:sums].to_f) #return 'init' value only if isnumeric, else return 0
 %>
 <tr id="wl_line_<%= wl_line.id %>" class="wl_line_<%= wl_line.wl_type %>"<% if remaining==0.0 and wl_line.request and wl_line.request.sdp=="Yes"%> style="color:grey; font-style:italic;"<% end %>>
   <!-- Action destroy -->
@@ -62,10 +63,11 @@
   <% gain_class = "wlerror" if @workload.line_sums[wl_line.id][:balance].to_i < 0 %>
   <% gain_class = "wlpositive" if @workload.line_sums[wl_line.id][:balance].to_i > 0 %>
   <td title="<%= wl_line.name %>" class=<%= gain_class %>><%= @workload.line_sums[wl_line.id][:balance] %></td>
-    <!-- #Evol0616 : coloring column if remaining is +/-20% of initial, orange (info2) if request is assigned, cyan (info) if request is tobevalidated -->
+    <!-- #Evol0616 : coloring column if remaining is +/-20% of initial, orange (info2) if request is assigned, cyan (info) if request is tobevalidated (initwork/remaining) -->
+    <!-- #Evol0616RWK : coloring column if remaining is +/-20% of PLANNED, orange (info2) if request is assigned, cyan (info) if request is tobevalidated (plann/rem) -->
      <% remain_class = "wl_case" %>
-     <% remain_class = "wlinfo2" if statusrequest == 'assigned' and (initwork/remaining < 0.8  or initwork/remaining > 1.2) %>
-     <% remain_class = "wlinfo" if statusrequest == 'to be validated' and (initwork/remaining < 0.8  or initwork/remaining > 1.2) %>
+     <% remain_class = "wlinfo2" if statusrequest == 'assigned' and (actualplanned/remaining < 0.8  or actualplanned/remaining > 1.2) %>
+     <% remain_class = "wlinfo" if statusrequest == 'to be validated' and (actualplanned/remaining < 0.8  or actualplanned/remaining > 1.2) %>
      <% remain_class = "wl_case" if @workload.line_sums[wl_line.id][:init]=='no sdp' %>
   	<td title="<%= wl_line.name %>" class="<%= remain_class %>" <% if @workload.line_sums[wl_line.id][:init]=='no sdp' %> no_sdp <%end%>><%= remaining %></td>
   <% else %>

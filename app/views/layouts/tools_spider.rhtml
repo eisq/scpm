@@ -63,7 +63,9 @@
       <li class="hsep">Imports</li>
       <li><%= link_to('SDP import',       {:controller=>'tools', :action=>'sdp_import'}) %></li>
       <li><%= link_to('RMT to SDP task import',          {:controller=>'tools', :action=>'sdp_add'}) %></li>
-      <li><%= link_to('Monthly tasks SDP import', {:controller=>'tools', :action=>'import_monthly_tasks_form'}) %></li>
+      <!--#Corr0616 - Rework menu from layouts/tools -->
+      <!-- Call 'import_monthly_tasks' instead of 'import_monthly_tasks_form' -->
+      <li><%= link_to('Monthly tasks SDP import', {:controller=>'tools', :action=>'import_monthly_tasks'}) %></li>
       <li class="hsep">Checks</li>
       <li><%= link_to('CHECK Loads',{:controller=>'tools', :action=>'load_errors'}) %></li>
       <li><%= link_to('CHECK RMT <=> SDP',{:controller=>'tools', :action=>'sdp_yes_check'}) %></li>
@@ -84,6 +86,9 @@
     </li>
     <li><%= link_to('Requests', {:controller=>'welcome', :action=>'index'}, {:class=>menu_style('welcome','index')}) %></li>
     <li><%= link_to('People', {:controller=>'people', :action=>'index'}, {:class=>menu_style('people','*')}) %></li>
+    <!--#Corr0616 - Rework menu from layouts/tools -->
+    <!-- Add Squads link' -->
+    <li><%= link_to('Squads', {:controller=>'tools', :action=>'squads'}, {:class=>menu_style('squads','squads')}) %></li>
     <li><%= link_to('Reminders', {:controller=>'welcome', :action=>'reminders'}, {:class=>menu_style('welcome','reminders')}) %></li>
     <li><%= link_to('Bandeaux', {:controller=>'bandeaus', :action=>'index'}, {:class=>menu_style('bandeaus','*')}) %></li>
 
@@ -101,6 +106,16 @@
         <li><%= link_to('Capi',           {:controller=>'notes',                  :action=>'list'})   %></li>
         <li><%= link_to('Capi Axes',      {:controller=>'capi_axes',              :action=>'index'})  %></li>
         <li><%= link_to('Suite Tags',     {:controller=>'suite_tags',             :action=>'index'})  %></li>
+        <!--#Corr0616 - Rework menu from layouts/tools -->
+        <!-- Add lines following : begin -->
+        <% if cu.has_role?('Admin') %>
+          <li><%= link_to('Monthly tasks',     {:controller=>'monthly_tasks',          :action=>'index'})  %></li>
+          <li><%= link_to('Monthly task Types',     {:controller=>'monthly_task_types',          :action=>'index'})  %></li>
+          <li><%= link_to('Stream Review Types', {:controller=>'tools', :action=>'show_stream_review_type'}) %></li>
+          <li><%= link_to('SDP Constants', {:controller=>'sdp_constants', :action=>'index'}) %></li>
+          <li><%= link_to('Manage breaks on projects', {:controller=>'tools', :action=>'breaks'}) %></li>
+        <% end %>
+        <!-- Add lines following : end  -->
         <li class="hsep">Stats</li>
         <li><%= link_to('Requests by year', {:controller=>'tools', :action=>'requests_by_year'}) %></li>
         <li><%= link_to('Projects length',  {:controller=>'tools', :action=>'projects_length'}) %></li>
@@ -121,24 +136,44 @@
     <% if (cu.has_role?('Admin') or (cu.is_cpdp==1) or cu.has_role?('ServiceLineResp'))  %>
     <li><%= link_to('Spider', "", {:class=>menu_style('workstreams','*')}) %>
       <ul>
-        <li class="hsep">KPI</li>
-        <li><%= link_to('KPI by PM Types',        {:controller=>'spider_kpis', :action=>'kpi_charts_by_pm_types', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
-        <li><%= link_to('KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
-        <li><%= link_to('Cumul KPI by PM Types',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_pm_types', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
-        <li><%= link_to('Cumul KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
-        <li><%= link_to('Configure export excel columns', {:controller=>'pm_type_axe_excels', :action=>'index'}) %></li>
+        <!--#Corr0616 - Rework menu from layouts/tools -->
+        <!-- Delete KPI lines -->
+
+        <!-- Update spider administration lines -->
         <li class="hsep">Spider administration</li>
+        <li><%= link_to('Manage spiders version',     {:controller=>'tools', :action=>'manage_project_version'}) %></li>
         <li><%= link_to('Import',                     {:controller=>'spiders', :action=>'project_spider_import'}) %></li>
         <li><%= link_to('Manage Axes',                {:controller=>'pm_type_axes', :action=>'index'}) %></li>
         <li><%= link_to('Manage Questions',           {:controller=>'lifecycle_questions', :action=>'index'}) %></li>
         <li><%= link_to('Manage Questions References',{:controller=>'question_references', :action=>'index'}) %></li>
+        <!-- Add deviation spider lines with version -->
+        <li class="hsep">Deviation Spiders</li>
+        <li><%= link_to('Manage Operational Activities',{:controller=>'deviation_tools', :action=>'index_meta_activity'}) %></li>
+        <li><%= link_to('Manage Macro-Objectives',{:controller=>'deviation_tools', :action=>'index_activity'}) %></li>
+        <li><%= link_to('Manage Deliverables',{:controller=>'deviation_tools', :action=>'index_deliverable'}) %></li>
+        <li><%= link_to('Manage Questions',{:controller=>'deviation_tools', :action=>'index_question'}) %></li>
+        <li><%= link_to('Custo/Devia export',{:controller=>'deviation_spiders', :action=>'index_export_all'}) %></li>
+        <li class="hsep">Deviation Spiders v3</li>
+        <li><%= link_to('Manage Operational Activities',{:controller=>'svt_deviation_tools', :action=>'index_meta_activity'}) %></li>
+        <li><%= link_to('Manage Macro-Objectives',{:controller=>'svt_deviation_tools', :action=>'index_activity'}) %></li>
+        <li><%= link_to('Manage Macro-Activities',{:controller=>'svt_deviation_tools', :action=>'index_macro_activity'}) %></li>
+        <li><%= link_to('Manage Deliverables',{:controller=>'svt_deviation_tools', :action=>'index_deliverable'}) %></li>
+        <li><%= link_to('Manage Questions',{:controller=>'svt_deviation_tools', :action=>'index_question'}) %></li>
+        <li><%= link_to('Custo/Devia export',{:controller=>'svt_deviation_spiders', :action=>'index_export_all'}) %></li>
+        <li class="hsep">Deviation Spiders v4</li>
+        <li><%= link_to('Manage Operational Activities',{:controller=>'svf_deviation_tools', :action=>'index_meta_activity'}) %></li>
+        <li><%= link_to('Manage Macro-Objectives',{:controller=>'svf_deviation_tools', :action=>'index_activity'}) %></li>
+        <li><%= link_to('Manage Macro-Activities',{:controller=>'svf_deviation_tools', :action=>'index_macro_activity'}) %></li>
+        <li><%= link_to('Manage Deliverables',{:controller=>'svf_deviation_tools', :action=>'index_deliverable'}) %></li>
+        <li><%= link_to('Manage Questions',{:controller=>'svf_deviation_tools', :action=>'index_question'}) %></li>
+        <li><%= link_to('Custo/Devia export',{:controller=>'svf_deviation_spiders', :action=>'index_export_all'}) %></li>
       </ul>
     </li>
     <% end %>
     <!-- LESSON LEARNT MENU -->
-    <li><%= link_to('Lessons Learnt', {:controller=>'lesson_collects', :action=>'index'}, {:class=>menu_style('welcome','update')}) %></li>
-    <!-- PRESALES MENU -->
-    <li><%= link_to('Presales',{:controller=>'presales', :action=>'index'}, {:class=>menu_style('presales','index')}) %></li>
+    <!--#Corr0616 - Rework menu from layouts/tools -->
+    <!-- Update Lessons learnt part -->
+    <li><%= link_to('Lessons Learnt', {:controller=>'lesson_collects', :action=>'index'}, {:class=>menu_style('lesson_collects','index')}) %></li>
 
     <% if cu.has_role?('Super') %>
       <li><%= link_to('Logs', {:controller=>'logs'}, {:class=>'menu'}) %></li>
@@ -146,7 +181,44 @@
     <% new_requests = Request.count(:conditions=>"status='new' or status='acknowledged'"); if new_requests > 0 %>
       <li><div class="notif"><strong><%=new_requests%></strong> new or ackn requests</div></li>
     <% end %>
+
+    <!-- PRESALES MENU -->
+    <!--#Corr0616 - Rework menu from layouts/tools -->
+    <!-- Update Presales part -->
+    <li>
+      <%= link_to('Presales', "", {:class=>menu_style('presales','*'), :onclick=>"return false;"}) %>
+      <ul>
+        <li><%= link_to('Dashboard',   {:controller=>'presales',           :action=>'dashboard'})  %></li>
+        <li><%= link_to('Projects',    {:controller=>'presales',           :action=>'projects'})  %></li>
+      </ul>
+    </li>
+    <li><%= link_to('Milestone Delays', {:controller=>'tools', :action=>'milestone_delay_config'}, {:class=>menu_style('Milestone Delays','Milestone Delays')}) %></li>
+    <% if current_user.has_role?('Admin') %>
+      <li><%= link_to('Background', {:controller=>'background', :action=>'index'}, {:class=>menu_style('background','index')}) %></li>
+    <% end %>
+
+    <!-- KPI MENU -->
+    <!--#Corr0616 - Rework menu from layouts/tools -->
+    <!-- Adding KPI part -->
+    <li><%= link_to('KPI', "", {:class=>menu_style('kpis','index')}) %>
+      <ul>
+        <li class="hsep">KPI</li>
+        <li><%= link_to('KPI', {:controller=>'kpi', :action=>'index'}) %></li>
+        <li class="hsep">Spiders KPI</li>
+        <li><%= link_to('KPI by PM Types',        {:controller=>'spider_kpis', :action=>'kpi_charts_by_pm_types', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
+        <li><%= link_to('KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
+        <li><%= link_to('Cumul KPI by PM Types',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_pm_types', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
+        <li><%= link_to('Cumul KPI by axes',        {:controller=>'spider_kpis', :action=>'kpi_cumul_charts_by_axes', :lifecycle_id=>1, :workstream=>0, :milestone_name_id=>0}) %></li>
+        <li><%= link_to('Configure export excel columns', {:controller=>'pm_type_axe_excels', :action=>'index'}) %></li>
+      </ul>
+    </li>
+
+    <% if cu.id == 72 or cu.id == 73 %> <!-- button only seen by BAM administrators -->
+      <li><%= link_to('Scripts', {:controller=>'tools', :action=>'scripts'}, {:class=>menu_style('scripts','scripts')}) %></li>
+    <% end %>
+   
     </ul>
+
   </div>
 
 </div>

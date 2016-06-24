@@ -99,6 +99,7 @@
 </script>
 
 <%= link_to_function('Legend',"$('legend').toggle();", :style=>"float:right;") %>
+<!-- #Evol0616 : Adding legend for MS quality status-->
 <div class="legend" id="legend" style="display:none;">
   <div class="milestone">
   <div class="milestone_name blank">
@@ -107,16 +108,18 @@
   <div class="milestone_comments status-1">
   No request
   </div>
-  </div>
+  <div class="milestone_current_quality_status Unknown">MS Quality Status Unknown</div>
+</div>
 
-  <div class="milestone">
+<div class="milestone">
   <div class="milestone_name missing">
   No date
   </div>
   <div class="milestone_comments status0">
   Some requests
   </div>
-  </div>
+  <div class="milestone_current_quality_status Green">MS Quality Status Green</div>
+</div>
 
 
   <div class="milestone">
@@ -126,6 +129,7 @@
   <div class="milestone_comments status0">
   No info
   </div>
+    <div class="milestone_current_quality_status Unknown">MS Quality Status Unknown</div>
   </div>
 
 
@@ -136,6 +140,7 @@
   <div class="milestone_comments status1">
   GO
   </div>
+    <div class="milestone_current_quality_status Amber">MS Quality Status Amber</div>
   </div>
 
   <div class="milestone">
@@ -145,6 +150,7 @@
   <div class="milestone_comments status2">
   GO w/a
   </div>
+    <div class="milestone_current_quality_status Green">MS Quality Status Green</div>
   </div>
 
   <div class="milestone">
@@ -154,6 +160,7 @@
   <div class="milestone_comments status3">
   NO GO
   </div>
+    <div class="milestone_current_quality_status Red">MS Quality Status Red</div>
   </div>
 
   <div class="milestone">
@@ -163,7 +170,9 @@
   <div class="milestone_comments status0">
   no info
   </div>
+     <div class="milestone_current_quality_status Unknown">MS Quality Status Unknown</div>
   </div>
+
 </div>
 
 <%= link_to("Open Project List", {:controller=>'projects', :action=>'show_project_list'},:class=>"btnlnk", :target => "_blank") %> 
