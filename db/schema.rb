@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160405180500) do
+ActiveRecord::Schema.define(:version => 20160701095339) do
 
   create_table "actions", :force => true do |t|
     t.text     "action"
@@ -921,6 +921,7 @@ ActiveRecord::Schema.define(:version => 20160405180500) do
     t.integer  "stream_id"
     t.string   "is_stream",               :default => "No"
     t.string   "specific"
+    t.string   "QR"
   end
 
   add_index "requests", ["project_id"], :name => "IDX_REQUESTS_ON_PROJECT_ID"

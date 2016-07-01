@@ -68,7 +68,6 @@
      <% remain_class = "wl_case" %>
      <% remain_class = "wlinfo2" if statusrequest == 'assigned' and (actualplanned/remaining < 0.8  or actualplanned/remaining > 1.2) %>
      <% remain_class = "wlinfo" if statusrequest == 'to be validated' and (actualplanned/remaining < 0.8  or actualplanned/remaining > 1.2) %>
-     <% remain_class = "wl_case" if @workload.line_sums[wl_line.id][:init]=='no sdp' %>
   	<td title="<%= wl_line.name %>" class="<%= remain_class %>" <% if @workload.line_sums[wl_line.id][:init]=='no sdp' %> no_sdp <%end%>><%= remaining %></td>
   <% else %>
 		<td title="<%= wl_line.name %>" colspan="3"></td>

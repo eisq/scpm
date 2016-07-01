@@ -25,7 +25,7 @@ function add(id, nb_months, has_requests, has_rights) {
   <!-- #Evol0616 - Adding AQ/Support Active info (is_qr_qwr based), FuD or Phd info (suitetag based)-->
   <%= @project.icon_status %>
   <h2><%= @project.full_name %> - 
-    <% if @project.is_qr_qwr %>[SA- <% else %>[AQ- <% end %>
+    <% if @project.is_qr_qwr %>[Support - <% else %>[AQ - <% end %>
     <% if @project.suite_tag%>PhD] <% else %>FuD] <% end %>
     <% if @project.is_on_hold %>
       <span style="color:red;">(On Hold)</span>
