@@ -165,6 +165,7 @@ class CiProjectsController < ApplicationController
             ci.update_attribute('request_origin', p.request_origin)
             ci.update_attribute('issue_history', p.issue_history)
             ci.update_attribute('ci_objectives_2015', p.ci_objectives_2015)
+            ci.update_attribute('QR', p.QR)
 
             ci.save
           end
