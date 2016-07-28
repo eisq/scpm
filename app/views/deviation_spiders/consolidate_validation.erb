@@ -39,22 +39,23 @@
 		</div>
 	<% end %>
 
-	<!-- CHOICE 2 -->
-	<% form_tag({:action => "consolidate"}, :method => "post", :id => 'form_choice_2') do %>
-		<%= hidden_field_tag('list_choice', 2) %>
-		<%= hidden_field_tag('deviation_spider_id', @deviation_spider.id) %>
+	<% if @project.is_qr_qwr %>
+		<!-- CHOICE 2 -->
+		<% form_tag({:action => "consolidate"}, :method => "post", :id => 'form_choice_2') do %>
+			<%= hidden_field_tag('list_choice', 2) %>
+			<%= hidden_field_tag('deviation_spider_id', @deviation_spider.id) %>
 
-		<div  class="spider_list_choice_2" id="choice2">
-		<% choice_2_text = '<div class="spider_list_choice_text_2" >' %>
-		<% if @project.get_last_spider_increment %>
-			<% choice_2_text += my_simple_format("In a Standard Support mode and you want to increment the Spider counter.
-				Last Spider counter update for this project: " + @project.get_last_spider_increment.to_s + " (<span class=\"descr\">" + time_ago_in_words(@project.get_last_spider_increment) + "</span>)") %>
-		<% else %>
-			<% choice_2_text +=  my_simple_format('In a Standard Support mode and you want to increment the Spider counter.') %> 
+			<div  class="spider_list_choice_2" id="choice2">
+			<% choice_2_text = '<div class="spider_list_choice_text_2" >' %>
+			<% if @project.get_last_spider_increment %>
+				<% choice_2_text += my_simple_format("In a Standard Support mode and you want to increment the Spider counter.
+					Last Spider counter update for this project: " + @project.get_last_spider_increment.to_s + " (<span class=\"descr\">" + time_ago_in_words(@project.get_last_spider_increment) + "</span>)") %>
+			<% else %>
+				<% choice_2_text +=  my_simple_format('In a Standard Support mode and you want to increment the Spider counter.') %> 
+			<% end %>
+			<% choice_2_text +='</div><img class="spider_list_choice_img" src="/images/right.png">' %>
+			<%= choice_2_text %>
+
+			</div>
 		<% end %>
-		<% choice_2_text +='</div><img class="spider_list_choice_img" src="/images/right.png">' %>
-		<%= choice_2_text %>
-
-		</div>
 	<% end %>
-	<br />

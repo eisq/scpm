@@ -471,14 +471,14 @@ class ToolsController < ApplicationController
       sdp_index_prepare
       sdp_index_by_type_prepare
       SdpImportLog.create(
-          :sdp_initial_balance             => 0,#@sdp_initial_balance,
-          :sdp_real_balance                => 0,#@real_balance,
-          :sdp_real_balance_and_provisions => 0,#@real_balance_and_provisions,
-          :operational_total_minus_om      => 0,#@operational_total-@operational_percent_total,
-          :not_included_remaining          => 0,#@not_included_remaining,
-          :provisions                      => 0,#@provisions_remaining_should_be,
-          :sold                            => 0,#@sold,
-          :remaining_time                  => 0#@remaining_time
+          :sdp_initial_balance             => @sdp_initial_balance,
+          :sdp_real_balance                => @real_balance,
+          :sdp_real_balance_and_provisions => @real_balance_and_provisions,
+          :operational_total_minus_om      => @operational_total-@operational_percent_total,
+          :not_included_remaining          => @not_included_remaining,
+          :provisions                      => @provisions_remaining_should_be,
+          :sold                            => @sold,
+          :remaining_time                  => @remaining_time
           )
       sdp_graph # aleady in sdp_index_prepare, but repeated here so grap in email is updated
       history_comparison
@@ -604,7 +604,7 @@ class ToolsController < ApplicationController
     serie   = []
     labels  = []
     #id > 766 = dps logs from January 2016.
-    logs = SdpImportLog.find(:all, :conditions=>["id > 300"], :order=>"id")
+    logs = SdpImportLog.find(:all, :conditions=>["id > 766"], :order=>"id")
     first = logs.first.created_at
     for l in logs
       serie << [l.created_at-first, l.send(method)]
