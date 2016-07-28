@@ -72,6 +72,20 @@ function set_value_buttons(value_id, answer)
 	}
 }
 
+// Show/hide charts
+function toggle()
+{
+	node = document.getElementById("toggled");
+	if(node.style.display == "block")
+	{
+		node.style.display = "none";
+	}
+	else
+	{
+		node.style.display = "block";
+	}
+}
+
 // Open
 $( document ).ready(function() {
 	<% if @last_spider != nil and @last_spider.deviation_spider_consolidations.count == 0 and @questions.count > 0 %>
@@ -96,7 +110,7 @@ $( document ).ready(function() {
 	projectName += " > "+@project.name
 %>
 
-<h3>Project : <%= projectName %> - Milestone : <%= @milestone.name %></h3>
+<h3>Project : <%= projectName %> - Milestone : <%= @milestone.name %> - <a href="javascript:toggle();">Toggle Hide/show charts</a> </h3>
 
 <h2>Current spider</h2>
 
@@ -225,9 +239,11 @@ $( document ).ready(function() {
 	</table>
 	<% end %>
 
-	<div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
-	<div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>
-	<div class="deviation_spider_export_chart" id="export_chart"></div>
+	<div id="toggled" style="display: block">
+		<div class="deviation_spider_activity_chart" id="deviation_spider_chart_activity"></div>
+		<div class="deviation_spider_deliverable_chart" id="deviation_spider_chart_deliverable"></div>
+		<div class="deviation_spider_export_chart" id="export_chart"></div>
+	</div>
 
 <% end %>
 <br/><br/>
