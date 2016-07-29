@@ -112,7 +112,7 @@ $( document ).ready(function() {
 
 <h3>Project : <%= projectName %> - Milestone : <%= @milestone.name %> - <a href="javascript:toggle();">Toggle Hide/show charts</a> </h3>
 
-<h2>Current spider</h2>
+<h2>Current Spider   (Spider version: 4)</h2> 
 
 <% if @last_spider == nil or @last_spider.svf_deviation_spider_consolidations.count > 0  %>
 	<%= button_to "Create new spider", {:action => "create_spider", :milestone_id => @milestone.id }, :method => :post %> 
