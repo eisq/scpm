@@ -72,6 +72,72 @@ class SquadsController < ApplicationController
     # next 8 weeks
     @avail_totals << (@workloads.inject(0) { |sum,w| sum += w.sum_availability }).round
 
+
+    #Tickets not in PDC view
+    ###
+
+    # comment : these queries are used in the consolidation view for "not in workload" tokens
+    #already_in_the_workload = WlLine.all.select{|l| l.request and (l.request.status=='to be validated' or (l.request.status=='assigned' and l.request.resolution!='ended' and l.request.resolution!='aborted'))}.map{|l| l.request}
+    #@not_in_workload= (Request.find(:all,:conditions=>["status='to be validated' or (status='assigned' and resolution!='ended' and resolution!='aborted')"]) - already_in_the_workload).sort_by{|r| [r.status, (r.project ? r.project.full_name : "")]}.reverse
+
+    @not_in_workload = Array.new
+
+    # If a squad is defined
+    if @current_squad
+
+      #implement request when squad name is not usual
+      if @current_squad.name.to_s.length > 2
+          case @current_squad.name.to_s
+            when "Squad Cathie" then squad_query = "workstream ='EI' or workstream='EV'"
+            when "Squad Lucie"  then squad_query = "workstream ='ES' or workstream='EG'"
+            when "Squad Fabrice" then squad_query = "workstream ='EY' or workstream='EC' or workstream='EP'"
+            #when "PhD" then squad_query = "PhD" #Goto to *Get all requests for squad "phd"* Part (not used atm)
+            when "PhD" then squad_query = "request_type = 'Yes'" #Is Physical = Yes
+          else
+            squad_query = "workstream ='" + @current_squad.name + "'"
+          end
+      else
+        squad_query = "workstream ='" + @current_squad.name + "'"
+      end
+
+       #Get all requests for squad "phd", only request which is bound to a project with a suite_tag number (not used atm)
+      if squad_query == 'PhD'
+        # if @project.suite_tag
+        Project.find(:all, :conditions=>["suite_tag_id >0"]).each do |project_row|
+          Request.find(:all, :conditions=>["project_id= ?", project_row.id]).each do |request_phd|
+            if request_phd
+              if request_phd.status == 'to be validated' or (request_phd.status == 'assigned' and request_phd.resolution !='ended' and request_phd.resolution!='aborted')
+                #Check the request, if exists in the orkload (i.e wline table)
+                current_request = WlLine.find(:first, :conditions=>["request_id = ?", request_phd.request_id])
+                if !current_request 
+                  #If not get the request
+                  @not_in_workload << request_phd
+                end
+              end
+            end
+          end  
+        end 
+
+      else  
+
+      #Get all requests for the current squad
+        Request.find(:all, :conditions=>[squad_query]).each do |request_squad|
+          if request_squad
+            if request_squad.status == 'to be validated' or (request_squad.status == 'assigned' and request_squad.resolution !='ended' and request_squad.resolution!='aborted')
+              #Check the request, if exists in the orkload (i.e wline table)
+              current_request = WlLine.find(:first, :conditions=>["request_id = ?", request_squad.request_id])
+              if !current_request 
+                #If not get the request
+                @not_in_workload << request_squad
+              end
+            end
+          end
+        end
+      end
+    end
+
+    ###
+
   end
 
   def cap(nb)

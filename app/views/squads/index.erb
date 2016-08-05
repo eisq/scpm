@@ -71,3 +71,23 @@ function change_squad(squad_id) {
 </tr>
 
 </table>
+
+<br>
+<h3>List of requests not in workload</h3>
+
+<table class="pdc_table">
+	<tr>
+		<th>Request</th>
+		<th colspan=3>WP</th>
+		<th>Squad</th>
+	</tr>
+
+	<% @not_in_workload.each do |request| %>
+	<tr class="pdc_tr">
+		<td class="pdc_td"><%= request.request_id %></td>
+		<td colspan=3><%= request.work_package %></td>
+		<td class="pdc_td"><%= request.workstream.to_s %></td>
+	</tr>
+	<% end %>
+</table>
+
