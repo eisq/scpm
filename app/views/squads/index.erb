@@ -91,3 +91,23 @@ function change_squad(squad_id) {
 	<% end %>
 </table>
 
+<br/>
+<h3>Late reporting view</h3>
+
+<table class="pdc_table">
+<tr>
+	<th>Person</th>
+	<th>Project</th>
+	<th>Reporting delay</th>
+</tr>
+
+<p>Projects with an old reporting (>15 days):</p>
+<% @late_reportings.each do |late_reporting| %>
+<tr class="pdc_tr">
+	<td class="pdc_td"><%= late_reporting.person.name %></td>
+	<td class="pdc_td"><a href="projects/show/<%= late_reporting.project.id.to_s %>"><%= late_reporting.project.name %></a></td>
+	<td class="pdc_td"><%= late_reporting.delay.to_s %></td>
+</tr>
+<% end %>
+
+</table>

@@ -1,36 +1,54 @@
 class SquadsController < ApplicationController
 
+  Late_reporting = Struct.new(:person, :project, :delay)
+
   def index
 
-  	#Select and show squads
-  	if params[:squad]
-  		@current_squad = Squad.find(:first, :conditions=>["id = ?", params[:squad]])
-  	end
-  	@squads = Array.new
-  	 PersonSquad.find(:all, :conditions=>["person_id = ?", current_user.id], :order=> "squad_id").each do |person_squad|
-  	 	squad = Squad.find(:first, :conditions=>["id = ?", person_squad.squad_id])
-  	 	if squad
-  	 		if !params[:squad]
-  	 			@current_squad = squad
-  	 		end
-  	 		#@squads << squad
-  	 	end
-  	end
-    @squads = Squad.find(:all, :order => "name")
+    @squads = @current_squad = @persons = @not_in_workload = @late_reportings = nil
 
-  	#Get current squad informations
-  	@persons = Array.new
-    if !@current_squad
-      @current_squad = Squad.first
+    @squads, @current_squad, @persons = init_squad_person
+
+    view_pdc(@persons)
+    @not_in_workload = view_not_in_workload(@current_squad)
+    view_holidays_backup
+    @late_reportings = view_late_reporting(@current_squad, @persons)
+
+  end
+
+  def init_squad_person
+    #Select and show squads
+    if params[:squad]
+      current_squad = Squad.find(:first, :conditions=>["id = ?", params[:squad]])
     end
-  	PersonSquad.find(:all, :conditions=>["squad_id = ?", @current_squad.id]).each do |person_squad|
+    squads = Array.new
+     PersonSquad.find(:all, :conditions=>["person_id = ?", current_user.id], :order=> "squad_id").each do |person_squad|
+      squad = Squad.find(:first, :conditions=>["id = ?", person_squad.squad_id])
+      if squad
+        if !params[:squad]
+          @current_squad = squad
+        end
+        #@squads << squad
+      end
+    end
+    squads = Squad.find(:all, :order => "name")
+
+    #Get current squad informations
+    persons = Array.new
+    if !current_squad
+      current_squad = Squad.first
+    end
+    PersonSquad.find(:all, :conditions=>["squad_id = ?", current_squad.id]).each do |person_squad|
       person = Person.find(:first, :conditions=>["id = ?", person_squad.person_id])
       if person and person.is_transverse == 0 and person.has_left == 0
-  		  @persons << person
+        persons << person
       end
-  	end
+    end
 
-  	#PDC view
+    return squads, current_squad, persons
+  end
+
+  def view_pdc(persons)
+    #PDC view
     @workloads = Array.new
     @totals_5_weeks = Array.new
     @cap_totals_5_weeks = Array.new
@@ -38,7 +56,7 @@ class SquadsController < ApplicationController
     @cap_totals_3_months = Array.new
     @avail_totals = Array.new
 
-    for p in @persons
+    for p in persons
       if APP_CONFIG['workloads_add_by_project']
         next if not p.has_workload_for_projects?(@project_ids)
       end
@@ -71,33 +89,34 @@ class SquadsController < ApplicationController
     @cap_totals_3_months << (@workloads.inject(0) { |sum,w| sum += cap(w.three_next_months_percents)} / size).round
     # next 8 weeks
     @avail_totals << (@workloads.inject(0) { |sum,w| sum += w.sum_availability }).round
+  end
 
-
+  def view_not_in_workload(current_squad)
     #Tickets not in PDC view
     ###
 
     # comment : these queries are used in the consolidation view for "not in workload" tokens
     #already_in_the_workload = WlLine.all.select{|l| l.request and (l.request.status=='to be validated' or (l.request.status=='assigned' and l.request.resolution!='ended' and l.request.resolution!='aborted'))}.map{|l| l.request}
-    #@not_in_workload= (Request.find(:all,:conditions=>["status='to be validated' or (status='assigned' and resolution!='ended' and resolution!='aborted')"]) - already_in_the_workload).sort_by{|r| [r.status, (r.project ? r.project.full_name : "")]}.reverse
+    #not_in_workload= (Request.find(:all,:conditions=>["status='to be validated' or (status='assigned' and resolution!='ended' and resolution!='aborted')"]) - already_in_the_workload).sort_by{|r| [r.status, (r.project ? r.project.full_name : "")]}.reverse
 
-    @not_in_workload = Array.new
+    not_in_workload = Array.new
 
     # If a squad is defined
-    if @current_squad
+    if current_squad
 
       #implement request when squad name is not usual
-      if @current_squad.name.to_s.length > 2
-          case @current_squad.name.to_s
+      if current_squad.name.to_s.length > 2
+          case current_squad.name.to_s
             when "Squad Cathie" then squad_query = "workstream ='EI' or workstream='EV'"
             when "Squad Lucie"  then squad_query = "workstream ='ES' or workstream='EG'"
             when "Squad Fabrice" then squad_query = "workstream ='EY' or workstream='EC' or workstream='EP'"
             #when "PhD" then squad_query = "PhD" #Goto to *Get all requests for squad "phd"* Part (not used atm)
             when "PhD" then squad_query = "request_type = 'Yes'" #Is Physical = Yes
           else
-            squad_query = "workstream ='" + @current_squad.name + "'"
+            squad_query = "workstream ='" + current_squad.name + "'"
           end
       else
-        squad_query = "workstream ='" + @current_squad.name + "'"
+        squad_query = "workstream ='" + current_squad.name + "'"
       end
 
        #Get all requests for squad "phd", only request which is bound to a project with a suite_tag number (not used atm)
@@ -111,7 +130,7 @@ class SquadsController < ApplicationController
                 current_request = WlLine.find(:first, :conditions=>["request_id = ?", request_phd.request_id])
                 if !current_request 
                   #If not get the request
-                  @not_in_workload << request_phd
+                  not_in_workload << request_phd
                 end
               end
             end
@@ -128,7 +147,7 @@ class SquadsController < ApplicationController
               current_request = WlLine.find(:first, :conditions=>["request_id = ?", request_squad.request_id])
               if !current_request 
                 #If not get the request
-                @not_in_workload << request_squad
+                not_in_workload << request_squad
               end
             end
           end
@@ -137,7 +156,49 @@ class SquadsController < ApplicationController
     end
 
     ###
+    return not_in_workload
+  end
 
+  def view_holidays_backup
+
+  end
+
+  def view_late_reporting(current_squad, persons)
+    late_reportings = Array.new
+
+    persons.each do |person|
+      #Late_reporting.new(:person, :project, :delay)
+      late_reporting = Late_reporting.new
+      late_reporting.person = person
+
+      Project.find(:all, :conditions=>["workstream = ? and is_running = ? and is_on_hold = ?", current_squad.name, true, false]).each do |project|
+        project_person = ProjectPerson.find(:first, :conditions => ["project_id = ? and person_id = ?", project.id, person.id])
+        if project_person and project_person.person_id == person.id
+          status = project.get_status
+          date_last_update = status.updated_at
+          if date_last_update
+            last_update = get_date_from_bdd_date(date_last_update)
+            delay = Date.today() - last_update
+            if delay > 15
+              late_reporting.project = project
+              late_reporting.delay = delay
+
+              late_reportings << late_reporting
+            end
+          end
+        end
+      end
+
+    end
+
+    return late_reportings
+  end
+
+  def get_date_from_bdd_date(bdd_date)
+    date_split = bdd_date.to_s.split("-")
+    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+
+    return date
   end
 
   def cap(nb)

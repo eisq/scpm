@@ -10,6 +10,8 @@ report_timeline_count: 30 # Number of timeline displayed in the list of projects
 report_kpi_projects_should_have_suite_for_wp: # The projects with following WPs must have a suite name
     - WP1.5 - SQR
 report_spider_milestone_blacklist: # Milestones without spiders
+    - M14
+    - G9
     - sM14
     - CCB
 report_milestones_eligible_for_note:
@@ -162,23 +164,3 @@ summary_workpackages_highlight:
     - WP7.2.4
     - WP7.2.5
     - WP7.2.6
-    - 2016-WP2.1
-    - 2016-WP2.2
-    - 2016-WP2.3
-    - 2016-WP2.4
-    - 2016-WP3.1.1
-    - 2016-WP3.1.2
-    - 2016-WP3.2
-    - 2016-WP4.1
-    - 2016-WP4.2
-    - 2016-WP4.3
-    - 2016-WP4.4
-    - 2016-WP4.5
-    - 2016-WP4.6
-    - 2016-WP4.7.1
-    - 2016-WP4.7.2
-    - 2016-WP4.7.3
-    - 2016-WP4.8
-    - 2016-WP4.9
-    - 2016-WP5.1
-    - 2016-WP5.2
