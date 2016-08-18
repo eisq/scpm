@@ -91,23 +91,35 @@ function change_squad(squad_id) {
 	<% end %>
 </table>
 
+<br>
+<h3>Requests to be validated planned to be started in the next 2 weeks</h3>
+
 <br/>
 <h3>Late reporting view</h3>
 
 <table class="pdc_table">
 <tr>
-	<th>Person</th>
-	<th>Project</th>
+	<th>STREAM</th>
+	<th>Project Name</th>
 	<th>Reporting delay</th>
 </tr>
 
 <p>Projects with an old reporting (>15 days):</p>
 <% @late_reportings.each do |late_reporting| %>
 <tr class="pdc_tr">
-	<td class="pdc_td"><%= late_reporting.person.name %></td>
+	<td class="pdc_td"><%= late_reporting.squad.name %></td>
 	<td class="pdc_td"><a href="projects/show/<%= late_reporting.project.id.to_s %>"><%= late_reporting.project.name %></a></td>
 	<td class="pdc_td"><%= late_reporting.delay.to_s %></td>
 </tr>
 <% end %>
 
 </table>
+
+<br/>
+<h3>Reporting view</h3>
+
+<%= form_tag :action => 'save_reporting' %>
+	<%= hidden_field_tag('current_squad_id', @current_squad.id.to_s) %>
+	<%= text_area_tag(:reporting, @current_squad.reporting, :cols=>50, :rows=>5) %>
+	<%= submit_tag 'Save' %>
+</form>

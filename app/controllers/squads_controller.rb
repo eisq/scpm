@@ -1,6 +1,6 @@
 class SquadsController < ApplicationController
 
-  Late_reporting = Struct.new(:person, :project, :delay)
+  Late_reporting = Struct.new(:person, :squad, :project, :delay)
 
   def index
 
@@ -159,19 +159,22 @@ class SquadsController < ApplicationController
     return not_in_workload
   end
 
+  def tbv_request_start_soon_view
+    @tbv_request_start_soon = Request.find(:all, :conditions=>["start_date != '' and start_date <= ? and resolution!='in progress' and resolution!='ended' and resolution!='aborted' and status!='cancelled'  and status!='removed' and status!='to be validated'", Date.today()], :order=>"start_date")
+  end
+
   def view_holidays_backup
 
   end
 
   def view_late_reporting(current_squad, persons)
     late_reportings = Array.new
+    already_founds = Array.new
 
     persons.each do |person|
-      #Late_reporting.new(:person, :project, :delay)
-      late_reporting = Late_reporting.new
-      late_reporting.person = person
-
       Project.find(:all, :conditions=>["workstream = ? and is_running = ? and is_on_hold = ?", current_squad.name, true, false]).each do |project|
+        #Late_reporting.new(:person, :squad, :project, :delay)
+        late_reporting = Late_reporting.new
         project_person = ProjectPerson.find(:first, :conditions => ["project_id = ? and person_id = ?", project.id, person.id])
         if project_person and project_person.person_id == person.id
           status = project.get_status
@@ -180,18 +183,43 @@ class SquadsController < ApplicationController
             last_update = get_date_from_bdd_date(date_last_update)
             delay = Date.today() - last_update
             if delay > 15
-              late_reporting.project = project
-              late_reporting.delay = delay
+              to_add = true
+              already_founds.each do |already_found|
+                if project.id == already_found
+                  to_add = false
+                end
+              end
 
-              late_reportings << late_reporting
+              if to_add
+                late_reporting.person = person
+                late_reporting.squad = current_squad
+                late_reporting.project = project
+                late_reporting.delay = delay
+                late_reportings << late_reporting
+                already_founds << late_reporting.project.id
+              end
             end
           end
         end
       end
-
     end
 
     return late_reportings
+  end
+
+  def save_reporting
+    if params[:reporting] != "" and params[:current_squad_id] != ""
+      reporting = params[:reporting]
+      squad_id = params[:current_squad_id].to_i
+
+      squad = Squad.find(:first, :conditions=>["id = ?", squad_id])
+      if squad
+        squad.reporting = reporting
+        squad.save
+      end
+    end
+
+    redirect_to "/squads/index?squad=#{squad_id}"
   end
 
   def get_date_from_bdd_date(bdd_date)

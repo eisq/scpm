@@ -206,13 +206,17 @@ class WlLine < ActiveRecord::Base
 
     if r && !p
       r.project.milestones.each { |m|
-        date = m.date
-        rv << m if date and date >= week_start and date <= week_end
+        if m.done != 2
+          date = m.date
+          rv << m if date and date >= week_start and date <= week_end
+        end
       }
     elsif p
       p.milestones.each { |m|
-        date = m.date
-        rv << m if date and date >= week_start and date <= week_end
+        if m.done != 2
+          date = m.date
+          rv << m if date and date >= week_start and date <= week_end
+        end
       }
     end
 
