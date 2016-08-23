@@ -93,6 +93,7 @@ class WelcomeController < ApplicationController
 private
 
   def get_anomalies
+    @qs_without_request = HistoryCounter.find(:all,:conditions=>["concerned_status_id IS NOT NULL and request_id IS NULL"], :joins => ["JOIN statuses ON statuses.id = history_counters.concerned_status_id", "JOIN projects ON projects.id = statuses.project_id", "JOIN projects as parent ON parent.id = projects.project_id"], :order=>"parent.name ASC, projects.name ASC")
     @not_started          = Request.find(:all, :conditions=>["start_date != '' and start_date <= ? and resolution!='in progress' and resolution!='ended' and resolution!='aborted' and status!='cancelled'  and status!='removed' and status!='to be validated'", Date.today()], :order=>"start_date")
     @null_start_date      = Request.find(:all, :conditions=>["start_date = '' and status='assigned'"], :order=>"start_date")
     @null_milestones      = Request.find(:all, :conditions=>["milestone_date = '' and status != 'cancelled' and resolution='in progress' and milestone != 'N/A'"], :order=>"start_date")
@@ -102,7 +103,6 @@ private
     @ci_projects_late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date < Now()) or (airbus_validation_date_review < Now()) or (deployment_date < Now()))"], :order=>"sqli_validation_date desc")
     @ci_projects_late_objective = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date_objective < Now()) or (airbus_validation_date_objective < Now()) or (deployment_date_objective < Now()))"], :order=>"sqli_validation_date_objective desc")
     @ci_projects_assigned_without_kickoff = CiProject.find(:all, :conditions=>["kick_off_date IS NULL and assigned_to IS NOT NULL"], :order=>"sqli_validation_date desc")
-    @qs_without_request = HistoryCounter.find(:all,:conditions=>["concerned_status_id IS NOT NULL and request_id IS NULL"], :joins => ["JOIN statuses ON statuses.id = history_counters.concerned_status_id", "JOIN projects ON projects.id = statuses.project_id", "JOIN projects as parent ON parent.id = projects.project_id"], :order=>"parent.name ASC, projects.name ASC")
   end
 
 =begin

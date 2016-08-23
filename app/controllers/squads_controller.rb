@@ -10,8 +10,10 @@ class SquadsController < ApplicationController
 
     view_pdc(@persons)
     @not_in_workload = view_not_in_workload(@current_squad)
+    @tbvs = tbv_request_start_soon_view(@persons)
     view_holidays_backup
-    @late_reportings = view_late_reporting(@current_squad, @persons)
+    late_reportings = view_late_reporting(@current_squad, @persons)
+    @late_reportings = late_reportings.sort! { |a,b| b.delay <=> a.delay }
 
   end
 
@@ -159,8 +161,14 @@ class SquadsController < ApplicationController
     return not_in_workload
   end
 
-  def tbv_request_start_soon_view
-    @tbv_request_start_soon = Request.find(:all, :conditions=>["start_date != '' and start_date <= ? and resolution!='in progress' and resolution!='ended' and resolution!='aborted' and status!='cancelled'  and status!='removed' and status!='to be validated'", Date.today()], :order=>"start_date")
+  def tbv_request_start_soon_view(persons)
+    tbvs = Array.new
+
+    persons.each do |person|
+      tbvs << person.tbv_based_on_wl
+    end
+
+    return tbvs
   end
 
   def view_holidays_backup
@@ -170,9 +178,17 @@ class SquadsController < ApplicationController
   def view_late_reporting(current_squad, persons)
     late_reportings = Array.new
     already_founds = Array.new
+    request = ""
 
     persons.each do |person|
-      Project.find(:all, :conditions=>["workstream = ? and is_running = ? and is_on_hold = ?", current_squad.name, true, false]).each do |project|
+      # if the squad is PhD, the request will search about the tag suite_tag_id
+      if current_squad.name == "PhD"
+        request = "suite_tag_id IS NOT NULL"
+      else
+        request = "workstream = #{current_squad.name}"
+      end
+
+      Project.find(:all, :conditions=>[request + " and is_running = true and is_on_hold = false"]).each do |project|
         #Late_reporting.new(:person, :squad, :project, :delay)
         late_reporting = Late_reporting.new
         project_person = ProjectPerson.find(:first, :conditions => ["project_id = ? and person_id = ?", project.id, person.id])
@@ -192,7 +208,7 @@ class SquadsController < ApplicationController
 
               if to_add
                 late_reporting.person = person
-                late_reporting.squad = current_squad
+                late_reporting.squad = Squad.find(:first, :conditions=>["name = ?", project.workstream])
                 late_reporting.project = project
                 late_reporting.delay = delay
                 late_reportings << late_reporting

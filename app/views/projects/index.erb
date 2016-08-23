@@ -1,13 +1,8 @@
 <h2>Projects</h2>
 <% if current_user.has_role?('Admin') %>
   <%= link_to('New',    {:action=>'new'},{:class=>"btnlnk"}) %>
-  <%= link_to('Import', {:action=>'import'},{:class=>"btnlnk"}) %>
-  <%= link_to('Check',  {:action=>'check'},{:class=>"btnlnk"}) %>
 <% end %>
-<%= link_to('Report',       {:action=>'report'},{:class=>"btnlnk"}) %>
 <%= link_to('Summary',      {:action=>'summary'},{:class=>"btnlnk"}) %>
-<%= link_to('WS Reporting', {:action=>'ws_reporting'},{:class=>"btnlnk"}) %>
-<%= link_to('Request changes', {:action=>'week_changes'}, {:class=>'btnlnk'}) %>
 <div class="stats">
   Last RMT update: <%= @last_update %><br/>
   <b>Filter</b>: <%= @wps.size %> WPs with open requests and a status.<br/>

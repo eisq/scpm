@@ -15,111 +15,146 @@ function change_squad(squad_id) {
 
 <h2>Squad <%= select_tag('Squad', options_for_select(@squads.map{|s| [s.name,s.id]}, :selected => @current_squad.id), {:onchange=>"change_squad(this.value);"}) %></h2>
 
-<br/>
-<h3>Workload view</h3>
+<div class="top_left_view">
+	<h3>Workload view</h3>
 
-<p>Number of person linked to this squad: <strong><%= @persons.size.to_s %></strong></p>
+	<p>Number of person linked to this squad: <strong><%= @persons.size.to_s %></strong></p>
 
-<table class="pdc_table">
+	<table class="pdc_table">
 
-<tr>
-	<th>Name</th>
-	<th>Next 5 weeks</th>
-	<th>Next 3 months</th>
-	<th>Avail 8 weeks</th>
-</tr>
-
-<% @workloads.each do |workload| %>
-<tr class="pdc_tr">
-	<td class="pdc_td_title"><a href='/workloads/?person_id=<%= workload.person.id %>'><%= workload.person.name %></a></td>
-	<% if workload.next_month_percents.to_i > 105 %>
-		<td class="pdc_td_red">
-	<% elsif workload.next_month_percents.to_i < 90 %>
-		<td class="pdc_td_orange">
-	<% else %>
-		<td class="pdc_td">
-	<% end %>
-	<%= workload.next_month_percents %>%</td>
-	<td class="pdc_td"><%= workload.three_next_months_percents %>%</td>
-	<td class="pdc_td"><%= workload.sum_availability.round %></td>
-</tr>
-<% end %>
-
-<tr class="pdc_tr_separator">
-	<td colspan=4></td>
-</tr>
-
-<tr class="pdc_tr">
-	<td class="pdc_td_total_title">Total</td>
-	<td class="pdc_td_total<%=@totals_color%>"><%= @totals_5_weeks %>%</td>
-	<td class="pdc_td_total"><%= @totals_3_months %>%</td>
-	<td class="pdc_td_total"></td>
-</tr>
-
-<tr class="pdc_tr">
-	<td class="pdc_td_total_title">Capped total</td>
-	<td class="pdc_td_total<%=@cap_totals_color%>"><%= @cap_totals_5_weeks %>%</td>
-	<td class="pdc_td_total"><%= @cap_totals_3_months %>%</td>
-	<td class="pdc_td_total"></td>
-</tr>
-
-<tr class="pdc_tr">
-	<td class="pdc_td_total_title">Availability</td>
-	<td class="pdc_td_total"></td>
-	<td class="pdc_td_total"></td>
-	<td class="pdc_td_total"><%= @avail_totals %></td>
-</tr>
-
-</table>
-
-<br>
-<h3>List of requests not in workload</h3>
-
-<table class="pdc_table">
 	<tr>
-		<th>Request</th>
-		<th colspan=3>WP</th>
-		<th>Squad</th>
+		<th>Name</th>
+		<th>Next 5 weeks</th>
+		<th>Next 3 months</th>
+		<th>Avail 8 weeks</th>
 	</tr>
 
-	<% @not_in_workload.each do |request| %>
+	<% @workloads.each do |workload| %>
 	<tr class="pdc_tr">
-		<td class="pdc_td"><%= request.request_id %></td>
-		<td colspan=3><%= request.work_package %></td>
-		<td class="pdc_td"><%= request.workstream.to_s %></td>
+		<td class="pdc_td_title"><a href='/workloads/?person_id=<%= workload.person.id %>'><%= workload.person.name %></a></td>
+		<% if workload.next_month_percents.to_i > 105 %>
+			<td class="pdc_td_red">
+		<% elsif workload.next_month_percents.to_i < 90 %>
+			<td class="pdc_td_orange">
+		<% else %>
+			<td class="pdc_td">
+		<% end %>
+		<%= workload.next_month_percents %>%</td>
+		<td class="pdc_td"><%= workload.three_next_months_percents %>%</td>
+		<td class="pdc_td"><%= workload.sum_availability.round %></td>
 	</tr>
 	<% end %>
-</table>
 
-<br>
-<h3>Requests to be validated planned to be started in the next 2 weeks</h3>
+	<tr class="pdc_tr_separator">
+		<td colspan=4></td>
+	</tr>
 
-<br/>
-<h3>Late reporting view</h3>
+	<tr class="pdc_tr">
+		<td class="pdc_td_total_title">Total</td>
+		<td class="pdc_td_total<%=@totals_color%>"><%= @totals_5_weeks %>%</td>
+		<td class="pdc_td_total"><%= @totals_3_months %>%</td>
+		<td class="pdc_td_total"></td>
+	</tr>
 
-<table class="pdc_table">
-<tr>
-	<th>STREAM</th>
-	<th>Project Name</th>
-	<th>Reporting delay</th>
-</tr>
+	<tr class="pdc_tr">
+		<td class="pdc_td_total_title">Capped total</td>
+		<td class="pdc_td_total<%=@cap_totals_color%>"><%= @cap_totals_5_weeks %>%</td>
+		<td class="pdc_td_total"><%= @cap_totals_3_months %>%</td>
+		<td class="pdc_td_total"></td>
+	</tr>
 
-<p>Projects with an old reporting (>15 days):</p>
-<% @late_reportings.each do |late_reporting| %>
-<tr class="pdc_tr">
-	<td class="pdc_td"><%= late_reporting.squad.name %></td>
-	<td class="pdc_td"><a href="projects/show/<%= late_reporting.project.id.to_s %>"><%= late_reporting.project.name %></a></td>
-	<td class="pdc_td"><%= late_reporting.delay.to_s %></td>
-</tr>
-<% end %>
+	<tr class="pdc_tr">
+		<td class="pdc_td_total_title">Availability</td>
+		<td class="pdc_td_total"></td>
+		<td class="pdc_td_total"></td>
+		<td class="pdc_td_total"><%= @avail_totals %></td>
+	</tr>
 
-</table>
+	</table>
 
-<br/>
-<h3>Reporting view</h3>
+	<br/>
 
-<%= form_tag :action => 'save_reporting' %>
-	<%= hidden_field_tag('current_squad_id', @current_squad.id.to_s) %>
-	<%= text_area_tag(:reporting, @current_squad.reporting, :cols=>50, :rows=>5) %>
-	<%= submit_tag 'Save' %>
-</form>
+	<h3>Late reporting view</h3>
+
+	<table class="pdc_table">
+	<tr>
+		<th>WS</th>
+		<th>Project Name</th>
+		<th>Reporting delay</th>
+	</tr>
+
+	<p>Projects with an old reporting (>15 days):</p>
+	<% @late_reportings.each do |late_reporting| %>
+	<tr class="pdc_tr">
+		<td class="pdc_td">
+			<% if late_reporting.squad %>
+				<%= late_reporting.squad.name %>
+			<% end %>
+		</td>
+		<td><a href="/projects/show/<%= late_reporting.project.id.to_s %>"><%= late_reporting.project.full_name %></a></td>
+		<td class="pdc_td"><%= late_reporting.delay.to_s %></td>
+	</tr>
+	<% end %>
+
+	</table>
+</div>
+
+<div class="top_middle_view">
+
+	<h3>List of requests not in workload</h3>
+
+	<table class="pdc_table">
+		<tr>
+			<th>Request</th>
+			<th colspan=3>WP</th>
+			<th>Squad</th>
+		</tr>
+
+		<% @not_in_workload.each do |request| %>
+		<tr class="pdc_tr">
+			<td class="pdc_td"><a href="http://toulouse.sqli.com/EMN/view.php?id=<%= request.request_id.to_s %>"><%= request.request_id %></a></td>
+			<td colspan=3><%= request.work_package %></td>
+			<td class="pdc_td"><%= request.workstream.to_s %></td>
+		</tr>
+		<% end %>
+	</table>
+
+	<br>
+
+	<h3>Requests to be validated planned to be started in the next 2 weeks</h3>
+
+	<table class="pdc_table">
+		<tr>
+			<th>Person</th>
+			<th>Request ID</th>
+			<th>Project name</th>
+		</tr>
+		<% if @tbvs and @tbvs.count != 0 %>
+			<% @tbvs.each do |requests| %>
+				<% requests.each do |request| %>
+					<tr class="pdc_tr">
+						<td><%= request.resp.trigram.to_s %></td>
+						<td><a href="http://toulouse.sqli.com/EMN/view.php?id=<%= request.request_id.to_s %>"><%= request.request_id.to_s %></a></td>
+						<td>
+							<% if request.project %>
+								<a href="/projects/show/<%= request.project.id.to_s %>"><%= request.project.full_name %></a>
+							<% end %>
+						</td>
+					</tr>
+				<% end %>
+			<% end %>
+		<% end %>
+	</table>
+
+</div>
+
+<div class="top_right_view">
+	<h3>Reporting view</h3>
+
+	<%= form_tag :action => 'save_reporting' %>
+		<%= hidden_field_tag('current_squad_id', @current_squad.id.to_s) %>
+		<%= text_area_tag(:reporting, @current_squad.reporting, :cols=>50, :rows=>10) %>
+		<br/><br/>
+		<%= submit_tag 'Save' %>
+	</form>
+</div>

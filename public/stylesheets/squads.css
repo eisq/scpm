@@ -25,7 +25,22 @@ div#banner {
   -webkit-box-shadow: inset 4px 4px 4px #F6F;
   }
 
+.top_left_view {
+  float:left;
+}
+
+.top_middle_view {
+  float:left;
+  margin-left: 50px;
+}
+
+.top_right_view {
+  float:left;
+  margin-left: 50px;
+}
+
 .pdc_table {
+  max-width: 470px;
   border-collapse: collapse;
   border-style: solid;
   border-width: 1px;

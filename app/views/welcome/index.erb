@@ -8,6 +8,7 @@ Total: <b><%= @report.requests.size %></b> requests<br/>
 
 <h2>Anomalies</h2>
 
+<%= report_by("spider consolidated without request", @qs_without_request, "qswtreq") %>
 <%= report_by("should have started", @not_started, "not_started") %>
 <%= report_by("without start date", @null_start_date, "nulls") %>
 <%= report_by("without milestone date", @null_milestones, "nullm") %>
