@@ -185,7 +185,7 @@ class SquadsController < ApplicationController
       if current_squad.name == "PhD"
         request = "suite_tag_id IS NOT NULL"
       else
-        request = "workstream = #{current_squad.name}"
+        request = "workstream = '#{current_squad.name}'"
       end
 
       Project.find(:all, :conditions=>[request + " and is_running = true and is_on_hold = false"]).each do |project|
