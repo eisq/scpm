@@ -281,26 +281,28 @@ $( document ).ready(function() {
 	<td class="consolidation_td_activity"><bold>Comments</bold></td>
 </tr>
 <% @maturity_deliverables.each do |maturity| %>
-<tr class="consolidation_tr_deliverable">
-	<% number_rows = number_rows + 1 %>
-	<% actual_number_maturities = actual_number_maturities + 1 %>
-	<td class="consolidation_td_deliverable">
-		<%= maturity.svt_deviation_deliverable.name %>
-	</td>
-	<td class="consolidation_td_deliverable_left_maturity">
-		<% if maturity.planned != "" %>
-			<%= maturity.planned %>
-		<% else %>
-			<%= select_tag('planned', options_for_select(@achieved_list, maturity.planned), {:onchange=>"change_planned(#{maturity.id.to_s}, this.value);"}) %>
-		<% end %>
-	</td>
-	<td class="consolidation_td_deliverable_left_maturity">
-		<%= select_tag('achieved', options_for_select(@achieved_list, maturity.achieved), {:onchange=>"change_score(#{maturity.id.to_s}, this.value);"}) %>
-	</td>
-	<td class="consolidation_td_deliverable_right_maturity">
-		<%= text_area_tag('comment', maturity.comment, :cols=>21, :rows=>1, :id=>"#{maturity.id.to_s}", :class=>"conso_tf") %>
-	</td>
-</tr>
+	<% if maturity %>
+		<tr class="consolidation_tr_deliverable">
+			<% number_rows = number_rows + 1 %>
+			<% actual_number_maturities = actual_number_maturities + 1 %>
+			<td class="consolidation_td_deliverable">
+				<%= maturity.svt_deviation_deliverable.name %>
+			</td>
+			<td class="consolidation_td_deliverable_left_maturity">
+				<% if maturity.planned != "" %>
+					<%= maturity.planned %>
+				<% else %>
+					<%= select_tag('planned', options_for_select(@achieved_list, maturity.planned), {:onchange=>"change_planned(#{maturity.id.to_s}, this.value);"}) %>
+				<% end %>
+			</td>
+			<td class="consolidation_td_deliverable_left_maturity">
+				<%= select_tag('achieved', options_for_select(@achieved_list, maturity.achieved), {:onchange=>"change_score(#{maturity.id.to_s}, this.value);"}) %>
+			</td>
+			<td class="consolidation_td_deliverable_right_maturity">
+				<%= text_area_tag('comment', maturity.comment, :cols=>21, :rows=>1, :id=>"#{maturity.id.to_s}", :class=>"conso_tf") %>
+			</td>
+		</tr>
+	<% end %>
 <% if number_rows == 20 and @maturity_deliverables.count > actual_number_maturities %>
 	<% number_rows = 0 %>
 	</table>

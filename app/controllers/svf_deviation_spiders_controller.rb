@@ -294,30 +294,35 @@ class SvfDeviationSpidersController < ApplicationController
 
 	    	@achieved_list = ["", "M&T", "Other"]
 	    	@maturity_deliverables = Array.new
-	    	@deviation_spider.svf_deviation_spider_deliverables.all(
-	    	    :joins =>["JOIN svf_deviation_deliverables ON svf_deviation_spider_deliverables.svf_deviation_deliverable_id = svf_deviation_deliverables.id"],
-	    	    :conditions => ["svf_deviation_deliverables.is_active = ?", true], 
-	    	    :order => ["svf_deviation_deliverables.name"]).each do |spider_deliverable|
 
-	    		maturity_temp = nil
-	    		maturity_temp = SvfDeviationSpiderMaturity.find(:first, :conditions=>["svf_deviation_spider_id = ? and svf_deviation_deliverable_id = ?", @deviation_spider.id, spider_deliverable.svf_deviation_deliverable.id])
+	    	deliverables = Array.new
+	    	deliverables = @deviation_spider.get_parameters.deliverables
+	    	deliverables.sort! {|a, b| a.name.downcase <=> b.name.downcase}
+	    	deliverables.each do |spider_deliverable|
 
-	    		if maturity_temp
-	    			maturity = maturity_temp
-	    		else
-	    			maturity = SvfDeviationSpiderMaturity.new
-		    		maturity.svf_deviation_spider_id = @deviation_spider.id
-		    		maturity.svf_deviation_deliverable_id = spider_deliverable.svf_deviation_deliverable.id
-		    		maturity.planned = maturity.get_planned
-		    		if maturity.planned == ""
-			    		maturity.achieved = ""
-			    		maturity.comment = "This deliverable has been added after project customisation"
+	    		svf_deviation_spider_deliverable = SvfDeviationSpiderDeliverable.find(:first, :conditions=>["svf_deviation_spider_id = ? and svf_deviation_deliverable_id = ?", deviation_spider_id, spider_deliverable.id])
+	    		if SvfDeviationSpiderValue.find(:all, :conditions=>["svf_deviation_spider_deliverable_id = ?", svf_deviation_spider_deliverable.id]).count > 0
+
+		    		maturity_temp = nil
+		    		maturity_temp = SvfDeviationSpiderMaturity.find(:first, :conditions=>["svf_deviation_spider_id = ? and svf_deviation_deliverable_id = ?", @deviation_spider.id, svf_deviation_spider_deliverable.svf_deviation_deliverable.id])
+
+		    		if maturity_temp
+		    			maturity = maturity_temp
 		    		else
-			    		maturity.achieved = maturity.planned
-			    		maturity.comment = ""
+		    			maturity = SvfDeviationSpiderMaturity.new
+			    		maturity.svf_deviation_spider_id = @deviation_spider.id
+			    		maturity.svf_deviation_deliverable_id = spider_deliverable.id
+			    		maturity.planned = maturity.get_planned
+			    		if maturity.planned == ""
+				    		maturity.achieved = ""
+				    		maturity.comment = "This deliverable has been added after project customisation"
+			    		else
+				    		maturity.achieved = maturity.planned
+				    		maturity.comment = ""
+			    		end
+			    		maturity.save
 		    		end
-		    		maturity.save
-	    		end
+		    	end
 	    		
 	    		@maturity_deliverables << maturity
 	    	end
@@ -346,18 +351,20 @@ class SvfDeviationSpidersController < ApplicationController
 		all_activities = Array.new
 
 		maturity_deliverables.each do |maturity_deliverable|
-			spider_deliverable = SvfDeviationSpiderDeliverable.find(:first, :conditions=>["svf_deviation_spider_id = ? and svf_deviation_deliverable_id = ?", maturity_deliverable.svf_deviation_spider_id, maturity_deliverable.svf_deviation_deliverable_id])
-			if spider_deliverable
-				SvfDeviationSpiderValue.find(:all, :conditions=>["svf_deviation_spider_deliverable_id = ?", spider_deliverable.id]).each do |value|
-					question = SvfDeviationQuestion.find(:first, :conditions=>["id = ?", value.svf_deviation_question_id])
-					if question
-						activity_realisation = Activity_realisation.new #Activity_realisation = Struct.new(:activity, :answer, :deliverable)
-						activity_realisation.activity = question.svf_deviation_activity
-						activity_realisation.answer = value.answer
-						activity_realisation.deliverable = maturity_deliverable.svf_deviation_deliverable
-						activity_realisations << activity_realisation
+			if maturity_deliverable
+				spider_deliverable = SvfDeviationSpiderDeliverable.find(:first, :conditions=>["svf_deviation_spider_id = ? and svf_deviation_deliverable_id = ?", maturity_deliverable.svf_deviation_spider_id, maturity_deliverable.svf_deviation_deliverable_id])
+				if spider_deliverable
+					SvfDeviationSpiderValue.find(:all, :conditions=>["svf_deviation_spider_deliverable_id = ?", spider_deliverable.id]).each do |value|
+						question = SvfDeviationQuestion.find(:first, :conditions=>["id = ?", value.svf_deviation_question_id])
+						if question
+							activity_realisation = Activity_realisation.new #Activity_realisation = Struct.new(:activity, :answer, :deliverable)
+							activity_realisation.activity = question.svf_deviation_activity
+							activity_realisation.answer = value.answer
+							activity_realisation.deliverable = maturity_deliverable.svf_deviation_deliverable
+							activity_realisations << activity_realisation
 
-						all_activities << question.svf_deviation_activity
+							all_activities << question.svf_deviation_activity
+						end
 					end
 				end
 			end
