@@ -129,16 +129,15 @@
 
       <% 
       end
-      
       if @backup_holidays and @backup_holidays.count > 0 %>
-        <strong>Warning, within the next 2 weeks, you backup: </strong>
+        <strong>Warning, within the next 2 weeks, you backup:</strong>
         <ul>
         <% i = 0 %>
         <% @backup_holidays.each do |bh| %>
           <li><strong><%= bh %> - <%= @backup_holidays_comments[i] %></strong></li>
+          <% i = i + 1 %>
         <% end %>
-      </ul>
-      <% i = i + 1 %>
+        </ul>
       <% end %>
 
     </td>

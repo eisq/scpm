@@ -10,7 +10,6 @@ Bonjour <%= resp.name %>,<br/>
 voici les anomalies (informations contradictoires) renseignées dans RMT qu'il faudrait corriger.<br/>
 <br/>
 
-<%= report_by("Quality Spider consolidé sans ticket lié)", @qs_without_request.select {|hc| hc.author_id == resp.id} , "qswtreq", true) %>
 <%= report_by("Devrait avoir démarré (soit la start date est à décaler, soit le progress doit être changé à in progress)", @not_started.select {|r| r.assigned_to == resp.rmt_user} , "not_started", true) %>
 <%= report_by("Sans start date (devrait jamais arriver)", @null_start_date.select {|r| r.assigned_to == resp.rmt_user}, "nulls", true) %>
 <%= report_by("Sans milestone date (ça peut être vide mais c'est rare)", @null_milestones.select {|r| r.assigned_to == resp.rmt_user}, "nullm", true) %>

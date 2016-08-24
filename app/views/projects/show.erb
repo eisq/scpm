@@ -65,8 +65,17 @@ function add(id, nb_months, has_requests, has_rights) {
                 Remaining Spiders :       <%= @project.calcul_spider_previsional  %><br />
                 Last QS Incrementation :  <%= @project.get_last_qs_increment_show.to_s if @project.get_last_qs_increment_show %>
                 <%
-                color, number = @project.get_counter_should_have_been_incremented
+                color, number, next_inc = @project.get_counter_should_have_been_incremented
                 %>
+                <br/>
+                Next QS Incrementation in : 
+                <% if next_inc == "NA" %>
+                  N/A project on hold
+                <% elsif next_inc.to_i > 1 %>
+                  <%= next_inc %> days
+                <% else %>
+                  <%= next_inc %> day
+                <% end %>
                 <br/>
                 <span style="color:<%= color %>;">Counter should have been incremented : <%= number %></span>
               </div>

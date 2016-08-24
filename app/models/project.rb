@@ -1045,7 +1045,8 @@ class Project < ActiveRecord::Base
   end
 
   def get_counter_should_have_been_incremented
-    days = number_increment = number_missing_increment = on_hold_days = 0
+    days = number_increment = number_missing_increment = on_hold_days = next_inc_days = 0
+    next_inc = ""
     color = "black"
 
     on_hold_project = OnHoldProject.find(:first, :conditions=>["project_id = ?", self.id])
@@ -1066,7 +1067,19 @@ class Project < ActiveRecord::Base
       number_missing_increment = 1
     end
 
-    return color, number_missing_increment
+    last_spider_increment = self.get_last_qs_increment_show
+    if last_spider_increment or (on_hold_project and !on_hold_project.on_hold)
+      next_inc_days = Date.today - get_last_qs_increment_show
+      if next_inc_days > 30
+        next_inc = 0
+      else
+        next_inc = 30 - next_inc_days
+      end
+    else
+      next_inc = "NA"
+    end
+
+    return color, number_missing_increment, next_inc.to_s
   end
 
   # Get the last incrementation date of spider count
@@ -1254,6 +1267,13 @@ class Project < ActiveRecord::Base
 
   def get_current_svf_deviation_spider_reference
     return SvfDeviationSpiderReference.find(:first, :conditions => ["project_id = ?", self.id], :order => "version_number desc")
+  end
+
+  def get_date_from_bdd_date(bdd_date)
+    date_split = bdd_date.to_s.split("-")
+    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+
+    return date
   end
 
 private

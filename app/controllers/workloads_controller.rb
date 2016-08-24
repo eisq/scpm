@@ -125,13 +125,10 @@ class WorkloadsController < ApplicationController
         # Calcul the number of day of holiday. If it's over the threshold, display the warning
         person_holiday_load.map { |wload| load_total += wload.wlload }
         if (load_total > APP_CONFIG['workload_holiday_threshold_before_backup'])
-          if !@backup_holidays.include?(b.person.name)
            @backup_holidays << b.person.name 
            @backup_holidays_comments << b.comment
-          end
         end
       end
-
     end
   end
 

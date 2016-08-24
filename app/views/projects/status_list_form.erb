@@ -21,7 +21,7 @@
 	<% if @project.is_qr_qwr
 		temp = nil
 		number_missing_increment = 0
-		temp, number_missing_increment = @project.get_counter_should_have_been_incremented
+		temp, number_missing_increment, temp = @project.get_counter_should_have_been_incremented
 
 		if number_missing_increment > 0 %>
 			<!-- CHOICE 2 -->

@@ -1,160 +1,253 @@
 <script language="Javascript">
 
-function change_squad(squad_id) {
-  if(location.toString().indexOf("index") !== -1)
-  {
-	location.replace("index?squad="+squad_id);
-  }
-  else
-  {
-	location.replace("squads/index?squad="+squad_id);
-  }
-}
+	function change_squad(squad_id) {
+	  if(location.toString().indexOf("index") !== -1)
+	  {
+		location.replace("index?squad="+squad_id);
+	  }
+	  else
+	  {
+		location.replace("squads/index?squad="+squad_id);
+	  }
+	}
+
+	jQuery( document ).ready(function() {
+		jQuery(".holiday_td").hover(
+		  function(e) {
+		  	if (holiday_hover_detail[jQuery( this ).attr('id')].length > 0)
+		  	{
+		    	jQuery("#holiday_detail").show();
+		    	jQuery("#holiday_detail").html(holiday_hover_detail[jQuery( this ).attr('id')]);
+		    	jQuery("#holiday_detail").css({top:e.pageY, left:e.pageX});
+		    }
+		  }, function() {
+		  	    jQuery("#holiday_detail").hide();
+		  }
+		);
+	});
 
 </script>
 
 <h2>Squad <%= select_tag('Squad', options_for_select(@squads.map{|s| [s.name,s.id]}, :selected => @current_squad.id), {:onchange=>"change_squad(this.value);"}) %></h2>
 
-<div class="top_left_view">
-	<h3>Workload view</h3>
+<div id="holiday_detail"></div>
 
-	<p>Number of person linked to this squad: <strong><%= @persons.size.to_s %></strong></p>
+<table>
+<tr>
+	<td colspan=2>
+		<h3>Reporting view</h3>
 
-	<table class="pdc_table">
+		<%= form_tag :action => 'save_reporting' %>
+			<%= hidden_field_tag('current_squad_id', @current_squad.id.to_s) %>
+			<%= text_area_tag(:reporting, @current_squad.reporting, :cols=>120, :rows=>9) %>
+			<br/><br/>
+			<%= submit_tag 'Save' %>
+		</form>
+	</td>
+</tr>
 
-	<tr>
-		<th>Name</th>
-		<th>Next 5 weeks</th>
-		<th>Next 3 months</th>
-		<th>Avail 8 weeks</th>
-	</tr>
+<tr>
+	<td style="vertical-align:top;">
+		<h3>Workload view</h3>
 
-	<% @workloads.each do |workload| %>
-	<tr class="pdc_tr">
-		<td class="pdc_td_title"><a href='/workloads/?person_id=<%= workload.person.id %>'><%= workload.person.name %></a></td>
-		<% if workload.next_month_percents.to_i > 105 %>
-			<td class="pdc_td_red">
-		<% elsif workload.next_month_percents.to_i < 90 %>
-			<td class="pdc_td_orange">
-		<% else %>
-			<td class="pdc_td">
-		<% end %>
-		<%= workload.next_month_percents %>%</td>
-		<td class="pdc_td"><%= workload.three_next_months_percents %>%</td>
-		<td class="pdc_td"><%= workload.sum_availability.round %></td>
-	</tr>
-	<% end %>
+		<p>Number of person linked to this squad: <strong><%= @persons.size.to_s %></strong></p>
 
-	<tr class="pdc_tr_separator">
-		<td colspan=4></td>
-	</tr>
+		<table class="pdc_table">
 
-	<tr class="pdc_tr">
-		<td class="pdc_td_total_title">Total</td>
-		<td class="pdc_td_total<%=@totals_color%>"><%= @totals_5_weeks %>%</td>
-		<td class="pdc_td_total"><%= @totals_3_months %>%</td>
-		<td class="pdc_td_total"></td>
-	</tr>
-
-	<tr class="pdc_tr">
-		<td class="pdc_td_total_title">Capped total</td>
-		<td class="pdc_td_total<%=@cap_totals_color%>"><%= @cap_totals_5_weeks %>%</td>
-		<td class="pdc_td_total"><%= @cap_totals_3_months %>%</td>
-		<td class="pdc_td_total"></td>
-	</tr>
-
-	<tr class="pdc_tr">
-		<td class="pdc_td_total_title">Availability</td>
-		<td class="pdc_td_total"></td>
-		<td class="pdc_td_total"></td>
-		<td class="pdc_td_total"><%= @avail_totals %></td>
-	</tr>
-
-	</table>
-
-	<br/>
-
-	<h3>Late reporting view</h3>
-
-	<table class="pdc_table">
-	<tr>
-		<th>WS</th>
-		<th>Project Name</th>
-		<th>Reporting delay</th>
-	</tr>
-
-	<p>Projects with an old reporting (>15 days):</p>
-	<% @late_reportings.each do |late_reporting| %>
-	<tr class="pdc_tr">
-		<td class="pdc_td">
-			<% if late_reporting.squad %>
-				<%= late_reporting.squad.name %>
-			<% end %>
-		</td>
-		<td><a href="/projects/show/<%= late_reporting.project.id.to_s %>"><%= late_reporting.project.full_name %></a></td>
-		<td class="pdc_td"><%= late_reporting.delay.to_s %></td>
-	</tr>
-	<% end %>
-
-	</table>
-</div>
-
-<div class="top_middle_view">
-
-	<h3>List of requests not in workload</h3>
-
-	<table class="pdc_table">
 		<tr>
-			<th>Request</th>
-			<th colspan=3>WP</th>
-			<th>Squad</th>
+			<th>Name</th>
+			<th>Next 5 weeks</th>
+			<th>Next 3 months</th>
+			<th>Avail 8 weeks</th>
 		</tr>
 
-		<% @not_in_workload.each do |request| %>
+		<% @workloads.each do |workload| %>
 		<tr class="pdc_tr">
-			<td class="pdc_td"><a href="http://toulouse.sqli.com/EMN/view.php?id=<%= request.request_id.to_s %>"><%= request.request_id %></a></td>
-			<td colspan=3><%= request.work_package %></td>
-			<td class="pdc_td"><%= request.workstream.to_s %></td>
+			<td class="pdc_td_title"><a href='/workloads/?person_id=<%= workload.person.id %>'><%= workload.person.name %></a></td>
+			<% if workload.next_month_percents.to_i > 105 %>
+				<td class="pdc_td_red">
+			<% elsif workload.next_month_percents.to_i < 90 %>
+				<td class="pdc_td_orange">
+			<% else %>
+				<td class="pdc_td">
+			<% end %>
+			<%= workload.next_month_percents %>%</td>
+			<td class="pdc_td"><%= workload.three_next_months_percents %>%</td>
+			<td class="pdc_td"><%= workload.sum_availability.round %></td>
 		</tr>
 		<% end %>
-	</table>
 
-	<br>
-
-	<h3>Requests to be validated planned to be started in the next 2 weeks</h3>
-
-	<table class="pdc_table">
-		<tr>
-			<th>Person</th>
-			<th>Request ID</th>
-			<th>Project name</th>
+		<tr class="pdc_tr_separator">
+			<td colspan=4></td>
 		</tr>
-		<% if @tbvs and @tbvs.count != 0 %>
-			<% @tbvs.each do |requests| %>
-				<% requests.each do |request| %>
-					<tr class="pdc_tr">
-						<td><%= request.resp.trigram.to_s %></td>
-						<td><a href="http://toulouse.sqli.com/EMN/view.php?id=<%= request.request_id.to_s %>"><%= request.request_id.to_s %></a></td>
-						<td>
-							<% if request.project %>
-								<a href="/projects/show/<%= request.project.id.to_s %>"><%= request.project.full_name %></a>
-							<% end %>
+
+		<tr class="pdc_tr">
+			<td class="pdc_td_total_title">Total</td>
+			<td class="pdc_td_total<%=@totals_color%>"><%= @totals_5_weeks %>%</td>
+			<td class="pdc_td_total"><%= @totals_3_months %>%</td>
+			<td class="pdc_td_total"></td>
+		</tr>
+
+		<tr class="pdc_tr">
+			<td class="pdc_td_total_title">Capped total</td>
+			<td class="pdc_td_total<%=@cap_totals_color%>"><%= @cap_totals_5_weeks %>%</td>
+			<td class="pdc_td_total"><%= @cap_totals_3_months %>%</td>
+			<td class="pdc_td_total"></td>
+		</tr>
+
+		<tr class="pdc_tr">
+			<td class="pdc_td_total_title">Availability</td>
+			<td class="pdc_td_total"></td>
+			<td class="pdc_td_total"></td>
+			<td class="pdc_td_total"><%= @avail_totals %></td>
+		</tr>
+
+		</table>
+	</td>
+	<td style="vertical-align:top;">
+		<h3>Holidays and backups view</h3>
+		<br/>
+		<table>
+			<tr style="font-weight:bold;">
+				<td>Name</td>
+				<% for week in @workloads_holidays.first.weeks %>
+					<td><%= week %></td>
+				<% end %>
+			</tr>
+
+			<%
+			@workloads_holidays.each do |wl_holiday|
+				holiday_backup_warnings_by_week = {} 
+
+				@resfresh_holidays_backup_warnings[wl_holiday.person.id].each do |hash|
+				holiday_backup_warnings_by_week[hash["holidayObject"].week.to_s] = hash
+				end
+				%>
+
+				<tr>
+					<td><%= wl_holiday.person.name %></td>
+
+					<%
+					wl_line = wl_holiday.wl_lines.first
+					for week in wl_holiday.wl_weeks
+						wlload  = wl_line.get_load_by_week(week) if wl_line
+						wlload  = (wlload == 0.0 ? '' : wlload)
+						holiday_backup_warning = holiday_backup_warnings_by_week[week.to_s]
+
+						backups_name = ""
+						if (holiday_backup_warning != nil)
+
+							holiday_backup_warning["backup_people"].each_with_index { |backup_person, i|
+							backup_name_str = "<li><span style='color:pink;'>" + backup_person + "</span>: " + holiday_backup_warning["backup_comments"][i] + "</li>"
+							backup_name_str = backup_name_str.gsub(/\n/," ")
+							backup_name_str = backup_name_str.gsub(/\r/," ")
+							backups_name << backup_name_str
+							}
+
+							if !holiday_backup_warning["needBackup"]
+								color = "#9F9"
+							elsif !holiday_backup_warning["hasBackup"]
+								color = "red"
+							else
+								color = "#91E9FF"
+							end
+
+						else
+							color = "white"
+						end
+						%>
+
+						<td class="holiday_td" id="holiday_<%= wl_holiday.person.id.to_s + '_' + week.to_s %>" style="border:1px solid black;background:<%= color %>;">
+						<%= wlload %>
 						</td>
-					</tr>
+
+						<!-- Add backups to array -->
+						<SCRIPT language="Javascript">
+							<%= backups_name.size %> > 0 ? holiday_hover_detail["holiday_<%= wl_holiday.person.id.to_s + '_' + week.to_s %>"] = "<ul><%= backups_name.to_s %></ul>" : holiday_hover_detail["holiday_<%= wl_holiday.person.id.to_s + '_' + week.to_s %>"] = "";
+						</SCRIPT>
+						
+					<% end %>
+				</tr>
+			<% end %>
+		</table>
+		<div>
+		<div class="conso_legend" style="background-color:#9F9;">OK</div>
+		<div class="conso_legend" style="background-color:#91E9FF;">OK (with a backup)</div>
+		<div class="conso_legend" style="background-color:red;">Need a backup</div>
+		<div class="conso_legend" style="background-color:pink;">Backup without holiday</div>
+		</div>
+	</td>
+</tr>
+
+<tr>
+	<td style="vertical-align:top;">
+		<h3>Late reporting view (> 15 days)</h3>
+
+		<table class="pdc_table">
+		<tr>
+			<th>WS</th>
+			<th>Project Name</th>
+			<th>Reporting delay</th>
+		</tr>
+
+		<% @late_reportings.each do |late_reporting| %>
+		<tr class="pdc_tr">
+			<td class="pdc_td">
+				<% if late_reporting.squad %>
+					<%= late_reporting.squad.name %>
+				<% end %>
+			</td>
+			<td><a href="/projects/show/<%= late_reporting.project.id.to_s %>"><%= late_reporting.project.full_name %></a></td>
+			<td class="pdc_td"><%= late_reporting.delay.to_s %></td>
+		</tr>
+		<% end %>
+		</table>
+	</td>
+	<td style="vertical-align:top;">
+		<h3>List of requests not in workload</h3>
+
+		<table class="pdc_table">
+			<tr>
+				<th>Request</th>
+				<th>Squad</th>
+				<th>Project Name</th>
+				<th>WP</th>
+			</tr>
+
+			<% @not_in_workload.each do |request| %>
+			<tr class="pdc_tr">
+				<td class="pdc_td"><a href="http://toulouse.sqli.com/EMN/view.php?id=<%= request.request_id.to_s %>"><%= request.request_id %></a></td>
+				<td class="pdc_td"><%= request.workstream.to_s %></td>
+				<td class="pdc_td"><a href="/projects/show/<%= request.project_id.to_s %>"><%= request.project_name %></a></td>
+				<td colspan=3><%= request.work_package %></td>
+			</tr>
+			<% end %>
+		</table>
+	</td>
+</tr>
+
+<tr>
+	<td colspan=2 style="vertical-align:top;">
+		<h3>Requests to be validated planned to be started in the next 2 weeks</h3>
+
+		<table class="pdc_table">
+			<tr>
+				<th>Request ID</th>
+				<th>Project name</th>
+			</tr>
+			<% if @tbvs and @tbvs.count != 0 %>
+				<% @tbvs.each do |requests| %>
+					<% requests.each do |request| %>
+						<tr class="pdc_tr">
+							<td><a href="http://toulouse.sqli.com/EMN/view.php?id=<%= request.request_id.to_s %>"><%= request.request_id.to_s %></a></td>
+							<td>
+								<a href="/projects/show/<%= request.project_id.to_s %>"><%= request.project_name %></a>
+							</td>
+						</tr>
+					<% end %>
 				<% end %>
 			<% end %>
-		<% end %>
-	</table>
-
-</div>
-
-<div class="top_right_view">
-	<h3>Reporting view</h3>
-
-	<%= form_tag :action => 'save_reporting' %>
-		<%= hidden_field_tag('current_squad_id', @current_squad.id.to_s) %>
-		<%= text_area_tag(:reporting, @current_squad.reporting, :cols=>50, :rows=>10) %>
-		<br/><br/>
-		<%= submit_tag 'Save' %>
-	</form>
-</div>
+		</table>
+	</td>
+</tr>
+</table>

@@ -25,22 +25,23 @@ div#banner {
   -webkit-box-shadow: inset 4px 4px 4px #F6F;
   }
 
-.top_left_view {
-  float:left;
+.top_view {
+  float:top;
 }
 
-.top_middle_view {
+.left_view {
   float:left;
-  margin-left: 50px;
+  margin-top: 400px;
 }
 
-.top_right_view {
+.middle_view {
   float:left;
-  margin-left: 50px;
+  margin-top: 400px;
+  margin-left: 30px;
 }
 
 .pdc_table {
-  max-width: 470px;
+  max-width: 550px;
   border-collapse: collapse;
   border-style: solid;
   border-width: 1px;
@@ -108,4 +109,10 @@ strong {
 
 .pdc_tr_separator {
   border: 1px solid black;
+}
+
+.conso_legend {
+  padding-left:5px;
+  width:135px;
+  float:left;
 }

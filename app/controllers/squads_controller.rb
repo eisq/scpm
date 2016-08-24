@@ -11,9 +11,8 @@ class SquadsController < ApplicationController
     view_pdc(@persons)
     @not_in_workload = view_not_in_workload(@current_squad)
     @tbvs = tbv_request_start_soon_view(@persons)
-    view_holidays_backup
-    late_reportings = view_late_reporting(@current_squad, @persons)
-    @late_reportings = late_reportings.sort! { |a,b| b.delay <=> a.delay }
+    view_holidays_backup(@persons)
+    @late_reportings = (view_late_reporting(@current_squad, @persons)).sort! { |a,b| b.delay <=> a.delay }
 
   end
 
@@ -29,7 +28,7 @@ class SquadsController < ApplicationController
         if !params[:squad]
           @current_squad = squad
         end
-        #@squads << squad
+        
       end
     end
     squads = Squad.find(:all, :order => "name")
@@ -171,8 +170,19 @@ class SquadsController < ApplicationController
     return tbvs
   end
 
-  def view_holidays_backup
+  def view_holidays_backup(persons)
+    projects_ids = Array.new
+    @workloads_holidays = []
+    @resfresh_holidays_backup_warnings = {}
+    
+    for p in persons
 
+      @workloads_holidays << Workload.new(p.id,[],[],[], {:only_holidays=>true})
+      # Person Holiday Warning
+      @resfresh_holidays_backup_warnings[p.id] = get_holiday_warning_detailed(p, Date.today+27.weeks)
+    end
+
+    @workloads_holidays = @workloads_holidays.sort_by {|w| [w.person.name]}
   end
 
   def view_late_reporting(current_squad, persons)
@@ -182,7 +192,7 @@ class SquadsController < ApplicationController
 
     persons.each do |person|
       # if the squad is PhD, the request will search about the tag suite_tag_id
-      if current_squad.name == "PhD"
+      if current_squad.name == "PhD" or current_squad.name == "EZC" or current_squad.name == "EZMB" or current_squad.name == "EZMC"
         request = "suite_tag_id IS NOT NULL"
       else
         request = "workstream = '#{current_squad.name}'"
@@ -243,6 +253,65 @@ class SquadsController < ApplicationController
     date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
 
     return date
+  end
+
+  # Return an array of hash
+  # Hash : {"holidayObject" => HolidayModel, "needBackup" => BOOL, "hasBackup" => BOOL, "backup_people" => [STRING], "backup_comments" => [STIRNG]}
+  def get_holiday_warning_detailed(person, dateMax)
+    holiday_array = Array.new
+    index = 0
+
+    # Get holidays
+    person_holiday_load = WlLoad.find(:all,
+        :joins => 'JOIN wl_lines ON wl_lines.id = wl_loads.wl_line_id', 
+        :conditions=>["wl_lines.person_id = ? and wl_lines.wl_type = ? and week >= ? and week < ?", person.id.to_s, WL_LINE_HOLIDAYS, wlweek(Date.today), wlweek(dateMax)],
+        :order=>"week")
+
+    # Each holiday
+    person_holiday_load.each do |holiday|
+
+      backups = WlBackup.find(:all, :conditions=>["person_id = ? and week = ?",person.id.to_s, holiday.week])
+
+      # Create hash object
+      holiday_hash = {"holidayObject" => holiday, "needBackup" => false, "hasBackup" => false, "backup_people" => [], "backup_comments" => []}
+      # Need backup by week load ?
+      if holiday.wlload >= APP_CONFIG['workload_holiday_threshold_before_backup'].to_i
+        holiday_hash["needBackup"] = true
+      end
+      # Have backups ?
+      if backups != nil and backups.size > 0 
+        holiday_hash["hasBackup"] = true
+        backups.each do |b|
+          holiday_hash["backup_people"] << b.backup.name
+          if b.comment != nil and b.comment.length > 0
+            holiday_hash["backup_comments"] << b.comment
+          else
+            holiday_hash["backup_comments"] << ""
+          end
+        end
+      end 
+      # Add hash
+      holiday_array << holiday_hash
+
+      # Check previous and update needBackup if necessary
+      if (index > 0)
+        previous_holiday_hash = holiday_array[index-1]
+
+        if (wlweek_reverse(previous_holiday_hash["holidayObject"].week) + 1.week) == wlweek_reverse(holiday_hash["holidayObject"].week)
+          if ((previous_holiday_hash["holidayObject"].wlload.to_i + holiday_hash["holidayObject"].wlload.to_i) >= 4) 
+            if (previous_holiday_hash["holidayObject"].wlload.to_i >= APP_CONFIG['workload_holiday_threshold_before_backup'].to_i) or (holiday_hash["holidayObject"].wlload.to_i >= APP_CONFIG['workload_holiday_threshold_before_backup'].to_i)
+
+              previous_holiday_hash["needBackup"] = true
+              holiday_hash["needBackup"] = true
+            end
+          end
+        end
+      end
+
+      index += 1
+    end
+
+    return holiday_array
   end
 
   def cap(nb)
