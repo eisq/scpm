@@ -10,7 +10,7 @@ class SquadsController < ApplicationController
 
     view_pdc(@persons)
     @not_in_workload = view_not_in_workload(@current_squad)
-    @tbvs = tbv_request_start_soon_view(@persons)
+    @tbvs = tbv_request_start_soon_view(@current_squad, @persons)
     view_holidays_backup(@persons)
     @late_reportings = (view_late_reporting(@current_squad, @persons)).sort! { |a,b| b.delay <=> a.delay }
 
@@ -160,11 +160,19 @@ class SquadsController < ApplicationController
     return not_in_workload
   end
 
-  def tbv_request_start_soon_view(persons)
+  def tbv_request_start_soon_view(current_squad, persons)
     tbvs = Array.new
 
     persons.each do |person|
       tbvs << person.tbv_based_on_wl
+    end
+
+    tbvs.each do |tbv|
+      tbv.each do |request|
+        if current_squad.name == "PhD" and !request.stream_id
+          tbvs.delete(request)
+        end
+      end
     end
 
     return tbvs
