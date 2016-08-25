@@ -1067,16 +1067,20 @@ class Project < ActiveRecord::Base
       number_missing_increment = 1
     end
 
-    last_spider_increment = self.get_last_qs_increment_show
-    if last_spider_increment or (on_hold_project and !on_hold_project.on_hold)
-      next_inc_days = Date.today - get_last_qs_increment_show
-      if next_inc_days > 30
-        next_inc = 0
-      else
-        next_inc = 30 - next_inc_days
-      end
+    if number_missing_increment > 0
+      next_inc = 0
     else
-      next_inc = "NA"
+      last_spider_increment = self.get_last_qs_increment_show
+      if last_spider_increment or (on_hold_project and !on_hold_project.on_hold)
+        next_inc_days = Date.today - get_last_qs_increment_show
+        if next_inc_days > 30
+          next_inc = 0
+        else
+          next_inc = 30 - next_inc_days
+        end
+      else
+        next_inc = "NA"
+      end
     end
 
     return color, number_missing_increment, next_inc.to_s

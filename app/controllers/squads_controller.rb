@@ -192,7 +192,7 @@ class SquadsController < ApplicationController
 
     persons.each do |person|
       # if the squad is PhD, the request will search about the tag suite_tag_id
-      if current_squad.name == "PhD" or current_squad.name == "EZC" or current_squad.name == "EZMB" or current_squad.name == "EZMC"
+      if current_squad.name == "PhD"
         request = "suite_tag_id IS NOT NULL"
       else
         request = "workstream = '#{current_squad.name}'"
@@ -218,7 +218,13 @@ class SquadsController < ApplicationController
 
               if to_add
                 late_reporting.person = person
-                late_reporting.squad = Squad.find(:first, :conditions=>["name = ?", project.workstream])
+                if Squad.find(:first, :conditions=>["name = ?", project.workstream])
+                  late_reporting.squad = Squad.find(:first, :conditions=>["name = ?", project.workstream])
+                else
+                  squad = Squad.new
+                  squad.name = project.workstream
+                  late_reporting.squad = squad
+                end
                 late_reporting.project = project
                 late_reporting.delay = delay
                 late_reportings << late_reporting
