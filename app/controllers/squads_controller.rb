@@ -167,10 +167,20 @@ class SquadsController < ApplicationController
       tbvs << person.tbv_based_on_wl
     end
 
-    tbvs.each do |tbv|
-      tbv.each do |request|
-        if current_squad.name == "PhD" and !request.stream_id
-          tbvs.delete(request)
+    if current_squad.name == "PhD"
+      tbvs.each do |tbv|
+        tbv.each do |request|
+          if request.project and (!request.project.suite_tag_id)
+            tbv.delete(request)
+          end
+        end
+      end
+    else
+      tbvs.each do |tbv|
+        tbv.each do |request|
+          if request.project and (request.project.suite_tag_id)
+            tbv.delete(request)
+          end
         end
       end
     end
