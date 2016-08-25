@@ -164,25 +164,20 @@ class SquadsController < ApplicationController
     tbvs = Array.new
 
     persons.each do |person|
-      tbvs << person.tbv_based_on_wl
-    end
+      tbv_based_on_wl = person.tbv_based_on_wl
+      tbv_based_on_wl.each do |request|
+        if current_squad.name == "PhD"
+          if request.project and !request.project.suite_tag_id
+            tbv_based_on_wl -= [request]
+          end
+        else
+          if request.project and request.project.suite_tag_id
+            tbv_based_on_wl -= [request]
+          end
+        end
+      end
 
-    if current_squad.name == "PhD"
-      tbvs.each do |tbv|
-        tbv.each do |request|
-          if request.project and (!request.project.suite_tag_id)
-            tbv.delete(request)
-          end
-        end
-      end
-    else
-      tbvs.each do |tbv|
-        tbv.each do |request|
-          if request.project and (request.project.suite_tag_id)
-            tbv.delete(request)
-          end
-        end
-      end
+      tbvs << tbv_based_on_wl
     end
 
     return tbvs
