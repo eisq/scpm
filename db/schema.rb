@@ -1188,6 +1188,9 @@ ActiveRecord::Schema.define(:version => 2016081823032016) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "reporting"
+    t.string   "workstream1"
+    t.string   "workstream2"
+    t.string   "workstream3"
   end
 
   create_table "statuses", :force => true do |t|

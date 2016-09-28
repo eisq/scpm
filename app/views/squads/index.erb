@@ -198,7 +198,14 @@
 					<%= late_reporting.squad.name %>
 				<% end %>
 			</td>
-			<td><a href="/projects/show/<%= late_reporting.project.id.to_s %>"><%= late_reporting.project.full_name %></a></td>
+			<td>
+				<a href="/projects/show/<%= late_reporting.project.id.to_s %>"><span style="color:<%= late_reporting.color %>;">
+					<% if late_reporting.delay.to_i > 30 %>
+						(<%= late_reporting.last_update.to_s %>) 
+					<% end %>
+					<%= late_reporting.project.full_name %>
+				</span></a>
+			</td>
 			<td class="pdc_td"><%= late_reporting.delay.to_s %></td>
 		</tr>
 		<% end %>
@@ -239,6 +246,7 @@
 			<tr>
 				<th>Request ID</th>
 				<th>Project name</th>
+				<th>Person</th>
 			</tr>
 			<% if @tbvs and @tbvs.count != 0 %>
 				<% @tbvs.each do |requests| %>
@@ -251,6 +259,9 @@
 								<% else %>
 									<%= request.project_name %></td>
 								<% end %>
+							</td>
+							<td>
+								<%= request.assigned_to %>
 							</td>
 						</tr>
 					<% end %>

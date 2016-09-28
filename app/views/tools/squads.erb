@@ -2,7 +2,9 @@
 <%= form_tag({:action => 'squad_add'}, :multipart => true) %>
 <table><tr><td>
 	Name: </td><td><%= text_field_tag('squad_name', '') %></td></tr><tr><td>
-	Supervisor: </td><td><%= select_tag('squad_supervisor', options_for_select(@supervisors.map{|s| [s.name,s.id]})) %></td></tr><tr><td colspan=2>
+	Supervisor: </td><td><%= select_tag('squad_supervisor', options_for_select(@supervisors.map{|s| [s.name,s.id]})) %></td></tr><tr><td>
+	Workstreams: </td><td><%= text_field_tag('workstream1', '', :size => 10) %><%= text_field_tag('workstream2', '', :size => 10) %><%= text_field_tag('workstream3', '', :size => 10) %></td></tr><tr><td colspan=2>
+
 	<%= submit_tag "Add" %></td></tr>
 </table>
 </form>
@@ -13,6 +15,9 @@
 		<%= hidden_field_tag('squad_id', squad.id) %>
 		<%= text_field_tag('squad_name', squad.name) %>
 		<%= select_tag('squad_supervisor', options_for_select(@supervisors.map{|s| [s.name,s.id]}, :selected => squad.supervisor.to_i)) %>
+		<%= text_field_tag('workstream1', squad.workstream1, :size => 10) %>
+		<%= text_field_tag('workstream2', squad.workstream2, :size => 10) %>
+		<%= text_field_tag('workstream3', squad.workstream3, :size => 10) %>
 		<%= submit_tag "Save" %>
 		<%= submit_tag "Delete" %>
 	</form>

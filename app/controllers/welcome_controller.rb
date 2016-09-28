@@ -103,6 +103,7 @@ private
     @ci_projects_late = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date < Now()) or (airbus_validation_date_review < Now()) or (deployment_date < Now()))"], :order=>"sqli_validation_date desc")
     @ci_projects_late_objective = CiProject.find(:all, :conditions=>["(status='Accepted' or status='Assigned') and ((sqli_validation_date_objective < Now()) or (airbus_validation_date_objective < Now()) or (deployment_date_objective < Now()))"], :order=>"sqli_validation_date_objective desc")
     @ci_projects_assigned_without_kickoff = CiProject.find(:all, :conditions=>["kick_off_date IS NULL and assigned_to IS NOT NULL"], :order=>"sqli_validation_date desc")
+    @counters_without_request = Person.get_qs_counter_without_request(current_user)
   end
 
 =begin

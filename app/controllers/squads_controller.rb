@@ -1,6 +1,6 @@
 class SquadsController < ApplicationController
 
-  Late_reporting = Struct.new(:person, :squad, :project, :delay)
+  Late_reporting = Struct.new(:person, :squad, :project, :delay, :last_update, :color)
 
   def index
 
@@ -107,15 +107,19 @@ class SquadsController < ApplicationController
 
       #implement request when squad name is not usual
       if current_squad.name.to_s.length > 2
-          case current_squad.name.to_s
-            when "Squad Cathie" then squad_query = "workstream ='EI' or workstream='EV'"
-            when "Squad Lucie"  then squad_query = "workstream ='ES' or workstream='EG'"
-            when "Squad Fabrice" then squad_query = "workstream ='EY' or workstream='EC' or workstream='EP'"
-            #when "PhD" then squad_query = "PhD" #Goto to *Get all requests for squad "phd"* Part (not used atm)
-            when "PhD" then squad_query = "request_type = 'Yes'" #Is Physical = Yes
-          else
-            squad_query = "workstream ='" + current_squad.name + "'"
+        if current_squad.name.to_s == "PhD"
+          squad_query = "request_type = 'Yes'" #Is Physical = Yes
+        else
+          if current_squad.workstream1 and current_squad.workstream1 != ""
+            squad_query = "workstream = '" + current_squad.workstream1 + "'"
+            if current_squad.workstream2 and current_squad.workstream2 != ""
+              squad_query += " or workstream = '" + current_squad.workstream2 + "'"
+              if current_squad.workstream3 and current_squad.workstream3 != ""
+                squad_query += " or workstream = '" + current_squad.workstream3 + "'"
+              end
+            end
           end
+        end
       else
         squad_query = "workstream ='" + current_squad.name + "'"
       end
@@ -175,6 +179,22 @@ class SquadsController < ApplicationController
             tbv_based_on_wl -= [request]
           end
         end
+
+        if current_squad.name.to_s.length > 2
+          if current_squad.name.to_s == "Squad Cathie" and (request.workstream != "EI" and request.workstream != "EV")
+            tbv_based_on_wl -= [request]
+          end
+          if current_squad.name.to_s == "Squad Lucie" and (request.workstream != "ES" and request.workstream != "EG")
+            tbv_based_on_wl -= [request]
+          end
+          if current_squad.name.to_s == "Squad Fabrice" and (request.workstream != "EY" and request.workstream != "EC" and request.workstream != "EP")
+            tbv_based_on_wl -= [request]
+          end
+        else
+          if current_squad.name.to_s != request.workstream
+            tbv_based_on_wl -= [request]
+          end
+        end
       end
 
       tbvs << tbv_based_on_wl
@@ -222,6 +242,12 @@ class SquadsController < ApplicationController
             last_update = get_date_from_bdd_date(date_last_update)
             delay = Date.today() - last_update
             if delay > 15
+
+              color = "blue"
+              if delay > 30
+                color = "red"
+              end
+
               to_add = true
               already_founds.each do |already_found|
                 if project.id == already_found
@@ -240,6 +266,8 @@ class SquadsController < ApplicationController
                 end
                 late_reporting.project = project
                 late_reporting.delay = delay
+                late_reporting.last_update = last_update
+                late_reporting.color = color
                 late_reportings << late_reporting
                 already_founds << late_reporting.project.id
               end

@@ -404,6 +404,37 @@ class Person < ActiveRecord::Base
     return var
   end
 
+  def self.get_qs_counter_without_request(current_user)
+    qs_counter_no_request = Array.new
+
+    qs_condition      = "concerned_status_id IS NOT NULL and request_id IS NULL"
+    tmp_qs_counter_no_request = HistoryCounter.find(:all,:conditions=>[qs_condition],
+                                          :joins => ["JOIN statuses ON statuses.id = history_counters.concerned_status_id",
+                                          "JOIN projects ON projects.id = statuses.project_id",
+                                          "JOIN projects as parent ON parent.id = projects.project_id"],
+                                          :order=>"parent.name ASC, projects.name ASC")
+
+    # For each QS counter
+    tmp_qs_counter_no_request.each do |qs_req|
+      current_qs_history            = Hash.new
+      current_qs_history["object"]  = qs_req
+      current_qs_history["request"] = nil
+      current_qs_user               = Person.find(qs_req.author_id)
+      
+      # Check if we have a available qs request thanks to Workstream 
+      stream_found  = Stream.find_with_workstream(qs_req.status.project.workstream)
+      if ((stream_found) and (current_user.id.to_i == current_qs_user.id.to_i))
+        request_found = stream_found.get_current_qs_counter_request(current_qs_user)
+        if request_found
+          current_qs_history["request"] = request_found
+        end
+      end
+      qs_counter_no_request << current_qs_history
+    end
+
+    return qs_counter_no_request
+  end
+
 protected
 
   # before filter

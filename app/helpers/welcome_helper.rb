@@ -113,6 +113,10 @@ module WelcomeHelper
     rv += "</table>"
     rv += "</ul>"
   end
+
+  def history_counter_report_by(title, counters)
+    
+  end
   
   def get_workpackage_name_from_summary(summary, default)
     wpn = summary.split(/\[([^\]]*)\]/)[3] 
