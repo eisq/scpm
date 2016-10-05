@@ -1,6 +1,7 @@
 class SquadsController < ApplicationController
 
   Late_reporting = Struct.new(:person, :squad, :project, :delay, :last_update, :color)
+  Tbv = Struct.new(:requests, :person)
 
   def index
 
@@ -68,6 +69,10 @@ class SquadsController < ApplicationController
     @workloads = @workloads.sort_by {|w| [-w.person.is_virtual, w.next_month_percents, w.three_next_months_percents, w.person.name]}
     size = @workloads.size
 
+    if size == 0
+      size = 1
+    end
+
     # next 5 weeks
     @totals_5_weeks << (@workloads.inject(0) { |sum,w| sum += w.next_month_percents} / size).round
     if @totals_5_weeks[0].to_i > 105
@@ -127,7 +132,7 @@ class SquadsController < ApplicationController
        #Get all requests for squad "phd", only request which is bound to a project with a suite_tag number (not used atm)
       if squad_query == 'PhD'
         # if @project.suite_tag
-        Project.find(:all, :conditions=>["suite_tag_id >0"]).each do |project_row|
+        Project.find(:all, :conditions=>["suite_tag_id > 0"]).each do |project_row|
           Request.find(:all, :conditions=>["project_id= ?", project_row.id]).each do |request_phd|
             if request_phd
               if request_phd.status == 'to be validated' or (request_phd.status == 'assigned' and request_phd.resolution !='ended' and request_phd.resolution!='aborted')
@@ -168,14 +173,17 @@ class SquadsController < ApplicationController
     tbvs = Array.new
 
     persons.each do |person|
+      #Tbv = Struct.new(:requests, :person)
+      tbv = Tbv.new
       tbv_based_on_wl = person.tbv_based_on_wl
+
       tbv_based_on_wl.each do |request|
         if current_squad.name == "PhD"
-          if request.project and !request.project.suite_tag_id
+          if request.project and !request.project.suite_tag
             tbv_based_on_wl -= [request]
           end
         else
-          if request.project and request.project.suite_tag_id
+          if request.project and request.project.suite_tag
             tbv_based_on_wl -= [request]
           end
         end
@@ -197,7 +205,10 @@ class SquadsController < ApplicationController
         end
       end
 
-      tbvs << tbv_based_on_wl
+      tbv.requests = tbv_based_on_wl
+      tbv.person = person
+
+      tbvs << tbv
     end
 
     return tbvs

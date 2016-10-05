@@ -107,6 +107,9 @@
 	<td style="vertical-align:top;">
 		<h3>Holidays and backups view</h3>
 		<br/>
+
+		<% if @workloads_holidays and @workloads_holidays.size > 0 %>
+
 		<table>
 			<tr style="font-weight:bold;">
 				<td>Name</td>
@@ -177,6 +180,9 @@
 		<div class="conso_legend" style="background-color:red;">Need a backup</div>
 		<div class="conso_legend" style="background-color:pink;">Backup without holiday</div>
 		</div>
+
+		<% end %>
+
 	</td>
 </tr>
 
@@ -249,8 +255,8 @@
 				<th>Person</th>
 			</tr>
 			<% if @tbvs and @tbvs.count != 0 %>
-				<% @tbvs.each do |requests| %>
-					<% requests.each do |request| %>
+				<% @tbvs.each do |tbv| %>
+					<% tbv.requests.each do |request| %>
 						<tr class="pdc_tr">
 							<td><a href="http://toulouse.sqli.com/EMN/view.php?id=<%= request.request_id.to_s %>"><%= request.request_id.to_s %></a></td>
 							<td>
@@ -261,7 +267,7 @@
 								<% end %>
 							</td>
 							<td>
-								<%= request.assigned_to %>
+								<%= tbv.person.name %>
 							</td>
 						</tr>
 					<% end %>

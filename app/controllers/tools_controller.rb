@@ -44,6 +44,9 @@ class ToolsController < ApplicationController
     squad = Squad.new
     squad.name = params[:squad_name]
     squad.supervisor = params[:squad_supervisor]
+    squad.workstream1 = params[:workstream1]
+    squad.workstream2 = params[:workstream2]
+    squad.workstream3 = params[:workstream3]
     squad.save
 
     redirect_to '/tools/squads'
