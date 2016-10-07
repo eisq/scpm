@@ -117,6 +117,9 @@ class ProjectsController < ApplicationController
     on_hold_project.on_hold = true
     on_hold_project.save
 
+    #CW41 - Add lines for pdc if project is qr_qwr
+    check_qr_qwr_pdc(project)
+
     redirect_to :action=>:show, :id=>project.id
   end
 
@@ -138,6 +141,9 @@ class ProjectsController < ApplicationController
     end
     on_hold_project.on_hold = false
     on_hold_project.save
+
+    #CW41 - Add lines for pdc if project is qr_qwr
+    check_qr_qwr_pdc(project)
 
     redirect_to :action=>:show, :id=>project.id
   end
@@ -1143,6 +1149,18 @@ class ProjectsController < ApplicationController
         if !wl_line
           WlLine.create(:name=>"[QR_QWR] "+project.full_name, :request_id=>nil, :person_id=>qr_qwr.id, :wl_type=>WL_LINE_QR_QWR_QS, :project_id=>project.id)
           WlLine.create(:name=>"[QR_QWR] "+project.full_name, :request_id=>nil, :person_id=>qr_qwr.id, :wl_type=>WL_LINE_QR_QWR_SPIDER, :project_id=>project.id)
+        else 
+          #CW41 - If project is set to on hold, remove these lines
+          if project.is_on_hold
+             wl_line = WlLine.first(:conditions=>["person_id = ? and project_id = ? and wl_type = ?",qr_qwr.id.to_s, project.id.to_s, WL_LINE_QR_QWR_QS])
+             if wl_line  
+              wl_line.delete
+             end
+             wl_line = WlLine.first(:conditions=>["person_id = ? and project_id = ? and wl_type = ?",qr_qwr.id.to_s, project.id.to_s, WL_LINE_QR_QWR_SPIDER])
+             if wl_line 
+              wl_line.delete
+            end
+          end
         end
       end
     end
