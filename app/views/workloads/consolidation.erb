@@ -8,6 +8,8 @@
 </SCRIPT>
 <div id="holiday_detail"></div>
 
+<!-- CW41-Display tables following roles -->
+<% if current_user.has_role?('Admin') %>
 <div id="tabs">
   <ol>
       <%= tab_menu("wl_conso", [
@@ -20,6 +22,15 @@
         "TBP"
         ]) %>
   </ol>
+<% else %>
+<div id="tabs">
+  <ol>
+      <%= tab_menu("wl_conso", [
+        "Consolidation",
+        "Holidays"
+        ]) %>
+  </ol>
+<% end %>
 
   <div id="tabscontent">
     <div id="tabContent1" class="tabContent" style="display:<%= cookies["tab_menu_wl_conso"]=="1"? "block" : "none"%>;">

@@ -9,6 +9,9 @@
 - Reporter: <%= request.reporter %>
 - QR : <%= request.qr %>
 
+<!-- CW41-Adding assigned data -->
+  <% if request.assigned_to != "" %> - Assigned to <%= request.assigned_to %><% end %>
+
 <!-- <%= request.assigned_to %>
 <%= request.status %>
 <%= request.resolution %>

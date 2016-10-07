@@ -384,9 +384,11 @@ class ProjectsController < ApplicationController
     if (!project.is_qr_qwr)
       project.qr_qwr_id = nil
     end
+
     project.save
 
-    #if the project is set as AQ after Support, it creates a virtual "on hold" to stop the automatic check on number of QS should be incremented
+    #if the project is set as AQ after Support, it creates a virtual "on hold" 
+    #to stop the automatic check on number of QS should be incremented
     if old_is_qr_qwr_param and !project.is_qr_qwr
       on_hold_project = OnHoldProject.find(:first, :conditions=>["project_id = ?", project.id])
       if !on_hold_project
