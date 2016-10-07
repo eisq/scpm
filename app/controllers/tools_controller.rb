@@ -27,6 +27,9 @@ class ToolsController < ApplicationController
   def squad_update
     squad = Squad.find(:first, :conditions=>["id = ?", params[:squad_id]])
     if params[:commit] == "Delete"
+      PersonSquad.find(:all, :conditions=>["squad_id = ?", squad.id]).each do |person_squad|
+        person_squad.delete
+      end
       squad.delete
     else
       squad.name = params[:squad_name]
