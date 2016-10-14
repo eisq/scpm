@@ -386,10 +386,11 @@ class ProjectsController < ApplicationController
 
     project.propagate_attributes
 
+  # CW41-Allow QR even if project is not with Support Activities
     # QR QWR
-    if (!project.is_qr_qwr)
-      project.qr_qwr_id = nil
-    end
+    #if (!project.is_qr_qwr)
+    #  project.qr_qwr_id = nil
+    #end
 
     project.save
 
@@ -1114,6 +1115,10 @@ class ProjectsController < ApplicationController
     if(project)
       project.is_running = 0
       project.save
+      #CW41 - Close risks, amendments & actions which are bound to project 
+      actions_project = Action.find (:all, :conditions=>["project_id = ?", project.id])
+      actions_project.progress = 'closed'
+      actions_project.save
     end
     render(:nothing => true)
   end
