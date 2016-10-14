@@ -1116,9 +1116,24 @@ class ProjectsController < ApplicationController
       project.is_running = 0
       project.save
       #CW41 - Close risks, amendments & actions which are bound to project 
-      actions_project = Action.find (:all, :conditions=>["project_id = ?", project.id])
-      actions_project.progress = 'closed'
-      actions_project.save
+      if project.actions
+        project.actions.each do |a|
+            a.progress = 'closed'
+            a.save
+        end 
+      end
+      if project.risks
+            project.risks.each do |rk|
+            rk.probability = '0'
+            rk.save
+        end 
+      end
+      if project.amendments
+            project.amendments.each do |am|
+            am.done = '1'
+            am.save
+        end 
+      end
     end
     render(:nothing => true)
   end
