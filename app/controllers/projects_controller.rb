@@ -1118,8 +1118,10 @@ class ProjectsController < ApplicationController
       #CW41 - Close risks, amendments & actions which are bound to project 
       if project.actions
         project.actions.each do |a|
-            a.progress = 'closed'
-            a.save
+            if a.progress != 'abandonned'
+              a.progress = 'closed'
+              a.save
+            end
         end 
       end
       if project.risks
