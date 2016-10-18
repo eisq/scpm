@@ -6,7 +6,7 @@ class KpiController < ApplicationController
   	include WelcomeHelper
 
 	Setting_info    = Struct.new(:project_name, :workpackage, :lifecycle, :workstream, :plm, :typo, :macro_activity_name, :essential_activity, :plan_to_do_activity, :deliverable_name, :essential_deliverable, :plan_to_do)
-	OM_info    = Struct.new(:dws, :suite, :lifecycle, :project_name, :workpackage, :milestone, :business_and_is_modelling, :change_management, :configuration_management, :continuous_improvement, :integration_v_and_v, :measurement_process_and_qm, :monitoring_and_control, :project_justification, :pp_scoping_and_structuring, :risk_and_opportunities_management, :run_mode_preparation, :solution_definition, :subcontracting_management, :risks_management, :planning, :organisation, :project_configuration, :needs_management, :tests_managements, :product_configuration, :technical, :architecture, :integration, :alert)
+	OM_info    = Struct.new(:dws, :suite, :lifecycle, :project_name, :workpackage, :milestone, :milestone_date, :business_and_is_modelling, :change_management, :configuration_management, :continuous_improvement, :integration_v_and_v, :measurement_process_and_qm, :monitoring_and_control, :project_justification, :pp_scoping_and_structuring, :risk_and_opportunities_management, :run_mode_preparation, :solution_definition, :subcontracting_management, :risks_management, :planning, :organisation, :project_configuration, :needs_management, :tests_managements, :product_configuration, :technical, :architecture, :integration, :alert)
 	Value    = Struct.new(:dws, :suite, :lifecycle, :project_name, :workpackage, :milestone, :activity, :answer)
 
 	def index
@@ -177,6 +177,14 @@ class KpiController < ApplicationController
 				om_info.workpackage = consolidated.svf_deviation_spider.project.full_wp_name
 				om_info.milestone = consolidated.svf_deviation_spider.milestone.name
 
+				milestone_date = ""
+				if consolidated.svf_deviation_spider.milestone.actual_milestone_date and consolidated.svf_deviation_spider.milestone.actual_milestone_date != ""
+					milestone_date = get_date_from_bdd_date(consolidated.svf_deviation_spider.milestone.actual_milestone_date)
+				elsif consolidated.svf_deviation_spider.milestone.milestone_date and consolidated.svf_deviation_spider.milestone.milestone_date != ""
+					milestone_date = get_date_from_bdd_date(consolidated.svf_deviation_spider.milestone.milestone_date)
+				end
+				om_info.milestone_date = milestone_date
+
 				#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
 				om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? ((business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size) * 100).round(2) : ""
 				om_info.change_management = !change_management.empty? ? ((change_management.inject{ |sum, el| sum + el }.to_f / change_management.size) * 100).round(2) : ""
@@ -191,6 +199,59 @@ class KpiController < ApplicationController
 				om_info.run_mode_preparation = !run_mode_preparation.empty? ? ((run_mode_preparation.inject{ |sum, el| sum + el }.to_f / run_mode_preparation.size) * 100).round(2) : ""
 				om_info.solution_definition = !solution_definition.empty? ? ((solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size) * 100).round(2) : ""
 				om_info.subcontracting_management = !subcontracting_management.empty? ? ((subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size) * 100).round(2) : ""
+
+				#CALCULATE DATAS FROM PREVIOUS DATAS
+				if om_info.lifecycle == 7 or om_info.lifecycle == 9 # if lifecycle = LBIP+ or Suite
+					
+					filled_organisation = 4
+					if om_info.continuous_improvement == ""
+						filled_organisation -= 1
+					end
+					if om_info.measurement_process_and_qm == ""
+						filled_organisation -= 1
+					end
+					if om_info.monitoring_and_control == ""
+						filled_organisation -= 1
+					end
+					if om_info.subcontracting_management == ""
+						filled_organisation -= 1
+					end
+
+					if filled_organisation == 0
+						om_info.organisation = ""
+					else
+						om_info.organisation = (om_info.continuous_improvement + om_info.measurement_process_and_qm + om_info.monitoring_and_control + om_info.subcontracting_management) / filled_organisation
+					end
+
+					filled_needs_management = 3
+					if om_info.business_and_is_modelling == ""
+						filled_needs_management -= 1
+					end
+					if om_info.change_management == ""
+						filled_needs_management -= 1
+					end
+					if om_info.project_justification == ""
+						filled_needs_management -= 1
+					end
+
+					if filled_needs_management == 0
+						om_info.needs_management = ""
+					else
+						om_info.needs_management = (om_info.business_and_is_modelling + om_info.change_management + om_info.project_justification) / filled_needs_management
+					end
+
+				else
+					om_info.organisation = (om_info.continuous_improvement.to_f + om_info.measurement_process_and_qm.to_f + om_info.monitoring_and_control.to_f + om_info.subcontracting_management.to_f) / 4
+					om_info.needs_management = (om_info.business_and_is_modelling.to_f + om_info.change_management.to_f + om_info.project_justification.to_f) / 3
+				end
+
+				om_info.risks_management = om_info.risk_and_opportunities_management
+				om_info.planning = om_info.pp_scoping_and_structuring
+				om_info.project_configuration = om_info.configuration_management
+				om_info.tests_managements = om_info.integration_v_and_v
+				om_info.product_configuration = "" #tbd
+				om_info.technical = "" #tbd
+				om_info.architecture = om_info.solution_definition
 				
 				@om << om_info
 
@@ -293,6 +354,15 @@ class KpiController < ApplicationController
 				om_info.project_name = consolidated.svt_deviation_spider.project.project_name
 				om_info.workpackage = consolidated.svt_deviation_spider.project.full_wp_name
 				om_info.milestone = consolidated.svt_deviation_spider.milestone.name
+				
+
+				milestone_date = ""
+				if consolidated.svf_deviation_spider.milestone.actual_milestone_date and consolidated.svf_deviation_spider.milestone.actual_milestone_date != ""
+					milestone_date = get_date_from_bdd_date(consolidated.svf_deviation_spider.milestone.actual_milestone_date)
+				elsif consolidated.svf_deviation_spider.milestone.milestone_date and consolidated.svf_deviation_spider.milestone.milestone_date != ""
+					milestone_date = consolidated.svf_deviation_spider.milestone.milestone_date
+				end
+				om_info.milestone_date = milestone_date
 
 				#FOR EACH ACTIVITY, GET VALUE FROM VALUES ARRAYS AND STORE THE AVERAGE
 				om_info.business_and_is_modelling = !business_and_is_modelling.empty? ? ((business_and_is_modelling.inject{ |sum, el| sum + el }.to_f / business_and_is_modelling.size) * 100).round(2) : ""
@@ -331,5 +401,18 @@ class KpiController < ApplicationController
 	    end
 
 	end
+
+	def get_date_from_bdd_date(bdd_date)
+    date_split = bdd_date.to_s.split("-")
+    if date_split[2] and date_split[2] != "" and date_split[2].length < 4
+    	date = date_split[2] + "-" + date_split[1] + "-" + date_split[0]
+    elsif date_split[2] and date_split[2] != "" and date_split[2].length > 2
+    	date = date_split[0] + "-" + date_split[1] + "-" + date_split[2]
+    else
+    	date = date_split
+    end
+
+    return date
+  end
 
 end

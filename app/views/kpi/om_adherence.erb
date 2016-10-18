@@ -33,31 +33,32 @@ end
       @xml.Column 3, {'ss:Width' => 200} # PN
       @xml.Column 4, {'ss:Width' => 200} # WP
       @xml.Column 5, {'ss:Width' => 50} # MS
-      @xml.Column 6, {'ss:Width' => 50} # B&ISM
-      @xml.Column 7, {'ss:Width' => 50} # Change MGMT
-      @xml.Column 8, {'ss:Width' => 50} # Conf MGMT
-      @xml.Column 9, {'ss:Width' => 50} # CI
-      @xml.Column 10, {'ss:Width' => 50} # I V&V
-      @xml.Column 11, {'ss:Width' => 50} # MPQM
-      @xml.Column 12, {'ss:Width' => 50} # M&C
-      @xml.Column 13, {'ss:Width' => 50} # P Justif
-      @xml.Column 14, {'ss:Width' => 50} # PPSS
-      @xml.Column 15, {'ss:Width' => 50} # Risk Opp MGMT
-      @xml.Column 16, {'ss:Width' => 50} # Run mode
-      @xml.Column 17, {'ss:Width' => 50} # Solution
-      @xml.Column 18, {'ss:Width' => 50} # SubC
-      @xml.Column 19, {'ss:Width' => 50} # RisksMGMT
-      @xml.Column 20, {'ss:Width' => 50} # Planning
-      @xml.Column 21, {'ss:Width' => 50} # Orga
-      @xml.Column 22, {'ss:Width' => 50} # Conf
-      @xml.Column 23, {'ss:Width' => 50} # Needs
-      @xml.Column 24, {'ss:Width' => 50} # Tests
-      @xml.Column 25, {'ss:Width' => 50} # Conf
-      @xml.Column 26, {'ss:Width' => 50} # Tech
-      @xml.Column 27, {'ss:Width' => 50} # Arch
-      @xml.Column 28, {'ss:Width' => 50} # Int
-      @xml.Column 29, {'ss:Width' => 50} # Alert
-      @xml.Column 30, {'ss:Width' => 50}
+      @xml.Column 6, {'ss:Width' => 50} # MS date
+      @xml.Column 7, {'ss:Width' => 50} # B&ISM
+      @xml.Column 8, {'ss:Width' => 50} # Change MGMT
+      @xml.Column 9, {'ss:Width' => 50} # Conf MGMT
+      @xml.Column 10, {'ss:Width' => 50} # CI
+      @xml.Column 11, {'ss:Width' => 50} # I V&V
+      @xml.Column 12, {'ss:Width' => 50} # MPQM
+      @xml.Column 13, {'ss:Width' => 50} # M&C
+      @xml.Column 14, {'ss:Width' => 50} # P Justif
+      @xml.Column 15, {'ss:Width' => 50} # PPSS
+      @xml.Column 16, {'ss:Width' => 50} # Risk Opp MGMT
+      @xml.Column 17, {'ss:Width' => 50} # Run mode
+      @xml.Column 18, {'ss:Width' => 50} # Solution
+      @xml.Column 19, {'ss:Width' => 50} # SubC
+      @xml.Column 20, {'ss:Width' => 50} # RisksMGMT
+      @xml.Column 21, {'ss:Width' => 50} # Planning
+      @xml.Column 22, {'ss:Width' => 50} # Orga
+      @xml.Column 23, {'ss:Width' => 50} # Conf
+      @xml.Column 24, {'ss:Width' => 50} # Needs
+      @xml.Column 25, {'ss:Width' => 50} # Tests
+      @xml.Column 26, {'ss:Width' => 50} # Conf
+      @xml.Column 27, {'ss:Width' => 50} # Tech
+      @xml.Column 28, {'ss:Width' => 50} # Arch
+      @xml.Column 29, {'ss:Width' => 50} # Int
+      @xml.Column 30, {'ss:Width' => 50} # Alert
+      @xml.Column 31, {'ss:Width' => 50}
 
       # Header
       @xml.Row do
@@ -78,6 +79,9 @@ end
         end
         @xml.Cell 'ss:StyleID' => 'TitleBlack' do
           @xml.Data "Milestone", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'TitleBlack' do
+          @xml.Data "Milestone date", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitleBlack' do
           @xml.Data "Risks Mgt", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -173,6 +177,9 @@ end
           end
           @xml.Cell do
             @xml.Data data.milestone, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          end
+          @xml.Cell do
+            @xml.Data data.milestone_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data data.risks_management, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
