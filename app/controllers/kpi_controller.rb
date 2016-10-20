@@ -217,10 +217,12 @@ class KpiController < ApplicationController
 						filled_organisation -= 1
 					end
 
-					if filled_organisation == 0
-						om_info.organisation = ""
-					else
-						om_info.organisation = (om_info.continuous_improvement + om_info.measurement_process_and_qm + om_info.monitoring_and_control + om_info.subcontracting_management) / filled_organisation
+					om_info.organisation = ""
+					if filled_organisation != 0
+						orga = (om_info.continuous_improvement + om_info.measurement_process_and_qm + om_info.monitoring_and_control + om_info.subcontracting_management) / filled_organisation
+						if orga != ""
+							om_info.organisation = orga.round(2)
+						end
 					end
 
 					filled_needs_management = 3
@@ -234,25 +236,59 @@ class KpiController < ApplicationController
 						filled_needs_management -= 1
 					end
 
-					if filled_needs_management == 0
-						om_info.needs_management = ""
-					else
-						om_info.needs_management = (om_info.business_and_is_modelling + om_info.change_management + om_info.project_justification) / filled_needs_management
+					om_info.needs_management = ""
+					if filled_needs_management != 0
+						needs = (om_info.business_and_is_modelling + om_info.change_management + om_info.project_justification) / filled_needs_management
+						if needs != ""
+							om_info.needs_management = needs.round(2)
+						end
 					end
 
 				else
-					om_info.organisation = (om_info.continuous_improvement.to_f + om_info.measurement_process_and_qm.to_f + om_info.monitoring_and_control.to_f + om_info.subcontracting_management.to_f) / 4
-					om_info.needs_management = (om_info.business_and_is_modelling.to_f + om_info.change_management.to_f + om_info.project_justification.to_f) / 3
+					orga = (om_info.continuous_improvement.to_f + om_info.measurement_process_and_qm.to_f + om_info.monitoring_and_control.to_f + om_info.subcontracting_management.to_f) / 4
+					needs = (om_info.business_and_is_modelling.to_f + om_info.change_management.to_f + om_info.project_justification.to_f) / 3
+
+					if orga != ""
+						om_info.organisation = orga.round(2)
+					else
+						om_info.organisation = ""
+					end
+
+					if needs != ""
+						om_info.needs_management = needs.round(2)
+					else
+						om_info.needs_management = ""
+					end
 				end
 
-				om_info.risks_management = om_info.risk_and_opportunities_management
-				om_info.planning = om_info.pp_scoping_and_structuring
-				om_info.project_configuration = om_info.configuration_management
-				om_info.tests_managements = om_info.integration_v_and_v
-				om_info.product_configuration = "" #tbd
-				om_info.technical = "" #tbd
-				om_info.architecture = om_info.solution_definition
-				
+				if om_info.risk_and_opportunities_management != ""
+					om_info.risks_management = om_info.risk_and_opportunities_management.round(2)
+				end
+
+				if om_info.pp_scoping_and_structuring != ""
+					om_info.planning = om_info.pp_scoping_and_structuring.round(2)
+				end
+
+				if om_info.configuration_management != ""
+					om_info.project_configuration = om_info.configuration_management.round(2)
+				end
+
+				if om_info.integration_v_and_v != ""
+					om_info.tests_managements = om_info.integration_v_and_v.round(2)
+				end
+
+				if om_info.product_configuration != ""
+					om_info.product_configuration = "" #tbd
+				end
+
+				if om_info.technical != ""
+					om_info.technical = "" #tbd
+				end
+
+				if om_info.solution_definition != ""
+					om_info.architecture = om_info.solution_definition.round(2)
+				end
+
 				@om << om_info
 
 			end
