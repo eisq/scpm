@@ -200,66 +200,55 @@ class KpiController < ApplicationController
 				om_info.solution_definition = !solution_definition.empty? ? ((solution_definition.inject{ |sum, el| sum + el }.to_f / solution_definition.size) * 100).round(2) : ""
 				om_info.subcontracting_management = !subcontracting_management.empty? ? ((subcontracting_management.inject{ |sum, el| sum + el }.to_f / subcontracting_management.size) * 100).round(2) : ""
 
-				#CALCULATE DATAS FROM PREVIOUS DATAS
-				if om_info.lifecycle == 7 or om_info.lifecycle == 9 # if lifecycle = LBIP+ or Suite
-					
-					filled_organisation = 4
-					if om_info.continuous_improvement == ""
-						filled_organisation -= 1
-					end
-					if om_info.measurement_process_and_qm == ""
-						filled_organisation -= 1
-					end
-					if om_info.monitoring_and_control == ""
-						filled_organisation -= 1
-					end
-					if om_info.subcontracting_management == ""
-						filled_organisation -= 1
-					end
 
-					om_info.organisation = ""
-					if filled_organisation != 0
-						orga = (om_info.continuous_improvement + om_info.measurement_process_and_qm + om_info.monitoring_and_control + om_info.subcontracting_management) / filled_organisation
-						if orga != ""
-							om_info.organisation = orga.round(2)
-						end
-					end
+				filled_organisation = 4
+				if om_info.continuous_improvement == ""
+					om_info.continuous_improvement = 0
+					filled_organisation -= 1
+				end
+				if om_info.measurement_process_and_qm == ""
+					om_info.measurement_process_and_qm = 0
+					filled_organisation -= 1
+				end
+				if om_info.monitoring_and_control == ""
+					om_info.monitoring_and_control = 0
+					filled_organisation -= 1
+				end
+				if om_info.subcontracting_management == ""
+					om_info.subcontracting_management = 0
+					filled_organisation -= 1
+				end
 
-					filled_needs_management = 3
-					if om_info.business_and_is_modelling == ""
-						filled_needs_management -= 1
-					end
-					if om_info.change_management == ""
-						filled_needs_management -= 1
-					end
-					if om_info.project_justification == ""
-						filled_needs_management -= 1
-					end
-
-					om_info.needs_management = ""
-					if filled_needs_management != 0
-						needs = (om_info.business_and_is_modelling + om_info.change_management + om_info.project_justification) / filled_needs_management
-						if needs != ""
-							om_info.needs_management = needs.round(2)
-						end
-					end
-
-				else
-					orga = (om_info.continuous_improvement.to_f + om_info.measurement_process_and_qm.to_f + om_info.monitoring_and_control.to_f + om_info.subcontracting_management.to_f) / 4
-					needs = (om_info.business_and_is_modelling.to_f + om_info.change_management.to_f + om_info.project_justification.to_f) / 3
-
+				om_info.organisation = ""
+				if filled_organisation != 0
+					orga = (om_info.continuous_improvement + om_info.measurement_process_and_qm + om_info.monitoring_and_control + om_info.subcontracting_management) / filled_organisation
 					if orga != ""
 						om_info.organisation = orga.round(2)
-					else
-						om_info.organisation = ""
-					end
-
-					if needs != ""
-						om_info.needs_management = needs.round(2)
-					else
-						om_info.needs_management = ""
 					end
 				end
+
+				filled_needs_management = 3
+				if om_info.business_and_is_modelling == ""
+					om_info.business_and_is_modelling = 0
+					filled_needs_management -= 1
+				end
+				if om_info.change_management == ""
+					om_info.change_management = 0
+					filled_needs_management -= 1
+				end
+				if om_info.project_justification == ""
+					om_info.project_justification = 0
+					filled_needs_management -= 1
+				end
+
+				om_info.needs_management = ""
+				if filled_needs_management != 0
+					needs = (om_info.business_and_is_modelling + om_info.change_management + om_info.project_justification) / filled_needs_management
+					if needs != ""
+						om_info.needs_management = needs.round(2)
+					end
+				end
+
 
 				if om_info.risk_and_opportunities_management != ""
 					om_info.risks_management = om_info.risk_and_opportunities_management.round(2)
