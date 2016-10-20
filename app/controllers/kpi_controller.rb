@@ -430,9 +430,9 @@ class KpiController < ApplicationController
 	def get_date_from_bdd_date(bdd_date)
     date_split = bdd_date.to_s.split("-")
     if date_split[2] and date_split[2] != "" and date_split[2].length < 4
-    	date = date_split[2] + "-" + date_split[1] + "-" + date_split[0]
+    	date = "01" + "-" + date_split[1] + "-" + date_split[0]
     elsif date_split[2] and date_split[2] != "" and date_split[2].length > 2
-    	date = date_split[0] + "-" + date_split[1] + "-" + date_split[2]
+    	date = "01" + "-" + date_split[1] + "-" + date_split[2]
     else
     	date = date_split
     end
