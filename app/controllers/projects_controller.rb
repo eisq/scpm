@@ -966,7 +966,7 @@ class ProjectsController < ApplicationController
       #@actions    = Action.find(:all, :conditions=>"private=0", :order=>"person_id, creation_date, progress")
       @requests   = Request.find(:all,:conditions=>"status!='assigned' and status!='cancelled' and status!='closed' and status!='removed'", :order=>"status, workstream")
 
-      #CW41 - Update request lto return only risks for running project
+      #CW41 - Update request to return only risks for running project
       #begin
       #@risks      = Risk.find(:all, :conditions => "stream_id IS NULL and is_quality=1") #, :conditions=>"", :order=>"status, workstream")
       #@risks      = @risks.select { |r| r.project and r.severity > 0}.sort_by {|r|
@@ -977,15 +977,17 @@ class ProjectsController < ApplicationController
       @risks = Array.new
         Risk.find(:all, :conditions => "stream_id IS NULL and is_quality=1").each do |rsk|
           proj = Project.find(:first, :conditions=>["id= ?", rsk.project_id])
-          if (proj != nil and proj.is_running)
+          if (proj != nil and proj.is_running and rsk.project and rsk.severity >0)
               @risks<< rsk
           end
         end
-        @risks.select { |r| r.project and r.severity > 0}.sort_by {|r|
-          raise "no supervisor for #{r.project.full_name}" if !r.project.supervisor
-          [r.project.supervisor.name, r.project.full_name, r.severity]
-          }
+
+     @risks = @risks.select { |r| r.project and r.severity > 0}.sort_by {|r|
+        raise "no supervisor for #{r.project.full_name}" if !r.project.supervisor
+        [r.project.supervisor.name, r.project.full_name, r.severity]
+     }
        #end   
+
 
       @stream_risks   = Risk.find(:all, :conditions => "stream_id IS NOT NULL and is_quality=1") 
       @stream_risks   = @stream_risks.select { |r| r.severity > 0}.sort_by {|r|
