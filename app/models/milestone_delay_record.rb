@@ -62,9 +62,9 @@ class MilestoneDelayRecord < ActiveRecord::Base
 	end
 
 	def get_date_from_bdd_date(bdd_date)
-    date_split = bdd_date.to_s.split("-")
-    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+	    date_split = bdd_date.to_s.split("-")
+	    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
 
-    return date
-  end
+	    return date
+  	end
 end

@@ -6,6 +6,7 @@ class Milestone < ActiveRecord::Base
   has_many    :spiders
   has_many    :deviation_spiders
   has_many    :milestone_delay_records
+  has_many    :mdelay_records, :class_name=>'MdelayRecords'
 
   #case milestone.status
   #  when -1

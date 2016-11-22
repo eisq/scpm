@@ -7,6 +7,8 @@ class ProjectsController < ApplicationController
 
   before_filter :require_login
   Milestone_delay = Struct.new(:delay_id, :milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, :other_reason, :last_update, :person)
+  Mdelay_record = Struct.new(:mdelay_record_id, :milestone_name, :phase_of_identification, :initial_reason, :analysed_reason, :mdelay_reason_one_description, :mdelay_reason_two_description, :validation_date, :comments, :caption_date)
+  Mdelay_record_show = Struct.new(:project_parent, :project, :workstream, :milestone, :deployment_impact, :initial_date, :current_date, :pre_post_mfive, :phase_of_identification, :initial_reason, :why_one, :why_two, :why_three, :why_four, :why_five, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :consequence, :validation_date, :validated_by, :comments, :caption_date)
 
   def index
     @time = Time.now
@@ -321,6 +323,116 @@ class ProjectsController < ApplicationController
         @milestone_delays << milestone_delay
       end
     end
+
+    @mdelay_records = Array.new
+    MdelayRecord.find(:all, :conditions=>["project_id = ?", @project.id]).each do |mdelay_record_each|
+      milestone = Milestone.find(:first, :conditions=>["id = ?", mdelay_record_each.milestone_id])
+      if milestone and milestone.project_id == @project.id.to_i
+        mdelay_record = Mdelay_record.new # Struct.new(:mdelay_record_id, :milestone_name, :phase_of_identification, :initial_reason, :analysed_reason, :mdelay_reason_one_description, :mdelay_reason_two_description, :validation_date, :comments, :caption_date)
+
+        mdelay_record.mdelay_record_id = mdelay_record_each.id
+        mdelay_record.milestone_name = mdelay_record_each.milestone.name
+        mdelay_record.phase_of_identification = mdelay_record_each.phase_of_identification
+        mdelay_record.initial_reason = mdelay_record_each.initial_reason
+        mdelay_record.analysed_reason = mdelay_record_each.analysed_reason
+        mdelay_record.mdelay_reason_one_description = mdelay_record_each.mdelay_reason_one.reason_description
+        mdelay_record.mdelay_reason_two_description = mdelay_record_each.mdelay_reason_two.reason_description
+        mdelay_record.validation_date = mdelay_record_each.validation_date
+        mdelay_record.comments = mdelay_record_each.comments
+        mdelay_record.caption_date = mdelay_record_each.get_date_from_bdd_date(mdelay_record_each.created_at)
+      end
+      @mdelay_records << mdelay_record
+    end
+  end
+
+  def new_mdelay_record
+    redirect_to :action=>:mdelay_record, :project_id=>params['project_id']
+  end
+
+  def mdelay_record
+    @update = false
+
+    #Mdelay_record_show = Struct.new(:project_parent, :project, :workstream, :milestone, :deployment_impact, :initial_date, :current_date, :pre_post_mfive, :phase_of_identification, :initial_reason, :why_one, :why_two, :why_three, :why_four, :why_five, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :consequence, :validation_date, :validated_by, :comments, :caption_date)
+
+    @project = Project.find(:first, :conditions=>["id = ?", params["project_id"]])
+    @mdelay_record_show = Mdelay_record_show.new
+
+    if params["mdelay_record_id"]
+      @update = true
+      mdelay_record_temp = MdelayRecord.find(:first, :conditions=>["id = ?", params["mdelay_record_id"]])
+      @mdelay_record_show.project_parent = mdelay_record_temp.project.project_name
+      @mdelay_record_show.project = mdelay_record_temp.project                                    #
+      @mdelay_record_show.workstream = mdelay_record_temp.workstream                              #
+      @mdelay_record_show.milestone = mdelay_record_temp.milestone                                #
+      @mdelay_record_show.deployment_impact = mdelay_record_temp.deployment_impact
+      @mdelay_record_show.initial_date = mdelay_record_temp.initial_date
+      @mdelay_record_show.current_date = mdelay_record_temp.current_date
+      @mdelay_record_show.pre_post_mfive = mdelay_record_temp.pre_post_mfive
+      @mdelay_record_show.phase_of_identification = mdelay_record_temp.phase_of_identification    #
+      @mdelay_record_show.initial_reason = mdelay_record_temp.initial_reason
+      @mdelay_record_show.why_one = mdelay_record_temp.why_one
+      @mdelay_record_show.why_two = mdelay_record_temp.why_two
+      @mdelay_record_show.why_three = mdelay_record_temp.why_three
+      @mdelay_record_show.why_four = mdelay_record_temp.why_four
+      @mdelay_record_show.why_five = mdelay_record_temp.why_five
+      @mdelay_record_show.analysed_reason = mdelay_record_temp.analysed_reason
+      @mdelay_record_show.mdelay_reason_one = mdelay_record_temp.mdelay_reason_one                #
+      @mdelay_record_show.mdelay_reason_two = mdelay_record_temp.mdelay_reason_two                #
+      @mdelay_record_show.consequence = mdelay_record_temp.consequence
+      @mdelay_record_show.validation_date = mdelay_record_temp.validation_date
+      @mdelay_record_show.validated_by = mdelay_record_temp.validated_by
+      @mdelay_record_show.comments = mdelay_record_temp.comments
+      @mdelay_record_show.caption_date = mdelay_record_temp.caption_date
+    else
+      @mdelay_record_show.project_parent = @project.project_name
+      @mdelay_record_show.project = @project
+      @mdelay_record_show.workstream = @project.workstream
+    end
+
+    @reason_ones = MdelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
+    @reason_twos = Array.new
+
+    if params['reason_one_id']
+      @reason_one_selected = MdelayReasonOne.find(:first, :conditions=>["id = ?", params['reason_one_id']])
+    end
+  end
+
+  def milestone_delay_get_reason_twos(reason_one_id)
+    reason_twos = Array.new
+    reason_twos = MdelayReasonTwo.find(:all, :conditions=>["mdelay_reason_one_id = ? and is_active = ?",reason_one_id, true])
+    return reason_twos
+  end
+
+  def mdelay_record_show_update
+    if params[:commit] == "Update"
+      mdelay_record = MdelayRecord.find(:first, :conditions=>["id = ?", params["mdelay_record_id"]])
+    elsif params[:commit] == "Add"
+      mdelay_record = MdelayRecord.new
+    end
+
+    mdelay_record.workstream_id = params["workstream_id"]
+    mdelay_record.project_id = params["project_id"]
+    mdelay_record.milestone_id = params["milestone_id"]
+    mdelay_record.phase_of_identification_id = params["phase_of_identification_id"]
+    mdelay_record.deployment_impact = params["deployment_impact"]
+    mdelay_record.initial_reason = params["initial_reason"]
+    mdelay_record.why_one = params["why_one"]
+    mdelay_record.why_two = params["why_two"]
+    mdelay_record.why_three = params["why_three"]
+    mdelay_record.why_four = params["why_four"]
+    mdelay_record.why_five = params["why_five"]
+    mdelay_record.analysed_reason = params["analysed_reason"]
+    mdelay_record.mdelay_reason_one_id = params["mdelay_reason_one_id"]
+    mdelay_record.mdelay_reason_two_id = params["mdelay_reason_two_id"]
+    mdelay_record.consequence = params["consequence"]
+    mdelay_record.validation_date = params["validation_date"]
+    mdelay_record.validated_by = params["validated_by"]
+    mdelay_record.comments = params["comments"]
+    mdelay_record.initial_date = params["initial_date"]
+    mdelay_record.current_date = params["current_date"]
+    mdelay_record.save
+
+    redirect_to :action=>:show, :id=>mdelay_record.project_id
   end
 
   def get_delay_reason_description(delay_reason_id, level)
@@ -354,6 +466,15 @@ class ProjectsController < ApplicationController
     milestone_delay_record = MilestoneDelayRecord.find(:first, :conditions =>['id = ?', milestone_delay_record_id])
     if milestone_delay_record
       milestone_delay_record.delete
+    end
+      render(:nothing=>true)
+  end
+
+  def mdelay_record_delete
+    mdelay_record_id = params['mdelay_record_id']
+    mdelay_record = MdelayRecord.find(:first, :conditions =>['id = ?', mdelay_record_id])
+    if mdelay_record
+      mdelay_record.delete
     end
       render(:nothing=>true)
   end

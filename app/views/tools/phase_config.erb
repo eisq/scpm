@@ -1,0 +1,17 @@
+<h3>Add a Phase</h3>
+<%= form_tag({:action => 'phase_add'}, :multipart => true) %>
+<table>
+	<tr><td> Name: </td><td> <%= text_field_tag('phase_name', '') %> </td></tr>
+	<tr><td colspan=2><%= submit_tag "Add" %></td></tr>
+</table>
+</form>
+
+<h3>Edit Phases</h3>
+<% @phases.each do |phase| %>
+	<%= form_tag({:action => 'phase_update'}, :multipart => true) %>
+		<%= hidden_field_tag('phase_id', phase.id) %>
+		<%= text_field_tag('phase_name', phase.name) %>
+		<%= submit_tag "Save" %>
+		<%= submit_tag "Delete" %>
+	</form>
+<% end %>

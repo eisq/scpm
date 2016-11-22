@@ -166,6 +166,7 @@
       </ul>
     </li>
     <li><%= link_to('Milestone Delays', {:controller=>'tools', :action=>'milestone_delay_config'}, {:class=>menu_style('Milestone Delays','Milestone Delays')}) %></li>
+    <li><%= link_to('Phases', {:controller=>'tools', :action=>'phase_config'}, {:class=>menu_style('Phases','Phases')}) %></li>
 	<% if current_user.has_role?('Admin') %>
 		<li><%= link_to('Background', {:controller=>'background', :action=>'index'}, {:class=>menu_style('background','index')}) %></li>
 	<% end %>

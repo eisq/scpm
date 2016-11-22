@@ -1,5 +1,7 @@
 class Workstream < ActiveRecord::Base
 
+  has_many    :mdelay_records, :class_name=>'MdelayRecords'
+
   #has_many :projects, :foreign_key=>'workstream', :class_name=>'Project'
   
   def projects

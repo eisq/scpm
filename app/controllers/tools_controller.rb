@@ -2689,13 +2689,13 @@ class ToolsController < ApplicationController
   end
 
   def milestone_delay_config
-    @reason_one_selected = @reason_two_selected = nil
+    @reason_one_selected = nil
 
     if params[:add]
-      milestone_delay_add_reason(params[:select_reason_one], params[:select_reason_two], params[:select_reason_three], params[:reason_one], params[:reason_two], params[:reason_three])
+      milestone_delay_add_reason(params[:select_reason_one], params[:select_reason_two], params[:reason_one], params[:reason_two])
       milestone_delay_reasons_init
     elsif params[:remove]
-      milestone_delay_remove_reason(params[:select_reason_one], params[:select_reason_two], params[:select_reason_three])
+      milestone_delay_remove_reason(params[:select_reason_one], params[:select_reason_two])
       milestone_delay_reasons_init
     else
       milestone_delay_reasons_init
@@ -2703,21 +2703,19 @@ class ToolsController < ApplicationController
 
     if params[:reason_one_id] and !params[:reason_two_id]
       @reason_twos = milestone_delay_get_reason_twos(params[:reason_one_id])
-      @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:reason_one_id]]).id
+      @reason_one_selected = MdelayReasonOne.find(:first, :conditions=>["id = ?", params[:reason_one_id]]).id
       @area_disabled_two = false
     elsif params[:reason_one_id] and params[:reason_two_id]
       @reason_twos = milestone_delay_get_reason_twos(params[:reason_one_id])
-      @reason_threes = milestone_delay_get_reason_threes(params[:reason_two_id])
-      @reason_one_selected = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", params[:reason_one_id]]).id
-      @reason_two_selected = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", params[:reason_two_id]]).id
+      @reason_one_selected = MdelayReasonOne.find(:first, :conditions=>["id = ?", params[:reason_one_id]]).id
+      @reason_two_selected = MdelayReasonTwo.find(:first, :conditions=>["id = ?", params[:reason_two_id]]).id
       @area_disabled_two = false
-      @area_disabled_three = false
     end
 
   end
 
   def milestone_delay_reasons_init
-    @reason_ones = MilestoneDelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
+    @reason_ones = MdelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
     @reason_twos = Array.new
     @reason_threes = Array.new
 
@@ -2727,55 +2725,34 @@ class ToolsController < ApplicationController
 
   def milestone_delay_get_reason_twos(reason_one_id)
     reason_twos = Array.new
-    reason_twos = MilestoneDelayReasonTwo.find(:all, :conditions=>["reason_one_id = ? and is_active = ?",reason_one_id, true])
+    reason_twos = MdelayReasonTwo.find(:all, :conditions=>["mdelay_reason_one_id = ? and is_active = ?",reason_one_id, true])
     return reason_twos
   end
 
-  def milestone_delay_get_reason_threes(reason_two_id)
-    reason_threes = Array.new
-    reason_threes = MilestoneDelayReasonThree.find(:all, :conditions=>["reason_two_id = ? and is_active = ?",reason_two_id, true])
-    return reason_threes
-  end
-
-  def milestone_delay_add_reason(select_reason_one, select_reason_two, select_reason_three, reason_one, reason_two, reason_three)
+  def milestone_delay_add_reason(select_reason_one, select_reason_two, reason_one, reason_two)
     if reason_one != ""
       #add a lvl1 reason to the DB
-      reason_one_to_add = MilestoneDelayReasonOne.new
+      reason_one_to_add = MdelayReasonOne.new
       reason_one_to_add.reason_description = reason_one
       reason_one_to_add.is_active = true
       reason_one_to_add.save
     elsif select_reason_one != "" and reason_two != ""
       #add a lvl2 reason to the DB
-      reason_two_to_add = MilestoneDelayReasonTwo.new
+      reason_two_to_add = MdelayReasonTwo.new
       reason_two_to_add.reason_description = reason_two
-      reason_two_to_add.reason_one_id = select_reason_one
+      reason_two_to_add.mdelay_reason_one_id = select_reason_one
       reason_two_to_add.is_active = true
       reason_two_to_add.save
-    elsif select_reason_one != "" and select_reason_two != "" and reason_three != ""
-      #add a lvl3 reason to the DB
-      reason_three_to_add = MilestoneDelayReasonThree.new
-      reason_three_to_add.reason_description = reason_three
-      reason_three_to_add.reason_two_id = select_reason_two
-      reason_three_to_add.is_active = true
-      reason_three_to_add.save
     end
   end
 
-  def milestone_delay_remove_reason(reason_one, reason_two, reason_three)
-    if reason_one != "" and reason_two != "" and reason_three != ""
-      MilestoneDelayReasonThree.find(:first, :conditions=>["id = ?", reason_three]).delete
-    elsif reason_one != "" and reason_two != "" and reason_three == ""
-      milestone_reason_two = MilestoneDelayReasonTwo.find(:first, :conditions=>["id = ?", reason_two])
-      MilestoneDelayReasonThree.find(:all, :conditions=>["reason_two_id = ?", milestone_reason_two.id]).each do |reason_three_to_delete|
-        reason_three_to_delete.delete
-      end
+  def milestone_delay_remove_reason(reason_one, reason_two)
+    if reason_one != "" and reason_two != ""
+      milestone_reason_two = MdelayReasonTwo.find(:first, :conditions=>["id = ?", reason_two])
       milestone_reason_two.delete
-    elsif reason_one != "" and reason_two == "" and reason_three == ""
-      milestone_reason_one = MilestoneDelayReasonOne.find(:first, :conditions=>["id = ?", reason_one])
-      MilestoneDelayReasonTwo.find(:all, :conditions=>["reason_one_id = ?", milestone_reason_one.id]).each do |reason_two_to_delete|
-        MilestoneDelayReasonThree.find(:all, :conditions=>["reason_two_id = ?", reason_two_to_delete.id]).each do |reason_three_to_delete|
-          reason_three_to_delete.delete
-        end
+    elsif reason_one != "" and reason_two == ""
+      milestone_reason_one = MdelayReasonOne.find(:first, :conditions=>["id = ?", reason_one])
+      MdelayReasonTwo.find(:all, :conditions=>["mdelay_reason_one_id = ?", milestone_reason_one.id]).each do |reason_two_to_delete|
         reason_two_to_delete.delete
       end
       milestone_reason_one.delete
@@ -2817,6 +2794,65 @@ class ToolsController < ApplicationController
           render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
         end
     end
+  end
+
+  def export_mdelays_excel
+    delay_from = params[:delay_from].to_s
+    delay_to = params[:delay_to].to_s
+    request = ""
+
+    if delay_from != "" and delay_to == ""
+      request = "initial_date >= '" + delay_from + "'"
+    elsif delay_from == "" and delay_to != ""
+      request = "initial_date <= '" + delay_to + "'"
+    elsif delay_from != "" and delay_to != ""
+      request = "initial_date between '" + delay_from + "' and '" + delay_to + "'"
+    end
+
+    @delays = Array.new
+    MdelayRecord.find(:all, :conditions=>[request]).each do |delay|
+      if delay.project and delay.project.id != 2480
+        @delays << delay
+      end
+    end
+
+    if @delays.count > 0
+        begin
+          @xml = Builder::XmlMarkup.new(:indent => 1)
+
+          headers['Content-Type']         = "application/vnd.ms-excel"
+          headers['Content-Disposition']  = 'attachment; filename="Mdelay Classification.xls"'
+          headers['Cache-Control']        = ''
+          render "mdelays.erb", :layout=>false
+        rescue Exception => e
+          render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+        end
+    end
+  end
+
+  def phase_config
+    @phases = Phase.all
+  end
+
+  def phase_update
+    phase = Phase.find(:first, :conditions=>["id = ?", params[:phase_id]])
+    if params[:commit] == "Delete"
+      phase.delete
+    else
+      phase.name = params[:phase_name]
+      phase.save
+    end
+    
+    redirect_to '/tools/phase_config'
+  end
+
+  def phase_add
+    phase = Phase.new
+    phase.name = params[:phase_name]
+    phase.is_active = true
+    phase.save
+
+    redirect_to '/tools/phase_config'
   end
 
   def manage_project_version

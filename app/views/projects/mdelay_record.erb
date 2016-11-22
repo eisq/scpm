@@ -1,0 +1,66 @@
+<SCRIPT language="Javascript">
+function reason_one_select(reason_one_id)
+{
+  location.replace("mdelay_record?project_id=<%= @project.id %>&reason_one_id="+reason_one_id);
+}
+</SCRIPT>
+
+<h2> Milestone delay record - [<%= @mdelay_record_show.workstream %>] <%= @mdelay_record_show.project_parent %> > <%= @mdelay_record_show.project.name %> </h2>
+
+<%= form_tag({:action => 'mdelay_record_show_update'}, :multipart => true) %>
+<table>
+	<tr>
+		<td>Milestone : <%= select_tag("milestone", options_for_select(@mdelay_record_show.project.milestones.map{ |option_w| [option_w.name, option_w.id]}.insert(0, "")), {:style=>"width:185px"}) %></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>Initial date : <%= text_field_tag('initial_date', @mdelay_record_show.initial_date.to_s, {:size=>15}) %></td>
+		<td>Current date : <%= @mdelay_record_show.current_date.to_s %></td>
+	</tr>
+	<tr>
+		<td>Pre/Post M5 : <%= @mdelay_record_show.pre_post_mfive %></td>
+		<% if @mdelay_record_show.phase_of_identification %>
+			<td>Phase of identification : <%= @mdelay_record_show.phase_of_identification.name %></td>
+		<% end %>
+	</tr>
+	<tr>
+		<td colspan=2>Initial reason of delay : <%= @mdelay_record_show.initial_reason %></td>
+	</tr>
+	<tr>
+		<td colspan=2>
+			Why 1: <%= text_field_tag('why_one', @mdelay_record_show.why_one, {:size=>60}) %><br/>
+			Why 2: <%= text_field_tag('why_two', @mdelay_record_show.why_two, {:size=>60}) %><br/>
+			Why 3: <%= text_field_tag('why_three', @mdelay_record_show.why_three, {:size=>60}) %><br/>
+			Why 4: <%= text_field_tag('why_four', @mdelay_record_show.why_four, {:size=>60}) %><br/>
+			Why 5: <%= text_field_tag('why_five', @mdelay_record_show.why_five, {:size=>60}) %>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2>Reason of delay after analysis : <%= @mdelay_record_show.analysed_reason %></td>
+	</tr>
+	<tr> <!-- CATEGORIES -->
+		<td><%= select_tag("select_reason_one", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id ]}.insert(0, ""), @reason_one_selected), {:onchange=>"reason_one_select(this.value)", :style=>"width:185px"}) %></td>
+		<td><%= select_tag("select_reason_two", options_for_select(@reason_twos.map{|reason| [reason.reason_description, reason.id ]}.insert(0, "")), {:style=>"width:185px"}) %></td>
+	</tr>
+	<tr>
+		<td colspan=2>Consequences : <%= @mdelay_record_show.consequence %></td>
+	</tr>
+	<tr>
+		<td>Validation date : <%= @mdelay_record_show.validation_date.to_s %></td>
+		<td>Validated by : <%= @mdelay_record_show.validated_by %></td>
+	</tr>
+	<tr>
+		<td colspan=2>Comments : <%= @mdelay_record_show.comments %></td>
+	</tr>
+	<tr>
+		<td colspan=2>
+			<% if !@update %>
+			<%= submit_tag "Add" %>
+			<% else %>
+				<%= submit_tag "Update" %>
+			<% end %>
+		</td>
+	</tr>
+</table>
+</form>
+
