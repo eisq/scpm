@@ -1,10 +1,11 @@
 class CreateMdelayRecords < ActiveRecord::Migration
   def self.up
     create_table :mdelay_records do |t|
-      t.integer :workstream_id
+      t.string :workstream
       t.integer :project_id
       t.integer :milestone_id
-      t.integer :phase_of_identification_id
+      t.string :pre_post_gm_five
+      t.integer :phase_id
       t.boolean :deployment_impact
       t.string :initial_reason, :limit => nil
       t.string :why_one, :limit => nil

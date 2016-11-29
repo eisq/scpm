@@ -41,7 +41,7 @@ class Project < ActiveRecord::Base
   has_many    :presale_ignore_projects, :dependent => :nullify
   has_many    :deviation_spider_references
   has_many    :current_delays, :class_name=>'MilestoneDelayRecord'
-  has_many    :mdelay_records, :class_name=>'MdelayRecord'
+  has_many    :mdelay_records
 
   def get_quality_status
     quality_status = "Unknown"

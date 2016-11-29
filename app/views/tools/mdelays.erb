@@ -168,7 +168,7 @@ end
             @xml.Data created_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell 'ss:StyleID' => 'Pink' do
-            @xml.Data mdelay.workstream.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.project.workstream, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data mdelay.project.brn.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -186,7 +186,7 @@ end
             @xml.Data mdelay.get_pre_post_gmfive, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data mdelay.phase_of_identification.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.phase.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data mdelay.deployment_impact, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'

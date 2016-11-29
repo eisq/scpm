@@ -1,10 +1,8 @@
 class MdelayRecord < ActiveRecord::Base
 
-	has_many    :mdelay_reason_ones, :class_name=>"MdelayReasonOne", :foreign_key=>"mdelay_reason_one_id"
-	has_many    :mdelay_reason_twos, :class_name=>"MdelayReasonTwo", :foreign_key=>"mdelay_reason_two_id"
-	has_many    :phase_of_identification, :class_name=>"Phase", :foreign_key=>"phase_of_identification_id"
-	belongs_to	:workstream
-	belongs_to	:workpackage
+	belongs_to  :mdelay_reason_one
+	belongs_to  :mdelay_reason_two
+	belongs_to  :phase
 	belongs_to	:project
 	belongs_to	:milestone
 
@@ -17,7 +15,13 @@ class MdelayRecord < ActiveRecord::Base
 	end
 
 	def get_pre_post_gmfive
-		return self.project.pre_post_gm_five
+		value = nil
+		self.pre_post_gm_five ? (value = self.pre_post_gm_five) : (value = self.project.pre_post_gm_five)
+		return value
+	end
+
+	def get_caption_date
+		return get_date_from_bdd_date(self.created_at)
 	end
 
 	def get_date_from_bdd_date(bdd_date)

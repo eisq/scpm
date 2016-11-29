@@ -195,17 +195,17 @@ function add(id, nb_months, has_requests, has_rights) {
                 <th class="delay_td"></th>
               </tr>
               <% @mdelay_records.each do |mdelay_record| %>
-                <tr class="delay_tr" id='mdelay_record_<%=mdelay_record.mdelay_record_id%>'>
+                <tr class="delay_tr" id='mdelay_record_<%=mdelay_record.mdelay_record_id.to_s%>'>
                   <td class="delay_td"><%= mdelay_record.milestone_name %></td>
                   <td class="delay_td"><%= mdelay_record.phase_of_identification %></td>
                   <td class="delay_td"><%= mdelay_record.initial_reason %></td>
                   <td class="delay_td"><%= mdelay_record.analysed_reason %></td>
-                  <td class="delay_td"><%= mdelay_record.mdelay_reason_one_description %></td>
-                  <td class="delay_td"><%= mdelay_record.mdelay_reason_two_description %></td>
+                  <td class="delay_td"><%= mdelay_record.mdelay_reason_one.reason_description %></td>
+                  <td class="delay_td"><%= mdelay_record.mdelay_reason_two.reason_description %></td>
                   <td class="delay_td"><%= mdelay_record.validation_date %></td>
                   <td class="delay_td_reason"><%= mdelay_record.comments %></td>
                   <td class="delay_td"><%= mdelay_record.caption_date %></td>
-                  <td class="delay_td"><%= link_to_remote(image_tag('edit.gif', {:style=>"float:left"}), :url=>{:action=>'mdelay_record_edit', :mdelay_id=>mdelay_record.mdelay_record_id}) %><%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'mdelay_record_delete', :mdelay_id=>mdelay_record.mdelay_record_id}, :confirm=>"Are you sure?", :success=>"$('mdelay_record_#{mdelay_record.mdelay_record_id}').hide();") %></td>
+                  <td class="delay_td"><%= link_to(image_tag('edit.gif'), {:action=>'mdelay_record_edit', :mdelay_record_id=>mdelay_record.mdelay_record_id}) %> <%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'mdelay_record_delete', :mdelay_record_id=>mdelay_record.mdelay_record_id}, :confirm=>"Are you sure?", :success=>"$('mdelay_record_#{mdelay_record.mdelay_record_id}').hide();") %></td>
                 </tr>
               <% end %>
             </table>

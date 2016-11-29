@@ -1,4 +1,5 @@
 class MdelayReasonTwo < ActiveRecord::Base
-	belongs_to	:mdelay_record
+	has_many	:mdelay_record
 	belongs_to	:mdelay_reason_one
+
 end

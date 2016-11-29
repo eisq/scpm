@@ -1,3 +1,3 @@
 class Phase < ActiveRecord::Base
-	belongs_to	:mdelay_record
+	has_many	:mdelay_record
 end
