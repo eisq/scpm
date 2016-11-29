@@ -9,6 +9,7 @@ class ProjectsController < ApplicationController
   Milestone_delay = Struct.new(:delay_id, :milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, :other_reason, :last_update, :person)
   Mdelay_record = Struct.new(:mdelay_record_id, :milestone_name, :phase_of_identification, :initial_reason, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :validation_date, :comments, :caption_date)
   Mdelay_record_show = Struct.new(:mdelay_record_id, :project_parent, :project, :workstream, :milestone, :deployment_impact, :initial_date, :current_date, :pre_post_gmfive, :phase_of_identification, :initial_reason, :why_one, :why_two, :why_three, :why_four, :why_five, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :consequence, :validation_date, :validated_by, :comments, :caption_date)
+  ReasonStruct = Struct.new(:reason_one_id, :reason_one, :reason_twos)
 
   def index
     @time = Time.now
@@ -365,115 +366,59 @@ class ProjectsController < ApplicationController
 
     mdelay_record_temp = MdelayRecord.find(:first, :conditions=>["id = ?", params["mdelay_record_id"]])
 
-    @reason_ones = MdelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
-    @reason_twos = Array.new
+    #@reason_ones = MdelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
+    #@reason_twos = Array.new
+
+    initReasonsStruct
 
     @mdelay_record_show = Mdelay_record_show.new
     @mdelay_record_show.mdelay_record_id = mdelay_record_temp.id
     @mdelay_record_show.project_parent = mdelay_record_temp.project.project_name
-    @mdelay_record_show.project = mdelay_record_temp.project                                    #
+    @mdelay_record_show.project = mdelay_record_temp.project
     @mdelay_record_show.workstream = mdelay_record_temp.project.workstream
-    @mdelay_record_show.caption_date = mdelay_record_temp.get_caption_date
+    @mdelay_record_show.caption_date = mdelay_record_temp.get_caption_date            
+    mdelay_record_temp.milestone ? (@mdelay_record_show.milestone = mdelay_record_temp.milestone) : (@mdelay_record_show.milestone = Milestone.new)
+    @mdelay_record_show.deployment_impact = mdelay_record_temp.deployment_impact
+    @mdelay_record_show.initial_date = mdelay_record_temp.initial_date
+    @mdelay_record_show.current_date = mdelay_record_temp.current_date
+    @mdelay_record_show.pre_post_gmfive = mdelay_record_temp.get_pre_post_gmfive
+    mdelay_record_temp.phase ? (@mdelay_record_show.phase_of_identification = mdelay_record_temp.phase) : (@mdelay_record_show.phase_of_identification = Phase.new)
+    @mdelay_record_show.initial_reason = mdelay_record_temp.initial_reason
+    @mdelay_record_show.why_one = mdelay_record_temp.why_one
+    @mdelay_record_show.why_two = mdelay_record_temp.why_two
+    @mdelay_record_show.why_three = mdelay_record_temp.why_three
+    @mdelay_record_show.why_four = mdelay_record_temp.why_four
+    @mdelay_record_show.why_five = mdelay_record_temp.why_five
+    @mdelay_record_show.analysed_reason = mdelay_record_temp.analysed_reason
+    @mdelay_record_show.consequence = mdelay_record_temp.consequence
+    @mdelay_record_show.validation_date = mdelay_record_temp.validation_date
+    @mdelay_record_show.validated_by = mdelay_record_temp.validated_by
+    @mdelay_record_show.comments = mdelay_record_temp.comments
 
-    if !params["reason_one_id"]
-                
-      !mdelay_record_temp.milestone ? (@mdelay_record_show.milestone = Milestone.new) : (@mdelay_record_show.milestone = mdelay_record_temp.milestone)
-      @mdelay_record_show.deployment_impact = mdelay_record_temp.deployment_impact
-      @mdelay_record_show.initial_date = mdelay_record_temp.initial_date
-      @mdelay_record_show.current_date = mdelay_record_temp.current_date
-      @mdelay_record_show.pre_post_gmfive = mdelay_record_temp.get_pre_post_gmfive
-      @mdelay_record_show.phase_of_identification = mdelay_record_temp.phase    #
-      @mdelay_record_show.initial_reason = mdelay_record_temp.initial_reason
-      @mdelay_record_show.why_one = mdelay_record_temp.why_one
-      @mdelay_record_show.why_two = mdelay_record_temp.why_two
-      @mdelay_record_show.why_three = mdelay_record_temp.why_three
-      @mdelay_record_show.why_four = mdelay_record_temp.why_four
-      @mdelay_record_show.why_five = mdelay_record_temp.why_five
-      @mdelay_record_show.analysed_reason = mdelay_record_temp.analysed_reason
-      @mdelay_record_show.consequence = mdelay_record_temp.consequence
-      @mdelay_record_show.validation_date = mdelay_record_temp.validation_date
-      @mdelay_record_show.validated_by = mdelay_record_temp.validated_by
-      @mdelay_record_show.comments = mdelay_record_temp.comments
+    mdelay_record_temp.mdelay_reason_one ? (@mdelay_record_show.mdelay_reason_one = mdelay_record_temp.mdelay_reason_one) : (@mdelay_record_show.mdelay_reason_one = MdelayReasonOne.new)
+    mdelay_record_temp.mdelay_reason_two ? (@mdelay_record_show.mdelay_reason_two = mdelay_record_temp.mdelay_reason_two) : (@mdelay_record_show.mdelay_reason_two = MdelayReasonTwo.new)
 
-      if mdelay_record_temp.mdelay_reason_one
-        @mdelay_record_show.mdelay_reason_one = mdelay_record_temp.mdelay_reason_one
-        @reason_twos = milestone_delay_get_reason_twos(mdelay_record_temp.mdelay_reason_one.id.to_s)
-        if mdelay_record_temp.mdelay_reason_two
-          @mdelay_record_show.mdelay_reason_two = mdelay_record_temp.mdelay_reason_two
-        else
-          @mdelay_record_show.mdelay_reason_two = MdelayReasonTwo.new
-        end
-      else
-        @mdelay_record_show.mdelay_reason_one = MdelayReasonOne.new
-        @mdelay_record_show.mdelay_reason_two = MdelayReasonTwo.new
-      end
-
-    elsif params['reason_one_id']
-
-      if params["milestone_id"]
-        @mdelay_record_show.milestone = Milestone.find(:first, :conditions=>["id = ?", params["milestone_id"]])
-      end
-      @mdelay_record_show.deployment_impact = params["deployment_impact"]
-      @mdelay_record_show.initial_date = params["initial_date"]
-      @mdelay_record_show.current_date = params["current_date"]
-      @mdelay_record_show.pre_post_mfive = params["pre_post_gmfive"]
-      if params["phase_of_identification_id"]
-        @mdelay_record_show.phase_of_identification = Phase.find(:first, :conditions=>["id = ?", params["phase_of_identification_id"]])
-      end
-      @mdelay_record_show.initial_reason = params["initial_reason"]
-      @mdelay_record_show.why_one = params["why_one"]
-      @mdelay_record_show.why_two = params["why_two"]
-      @mdelay_record_show.why_three = params["why_three"]
-      @mdelay_record_show.why_four = params["why_four"]
-      @mdelay_record_show.why_five = params["why_five"]
-      @mdelay_record_show.analysed_reason = params["analysed_reason"]
-      @mdelay_record_show.consequence = params["consequence"]
-      @mdelay_record_show.validation_date = params["validation_date"]
-      @mdelay_record_show.validated_by = params["validated_by"]
-      @mdelay_record_show.comments = params["comments"]
-
-      if params['reason_one_id'] != ""
-        @mdelay_record_show.mdelay_reason_one = MdelayReasonOne.find(:first, :conditions=>["id = ?", params['reason_one_id']])
-        @reason_twos = milestone_delay_get_reason_twos(params['reason_one_id'])
-        mdelay_record_temp.mdelay_reason_two = nil
-        #mdelay_record_temp.save
-        @mdelay_record_show.mdelay_reason_two = MdelayReasonTwo.new
-      elsif params['reason_one_id'] == ""
-        @mdelay_record_show.mdelay_reason_one = MdelayReasonOne.new
-        @mdelay_record_show.mdelay_reason_two = MdelayReasonTwo.new
-        mdelay_record_temp.mdelay_reason_one = nil
-        mdelay_record_temp.mdelay_reason_two = nil
-        #mdelay_record_temp.save
-      end
-    end
-
+    @reason_ones = MdelayReasonOne.find(:all, :conditions=>["is_active = ?", true])
   end
 
-  def update_why_one
-    mdelay_record_id = params[:mdelay_record_id]
-    mdelay_record_value = params[:mdelay_record_value]
-    if mdelay_record_id and value
-      mdelay_record = MdelayRecord.find(:first, :conditions=>["id = ?", mdelay_record_id])
-      mdelay_record.why_one = mdelay_record_value
-      mdelay_record.save
-    end
-    render(:nothing=>true)
-  end
+  def initReasonsStruct
+    @position_ones = Array.new(2)
+    @reason_two_array = Array.new(2)
+    @position_twos = Array.new(2)
+    number_of_reason_ones = 0
 
-  def update_why_two
-    mdelay_record_id = params[:mdelay_record_id]
-    mdelay_record_value = params[:mdelay_record_value]
-    if mdelay_record_id and value
-      mdelay_record = MdelayRecord.find(:first, :conditions=>["id = ?", mdelay_record_id])
-      mdelay_record.why_two = mdelay_record_value
-      mdelay_record.save
-    end
-    render(:nothing=>true)
-  end
+    MdelayReasonOne.find(:all, :conditions=>["is_active = ?", true]).each do |mdelay_reason_one|
+      i = 0
+      MdelayReasonTwo.find(:all, :conditions=>["mdelay_reason_one_id = ? and is_active = ?", mdelay_reason_one.id, true]).each do |reason_two|
+        @reason_two_array << reason_two.reason_description
+        @position_twos << reason_two.id
+        i += 1
+      end
 
-  def milestone_delay_get_reason_twos(reason_one_id)
-    @reason_twos = MdelayReasonTwo.find(:all, :conditions=>["mdelay_reason_one_id = ? and is_active = ?",reason_one_id, true])
-    return @reason_twos
+      @position_ones << mdelay_reason_one.id
+
+      number_of_reason_ones += 1
+    end
   end
 
   def mdelay_record_show_update
