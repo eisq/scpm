@@ -14,7 +14,7 @@ class MdelayRecord < ActiveRecord::Base
 		get_date_from_bdd_date(self.current_date) - get_date_from_bdd_date(self.initial_date)
 	end
 
-	def get_pre_post_gmfive
+	def get_pre_post_gm_five
 		value = nil
 		self.pre_post_gm_five ? (value = self.pre_post_gm_five) : (value = self.project.pre_post_gm_five)
 		return value

@@ -48,29 +48,3 @@ To <%= text_field 'delay_to', '', {:style=>"width:100px"} %></td><td>
 <%= submit_tag "Excel export", :name => 'export' %>
 </td></tr></table>
 <% end %>
-
-<!--
-<h2>Delay reasons - Admin module for Milestone Delays</h2>
-
-<% form_tag(:action=>'milestone_delay_config') do %>
-<%= submit_tag 'Reset', :name => 'reset' %>
-<br/><br/>
-  <%= select_tag("select_reason_one", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id ]}.insert(0, ""), @reason_one_selected), {:onchange=>"reason_one_select(this.value)", :style=>"width:185px"}) %>
-
-  <%= select_tag("select_reason_two", options_for_select(@reason_twos.map{|reason| [reason.reason_description, reason.id ]}.insert(0, ""), @reason_two_selected), {:onchange=>"reason_two_select(this.value)", :style=>"width:185px"}) %>
-
-  <%= select_tag("select_reason_three", options_for_select(@reason_threes.map{|reason| [reason.reason_description, reason.id ]}.insert(0, "")), {:style=>"width:185px"}) %>
-  <br/>
-
-  <%= text_field_tag 'reason_one', '' %>
-  <%= text_field_tag 'reason_two', '', :readonly => @area_disabled_two %>
-  <%= text_field_tag 'reason_three', '', :readonly => @area_disabled_three %>
-
-  <br/><br/>
-  <%= submit_tag 'Add', :name => 'add' %>
-  <br/><br/>
-  <%= submit_tag 'Remove', :name => 'remove' %>
-  <br/><br/>
-  <u>Note</u>: if you remove a lvl1 reason, all lvl2 and lvl3 reasons linked are removed.
-<% end %>
--->

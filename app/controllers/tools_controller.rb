@@ -2809,14 +2809,16 @@ class ToolsController < ApplicationController
       request = "initial_date between '" + delay_from + "' and '" + delay_to + "'"
     end
 
-    @delays = Array.new
-    MdelayRecord.find(:all, :conditions=>[request]).each do |delay|
-      if delay.project and delay.project.id != 2480
-        @delays << delay
+    @mdelays = Array.new
+    MdelayRecord.find(:all, :conditions=>[request]).each do |mdelay|
+      if mdelay.project and mdelay.project.id != 2480
+        if (mdelay.project.workstream and mdelay.project.workstream != "") and (mdelay.get_pre_post_gm_five and mdelay.get_pre_post_gm_five != "") and (mdelay.phase and mdelay.phase != "") and (mdelay.deployment_impact and mdelay.deployment_impact != "") and (mdelay.initial_reason and mdelay.initial_reason != "") and (mdelay.analysed_reason and mdelay.analysed_reason != "") and mdelay.mdelay_reason_one and mdelay.mdelay_reason_two and (mdelay.validation_date and mdelay.validation_date != "")
+            @mdelays << mdelay
+        end
       end
     end
 
-    if @delays.count > 0
+    if @mdelays.count > 0
         begin
           @xml = Builder::XmlMarkup.new(:indent => 1)
 

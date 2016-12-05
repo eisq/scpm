@@ -72,23 +72,23 @@ end
     @xml.Table do
 
       # Columns width
-      @xml.Column 0, {'ss:Width' => 30} #ID
-      @xml.Column 1, {'ss:Width' => 75} #Caption date (dd/mm/yyyy)
-      @xml.Column 2, {'ss:Width' => 75} #Workstream
-      @xml.Column 3, {'ss:Width' => 75} #Project BRN
-      @xml.Column 4, {'ss:Width' => 200} #Project parent
-      @xml.Column 5, {'ss:Width' => 200} #Project name
-      @xml.Column 6, {'ss:Width' => 100} #Milestone name
-      @xml.Column 7, {'ss:Width' => 100} #Pre-M5 / Post-M5
-      @xml.Column 8, {'ss:Width' => 100} #Phase of identification
-      @xml.Column 9, {'ss:Width' => 75} #Impact M13
-      @xml.Column 10, {'ss:Width' => 300} #Initial reason of delay
-      @xml.Column 11, {'ss:Width' => 300} #Reason of delay after analysis
-      @xml.Column 12, {'ss:Width' => 100} #Category 1
-      @xml.Column 13, {'ss:Width' => 100} #Category 2
-      @xml.Column 14, {'ss:Width' => 75} #Validation date (dd/mm/yyyy)
-      @xml.Column 15, {'ss:Width' => 100} #Validated by
-      @xml.Column 16, {'ss:Width' => 300} #Comments
+      @xml.Column 0, {'ss:Width' => 30}
+      @xml.Column 1, {'ss:Width' => 75}
+      @xml.Column 2, {'ss:Width' => 75}
+      @xml.Column 3, {'ss:Width' => 75}
+      @xml.Column 4, {'ss:Width' => 200}
+      @xml.Column 5, {'ss:Width' => 200}
+      @xml.Column 6, {'ss:Width' => 100}
+      @xml.Column 7, {'ss:Width' => 100}
+      @xml.Column 8, {'ss:Width' => 100}
+      @xml.Column 9, {'ss:Width' => 75}
+      @xml.Column 10, {'ss:Width' => 300}
+      @xml.Column 11, {'ss:Width' => 300}
+      @xml.Column 12, {'ss:Width' => 100}
+      @xml.Column 13, {'ss:Width' => 100}
+      @xml.Column 14, {'ss:Width' => 75}
+      @xml.Column 15, {'ss:Width' => 100}
+      @xml.Column 16, {'ss:Width' => 300}
 
       # Header 1
       @xml.Row 'ss:StyleID' => 'Default' do
@@ -103,13 +103,13 @@ end
 
       # Header 3
       @xml.Row do
-        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "ID", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Caption date", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Workstream", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitleBlue' do
@@ -167,7 +167,7 @@ end
             created_date = date_split[2]+"-"+date_split[1]+"-"+date_split[0]
             @xml.Data created_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
-          @xml.Cell 'ss:StyleID' => 'Pink' do
+          @xml.Cell do
             @xml.Data mdelay.project.workstream, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
@@ -179,14 +179,18 @@ end
           @xml.Cell do
             @xml.Data mdelay.project.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
-          @xml.Cell 'ss:StyleID' => 'Blue' do
-            @xml.Data mdelay.milestone.name, 'ss:Type' => 'Number'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Cell do
+            if mdelay.milestone
+              @xml.Data mdelay.milestone.name, 'ss:Type' => 'Number'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
           @xml.Cell do
-            @xml.Data mdelay.get_pre_post_gmfive, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.get_pre_post_gm_five, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data mdelay.phase.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            if mdelay.phase
+              @xml.Data mdelay.phase.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
           @xml.Cell do
             @xml.Data mdelay.deployment_impact, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -198,15 +202,21 @@ end
             @xml.Data mdelay.analysed_reason, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data mdelay.mdelay_reason_one.reason_description, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            if mdelay.mdelay_reason_one
+              @xml.Data mdelay.mdelay_reason_one.reason_description, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
           @xml.Cell do
-            @xml.Data mdelay.mdelay_reason_two.reason_description, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            if mdelay.mdelay_reason_two
+              @xml.Data mdelay.mdelay_reason_two.reason_description, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
           @xml.Cell do
-            date_split = mdelay.validation_date.to_s.split("-")
-            validation_date = date_split[2]+"-"+date_split[1]+"-"+date_split[0]
-            @xml.Data validation_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            if mdelay.validation_date
+              date_split = mdelay.validation_date.to_s.split("-")
+              validation_date = date_split[2]+"-"+date_split[1]+"-"+date_split[0]
+              @xml.Data validation_date, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            end
           end
           @xml.Cell do
             @xml.Data mdelay.validated_by, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -223,6 +233,24 @@ end
 
       # Last row
       @xml.Row do
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
+        @xml.Cell 'ss:StyleID' => 'bordertop' do
+          @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+        end
         @xml.Cell 'ss:StyleID' => 'bordertop' do
           @xml.Data "", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end

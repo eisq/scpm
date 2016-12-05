@@ -1,36 +1,32 @@
 <SCRIPT language="Javascript">
 function reason_one_select(reason_one_id)
 {
-	$('select_reason_two').options.length=0;
+	reason_one_id = parseInt(reason_one_id);
 
-	var position_ones = ['<%= @position_ones.map(&:to_s).join(", ") %>'];
-	var reason_two_array = ['<%= @reason_two_array.map(&:to_s).join(", ") %>'];
+	var mdelay_cat_two = [<%= @positions.map(&:to_i).join(", ") %>];
 
-	var index = 0;
-	for (var i=0; i < position_ones.length; i++) {
-		position_ones.forEach(function(position_one) {
-			if (position_one == reason_one_id) {
-				index = i;
-			}
-		})
+	hide_all();
+
+	var n = mdelay_cat_two.indexOf(reason_one_id);
+	var select = "select_" + n;
+	document.getElementById(select).show();
+}
+
+window.onload = function() {
+	hide_all();
+
+	var mdelay_cat_two = [<%= @positions.map(&:to_i).join(", ") %>];
+	var n = mdelay_cat_two.indexOf(<%= @mdelay_record_show.mdelay_reason_one.id %>);
+	var select = "select_" + n;
+	document.getElementById(select).show();
+}
+
+function hide_all(){
+	var mdelay_cat_two = [<%= @positions.map(&:to_i).join(", ") %>];
+	for (i=0; i<mdelay_cat_two.length; i++){
+		var select_to_hide = "select_" + i;
+		document.getElementById(select_to_hide).hide();
 	}
-
-	var position_twos = ['<%= @position_twos.map(&:to_s).join(", ") %>'];
-
-	var opt = document.createElement('option');
-	opt.value = 0;
-	opt.innerHTML = '';
-	$('select_reason_two').add(opt);
-
-	var reason_twos = reason_two_array[index];
-	for (var u; u < reason_twos.length; u++) {
-		var opt = document.createElement('option');
-		opt.value = position_twos[u];
-		opt.innerHTML = reason_twos[u];
-		$('select_reason_two').add(opt);
-	}
-
-	alert(reason_two_array);
 }
 </SCRIPT>
 
@@ -40,23 +36,23 @@ function reason_one_select(reason_one_id)
 <%= hidden_field_tag('mdelay_record_id', @mdelay_record_show.mdelay_record_id.to_s) %>
 <table>
 	<tr>
-		<td>Milestone : <%= select_tag("milestone", options_for_select(@mdelay_record_show.project.milestones.map{ |option_w| [option_w.name, option_w.id]}.insert(0, "")), {:style=>"width:185px"}) %></td>
-		<td>Pre/Post M5 : <%= select_tag("pre_post_gmfive", options_for_select(@mdelay_record_show.pre_post_gmfive, ""), {:style=>"width:185px"}) %></td>
+		<td>Milestone : <%= select_tag("milestone", options_for_select(@mdelay_record_show.project.milestones.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.milestone.id), {:style=>"width:185px"}) %></td>
+		<td>Pre/Post M5 : <%= select_tag("pre_post_gm_five", options_for_select(["", "Pre-M5", "Post-M5"], :selected => @mdelay_record_show.pre_post_gm_five), {:style=>"width:185px"}) %></td>
 	</tr>
 	<tr>
-		
-		<td>Impact on G8 / M13 (Y/N) : <%= select_tag("deployment_impact", options_for_select([["", nil], ["Yes", "true"], ["No", "false"]], @mdelay_record_show.deployment_impact), {:style=>"width:185px"}) %></td>
+		<td>Phase : <%= select_tag("phase_of_identification", options_for_select(@phases.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.phase_of_identification.id), {:style=>"width:185px"}) %>
+		<td>Impact on G8 / M13 : <%= select_tag("deployment_impact", options_for_select(["", "Yes", "No"], :selected => @mdelay_record_show.deployment_impact), {:style=>"width:185px"}) %></td>
 	</tr>
 	<tr>
 		<td colspan=2>Initial reason of delay : <%= text_area_tag('initial_reason', @mdelay_record_show.initial_reason) %></td>
 	</tr>
 	<tr>
 		<td colspan=2>
-			Why 1: <%= text_field_tag('why_one', @mdelay_record_show.why_one, {:size=>60, :id=>'why_one'}) %><br/>
-			Why 2: <%= text_field_tag('why_two', @mdelay_record_show.why_two, {:size=>60}) %><br/>
-			Why 3: <%= text_field_tag('why_three', @mdelay_record_show.why_three, {:size=>60}) %><br/>
-			Why 4: <%= text_field_tag('why_four', @mdelay_record_show.why_four, {:size=>60}) %><br/>
-			Why 5: <%= text_field_tag('why_five', @mdelay_record_show.why_five, {:size=>60}) %>
+			Why 1: <%= text_field_tag('why_one', @mdelay_record_show.why_one, {:size=>70}) %><br/>
+			Why 2: <%= text_field_tag('why_two', @mdelay_record_show.why_two, {:size=>70}) %><br/>
+			Why 3: <%= text_field_tag('why_three', @mdelay_record_show.why_three, {:size=>70}) %><br/>
+			Why 4: <%= text_field_tag('why_four', @mdelay_record_show.why_four, {:size=>70}) %><br/>
+			Why 5: <%= text_field_tag('why_five', @mdelay_record_show.why_five, {:size=>70}) %>
 		</td>
 	</tr>
 	<tr>
@@ -64,21 +60,30 @@ function reason_one_select(reason_one_id)
 	</tr>
 	<tr> <!-- CATEGORIES -->
 		<td><%= select_tag("select_reason_one", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id]}.insert(0, ""), @mdelay_record_show.mdelay_reason_one.id), {:onchange=>"reason_one_select(this.value)", :style=>"width:185px"}) %></td>
-		<td><%= select_tag("select_reason_two", options_for_select(@mdelay_record_show.mdelay_reason_one.get_reason_twos.map{|reason| [reason.reason_description, reason.id]}.insert(0, ""), @mdelay_record_show.mdelay_reason_two.id), {:style=>"width:185px"}) %></td>
+		<td>
+			<% for i in 0..(@reason_ones.count-1)
+				mdelay_array = @mdelay_rt[i]
+				if mdelay_array %>
+					<span id="select_<%= i.to_s %>">
+						<%= select_tag "select_reason_two_#{i.to_s}", options_for_select(mdelay_array.map{ |option_w| [option_w.reason_description, option_w.id ]}.insert(0, ""), @mdelay_record_show.mdelay_reason_two.id), :multiple => false, :style=>"width:185px" %>
+					</span>
+				<% end
+			end %>
+		</td>
 	</tr>
 	<tr>
 		<td colspan=2>Consequences : <%= text_area_tag('consequence', @mdelay_record_show.consequence) %></td>
 	</tr>
 	<tr>
 		<td>Initial date : <%= text_field_tag('initial_date', @mdelay_record_show.initial_date.to_s, {:size=>15}) %></td>
-		<td>Current date : <%= @mdelay_record_show.current_date.to_s %></td>
+		<td>Current date : <%= text_field_tag('current_date', @mdelay_record_show.current_date.to_s, {:size=>15}) %></td>
 	</tr>
 	<tr>
-		<td>Validation date : <%= @mdelay_record_show.validation_date.to_s %></td>
-		<td>Validated by : <%= @mdelay_record_show.validated_by %></td>
+		<td>Validation date : <%= text_field_tag('validation_date', @mdelay_record_show.validation_date.to_s, {:size=>15}) %></td>
+		<td>Validated by : <%= text_field_tag('validated_by', @mdelay_record_show.validated_by, {:size=>15}) %></td>
 	</tr>
 	<tr>
-		<td colspan=2>Comments : <%= @mdelay_record_show.comments %></td>
+		<td colspan=2>Comments : <%= text_area_tag('comments', @mdelay_record_show.comments) %></td>
 	</tr>
 	<tr>
 		<td colspan=2>
