@@ -21,12 +21,50 @@ class MdelayRecord < ActiveRecord::Base
 	end
 
 	def get_caption_date
-		return get_date_from_bdd_date(self.created_at)
+		value = nil
+
+		if self.created_at
+			value = get_date_from_bdd_date(self.created_at).strftime("%d/%m/%Y")
+		end
+
+		return value
+	end
+
+	def get_initial_date
+		value = nil
+
+		if self.initial_date
+			value = get_date_from_bdd_date(self.initial_date).strftime("%d/%m/%Y")
+		end
+
+		return value
+	end
+
+	def get_current_date
+		value = nil
+
+		if self.current_date
+			value = get_date_from_bdd_date(self.current_date).strftime("%d/%m/%Y")
+		end
+
+		return value
+	end
+
+	def get_validation_date
+		value = nil
+
+		if self.validation_date
+			value = get_date_from_bdd_date(self.validation_date).strftime("%d/%m/%Y")
+		end
+
+		return value
 	end
 
 	def get_date_from_bdd_date(bdd_date)
-	    date_split = bdd_date.to_s.split("-")
-	    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+		if bdd_date and bdd_date != ""
+		    date_split = bdd_date.to_s.split("-")
+		    date = Date.new(date_split[0].to_i, date_split[1].to_i, date_split[2].to_i)
+		end
 
     	return date
 	end

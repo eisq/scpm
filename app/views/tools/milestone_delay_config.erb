@@ -7,6 +7,10 @@ function reason_one_select(reason_one_id)
 
 <h2>Milestone delays export</h2>
 
+<% if params["error_empty"] %>
+<span style="color:red;">No milestone delays to export</span><br/><br/>
+<% end %>
+
 Select a period, to let empty for overall view (yyyy-mm-dd).<br/>
 <% form_tag(:action=>'export_mdelays_excel') do %>
 <table><tr><td>

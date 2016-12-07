@@ -676,6 +676,19 @@ class Project < ActiveRecord::Base
 
   # names is a array of names mutually exclusive (if we found M5 we should not be able to found a G5)
   # ex: ['M5','G5','g5','pg5', 'CCB']
+  def is_nogo_gm_five(names)
+    status = false
+    for name in names
+      m = find_milestone_by_name(name)
+      if m and m.status == 3 and m.done == 1
+        status = true
+      end
+    end
+    return status
+  end
+
+  # names is a array of names mutually exclusive (if we found M5 we should not be able to found a G5)
+  # ex: ['M5','G5','g5','pg5', 'CCB']
   def get_milestone_status(names)
     status, style = '',{}
     for name in names

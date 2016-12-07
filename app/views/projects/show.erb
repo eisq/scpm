@@ -197,7 +197,7 @@ function add(id, nb_months, has_requests, has_rights) {
               <% @mdelay_records.each do |mdelay_record| %>
                 <tr class="delay_tr" id='mdelay_record_<%=mdelay_record.mdelay_record_id.to_s%>'>
                   <td class="delay_td"><%= mdelay_record.milestone_name %></td>
-                  <td class="delay_td"><%= mdelay_record.phase_of_identification %></td>
+                  <td class="delay_td"><%= mdelay_record.phase_name %></td>
                   <td class="delay_td"><%= mdelay_record.initial_reason %></td>
                   <td class="delay_td"><%= mdelay_record.analysed_reason %></td>
                   <td class="delay_td"><%= mdelay_record.mdelay_reason_one.reason_description %></td>

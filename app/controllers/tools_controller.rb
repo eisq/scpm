@@ -2829,6 +2829,8 @@ class ToolsController < ApplicationController
         rescue Exception => e
           render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
         end
+    else
+      redirect_to '/tools/milestone_delay_config?error_empty=1'
     end
   end
 
