@@ -348,13 +348,7 @@ class ProjectsController < ApplicationController
   end
 
   def new_mdelay_record
-    mdelay_record_new = MdelayRecord.new
-    mdelay_record_new.project_id = params['project_id']
-    mdelay_record_new.save
-
-    mdelay_record = MdelayRecord.find(:last, :conditions=>["project_id = ?", params['project_id']])
-
-    redirect_to :action=>:mdelay_record, :mdelay_record_id=>mdelay_record.id.to_s
+    redirect_to :action=>:mdelay_record, :project_id=>params["project_id"]
   end
 
   def mdelay_record_edit
@@ -401,9 +395,9 @@ class ProjectsController < ApplicationController
     else
       @pre_post_gm_five_select = ["", "Pre-M5G5", "Post-M5G5"]
 
-      @mdelay_record_show.project_parent = Project.find(:first, :conditions=>[params["project_id"]]).project_name
-      @mdelay_record_show.project = Project.find(:first, :conditions=>[params["project_id"]])
-      @mdelay_record_show.workstream = Project.find(:first, :conditions=>[params["project_id"]]).workstream
+      @mdelay_record_show.project = Project.find(:first, :conditions=>["id = ?", params["project_id"]])
+      @mdelay_record_show.project_parent = @mdelay_record_show.project.project_name
+      @mdelay_record_show.workstream = @mdelay_record_show.project.workstream
       @mdelay_record_show.caption_date = nil
       @mdelay_record_show.milestone = Milestone.new
       @mdelay_record_show.deployment_impact = nil

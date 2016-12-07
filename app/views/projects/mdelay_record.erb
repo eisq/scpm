@@ -33,7 +33,9 @@ function hide_all(){
 <h2> Milestone delay record - [<%= @mdelay_record_show.workstream %>] <%= @mdelay_record_show.project_parent %> > <%= @mdelay_record_show.project.name %> </h2>
 
 <%= form_tag({:action => 'mdelay_record_show_update'}, :multipart => true) %>
+<% if @mdelay_record_show.mdelay_record_id != nil %>
 <%= hidden_field_tag('mdelay_record_id', @mdelay_record_show.mdelay_record_id.to_s) %>
+<% end %>
 <table>
 	<tr>
 		<td>Milestone : <%= select_tag("milestone", options_for_select(@mdelay_record_show.project.milestones.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.milestone.id), {:style=>"width:100px"}) %></td>
