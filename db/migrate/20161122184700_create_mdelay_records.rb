@@ -16,7 +16,7 @@ class CreateMdelayRecords < ActiveRecord::Migration
       t.string :analysed_reason, :limit => nil
       t.integer :mdelay_reason_one_id
       t.integer :mdelay_reason_two_id
-      t.string :consequence, :limit => nil
+      t.string :consequence
       t.date :validation_date
       t.string :validated_by, :limit => nil
       t.string :comments, :limit => nil

@@ -358,6 +358,7 @@ class ProjectsController < ApplicationController
   def mdelay_record
     
     initReasonsStruct
+    @pre_post_gm_five_select = init_pre_post_gm_five_select
     @phases = Phase.find(:all, :conditions=>["is_active = ?", true])
 
     #Mdelay_record_show = Struct.new(:mdelay_record_id, :project_parent, :project, :workstream, :milestone, :deployment_impact, :initial_date, :current_date, :pre_post_gm_five, :phase, :initial_reason, :why_one, :why_two, :why_three, :why_four, :why_five, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :consequence, :validation_date, :validated_by, :comments, :caption_date)
@@ -365,7 +366,6 @@ class ProjectsController < ApplicationController
 
     if params["mdelay_record_id"]
       mdelay_record_temp = MdelayRecord.find(:first, :conditions=>["id = ?", params["mdelay_record_id"]])
-      @pre_post_gm_five_select = init_pre_post_gm_five_select(mdelay_record_temp.project)
 
       @mdelay_record_show.mdelay_record_id = mdelay_record_temp.id
       @mdelay_record_show.project_parent = mdelay_record_temp.project.project_name
@@ -393,7 +393,6 @@ class ProjectsController < ApplicationController
       mdelay_record_temp.mdelay_reason_one ? (@mdelay_record_show.mdelay_reason_one = mdelay_record_temp.mdelay_reason_one) : (@mdelay_record_show.mdelay_reason_one = MdelayReasonOne.new)
       mdelay_record_temp.mdelay_reason_two ? (@mdelay_record_show.mdelay_reason_two = mdelay_record_temp.mdelay_reason_two) : (@mdelay_record_show.mdelay_reason_two = MdelayReasonTwo.new)
     else
-      @pre_post_gm_five_select = ["", "Pre-M5G5", "Post-M5G5"]
 
       @mdelay_record_show.project = Project.find(:first, :conditions=>["id = ?", params["project_id"]])
       @mdelay_record_show.project_parent = @mdelay_record_show.project.project_name
@@ -438,21 +437,12 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def init_pre_post_gm_five_select(project)
+  def init_pre_post_gm_five_select
     value = Array.new
-    names = Array.new
-    gm_five_status = nil
 
     value << ""
     value << "Pre-M5G5"
-
-    names << "M5"
-    names << "G5"
-    names << "M5M7"
-    names << "M5 Agile"
-    if !project.is_nogo_gm_five(names)
-      value << "Post-M5G5"
-    end
+    value << "Post-M5G5"
 
     return value
   end
@@ -477,11 +467,11 @@ class ProjectsController < ApplicationController
     mdelay_record.why_five = params["why_five"]
     mdelay_record.analysed_reason = params["analysed_reason"]
     mdelay_record.consequence = params["consequence"]
-    mdelay_record.validation_date = params["validation_date"]
+    mdelay_record.validation_date = format_date(params["validation_date"])
     mdelay_record.validated_by = params["validated_by"]
     mdelay_record.comments = params["comments"]
-    mdelay_record.initial_date = params["initial_date"]
-    mdelay_record.current_date = params["current_date"]
+    mdelay_record.initial_date = format_date(params["initial_date"])
+    mdelay_record.current_date = format_date(params["current_date"])
     mdelay_record.pre_post_gm_five = params["pre_post_gm_five"]
 
     mdelay_record.mdelay_reason_one_id = params["select_reason_one"].to_i
@@ -500,6 +490,13 @@ class ProjectsController < ApplicationController
     mdelay_record.save
 
     redirect_to :action=>:show, :id=>mdelay_record.project_id
+  end
+
+  def format_date(date)
+    date_split = date.split("/")
+    date = Date.new(date_split[2].to_i, date_split[1].to_i, date_split[0].to_i)
+
+    return date
   end
 
   def to_boolean(str)
