@@ -16,7 +16,12 @@ class MdelayRecord < ActiveRecord::Base
 
 	def get_pre_post_gm_five
 		value = nil
-		self.pre_post_gm_five ? (value = self.pre_post_gm_five) : (value = self.project.pre_post_gm_five)
+		if self.pre_post_gm_five and self.pre_post_gm_five != ""
+			value = self.pre_post_gm_five
+		else
+			value = self.project.pre_post_gm_five
+		end
+
 		return value
 	end
 

@@ -402,7 +402,7 @@ class ProjectsController < ApplicationController
       @mdelay_record_show.deployment_impact = nil
       @mdelay_record_show.initial_date = nil
       @mdelay_record_show.current_date = nil
-      @mdelay_record_show.pre_post_gm_five = nil
+      @mdelay_record_show.pre_post_gm_five = @mdelay_record_show.project.pre_post_gm_five
       @mdelay_record_show.phase = Phase.new
       @mdelay_record_show.initial_reason = nil
       @mdelay_record_show.why_one = nil

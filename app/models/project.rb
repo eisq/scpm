@@ -812,12 +812,12 @@ class Project < ActiveRecord::Base
   end
 
   def pre_post_gm_five
-    pre_post_gm_five = "Pre-M5"
+    pre_post_gm_five = "Pre-M5G5"
     Milestone.find(:all, :conditions => ["project_id = ? and (name = ? or name = ? or name = ? or name = ?)", self.id, "M5", "G5", "M5/M7", "M5 Agile"]).each do |gm_fiv|
       if gm_fiv.done != 0
         if gm_fiv.done == 1 and gm_fiv.status == 3 #done with nogo
         else
-          pre_post_gm_five = "Post-M5"
+          pre_post_gm_five = "Post-M5G5"
         end
       end
     end
