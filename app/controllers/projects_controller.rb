@@ -493,10 +493,15 @@ class ProjectsController < ApplicationController
   end
 
   def format_date(date)
-    date_split = date.split("/")
-    date = Date.new(date_split[2].to_i, date_split[1].to_i, date_split[0].to_i)
+    value = Date.new
 
-    return date
+    if date and date != ""
+      date_split = date.split("/")
+      if date_split[2].length == 4 and date_split[1].length == 2 and date_split[0].length == 2 and date_split[1].to_i < 13
+        value = Date.new(date_split[2].to_i, date_split[1].to_i, date_split[0].to_i)
+      end
+    end
+    return value
   end
 
   def to_boolean(str)
