@@ -38,15 +38,15 @@ function hide_all(){
 <% end %>
 <table>
 	<tr>
-		<td>Milestone : <%= select_tag("milestone", options_for_select(@mdelay_record_show.project.milestones.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.milestone.id), {:style=>"width:100px"}) %></td>
-		<td>Pre/Post M5 : <%= select_tag("pre_post_gm_five", options_for_select(@pre_post_gm_five_select, @mdelay_record_show.pre_post_gm_five), {:style=>"width:100px"}) %></td>
+		<td><u>Milestone</u> : <%= select_tag("milestone", options_for_select(@mdelay_record_show.project.milestones.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.milestone.id), {:style=>"width:100px"}) %></td>
+		<td><u>Pre/Post M5</u> : <%= select_tag("pre_post_gm_five", options_for_select(@pre_post_gm_five_select, @mdelay_record_show.pre_post_gm_five), {:style=>"width:100px"}) %></td>
 	</tr>
 	<tr>
-		<td>Phase of identification : <%= select_tag("phase", options_for_select(@phases.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.phase.id), {:style=>"width:170px"}) %>
-		<td>Impact on M13/G8 : <%= select_tag("deployment_impact", options_for_select(["", "Yes", "No"], :selected => @mdelay_record_show.deployment_impact), {:style=>"width:100px"}) %></td>
+		<td><u>Phase of identification</u> : <%= select_tag("phase", options_for_select(@phases.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.phase.id), {:style=>"width:170px"}) %>
+		<td><u>Impact on M13/G8</u> : <%= select_tag("deployment_impact", options_for_select(["", "Yes", "No"], :selected => @mdelay_record_show.deployment_impact), {:style=>"width:100px"}) %></td>
 	</tr>
 	<tr>
-		<td colspan=2>Initial reason of delay : <%= text_area_tag('initial_reason', @mdelay_record_show.initial_reason, :cols=>57, :rows=>3) %></td>
+		<td colspan=2><u>Initial reason of delay</u> : <%= text_area_tag('initial_reason', @mdelay_record_show.initial_reason, :cols=>57, :rows=>3) %></td>
 	</tr>
 	<tr>
 		<td colspan=2>
@@ -58,16 +58,16 @@ function hide_all(){
 		</td>
 	</tr>
 	<tr>
-		<td colspan=2>Reason of delay after analysis : <%= text_area_tag('analysed_reason', @mdelay_record_show.analysed_reason, :cols=>50, :rows=>3) %></td>
+		<td colspan=2><u>Reason of delay after analysis</u> : <%= text_area_tag('analysed_reason', @mdelay_record_show.analysed_reason, :cols=>50, :rows=>3) %></td>
 	</tr>
 	<tr> <!-- CATEGORIES -->
-		<td>Category 1 : <%= select_tag("select_reason_one", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id]}.insert(0, ""), @mdelay_record_show.mdelay_reason_one.id), {:onchange=>"reason_one_select(this.value)", :style=>"width:185px"}) %></td>
+		<td><u>Category 1</u> : <%= select_tag("select_reason_one", options_for_select(@reason_ones.map{|reason| [reason.reason_description, reason.id]}.insert(0, ""), @mdelay_record_show.mdelay_reason_one.id), {:onchange=>"reason_one_select(this.value)", :style=>"width:185px"}) %></td>
 		<td>
 			<% for i in 0..(@reason_ones.count-1)
 				mdelay_array = @mdelay_rt[i]
 				if mdelay_array %>
 					<span id="select_<%= i.to_s %>">
-						Category 2 : <%= select_tag "select_reason_two_#{i.to_s}", options_for_select(mdelay_array.map{ |option_w| [option_w.reason_description, option_w.id ]}.insert(0, ""), @mdelay_record_show.mdelay_reason_two.id), :multiple => false, :style=>"width:185px" %>
+						<u>Category 2</u> : <%= select_tag "select_reason_two_#{i.to_s}", options_for_select(mdelay_array.map{ |option_w| [option_w.reason_description, option_w.id ]}.insert(0, ""), @mdelay_record_show.mdelay_reason_two.id), :multiple => false, :style=>"width:185px" %>
 					</span>
 				<% end
 			end %>
@@ -81,7 +81,7 @@ function hide_all(){
 		<td>Current date : <%= text_field_tag('current_date', @mdelay_record_show.current_date.to_s, {:size=>8}) %> (dd/mm/yyyy)</td>
 	</tr>
 	<tr>
-		<td>Validation date : <%= text_field_tag('validation_date', @mdelay_record_show.validation_date.to_s, {:size=>8}) %> (dd/mm/yyyy)</td>
+		<td><u>Validation date</u> : <%= text_field_tag('validation_date', @mdelay_record_show.validation_date.to_s, {:size=>8}) %> (dd/mm/yyyy)</td>
 		<td>Validated by : <%= text_field_tag('validated_by', @mdelay_record_show.validated_by, {:size=>17}) %></td>
 	</tr>
 	<tr>
