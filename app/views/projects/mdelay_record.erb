@@ -42,7 +42,7 @@ function hide_all(){
 		<td>Pre/Post M5 : <%= select_tag("pre_post_gm_five", options_for_select(@pre_post_gm_five_select, @mdelay_record_show.pre_post_gm_five), {:style=>"width:100px"}) %></td>
 	</tr>
 	<tr>
-		<td>Phase of identification : <%= select_tag("phase", options_for_select(@phases.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.phase.id), {:style=>"width:185px"}) %>
+		<td>Phase of identification : <%= select_tag("phase", options_for_select(@phases.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.phase.id), {:style=>"width:170px"}) %>
 		<td>Impact on M13/G8 : <%= select_tag("deployment_impact", options_for_select(["", "Yes", "No"], :selected => @mdelay_record_show.deployment_impact), {:style=>"width:100px"}) %></td>
 	</tr>
 	<tr>
