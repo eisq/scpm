@@ -7,19 +7,19 @@ class CreateMdelayRecords < ActiveRecord::Migration
       t.string :pre_post_gm_five
       t.integer :phase_id
       t.boolean :deployment_impact
-      t.string :initial_reason, :limit => nil
-      t.string :why_one, :limit => nil
-      t.string :why_two, :limit => nil
-      t.string :why_three, :limit => nil
-      t.string :why_four, :limit => nil
-      t.string :why_five, :limit => nil
-      t.string :analysed_reason, :limit => nil
+      t.string :initial_reason
+      t.string :why_one
+      t.string :why_two
+      t.string :why_three
+      t.string :why_four
+      t.string :why_five
+      t.string :analysed_reason
       t.integer :mdelay_reason_one_id
       t.integer :mdelay_reason_two_id
       t.string :consequence
       t.date :validation_date
-      t.string :validated_by, :limit => nil
-      t.string :comments, :limit => nil
+      t.string :validated_by
+      t.string :comments
       t.date :initial_date
       t.date :current_date
       t.timestamps

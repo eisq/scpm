@@ -2813,16 +2813,16 @@ class ToolsController < ApplicationController
       request += " and "
     end
 
-    request += "project_id IS NOT NULL"
-    request += " and milestone_id IS NOT NULL"
-    request += " and pre_post_gm_five IS NOT NULL"
-    request += " and phase_id IS NOT NULL"
-    request += " and deployment_impact IS NOT NULL"
-    request += " and initial_reason IS NOT NULL"
-    request += " and analysed_reason IS NOT NULL"
-    request += " and mdelay_reason_one_id IS NOT NULL"
-    request += " and mdelay_reason_two_id IS NOT NULL"
-    request += " and validation_date IS NOT NULL"
+    request += "project_id != 0"
+    request += " and milestone_id != 0"
+    request += " and pre_post_gm_five != ''"
+    request += " and phase_id != 0"
+    request += " and deployment_impact != ''"
+    request += " and initial_reason != ''"
+    request += " and analysed_reason != ''"
+    request += " and mdelay_reason_one_id != 0"
+    request += " and mdelay_reason_two_id != 0"
+    request += " and validation_date != 0000-00-00"
 
     @mdelays = Array.new
     MdelayRecord.find(:all, :conditions=>[request]).each do |mdelay|
