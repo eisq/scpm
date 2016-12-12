@@ -25,6 +25,28 @@ class MdelayRecord < ActiveRecord::Base
 		return value
 	end
 
+	def get_pre_post_gm_five_excel
+		value = ""
+
+		if self.pre_post_gm_five and self.pre_post_gm_five != ""
+			if self.project.lifecycle_object and (self.project.lifecycle_object.name == "Full GPP" or self.project.lifecycle_object.name == "Agile" or self.project.lifecycle_object.name == "Waterfall")
+				if self.pre_post_gm_five == "Pre-M5G5"
+					value = "Pre-M5"
+				elsif self.pre_post_gm_five == "Post-M5G5"
+					value = "Post-M5"
+				end
+			elsif self.project.lifecycle_object and (self.project.lifecycle_object.name == "LBIP+" or self.project.lifecycle_object.name == "Suite")
+				if self.pre_post_gm_five == "Pre-M5G5"
+					value = "Pre-G5"
+				elsif self.pre_post_gm_five == "Post-M5G5"
+					value = "Post-G5"
+				end
+			end
+		end
+
+		return value
+	end
+
 	def get_caption_date
 		value = nil
 

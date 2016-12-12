@@ -91,17 +91,6 @@ end
       @xml.Column 16, {'ss:Width' => 300}
 
       # Header 1
-      @xml.Row 'ss:StyleID' => 'Default' do
-        @xml.Cell 'ss:StyleID' => 'Default'
-        @xml.Cell 'ss:StyleID' => 'Header3bold' do
-          @xml.Data "Milestone Delay Classification", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
-        end
-      end
-
-      # Header 2
-      @xml.Row 'ss:StyleID' => 'Default'
-
-      # Header 3
       @xml.Row do
         @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "ID", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -163,7 +152,7 @@ end
             @xml.Data mdelay.id.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data mdelay.created_at.strftime("%d/%m/%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.created_at.strftime("%d-%m-%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data mdelay.project.workstream, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -183,7 +172,7 @@ end
             end
           end
           @xml.Cell do
-            @xml.Data mdelay.get_pre_post_gm_five, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.get_pre_post_gm_five_excel, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             if mdelay.phase
@@ -210,7 +199,7 @@ end
             end
           end
           @xml.Cell do
-            @xml.Data mdelay.validation_date.strftime("%d/%m/%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.validation_date.strftime("%d-%m-%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data mdelay.validated_by, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
