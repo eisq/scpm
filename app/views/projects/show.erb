@@ -205,7 +205,7 @@ function add(id, nb_months, has_requests, has_rights) {
                   <td class="delay_td"><%= mdelay_record.validation_date %></td>
                   <td class="delay_td_reason"><%= mdelay_record.comments %></td>
                   <td class="delay_td"><%= mdelay_record.caption_date %></td>
-                  <td class="delay_td"><%= link_to(image_tag('edit.gif'), {:action=>'mdelay_record_edit', :mdelay_record_id=>mdelay_record.mdelay_record_id}) %> <%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'mdelay_record_delete', :mdelay_record_id=>mdelay_record.mdelay_record_id}, :confirm=>"Are you sure?", :success=>"$('mdelay_record_#{mdelay_record.mdelay_record_id}').hide();") %></td>
+                  <td class="delay_td"><%= link_to(image_tag('edit.gif'), {:action=>'mdelay_record_edit', :project_id=>mdelay_record.project_id, :mdelay_record_id=>mdelay_record.mdelay_record_id}) %> <%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'mdelay_record_delete', :mdelay_record_id=>mdelay_record.mdelay_record_id}, :confirm=>"Are you sure?", :success=>"$('mdelay_record_#{mdelay_record.mdelay_record_id}').hide();") %></td>
                 </tr>
               <% end %>
             </table>

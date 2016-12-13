@@ -812,15 +812,24 @@ class Project < ActiveRecord::Base
   end
 
   def pre_post_gm_five
-    pre_post_gm_five = "Pre-M5G5"
+    pre_post_gm_five = ""
+    phase = "Pre-"
+    name = "M5"
+
     Milestone.find(:all, :conditions => ["project_id = ? and (name = ? or name = ? or name = ? or name = ?)", self.id, "M5", "G5", "M5/M7", "M5 Agile"]).each do |gm_fiv|
       if gm_fiv.done != 0
         if gm_fiv.done == 1 and gm_fiv.status == 3 #done with nogo
         else
-          pre_post_gm_five = "Post-M5G5"
+          phase = "Post-"
         end
       end
     end
+
+    if self.lifecycle_object and (self.lifecycle_object.name == "LBIP+" or self.lifecycle_object.name == "Suite" or self.lifecycle_object.name == "LBIP Gx" or self.lifecycle_object.name == "LBIP gx" or self.lifecycle_object.name == "LBIP pgx")
+      name = "G5"
+    end
+
+    pre_post_gm_five = phase + name
     
     return pre_post_gm_five
   end

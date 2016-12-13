@@ -172,7 +172,7 @@ end
             end
           end
           @xml.Cell do
-            @xml.Data mdelay.get_pre_post_gm_five_excel, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.pre_post_gm_five, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             if mdelay.phase

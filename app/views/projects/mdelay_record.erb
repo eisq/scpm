@@ -39,7 +39,7 @@ function hide_all(){
 <table>
 	<tr>
 		<td><u>Milestone</u> : <%= select_tag("milestone", options_for_select(@mdelay_record_show.project.milestones.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.milestone.id), {:style=>"width:100px"}) %></td>
-		<td><u>Pre/Post M5</u> : <%= select_tag("pre_post_gm_five", options_for_select(@pre_post_gm_five_select, @mdelay_record_show.pre_post_gm_five), {:style=>"width:100px"}) %></td>
+		<td><u>Pre/Post M5/G5</u> : <%= select_tag("pre_post_gm_five", options_for_select(@pre_post_gm_five_select, @mdelay_record_show.pre_post_gm_five), {:style=>"width:100px"}) %></td>
 	</tr>
 	<tr>
 		<td><u>Phase of identification</u> : <%= select_tag("phase", options_for_select(@phases.map{ |option_w| [option_w.name, option_w.id]}.insert(0, ""), @mdelay_record_show.phase.id), {:style=>"width:170px"}) %>

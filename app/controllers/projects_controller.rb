@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
 
   before_filter :require_login
   Milestone_delay = Struct.new(:delay_id, :milestone, :planned_date, :current_date, :delay_days, :first_reason, :second_reason, :third_reason, :other_reason, :last_update, :person)
-  Mdelay_record = Struct.new(:mdelay_record_id, :milestone_name, :phase_name, :initial_reason, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :validation_date, :comments, :caption_date)
+  Mdelay_record = Struct.new(:project_id, :mdelay_record_id, :milestone_name, :phase_name, :initial_reason, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :validation_date, :comments, :caption_date)
   Mdelay_record_show = Struct.new(:mdelay_record_id, :project_parent, :project, :workstream, :milestone, :deployment_impact, :initial_date, :current_date, :pre_post_gm_five, :phase, :initial_reason, :why_one, :why_two, :why_three, :why_four, :why_five, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :consequence, :validation_date, :validated_by, :comments, :caption_date)
   ReasonStruct = Struct.new(:reason_one_id, :reason_one, :reason_twos)
 
@@ -327,8 +327,9 @@ class ProjectsController < ApplicationController
 
     @mdelay_records = Array.new
     MdelayRecord.find(:all, :conditions=>["project_id = ?", @project.id]).each do |mdelay_record_each|
-      mdelay_record = Mdelay_record.new # Struct.new(:mdelay_record_id, :milestone_name, :phase_name, :initial_reason, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :validation_date, :comments, :caption_date)
+      mdelay_record = Mdelay_record.new # Struct.new(:project_id, :mdelay_record_id, :milestone_name, :phase_name, :initial_reason, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :validation_date, :comments, :caption_date)
 
+      mdelay_record.project_id = @project.id
       mdelay_record.mdelay_record_id = mdelay_record_each.id
       mdelay_record_each.milestone == nil ? (mdelay_record_each.milestone = Milestone.new) : (mdelay_record.milestone_name = mdelay_record_each.milestone.name)
       mdelay_record_each.phase == nil ? (mdelay_record_each.phase = Phase.new) : (mdelay_record.phase_name = mdelay_record_each.phase.name)
@@ -352,13 +353,13 @@ class ProjectsController < ApplicationController
   end
 
   def mdelay_record_edit
-    redirect_to :action=>:mdelay_record, :mdelay_record_id=>params['mdelay_record_id'].to_s
+    redirect_to :action=>:mdelay_record, :mdelay_record_id=>params['mdelay_record_id'].to_s, :project_id=>params["project_id"]
   end
 
   def mdelay_record
     
     initReasonsStruct
-    @pre_post_gm_five_select = init_pre_post_gm_five_select
+    @pre_post_gm_five_select = init_pre_post_gm_five_select(params["project_id"])
     @phases = Phase.find(:all, :conditions=>["is_active = ?", true])
 
     #Mdelay_record_show = Struct.new(:mdelay_record_id, :project_parent, :project, :workstream, :milestone, :deployment_impact, :initial_date, :current_date, :pre_post_gm_five, :phase, :initial_reason, :why_one, :why_two, :why_three, :why_four, :why_five, :analysed_reason, :mdelay_reason_one, :mdelay_reason_two, :consequence, :validation_date, :validated_by, :comments, :caption_date)
@@ -437,12 +438,19 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def init_pre_post_gm_five_select
+  def init_pre_post_gm_five_select(project_id)
     value = Array.new
+    project = Project.find(:first, :conditions=>["id = ?", project_id])
 
-    value << ""
-    value << "Pre-M5G5"
-    value << "Post-M5G5"
+    if project.lifecycle_object and (project.lifecycle_object.name == "LBIP+" or project.lifecycle_object.name == "Suite" or project.lifecycle_object.name == "LBIP Gx" or project.lifecycle_object.name == "LBIP gx" or project.lifecycle_object.name == "LBIP pgx")
+      value << ""
+      value << "Pre-G5"
+      value << "Post-G5"
+    else
+      value << ""
+      value << "Pre-M5"
+      value << "Post-M5"
+    end
 
     return value
   end
@@ -497,8 +505,10 @@ class ProjectsController < ApplicationController
 
     if date and date != ""
       date_split = date.split("/")
-      if date_split[2].length == 4 and date_split[1].length == 2 and date_split[0].length == 2 and date_split[1].to_i < 13
-        value = Date.new(date_split[2].to_i, date_split[1].to_i, date_split[0].to_i)
+      if date_split.count == 3
+        if date_split[2].length == 4 and date_split[1].length == 2 and date_split[0].length == 2 and date_split[1].to_i < 13
+          value = Date.new(date_split[2].to_i, date_split[1].to_i, date_split[0].to_i)
+        end
       end
     end
     return value
