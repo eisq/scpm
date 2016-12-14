@@ -6,6 +6,42 @@ class MdelayRecord < ActiveRecord::Base
 	belongs_to	:project
 	belongs_to	:milestone
 
+	def get_reason_one_by_name(reason_name)
+		value = nil
+
+		MdelayReasonOne.find(:first, :conditions=>["reason_description = ? and is_active = ?", reason_name, true])
+
+		return value
+	end
+
+	def get_reason_two_by_name(reason_name)
+		value = nil
+
+		MdelayReasonTwo.find(:first, :conditions=>["reason_description = ? and is_active = ?", reason_name, true])
+
+		return value
+	end
+
+	def format_deployment_impact(impact)
+		value = nil
+
+		if impact == "YES"
+			value = "Yes"
+		elsif impact == "NO"
+			value = "No"
+		end
+
+		return value
+	end
+
+	def get_phase_by_name(phase_name)
+		value = nil
+
+		value = Phase.find(:first, :conditions=>["name = ? and is_active = ?", phase_name, true])
+
+		return value
+	end
+
 	def get_project_parent
 		return self.project.project_name
 	end
