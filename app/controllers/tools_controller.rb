@@ -231,7 +231,7 @@ class ToolsController < ApplicationController
       # If project id
       if ((indexRow > 1) and (conso_row[3].to_s != ""))
         project = nil
-        project = Project.find(:first, :conditions=>["name = ? and project_id is null", conso_row[4].to_s])
+        project = Project.find(:first, :conditions=>["name = ? and project_id is not null", conso_row[4].to_s])
         if project
           milestone = nil
           milestone = project.find_milestone_by_name(conso_row[6].to_s)
