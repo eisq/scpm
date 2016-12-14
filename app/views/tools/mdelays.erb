@@ -102,7 +102,7 @@ end
           @xml.Data "Workstream", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitleBlue' do
-          @xml.Data "Project BRN", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Data "Project ID", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Project parent", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -152,7 +152,7 @@ end
             @xml.Data mdelay.id.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
-            @xml.Data mdelay.created_at.strftime("%d-%m-%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.created_at.strftime("%d/%m/%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data mdelay.project.workstream, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
@@ -199,7 +199,7 @@ end
             end
           end
           @xml.Cell do
-            @xml.Data mdelay.validation_date.strftime("%d-%m-%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data mdelay.validation_date.strftime("%d/%m/%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data mdelay.validated_by, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'

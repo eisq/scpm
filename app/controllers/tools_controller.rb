@@ -231,7 +231,7 @@ class ToolsController < ApplicationController
       # If project id
       if ((indexRow > 1) and (conso_row[3].to_s != ""))
         project = nil
-        project = Project.find(:first, :conditions=>["id = ?", conso_row[3].to_i])
+        project = Project.find(:first, :conditions=>["name = ?", conso_row[4].to_s])
         if project
           milestone = nil
           milestone = project.find_milestone_by_name(conso_row[6].to_s)
@@ -2903,11 +2903,31 @@ class ToolsController < ApplicationController
     request += " and mdelay_reason_two_id != 0"
     request += " and validation_date != 0000-00-00"
 
+    fudphd_chosen = Array.new
+    if params["fudphd"] and params["fudphd"] != ""
+      if params["fudphd"] == "FuD"
+        fudphd_chosen << 1
+        fudphd_chosen << 8
+        fudphd_chosen << 10
+      else
+        fudphd_chosen << 4
+        fudphd_chosen << 5
+        fudphd_chosen << 6
+        fudphd_chosen << 7
+        fudphd_chosen << 9
+      end
+    end
+
+
     @mdelays = Array.new
     MdelayRecord.find(:all, :conditions=>[request]).each do |mdelay|
       if mdelay.project and mdelay.project.id != 2480 #test project on production environment
         if (mdelay.project.workstream and mdelay.project.workstream != "")
+          if fudphd_chosen.count > 0 and fudphd_chosen.include?(mdelay.project.lifecycle_id)
             @mdelays << mdelay
+          elsif fudphd_chosen.count == 0
+            @mdelays << mdelay
+          end
         end
       end
     end

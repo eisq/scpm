@@ -55,11 +55,14 @@ class ProjectsController < ApplicationController
 
     @total_wps_filtered = @wps.size
 
+    @milestone_delays = Array.new
+
     if @wps.size > 0
       @amendments           = Amendment.find(:all, :conditions=>"done=0 and project_id in (#{@wps.collect{|p| p.id}.join(',')})", :order=>"duedate")
       @risks                = Risk.find(:all, :conditions=>"probability>0 and project_id in (#{@wps.collect{|p| p.id}.join(',')})", :order=>"updated_at")
       @risks_with_severity  = @risks.select { |risk| risk.severity > 0}
       @inconsistencies      = @wps.select{|wp| !wp.is_consistent_with_risks}
+      @milestone_delays     = MdelayRecord.find(:all, :conditions=>"project_id in (#{@wps.collect{|p| p.id}.join(',')})")
 
       # Checklist size
       # Mode 1

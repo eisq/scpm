@@ -11,9 +11,12 @@ function reason_one_select(reason_one_id)
 <span style="color:red;">No milestone delays to export</span><br/><br/>
 <% end %>
 
-Select a period, to let empty for overall view (yyyy-mm-dd).<br/>
 <% form_tag(:action=>'export_mdelays_excel') do %>
-<table><tr><td>
+<table><tr><td colspan=2>
+Fud / PhD <%= select_tag("fudphd", options_for_select(["", "FuD", "PhD"])) %>
+</td></tr><tr><td colspan=2>
+Select a period, to let empty for overall view (yyyy-mm-dd).
+</td></tr><tr><td>
 From <%= text_field 'delay_from', '', {:style=>"width:100px"} %></td><td>
 To <%= text_field 'delay_to', '', {:style=>"width:100px"} %></td><td>
 <%= submit_tag "Excel export", :name => 'export' %>

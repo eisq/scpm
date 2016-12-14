@@ -105,11 +105,17 @@
 			else
 				inconsistencies_size_str = "[#{@inconsistencies.size}]"
 			end
+      if(@milestone_delays.size > 0)
+        milestone_delays_size_str = "[<strong>#{@milestone_delays.size}</strong>]"
+      else
+        milestone_delays_size_str = "[#{@milestone_delays.size}]"
+      end
 	
 		  %>
 	      <%= tab_menu("project_index", [
 	        "Projects #{wps_size_str}",
 					"Streams",
+          "Milestone delays #{milestone_delays_size_str}",
 	        "CI #{ci_size_str}",
 	        "Actions #{actions_size_str}",
 	        "Amendments #{amendments_size_str}",
@@ -135,6 +141,13 @@
 
     <div id="tabContent3" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="3"? "block" : "none"%>;">
         <br />
+        <div style="display:inline;">
+        <%= render(:file=>'projects/index_milestone_delays') %>
+        </div>
+    </div>
+
+    <div id="tabContent4" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="4"? "block" : "none"%>;">
+        <br />
         <div>
           <%= render(:file=>'ci_projects/ci_header') %>
           <%= render(:partial=>'ci_projects/ci_project', :collection=>@ci, :as=>:p) %>
@@ -142,7 +155,7 @@
         </div>
     </div>
 
-    <div id="tabContent4" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="4"? "block" : "none"%>;">
+    <div id="tabContent5" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="5"? "block" : "none"%>;">
         <br />
         <div>
           <%= render(:file=>'actions/actions_header') %>
@@ -159,7 +172,7 @@
         </div>
     </div>
 
-    <div id="tabContent5" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="5"? "block" : "none"%>;">
+    <div id="tabContent6" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="6"? "block" : "none"%>;">
         <br />
         <div>
           <%= render(:file=>'amendments/amendments_header') %>
@@ -168,7 +181,7 @@
         </div>
     </div>
 
-    <div id="tabContent6" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="6"? "block" : "none"%>;">
+    <div id="tabContent7" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="7"? "block" : "none"%>;">
         <br />
         <div>
           <%= render(:file=>'risks/risks_header') %>
@@ -177,7 +190,7 @@
         </div>
     </div>
 
-    <div id="tabContent7" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="7"? "block" : "none"%>;">
+    <div id="tabContent8" class="tabContent" style="display:<%= cookies["tab_menu_project_index"]=="8"? "block" : "none"%>;">
         <br />
         <div>
           <table>
