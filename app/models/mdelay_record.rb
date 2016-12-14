@@ -43,7 +43,10 @@ class MdelayRecord < ActiveRecord::Base
 	def get_phase_by_name(phase_name)
 		value = nil
 
-		value = Phase.find(:first, :conditions=>["name = ? and is_active = ?", phase_name, true])
+		phase = Phase.find(:first, :conditions=>["name = ? and is_active = ?", phase_name, true])
+		if phase
+			value = phase.id
+		end
 
 		return value
 	end
