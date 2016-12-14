@@ -287,6 +287,13 @@ class ToolsController < ApplicationController
     redirect_to '/tools/scripts'
   end
 
+  def delete_mdelays
+    MdelayRecord.find(:all).each do |mdelay_record|
+      mdelay_record.delete
+    end
+    redirect_to '/tools/scripts'
+  end
+
   def execute_from_spider_to_svt
     i=0
     DeviationActivity.find(:all).each do |spider|

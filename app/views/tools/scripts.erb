@@ -19,7 +19,7 @@ Remove all is_active = false from Spider v4 in the DB <!--<%= link_to('remove', 
 Fix wrong SVF projects <!--<%= link_to('fix', {:action=>'fix_wrong_svf_projects'}, {:class=>'btnlnk'}) %><br/>--><br/>
 Create AQ breaks <!--<%= link_to('create breaks', {:action=>'create_aq_breaks'}, {:class=>'btnlnk'}) %>--><br/><br/>
 
-Import Mdelays
+Delete mdelays <%= link_to('delete mdelays', {:action=>'delete_mdelays'}, {:class=>'btnlnk'}) %><br/><br/>
 
 <%= form_tag({:action => 'import_mdelays'}, :multipart => true) %>
     <label for="upload_file">Import</label>
