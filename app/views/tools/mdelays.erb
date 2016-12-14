@@ -145,11 +145,13 @@ end
         end
       end
 
+      id = 0
       # Rows
       for mdelay in @mdelays
         @xml.Row do
+          id += 1
           @xml.Cell 'ss:StyleID' => 'borderleft' do
-            @xml.Data mdelay.id.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+            @xml.Data id.to_s, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
             @xml.Data mdelay.created_at.strftime("%d/%m/%Y"), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
