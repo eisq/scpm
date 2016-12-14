@@ -9,7 +9,10 @@ class MdelayRecord < ActiveRecord::Base
 	def get_reason_one_by_name(reason_name)
 		value = nil
 
-		MdelayReasonOne.find(:first, :conditions=>["reason_description = ? and is_active = ?", reason_name, true])
+		mdelay = MdelayReasonOne.find(:first, :conditions=>["reason_description = ? and is_active = ?", reason_name, true])
+		if mdelay
+			value = mdelay.id
+		end
 
 		return value
 	end
@@ -17,7 +20,10 @@ class MdelayRecord < ActiveRecord::Base
 	def get_reason_two_by_name(reason_name)
 		value = nil
 
-		MdelayReasonTwo.find(:first, :conditions=>["reason_description = ? and is_active = ?", reason_name, true])
+		mdelay = MdelayReasonTwo.find(:first, :conditions=>["reason_description = ? and is_active = ?", reason_name, true])
+		if mdelay
+			value = mdelay.id
+		end
 
 		return value
 	end
