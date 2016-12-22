@@ -251,31 +251,13 @@ class ToolsController < ApplicationController
             mdelay_to_save.mdelay_reason_one_id = mdelay_to_save.get_reason_one_by_name(conso_row[19].to_s)
             mdelay_to_save.mdelay_reason_two_id = mdelay_to_save.get_reason_two_by_name(conso_row[20].to_s)
             mdelay_to_save.consequence = conso_row[21].to_s
-
-            date_splitted = conso_row[22].to_s.split("-")
-            if date_splitted.count == 3 and date_splitted[0].length == 4
-              mdelay_to_save.validation_date = Date.new(date_splitted[0].to_i, date_splitted[1].to_i, date_splitted[2].to_i)
-            end
-
+            mdelay_to_save.validation_date = split_date(conso_row[22])
             mdelay_to_save.validated_by = conso_row[23].to_s
             mdelay_to_save.comments = conso_row[24].to_s
-
-            date_splitted1 = conso_row[7].to_s.split("-")
-            if date_splitted1.count == 3 and date_splitted1[0].length == 4
-              mdelay_to_save.initial_date = Date.new(date_splitted1[0].to_i, date_splitted1[1].to_i, date_splitted1[2].to_i)
-            end
-
-            date_splitted2 = conso_row[7].to_s.split("-")
-            if date_splitted2.count == 3 and date_splitted2[0].length == 4
-              mdelay_to_save.current_date = Date.new(date_splitted2[0].to_i, date_splitted2[1].to_i, date_splitted2[2].to_i)
-            end
-
+            mdelay_to_save.initial_date = split_date(conso_row[7])
+            mdelay_to_save.current_date = split_date(conso_row[8])
             mdelay_to_save.pre_post_gm_five = conso_row[9].to_s
-
-            date_splitted3 = conso_row[1].to_s.split("-")
-            if date_splitted3.count == 3 and date_splitted3[0].length == 4
-              mdelay_to_save.created_at = Date.new(date_splitted3[0].to_i, date_splitted3[1].to_i, date_splitted3[2].to_i)
-            end
+            mdelay_to_save.created_at = split_date(conso_row[1])
 
             mdelay_to_save.save
           end
@@ -285,6 +267,17 @@ class ToolsController < ApplicationController
     end
 
     redirect_to '/tools/scripts'
+  end
+
+  def split_date(date_loaded)
+    value = nil
+
+    date_splitted = date_loaded.to_s.split("-")
+    if date_splitted.count == 3 and date_splitted[0].length == 4
+      value = Date.new(date_splitted[0].to_i, date_splitted[1].to_i, date_splitted[2].to_i)
+    end
+
+    return value
   end
 
   def delete_mdelays
