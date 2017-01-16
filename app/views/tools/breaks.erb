@@ -9,13 +9,15 @@
 
 <h3>Edit Breaks</h3>
 <% @on_hold_projects.each do |on_hold_project_struct| %>
-	<%= form_tag({:action => 'break_update'}, :multipart => true) %>
-		<%= hidden_field_tag('break_id', on_hold_project_struct.on_hold_project.id) %>
-		<%= on_hold_project_struct.project.id %> - <%= on_hold_project_struct.project.name %>
-		<%= text_field_tag('break_days', on_hold_project_struct.on_hold_project.total) %>
-		<%= submit_tag "Save" %>
-		<%= submit_tag "Delete" %>
-	</form>
+	<% if on_hold_project_struct.project %>
+		<%= form_tag({:action => 'break_update'}, :multipart => true) %>
+			<%= hidden_field_tag('break_id', on_hold_project_struct.on_hold_project.id) %>
+			<%= on_hold_project_struct.project.id %> - <%= on_hold_project_struct.project.name %>
+			<%= text_field_tag('break_days', on_hold_project_struct.on_hold_project.total) %>
+			<%= submit_tag "Save" %>
+			<%= submit_tag "Delete" %>
+		</form>
+	<% end %>
 <% end %>
 
 <% if @projects_qs_to_increment.size > 0 %>
