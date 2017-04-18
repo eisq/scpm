@@ -17,16 +17,14 @@ Fix deleted quality status in counters <!--<%= link_to('fix', {:action=>'fix_del
 Fix deleted quality spiders in counters <!--<%= link_to('fix', {:action=>'fix_deleted_quality_spiders_in_counters'}, {:class=>'btnlnk'}) %><br/>--><br/>
 Remove all is_active = false from Spider v4 in the DB <!--<%= link_to('remove', {:action=>'remove_all_is_active_false_from_spider_v4'}, {:class=>'btnlnk'}) %><br/>--><br/>
 Fix wrong SVF projects <!--<%= link_to('fix', {:action=>'fix_wrong_svf_projects'}, {:class=>'btnlnk'}) %><br/>--><br/>
-Create AQ breaks <!--<%= link_to('create breaks', {:action=>'create_aq_breaks'}, {:class=>'btnlnk'}) %>--><br/><br/>
+Create AQ breaks <!--<%= link_to('create breaks', {:action=>'create_aq_breaks'}, {:class=>'btnlnk'}) %><br/>--><br/>
 
-Delete mdelays <%= link_to('delete mdelays', {:action=>'delete_mdelays'}, {:class=>'btnlnk'}) %><br/><br/>
-
+Delete mdelays <!--<%= link_to('delete mdelays', {:action=>'delete_mdelays'}, {:class=>'btnlnk'}) %><br/>--><br/>
+<!--
 <%= form_tag({:action => 'import_mdelays'}, :multipart => true) %>
     <label for="upload_file">Import</label>
     <%= file_field 'upload', 'datafile' %>
     <%= submit_tag "Import" %>
-</form>
+</form>-->
 
 <br/><br/>
-
-____________________________________________________________________________<br/><br/>

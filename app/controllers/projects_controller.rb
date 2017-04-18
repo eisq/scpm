@@ -1363,6 +1363,14 @@ class ProjectsController < ApplicationController
         end 
       end
     end
+    #CW15 - Close wl_lines
+    if project.wl_lines
+      project.wl_lines.each do |wll|
+          if wll
+            wll.delete
+          end
+      end 
+    end
     render(:nothing => true)
   end
 

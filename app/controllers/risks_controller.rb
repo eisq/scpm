@@ -55,7 +55,7 @@ class RisksController < ApplicationController
   end
   
   def list
-    @risks = Risk.find(:all, :conditions=>["stream_id is NULL"], :order=>"probability*impact desc")
+    @risks = Risk.find(:all, :conditions=>["probability > 0 and stream_id is NULL"], :order=>"probability*impact desc")
     render(:layout=>'tools')
   end
   
