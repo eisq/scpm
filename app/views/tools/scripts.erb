@@ -1,3 +1,8 @@
+Disk place : <b><%= @disk_place %></b><br/>
+<%= link_to('Clean production.log file', {:action=>'clean_production_logs'}, {:class=>'btnlnk'}) %><br/>
+
+<hr/>
+
 Copy data from spider v2 to spider v3  <!--<%= link_to('Execute', {:action=>'execute_from_spider_to_svt'}, {:class=>'btnlnk'}) %><br/>--><br/>
 Remove is_active = false from svt_tables in one click <!--<%= link_to('Remove false', {:action=>'remove_false'}, {:class=>'btnlnk'}) %><br/>--><br/>
 Add id 30000 to svt_deviation_spiders and migrate spiders <!--<%= link_to('Add the 30.000th ID', {:action=>'change_svt_id'}, {:class=>'btnlnk'}) %><br/>--><br/>
@@ -26,5 +31,8 @@ Delete mdelays <!--<%= link_to('delete mdelays', {:action=>'delete_mdelays'}, {:
     <%= file_field 'upload', 'datafile' %>
     <%= submit_tag "Import" %>
 </form>-->
+
+
+
 
 <br/><br/>

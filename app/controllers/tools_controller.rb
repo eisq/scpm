@@ -213,6 +213,15 @@ class ToolsController < ApplicationController
   end
 
   def scripts
+    temp = (File.exists?('C:\\') ? `dir /-C` : `df .`).split("\n").last 
+    temp1 = temp.last(5)
+    @disk_place = temp1.first(3)
+  end
+
+  def clean_production_logs
+    File.truncate('production.log', 0)
+
+    redirect_to '/tools/scripts'
   end
 
   def import_mdelays
