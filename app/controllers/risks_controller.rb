@@ -63,6 +63,23 @@ class RisksController < ApplicationController
     Risk.find(params[:id].to_i).destroy
     render(:nothing=>true)
   end
+
+  def export_risks
+    @risks_to_export = Risk.find(:all, :conditions=>["probability > 0 and stream_id is NULL"], :order=>"probability*impact desc")
+
+    if @risks_to_export.count > 0
+        begin
+          @xml = Builder::XmlMarkup.new(:indent => 1)
+
+          headers['Content-Type']         = "application/vnd.ms-excel"
+          headers['Content-Disposition']  = 'attachment; filename="Risks.xls"'
+          headers['Cache-Control']        = ''
+          render "risks.erb", :layout=>false
+        rescue Exception => e
+          render(:text=>"<b>#{e}</b><br>#{e.backtrace.join("<br>")}")
+        end
+    end
+  end
   
 private
 

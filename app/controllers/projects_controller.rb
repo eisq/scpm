@@ -1182,7 +1182,7 @@ class ProjectsController < ApplicationController
       #  }
 
       @risks = Array.new
-        Risk.find(:all, :conditions => "stream_id IS NULL and is_quality=1").each do |rsk|
+        Risk.find(:all, :conditions => "stream_id IS NULL and probability > 0").each do |rsk|
           proj = Project.find(:first, :conditions=>["id= ?", rsk.project_id])
           if (proj != nil and proj.is_running and rsk.project and rsk.severity >0)
               @risks<< rsk

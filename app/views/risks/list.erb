@@ -1,6 +1,11 @@
 <%= render(:file=>"tools/menu")%>
 
 <h2>Risks</h2>
+
+<% form_tag(:action=>'export_risks') do %>
+<%= submit_tag "Excel export", :name => 'export' %>
+<% end %>
+
 <table>
   <%= render(:file=>"risks/risks_header")%>
   <%= render(:partial=>'risks/risk', :collection=>@risks) %>
