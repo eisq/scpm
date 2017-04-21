@@ -97,13 +97,13 @@ end
 
       # Header 3
       @xml.Row do
-        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "WS", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "Project", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
-        @xml.Cell 'ss:StyleID' => 'TitlePink' do
+        @xml.Cell 'ss:StyleID' => 'TitleBlue' do
           @xml.Data "WP", 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
         end
         @xml.Cell 'ss:StyleID' => 'TitleBlue' do
@@ -141,7 +141,7 @@ end
           @xml.Cell do
             @xml.Data risk.project.project_name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
-          @xml.Cell 'ss:StyleID' => 'Pink' do
+          @xml.Cell do
             @xml.Data risk.project.name, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
           @xml.Cell do
@@ -153,8 +153,8 @@ end
           @xml.Cell do
             @xml.Data time_ago_in_words(risk.updated_at), 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
-          @xml.Cell 'ss:StyleID' => 'Blue' do
-            @xml.Data risk.context, 'ss:Type' => 'Number'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
+          @xml.Cell do
+            @xml.Data risk.context, 'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase'
           end
 
           @xml.Cell do

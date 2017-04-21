@@ -5,6 +5,7 @@
 <% form_tag(:action=>'export_risks') do %>
 <%= submit_tag "Excel export", :name => 'export' %>
 <% end %>
+<br/>
 
 <table>
   <%= render(:file=>"risks/risks_header")%>
