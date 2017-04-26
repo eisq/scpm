@@ -19,6 +19,10 @@ class ToolsController < ApplicationController
   def index
   end
 
+  def db_counters
+    @requests = Request.find(:all, :conditions=>["status != 'closed' and resolution != 'not started'"])
+  end
+
   def squads
     @squads = Squad.all
     @supervisors = Person.find(:all, :conditions=>["is_supervisor = 1 and has_left = 0 and is_transverse = 0"])

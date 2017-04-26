@@ -38,7 +38,6 @@ function add(id, nb_months, has_requests, has_rights) {
       <%= tab_menu("project_show", [
         "Timeline and status",
         "Risks <strong>#{@project.current_risks.size}</strong>",
-        "Milestone delays <strong>#{@project.mdelay_records.size}</strong>",
         "Amendments <strong>#{@project.current_amendments.size}</strong>",
         "Actions <strong>#{@project.current_actions.size}</strong>",
         "Notes/Capi <strong>#{@project.visible_notes(current_user.id).size}</strong>",
@@ -175,47 +174,7 @@ function add(id, nb_months, has_requests, has_rights) {
           </div>
       </div>
 
-      <div id="tabContent3" class="tabContent" style="display:<%= cookies["tab_menu_project_show"]=="3"? "block" : "none"%>;">
-        <div>
-
-          <%= link_to('Add milestone delay', {:action=>'new_mdelay_record', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br /><br/>
-
-          <% if @mdelay_records.count > 0 %>
-            <table class="delay_table">
-              <tr>
-                <th class="delay_td">Milestone</th>
-                <th class="delay_td">Phase of identification</th>
-                <th class="delay_td">Initial reason</th>
-                <th class="delay_td">Reason after analysis</th>
-                <th class="delay_td">Category 1</th>
-                <th class="delay_td">Category 2</th>
-                <th class="delay_td">Validation date</th>
-                <th class="delay_td_reason">Comments</th>
-                <th class="delay_td">Caption date</th>
-                <th class="delay_td"></th>
-              </tr>
-              <% @mdelay_records.each do |mdelay_record| %>
-                <tr class="delay_tr" id='mdelay_record_<%=mdelay_record.mdelay_record_id.to_s%>'>
-                  <td class="delay_td"><%= mdelay_record.milestone_name %></td>
-                  <td class="delay_td"><%= mdelay_record.phase_name %></td>
-                  <td class="delay_td"><%= mdelay_record.initial_reason %></td>
-                  <td class="delay_td"><%= mdelay_record.analysed_reason %></td>
-                  <td class="delay_td"><%= mdelay_record.mdelay_reason_one.reason_description %></td>
-                  <td class="delay_td"><%= mdelay_record.mdelay_reason_two.reason_description %></td>
-                  <td class="delay_td"><%= mdelay_record.validation_date %></td>
-                  <td class="delay_td_reason"><%= mdelay_record.comments %></td>
-                  <td class="delay_td"><%= mdelay_record.caption_date %></td>
-                  <td class="delay_td"><%= link_to(image_tag('edit.gif'), {:action=>'mdelay_record_edit', :project_id=>mdelay_record.project_id, :mdelay_record_id=>mdelay_record.mdelay_record_id}) %> <%= link_to_remote(image_tag('delete.gif', {:style=>"float:right"}), :url=>{:action=>'mdelay_record_delete', :mdelay_record_id=>mdelay_record.mdelay_record_id}, :confirm=>"Are you sure?", :success=>"$('mdelay_record_#{mdelay_record.mdelay_record_id}').hide();") %></td>
-                </tr>
-              <% end %>
-            </table>
-          <% else %>
-            <p> No delays </p>
-          <% end %>
-        </div>
-      </div>
-
-      <div id="tabContent4" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="4"? "block":"none"%>;">
+      <div id="tabContent3" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="4"? "block":"none"%>;">
           <div>
             <% if !@has_sibling %>
               <%= link_to('Add amendment', {:controller=>'amendments', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br />
@@ -227,7 +186,7 @@ function add(id, nb_months, has_requests, has_rights) {
           </div>
       </div>
 
-      <div id="tabContent5" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="5"? "block":"none"%>;">
+      <div id="tabContent4" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="5"? "block":"none"%>;">
           <div>
             <% if !@has_sibling %>
               <%= link_to('Add action', {:controller=>'actions', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br/>
@@ -239,7 +198,7 @@ function add(id, nb_months, has_requests, has_rights) {
           </div>
       </div>
 
-      <div id="tabContent6" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="6"? "block":"none"%>;">
+      <div id="tabContent5" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="6"? "block":"none"%>;">
           <div>
             <% if !@has_sibling %>
               <%= link_to('Add note', {:controller=>'notes', :action=>'new', :project_id=>@project.id}, {:class=>'btnlnk'}) %><br />
@@ -249,7 +208,7 @@ function add(id, nb_months, has_requests, has_rights) {
           </div>
       </div>
 
-      <div id="tabContent7" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="7"? "block":"none"%>;">
+      <div id="tabContent6" class="tabContent" style="display:<%=cookies["tab_menu_project_show"]=="7"? "block":"none"%>;">
           <div>
             <% if !@has_sibling %>
               <%= link_to('Edit project', {:action=>'edit', :id=>@project.id}, {:class=>'btnlnk'}) %>

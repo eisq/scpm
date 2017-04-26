@@ -1,4 +1,4 @@
-<tr>
+<tr id="risk_<%=risk.id%>">
   <!-- #WS -->
   <td><%= risk.project.workstream.to_s %></td>
 
@@ -39,4 +39,10 @@
   <% else %>
     <td>No</td>
   <% end %>
+
+  <td>
+    <% if current_user.has_role?('Admin') %>
+      <%= link_to_remote(image_tag('delete.gif'), :url=>{:controller=>'risks', :action=>'destroy', :id => risk.id}, :confirm=>"Sure?", :success=>"$('risk_#{risk.id}').hide();")%>
+    <% end %>
+  </td>
 </tr>

@@ -55,7 +55,13 @@ class RisksController < ApplicationController
   end
   
   def list
-    @risks = Risk.find(:all, :conditions=>["probability > 0 and stream_id is NULL"], :order=>"probability*impact desc")
+    @risks = Array.new
+    Risk.find(:all, :conditions=>["probability > 0 and stream_id is NULL"], :order=>"probability*impact desc").each do |risk|
+      if risk.project and risk.project.is_running and !risk.project.is_on_hold
+        @risks << risk
+      end
+    end
+
     render(:layout=>'tools')
   end
   
@@ -65,7 +71,12 @@ class RisksController < ApplicationController
   end
 
   def export_risks
-    @risks_to_export = Risk.find(:all, :conditions=>["probability > 0 and stream_id is NULL"], :order=>"probability*impact desc")
+    @risks_to_export = Array.new
+    Risk.find(:all, :conditions=>["probability > 0 and stream_id is NULL"], :order=>"probability*impact desc").each do |risk|
+      if risk.project and risk.project.is_running and !risk.project.is_on_hold
+        @risks_to_export << risk
+      end
+    end
 
     if @risks_to_export.count > 0
         begin
