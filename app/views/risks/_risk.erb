@@ -34,7 +34,7 @@
   <td><%= my_simple_format(risk.actions) %></td>
 
   <!-- #Is quality -->
-  <% if risk.is_quality %>
+  <% if risk.is_quality and risk.is_quality == 1 %>
     <td>Yes</td>
   <% else %>
     <td>No</td>
