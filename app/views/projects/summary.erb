@@ -361,27 +361,27 @@ end
       # Rows
       for p in @risks
         @xml.Row do
-          @xml.Cell { @xml.Data p.project.supervisor_name,                        'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data p.project.workstream,                             'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data p.project.project_name,                           'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data p.project.full_wp_name,                           'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell(p.severity_excel_style) { @xml.Data p.severity,               'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data p.updated_at ? "#{p.updated_at.to_date} (#{time_ago_in_words(p.updated_at.to_date)})" : "",   'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.context); end;              @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.risk); end;                 @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell(p.probability_excel_style) { @xml.Data p.probability,  'ss:Type' => 'String';         @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.consequence); end;          @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data p.impact,                   'ss:Type' => 'String';                        @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.actions); end;              @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data p.is_ria_logged==1 ? "Y" : "N",                     'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data p.is_ria_action==1 ? "Y" : "N",                     'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell { @xml.Data p.old_impact,                       'ss:Type' => 'String';                @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell(p.old_probability_excel_style) { @xml.Data p.old_probability,  'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          @xml.Cell(p.old_severity_excel_style) { @xml.Data p.old_severity,        'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
--          end # each row
--      end # risk
--    end # table
-  @xml.AutoFilter 'x:Range' => 'R1C1:R2000C12', 'xmlns' => 'urn:schemas-microsoft-com:office:excel'
+         @xml.Cell { @xml.Data p.project.supervisor_name,                        'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data p.project.workstream,                             'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data p.project.project_name,                           'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data p.project.full_wp_name,                           'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell(p.severity_excel_style) { @xml.Data p.severity,               'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data p.updated_at ? "#{p.updated_at.to_date} (#{time_ago_in_words(p.updated_at.to_date)})" : "",   'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.context); end;              @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.risk); end;                 @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell(p.probability_excel_style) { @xml.Data p.probability,  'ss:Type' => 'String';         @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.consequence); end;          @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data p.impact,                   'ss:Type' => 'String';                        @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data('ss:Type' => 'String') do; @xml<<excel_text(p.actions); end;              @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data p.is_ria_logged==1 ? "Y" : "N",                     'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data p.is_ria_action==1 ? "Y" : "N",                     'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell { @xml.Data p.old_impact,                       'ss:Type' => 'String';                @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell(p.old_probability_excel_style) { @xml.Data p.old_probability,  'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+         @xml.Cell(p.old_severity_excel_style) { @xml.Data p.old_severity,        'ss:Type' => 'String'; @xml.NamedCell 'ss:Name' => 'FilterDatabase' }
+        end # each row
+      end # risk
+    end # table
+    @xml.AutoFilter 'x:Range' => 'R1C1:R2000C12', 'xmlns' => 'urn:schemas-microsoft-com:office:excel'
   end # worksheet
 
 # ACTIONS
