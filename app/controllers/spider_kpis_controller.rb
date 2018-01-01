@@ -56,7 +56,7 @@ class SpiderKpisController < ApplicationController
     end
 
     # Begin/End date
-    @begin_date = "2016-01-01"
+    @begin_date = "2018-01-01"
     @end_date   = DateTime.now.year.to_s+"-"+DateTime.now.month.to_s+"-"+DateTime.now.day.to_s
     if (params[:begin_date])
       @begin_date  = params[:begin_date]
